@@ -1,0 +1,31 @@
+functionality:
+  name: pre_processing
+  namespace: pre_processing
+  description: |
+    A subworkflow for stage 1 of the nf-core/rnaseq pipeline.
+  argument_groups:
+    - name: Inputs
+      arguments:
+        - name: "--id"
+          required: true
+          type: string
+          description: ID of the sample.
+          example: foo
+        - name: "--input"
+          alternatives: [-i]
+          description: Path to the sample.
+          required: true
+          example: input.h5mu
+          type: file
+  resources:
+    - type: nextflow_script
+      path: main.nf
+      entrypoint: run_wf
+  dependencies:
+    - name: qc/fastqc
+      repository: openpipeline_modules
+  repositories:
+    - name: openpipeline_modules
+      type: git
+      uri: https://github.com/openpipelines-bio/openpipeline
+      tag: 0.9.0

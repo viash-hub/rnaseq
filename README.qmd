@@ -11,8 +11,43 @@ library(tidyverse)
 
 A version of the [nf-core/rnaseq](https://github.com/nf-core/rnaseq) pipeline in the [Viash framework](http://www.viash.io).
 
-Components copied from OpenPipeline:
+## Rationale
 
-- [fastqc]
+We stick to the original nf-core pipeline as much as possible. This also means that we create a subworkflow for the 5 main stages of the pipeline as depicted in the [README](https://github.com/nf-core/rnaseq).
 
+The original version of the nf-core/rnaseq pipeline allowed one to point to input files directly, but more recently [a sample sheet file is required](https://github.com/nf-core/rnaseq#usage). We don't have to implement the sample sheet approach just yet and just take fastq files as input for the moment.
+
+### Pre-processing
+
+Components reused/included from OpenPipeline:
+
+- [fastqc](https://github.com/openpipelines-bio/openpipeline/tree/main/src/qc/fastqc). This component/module is both copied from the openpipeline repo (but disabled) as well as handled via dependencies in the `pre_processing` subworkflow. Please note that the former is just there for reference.
+
+## Getting started
+
+As test data, we can use the small dataset nf-core provided with [their `test` profile](https://github.com/nf-core/test-datasets/blob/rnaseq3/samplesheet/v3.10/samplesheet_test.csv): <https://github.com/nf-core/test-datasets/tree/rnaseq3/testdata/GSE110004>.
+
+A simple script has been provided to fetch those files from the github repository and store them under `testData/test` (the subdirectory is created to support `full_test` later as well): `bin/get_testData.sh`.
+
+In order to use the dependencies from OpenPipeline, we need a development version Viash atm. A current version is stored under `bin/viash` and should be used for all Viash-related tasks.
+
+In order to test if the setup works, the following can be run:
+
+1. [Install `nextflow`](https://www.nextflow.io/docs/latest/getstarted.html) system-wide
+
+2. Fetch the `fastqc` dependency:
+
+       bin/viash ns build -s workflows 
+
+3. Fetch the test data:
+
+        bin/get_testData.sh
+
+4. Run a simple starter workflow containing just the `fastqc` step:
+
+        nextflow run workflows/pre_processing/main.nf \
+          -with-docker \
+          --id test \
+          --input testData/test/SRR6357070_1.fastq.gz \
+          --publish_dir tst/
 
