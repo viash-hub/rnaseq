@@ -17,15 +17,6 @@ required](https://github.com/nf-core/rnaseq#usage). We don’t have to
 implement the sample sheet approach just yet and just take fastq files
 as input for the moment.
 
-### Pre-processing
-
-Components reused/included from OpenPipeline:
-
-- [fastqc](https://github.com/openpipelines-bio/openpipeline/tree/main/src/qc/fastqc).
-  This component/module is both copied from the openpipeline repo (but
-  disabled) as well as handled via dependencies in the `pre_processing`
-  subworkflow. Please note that the former is just there for reference.
-
 ## Getting started
 
 As test data, we can use the small dataset nf-core provided with [their
@@ -37,28 +28,50 @@ A simple script has been provided to fetch those files from the github
 repository and store them under `testData/test` (the subdirectory is
 created to support `full_test` later as well): `bin/get_testData.sh`.
 
-In order to use the dependencies from OpenPipeline, we need a
-development version Viash atm. A current version is stored under
-`bin/viash` and should be used for all Viash-related tasks.
-
-In order to test if the setup works, the following can be run:
+To get started, we need to:
 
 1.  [Install
     `nextflow`](https://www.nextflow.io/docs/latest/getstarted.html)
     system-wide
 
-2.  Fetch the `fastqc` dependency:
+2.  Fetch the test data:
 
-        bin/viash ns build -s workflows 
+``` bash
+bin/get_testData.sh
+```
 
-3.  Fetch the test data:
+## Running the pipeline
 
-         bin/get_testData.sh
+To actually run the pipeline, we first need to build the components and
+pipeline:
 
-4.  Run a simple starter workflow containing just the `fastqc` step:
+``` bash
+bin/viash ns build --setup cb
+```
 
-         nextflow run workflows/pre_processing/main.nf \
-           -with-docker \
-           --id test \
-           --input testData/test/SRR6357070_1.fastq.gz \
-           --publish_dir tst/
+Now we can run the pipeline using the command:
+
+``` bash
+nextflow run workflows/pre_processing/main.nf \
+  -profile docker \
+  --id test \
+  --input testData/test/SRR6357070_1.fastq.gz \
+  --publish_dir testData/test_output/
+```
+
+Alternatively, we can run the pipeline with a sample sheet using the
+built-in `--param_list` functionality:
+
+``` bash
+cat > testData/test/sample_sheet.csv << HERE
+id,input
+SRR6357070_1,SRR6357070_1.fastq.gz
+SRR6357071_1,SRR6357071_1.fastq.gz
+HERE
+
+nextflow run target/nextflow/workflows/pre_processing/main.nf \
+  --param_list testData/test/sample_sheet.csv \
+  --publish_dir "testData/test_output" \
+  -profile docker \
+  -resume
+```
