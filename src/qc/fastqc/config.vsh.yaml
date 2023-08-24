@@ -1,5 +1,4 @@
 functionality:
-  status: disabled
   name: "fastqc"
   namespace: "qc"
   description: |
