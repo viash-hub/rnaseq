@@ -1,0 +1,39 @@
+functionality:
+  name: "umitools_extract"
+  namespace: "qc"
+  description: |
+    UMI-tools contains tools for dealing with Unique Molecular Identifiers (UMIs)/Random Molecular Tags (RMTs) and single cell RNA-Seq cell barcodes. See https://umi-tools.readthedocs.io/en/latest/ for more information.
+    This component flexible removes UMI sequences from fastq reads. UMIs are removed and appended to the read name.
+  arguments:
+    - name: "--mode"
+      alternatives: [ "-m" ]
+      type: string
+      choices: [ files, dir ]
+      default: files
+      description: The mode in which the component works. Can be either files or dir.
+    - name: "--input"
+      alternatives: [ "-i" ]
+      type: file
+      required: true
+      description: Input fastq files or the directory containing the files.
+      example: fastq_dir/
+    - name: "--output"
+      alternatives: [ "-o" ]
+      type: file
+      direction: output
+      required: true
+      description: Output directory to write reports to.
+      example: umi_extract/
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: python
+        git: https://github.com/CGATOxford/UMI-tools
+  - type: nextflow
