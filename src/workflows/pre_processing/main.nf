@@ -1,22 +1,3 @@
-workflowDir = params.rootDir + "/workflows"
-targetDir = params.rootDir + "/target/nextflow"
-
-openPipelineDir = params.rootDir + "/target/dependencies/git/github.com/openpipelines-bio/openpipeline/0.9.0/nextflow"
-
-include { fastqc } from openPipelineDir + "/qc/fastqc/main.nf"
-
-include { readConfig; helpMessage; readCsv; preprocessInputs; channelFromParams } from workflowDir + "/utils/WorkflowHelper.nf"
-include {  setWorkflowArguments; getWorkflowArguments; passthroughMap as pmap; passthroughFlatMap as pFlatMap; strictMap as smap } from workflowDir + "/utils/DataflowHelper.nf"
-
-config = readConfig("$workflowDir/pre_processing/config.vsh.yaml")
-
-workflow {
-  helpMessage(config)
-
-  channelFromParams(params, config)
-    | run_wf
-
-}
 
 workflow run_wf {
   take:
@@ -38,7 +19,6 @@ workflow run_wf {
 // ===============================
 
 workflow test_wf {
-  helpMessage(config)
 
   // allow changing the resources_test dir
   params.resources_test = params.rootDir + "/resources_test"
