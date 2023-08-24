@@ -52,7 +52,7 @@ bin/viash ns build --setup cb
 Now we can run the pipeline using the command:
 
 ``` bash
-nextflow run workflows/pre_processing/main.nf \
+nextflow run target/nextflow/workflows/pre_processing/main.nf \
   -profile docker \
   --id test \
   --input testData/test/SRR6357070_1.fastq.gz \
