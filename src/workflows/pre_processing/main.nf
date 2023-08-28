@@ -6,7 +6,22 @@ workflow run_wf {
   main:
     output_ch = input_ch
       | view { "Input: $it" }
-      | fastqc.run( auto: [ publish: true ] )
+
+      // [ id, [ input: ... ]]
+      | fastqc.run(
+        auto: [publish: true], 
+        fromState: ["input"],
+        toState: ["fastqc_report": "output"]
+      )
+
+      // [ id, [ input: ..., fastqc_report: ... ] ]
+      | umitools_extract.run(
+        auto: [publish: true], 
+        fromState: ["input", "umitools_bc_pattern"],
+        toState: ["umi_extract_output": "output"]
+      )
+      // [ id, [ input: ..., fastqc_report: ..., umi_extract_output: ... ] ]
+ 
       | view { "Output: $it" }
       
 

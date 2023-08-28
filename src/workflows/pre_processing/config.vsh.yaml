@@ -17,12 +17,24 @@ functionality:
           required: true
           example: input.fastq.gz
           type: file
+    - name: Output
+      arguments:
+        - name: "--output"
+          type: string
+          description: Path to output directory
+          required: true
+  arguments:
+    - name: "--umitools_bc_pattern"
+      type: string
+
   resources:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
   dependencies:
     - name: qc/fastqc
+      repository: local
+    - name: qc/umitools_extract
       repository: local
   repositories:
     - name: openpipeline_modules
