@@ -19,12 +19,12 @@ functionality:
       example: sample.fastq
     
     # Outputs
-    # - name: "--output"
-    #   alternatives: [ "-o" ]
-    #   type: file
-    #   required: true
-    #   description: Output directory to write reports to.
-    #   example: umi_extract/
+    - name: "--output"
+      alternatives: [ "-o" ]
+      type: file
+      required: true
+      description: Output directory to write reports to.
+      direction: output
 
     # Optional arguments
     - name: "--umitools_extract_method"
@@ -44,8 +44,8 @@ functionality:
     #   choices: [1, 2]
     - name: "--umitools_umi_separator"
       type: string
-      description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
       default: "_"
+      description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
     # - name: "--umitools_grouping_method"
     #   type: string
     #   description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
@@ -66,8 +66,8 @@ platforms:
   # - type: docker
   #   image: ubuntu:22.04
   #   setup:
-  #     - type: python
-  #       github: CGATOxford/UMI-tools
+  #     - type: apt
+  #       packages: [pip, umi_tools]
   - type: nextflow
 
  

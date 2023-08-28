@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    ".vscode/viash_schema.json": "*.vsh.yaml"
+  }
+}

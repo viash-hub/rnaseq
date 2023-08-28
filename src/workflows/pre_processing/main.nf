@@ -6,7 +6,6 @@ workflow run_wf {
   main:
     output_ch = input_ch
       | view { "Input: $it" }
-
       // [ id, [ input: ... ]]
       | fastqc.run(
         auto: [publish: true], 
@@ -21,7 +20,6 @@ workflow run_wf {
         toState: ["umi_extract_output": "output"]
       )
       // [ id, [ input: ..., fastqc_report: ..., umi_extract_output: ... ] ]
- 
       | view { "Output: $it" }
       
 

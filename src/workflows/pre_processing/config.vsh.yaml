@@ -13,19 +13,56 @@ functionality:
           example: foo
         - name: "--input"
           alternatives: [-i]
-          description: Path to the sample.
+          description: Path to the sample (or read 1 of paired end sample).
           required: true
+          example: input.fastq.gz
+          type: file
+        - name: "--input2"
+          description: Path to read 2 of the sample.
+          required: false
           example: input.fastq.gz
           type: file
     - name: Output
       arguments:
         - name: "--output"
-          type: string
+          type: file
           description: Path to output directory
           required: true
+  
   arguments:
+  # FastQC option
+    - name: "--skip_fastqc"
+      type: boolean
+      description: Skip FatQC step.
+      default: false
+  
+  # UMI-tools options
+    - name: "--skip_umitools_extract"
+      type: boolean
+      description: Skip umi_tools extract step.
+      default: false
+    - name: "--umitools_extract_method"
+      type: string
+      description: UMI pattern to use.
+      default: string
+      choices: [string, regex]
     - name: "--umitools_bc_pattern"
       type: string
+      description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
+    - name: "--umitools_bc_pattern2"
+      type: string
+      description: The UMI barcode pattern to use if the UMI is located in read 2.
+    - name: "--umitools_umi_separator"
+      type: string
+      description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
+      default: "_"
+    - name: "--save_umi_intermeds"
+      type: boolean
+      description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.
+      default: false
+  
+  # Trimgalore options
+
 
   resources:
     - type: nextflow_script
