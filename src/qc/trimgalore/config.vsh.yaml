@@ -1,0 +1,56 @@
+functionality:
+  name: "trimgalore"
+  namespace: "qc"
+  description: |
+    A wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files. See https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ for more infomration.
+
+  arguments:
+    # Inputs
+    - name: "--umi_extract_output"
+      alternatives: [ "-i" ]
+      type: file
+      required: true
+      description: Input fastq files. Read 1 of paired end data
+      example: sample.fastq
+    - name: "--input2"
+      type: file
+      required: false
+      description: Input fastq files. Read 2 of paired end data
+      example: sample.fastq
+    
+    # Outputs
+    - name: "--output"
+      alternatives: [ "-o" ]
+      type: file
+      required: true
+      description: Output directory to write reports to.
+      direction: output
+
+    # Optional arguments
+    - name: "--extra_trimgalore_args"
+      type: string
+      example: "--three_prime_clip_R1 15 --three_prime_clip_R2 15"
+      description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
+      default: ""
+    # - name: "--min_trimmed_reads"
+    #   type: integer 
+    #   description: "Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low."
+    #   default: 10000   
+    
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+platforms:
+  # - type: docker
+  #   image: ubuntu:22.04
+  #   setup:
+  #     - type: apt
+  #       packages: [cutadapt, fastqc, trim_galore]
+  - type: nextflow
+
+ 
+  
+  

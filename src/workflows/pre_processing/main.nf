@@ -19,6 +19,12 @@ workflow run_wf {
         fromState: ["input", "umitools_bc_pattern"],
         toState: ["umi_extract_output": "output"]
       )
+
+      | trimgalore.run(
+        auto: [publish: true], 
+        fromState: ["umi_extract_output"],
+        toState: ["trimgalore_output": "output"]
+      )
       // [ id, [ input: ..., fastqc_report: ..., umi_extract_output: ... ] ]
       | view { "Output: $it" }
       

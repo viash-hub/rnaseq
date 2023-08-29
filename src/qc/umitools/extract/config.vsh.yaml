@@ -56,6 +56,9 @@ functionality:
       description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.
       default: false
 
+    # with_umi
+    # skip_umi_extract
+
   resources:
     - type: bash_script
       path: script.sh
