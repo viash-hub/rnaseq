@@ -2,10 +2,12 @@
 
 set -eo pipefail
 
-mkdir -p "$par_output"
+mkdir -p $par_output 
 
-# if [ "$par_mode" == "dir" ]; then
-#   par_input="$par_input/*.fastq.gz"
-# fi
+if [ -f $par_input_r2 ]; then
+    eval fastqc $par_input $par_input_r2 -o $par_output
+else
+    eval fastqc $par_input -o $par_output
+fi
 
-eval fastqc "$par_input" -o "$par_output"
+

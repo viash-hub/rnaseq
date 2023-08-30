@@ -3,26 +3,27 @@ workflow run_wf {
   take:
     input_ch
 
-  main:
+  main: 
+
     output_ch = input_ch
       | view { "Input: $it" }
       // [ id, [ input: ... ]]
       | fastqc.run(
         auto: [publish: true], 
-        fromState: ["input"],
+        fromState: ["input", "input_r2"],
         toState: ["fastqc_report": "output"]
       )
 
       // [ id, [ input: ..., fastqc_report: ... ] ]
       | umitools_extract.run(
         auto: [publish: true], 
-        fromState: ["input", "umitools_bc_pattern"],
-        toState: ["umi_extract_output": "output"]
+        fromState: ["input", "input_r2", "umitools_bc_pattern", "umitools_bc_pattern2"],
+        toState: ["umi_extract_output": "output", "umi_extract_r2_output": "r2_output"]
       )
-
+      | view { "Input: $it" }
       | trimgalore.run(
         auto: [publish: true], 
-        fromState: ["umi_extract_output"],
+        fromState: ["umi_extract_output", "umi_extract_r2_output"],
         toState: ["trimgalore_output": "output"]
       )
       // [ id, [ input: ..., fastqc_report: ..., umi_extract_output: ... ] ]

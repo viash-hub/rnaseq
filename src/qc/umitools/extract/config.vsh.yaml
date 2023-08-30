@@ -12,11 +12,10 @@ functionality:
       required: true
       description: Input fastq files. Read 1 of paired end data
       example: sample.fastq
-    - name: "--input2"
+    - name: "--input_r2"
       type: file
-      required: false
       description: Input fastq files. Read 2 of paired end data
-      example: sample.fastq
+      example: sample_2.fastq
     
     # Outputs
     - name: "--output"
@@ -25,13 +24,17 @@ functionality:
       required: true
       description: Output directory to write reports to.
       direction: output
+    - name: "--r2_output"
+      type: file
+      description: Output directory to write reports to.
+      direction: output
 
     # Optional arguments
     - name: "--umitools_extract_method"
       type: "string"
       description: UMI pattern to use.
       default: string
-      choices: [string, regex]
+      choices: [ string, regex ]
     - name: "--umitools_bc_pattern"
       type: string
       description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."

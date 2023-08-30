@@ -13,15 +13,14 @@ functionality:
           example: foo
         - name: "--input"
           alternatives: [-i]
+          type: file
           description: Path to the sample (or read 1 of paired end sample).
           required: true
           example: input.fastq.gz
+        - name: "--input_r2"
           type: file
-        - name: "--input2"
           description: Path to read 2 of the sample.
-          required: false
-          example: input.fastq.gz
-          type: file
+          example: input_2.fastq.gz
     - name: Output
       arguments:
         - name: "--output"

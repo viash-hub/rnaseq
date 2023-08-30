@@ -7,14 +7,12 @@ functionality:
   arguments:
     # Inputs
     - name: "--umi_extract_output"
-      alternatives: [ "-i" ]
       type: file
       required: true
       description: Input fastq files. Read 1 of paired end data
       example: sample.fastq
-    - name: "--input2"
+    - name: "--umi_extract_r2_output"
       type: file
-      required: false
       description: Input fastq files. Read 2 of paired end data
       example: sample.fastq
     
