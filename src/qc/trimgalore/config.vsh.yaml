@@ -6,14 +6,18 @@ functionality:
 
   arguments:
     # Inputs
-    - name: "--umi_extract_output"
+    - name: "--paired"
+      type: boolean 
+      required: false
+      default: false
+      description: Paired fastq files or not?
+    - name: "--input"
       type: file
       required: true
+      multiple: true
+      multiple_sep: ","
       description: Input fastq files. Read 1 of paired end data
       example: sample.fastq
-    - name: "--umi_extract_r2_output"
-      type: file
-      description: Input fastq files. Read 2 of paired end data
     
     # Outputs
     - name: "--output"

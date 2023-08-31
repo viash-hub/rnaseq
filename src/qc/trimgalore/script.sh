@@ -2,10 +2,24 @@
 
 set -eo pipefail
 
-if [ -f "$par_umi_extract_output_r2" ]; then
-    # paired-end
-    eval trim_galore $par_extra_trimgalore_args --paired --gzip $par_umi_extract_output $par_umi_extract_r2_output -o $par_output # --cores $par_cores
+IFS="," read -ra input <<< "$par_input"
+
+count="${#input[@]}"
+
+if [ "$par_paired" == "true" ]; then
+    echo "Paired - $count"
+    if [ "$count" -ne 2 ]; then
+        echo "Paired end input requires two files"
+        exit 1
+    else
+        eval trim_galore $par_extra_trimgalore_args --gzip "${input[*]}" -o $par_output
+    fi
 else
-    # single-end
-    eval trim_galore $par_extra_trimgalore_args --gzip $par_umi_extract_output -o $par_output # --cores $par_cores
-fi
+    echo "Not Paired - $count"
+    if [ "$count" -ne 1 ]; then
+        echo "Single end input requires one file"
+        exit 1
+    else
+        eval trim_galore $par_extra_trimgalore_args --gzip $par_input -o $par_output
+    fi
+fi 

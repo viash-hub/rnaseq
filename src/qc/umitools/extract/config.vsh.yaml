@@ -6,28 +6,35 @@ functionality:
     This component flexible removes UMI sequences from fastq reads. UMIs are removed and appended to the read name.
   arguments:
     # Inputs
+    - name: "--paired"
+      type: boolean 
+      required: false
+      default: false
+      description: Paired fastq files or not?
     - name: "--input"
       alternatives: [ "-i" ]
       type: file
       required: true
-      description: Input fastq files. Read 1 of paired end data
+      multiple: true
+      multiple_sep: ","
+      description: Input fastq files, either one or two (paired)
       example: sample.fastq
-    - name: "--input_r2"
-      type: file
-      must_exist: false
-      default: empty
-      description: Input fastq files. Read 2 of paired end data
+    - name: "--bc_pattern"
+      type: string
+      description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
+      multiple: true
+      multiple_sep: ","
     
     # Outputs
-    - name: "--output"
-      alternatives: [ "-o" ]
+    - name: "--output_1"
       type: file
       required: true
-      description: Output directory to write reports to.
+      description: Output file for read 1.
       direction: output
-    - name: "--r2_output"
+    - name: "--output_2"
       type: file
-      description: Output directory to write reports to.
+      required: false
+      description: Output file for read 2.
       direction: output
 
     # Optional arguments
@@ -36,16 +43,6 @@ functionality:
       description: UMI pattern to use.
       default: string
       choices: [ string, regex ]
-    - name: "--umitools_bc_pattern"
-      type: string
-      description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
-    - name: "--umitools_bc_pattern2"
-      type: string
-      description: The UMI barcode pattern to use if the UMI is located in read 2.
-    # - name: "--umi_discard_read"
-    #   type: integer
-    #   description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-    #   choices: [1, 2]
     - name: "--umitools_umi_separator"
       type: string
       default: "_"
@@ -55,13 +52,14 @@ functionality:
     #   description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
     #   default: "directional"
     #   choices: ["unique", "percentile", "cluster", "adjacency", "directional"]
+    # - name: "--umi_discard_read"
+    #   type: integer
+    #   description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
+    #   choices: [1, 2]
     - name: "--save_umi_intermeds"
       type: boolean
       description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.
       default: false
-
-    # with_umi
-    # skip_umi_extract
 
   resources:
     - type: bash_script

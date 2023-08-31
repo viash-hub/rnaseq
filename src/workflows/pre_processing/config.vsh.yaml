@@ -11,17 +11,22 @@ functionality:
           type: string
           description: ID of the sample.
           example: foo
-        - name: "--input"
+        - name: "--fastq_1"
           alternatives: [-i]
           type: file
           description: Path to the sample (or read 1 of paired end sample).
           required: true
           example: input.fastq.gz
-        - name: "--input_r2"
+        - name: "--fastq_2"
           type: file
-          must_exist: false
-          default: empty
+          required: false
           description: Path to read 2 of the sample.
+        - name: "--strandedness"
+          type: string 
+          required: false
+          default: auto
+          description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+
     - name: Output
       arguments:
         - name: "--output"
@@ -57,9 +62,12 @@ functionality:
     - name: "--umitools_bc_pattern"
       type: string
       description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
+      required: true
     - name: "--umitools_bc_pattern2"
       type: string
       description: The UMI barcode pattern to use if the UMI is located in read 2.
+      required: false
+      default: ""
     - name: "--umi_discard_read"
       type: integer
       description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.

@@ -5,17 +5,19 @@ functionality:
     Fastqc component, please see https://www.bioinformatics.babraham.ac.uk/projects/fastqc/. This component can take one or more files (by means of shell globbing) or a complete directory.
   
   arguments:
+    - name: "--paired"
+      type: boolean 
+      required: false
+      default: false
+      description: Paired fastq files or not?
     - name: "--input"
       alternatives: [ "-i" ]
       type: file
       required: true
-      description: Input fastq files (read1 of paired-end data).
-      example: sample.fastq\
-    - name: "--input_r2"
-      type: file
-      must_exist: false
-      default: empty
-      description: Input fastq files (read2 of paired-end data).
+      multiple: true
+      multiple_sep: ","
+      description: Input fastq files, either one or two (paired)
+      example: sample.fastq
     - name: "--output"
       alternatives: [ "-o" ]
       type: file
