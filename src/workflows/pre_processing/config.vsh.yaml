@@ -11,17 +11,21 @@ functionality:
           type: string
           description: ID of the sample.
           example: foo
-        - name: "--input"
+        - name: "--fastq_1"
           alternatives: [-i]
           type: file
           description: Path to the sample (or read 1 of paired end sample).
           required: true
           example: input.fastq.gz
-        - name: "--input_r2"
+        - name: "--fastq_2"
           type: file
-          must_exist: false
-          default: empty
+          required: false
           description: Path to read 2 of the sample.
+        - name: "--strandedness"
+          type: string 
+          required: false
+          default: auto
+          description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
     - name: Output
       arguments:
         - name: "--output"
