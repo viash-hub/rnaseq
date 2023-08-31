@@ -14,8 +14,9 @@ functionality:
       example: sample.fastq
     - name: "--input_r2"
       type: file
+      must_exist: false
+      default: empty
       description: Input fastq files. Read 2 of paired end data
-      example: sample_2.fastq
     
     # Outputs
     - name: "--output"

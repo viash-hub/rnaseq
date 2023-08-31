@@ -14,7 +14,6 @@ functionality:
     - name: "--umi_extract_r2_output"
       type: file
       description: Input fastq files. Read 2 of paired end data
-      example: sample.fastq
     
     # Outputs
     - name: "--output"

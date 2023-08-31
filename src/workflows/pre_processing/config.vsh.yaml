@@ -19,8 +19,9 @@ functionality:
           example: input.fastq.gz
         - name: "--input_r2"
           type: file
+          must_exist: false
+          default: empty
           description: Path to read 2 of the sample.
-          example: input_2.fastq.gz
     - name: Output
       arguments:
         - name: "--output"
@@ -44,7 +45,7 @@ functionality:
       type: boolean
       description: "Enable UMI-based read deduplication."
       default: true
-    - name: "--skip_umitools_extract"
+    - name: "--skip_umi_extract"
       type: boolean
       description: Skip umi_tools extract step.
       default: false
@@ -62,7 +63,8 @@ functionality:
     - name: "--umi_discard_read"
       type: integer
       description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-      choices: [1, 2]
+      choices: [0, 1, 2]
+      default: 0
     - name: "--umitools_umi_separator"
       type: string
       description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
