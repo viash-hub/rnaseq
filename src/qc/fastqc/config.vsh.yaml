@@ -9,13 +9,10 @@ functionality:
       alternatives: [ "-i" ]
       type: file
       required: true
-      description: Input fastq files (read1 of paired-end data).
-      example: sample.fastq\
-    - name: "--input_r2"
-      type: file
-      must_exist: false
-      default: empty
-      description: Input fastq files (read2 of paired-end data).
+      description: Input fastq files.
+      multiple: true
+      multiple_sep: " "
+      example: sample.fastq
     - name: "--output"
       alternatives: [ "-o" ]
       type: file
@@ -33,9 +30,9 @@ functionality:
     - path: ../../../resources_test/cellranger_tiny_fastq/cellranger_tiny_fastq
 
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: apt
-  #       packages: [ fastqc ]
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ fastqc ]
   - type: nextflow
