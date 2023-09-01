@@ -64,7 +64,7 @@ built-in `--param_list` functionality:
 
 ``` bash
 cat > testData/test/sample_sheet.csv << HERE
-id,input
+id,fastq_1
 SRR6357070_1,SRR6357070_1.fastq.gz
 SRR6357071_1,SRR6357071_1.fastq.gz
 HERE
