@@ -1,0 +1,31 @@
+functionality:
+  name: "gunzip"
+  description: |
+    Extract tar.gz files.
+
+  arguments:
+    - name: "--input"
+      type: file 
+      required: true
+      description: Path of file to be decompressed
+    
+    - name: "--output"
+      type: file
+      direction: output
+      required: true
+      description: Directory containing contents of decompressed file.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  # - type: docker
+  #   image: ubuntu:22.04
+  #   setup:
+  #     - type: apt
+  #       packages: [ tar ]
+  - type: nextflow
