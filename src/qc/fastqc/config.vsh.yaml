@@ -35,9 +35,9 @@ functionality:
     - path: ../../../resources_test/cellranger_tiny_fastq/cellranger_tiny_fastq
 
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: apt
-  #       packages: [ fastqc ]
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ fastqc ]
   - type: nextflow

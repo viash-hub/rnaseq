@@ -68,11 +68,13 @@ functionality:
     - type: bash_script
       path: test.sh
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: apt
-  #       packages: [pip, umi_tools]
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [pip]
+      - type: python
+        packages: [ umi-tools ]
   - type: nextflow
 
  
