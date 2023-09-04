@@ -9,11 +9,11 @@ functionality:
       required: true
       description: Path of file to be decompressed
     
-    - name: "--output"
-      type: file
-      direction: output
-      required: true
-      description: Decompressed file.
+    # - name: "--output"
+    #   type: file
+    #   direction: output
+    #   required: true
+    #   description: Decompressed file.
 
   resources:
     - type: bash_script
