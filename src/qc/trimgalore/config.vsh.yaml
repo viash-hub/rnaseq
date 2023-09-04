@@ -45,11 +45,20 @@ functionality:
     - type: bash_script
       path: test.sh
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: apt
-  #       packages: [cutadapt, fastqc, trim_galore]
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [fastqc]
+      - type: apt
+        packages: [cutadapt]
+      - type: docker
+        run: | 
+          apt-get update && \
+          apt-get install -y curl tar && \
+          curl -fsSL https://github.com/FelixKrueger/TrimGalore/archive/0.6.10.tar.gz -o trim_galore.tar.gz && \
+          tar xvzf trim_galore.tar.gz && \
+          cp /TrimGalore-0.6.10/trim_galore /usr/local/bin
   - type: nextflow
 
  

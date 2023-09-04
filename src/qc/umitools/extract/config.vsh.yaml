@@ -74,7 +74,7 @@ platforms:
       - type: apt
         packages: [pip]
       - type: python
-        packages: [ umi-tools ]
+        packages: [umi-tools]
   - type: nextflow
 
  
