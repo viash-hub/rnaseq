@@ -1,0 +1,31 @@
+functionality:
+  name: "gunzip"
+  description: |
+    Validate, filter, convert and perform various other operations on GFF files.
+
+  arguments:
+    - name: "--input"
+      type: file 
+      required: true
+      description: A reference file in either the GFF3, GFF2 or GTF format.
+    
+    - name: "--output"
+      type: file
+      direction: output
+      required: true
+      description: GTF file resulting from the conversion of the GFF input file.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  # - type: docker
+  #   image: ubuntu:22.04
+  #   setup:
+  #     - type: apt
+  #       packages: [ gzip ]
+  - type: nextflow
