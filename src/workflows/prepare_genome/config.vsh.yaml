@@ -1,0 +1,81 @@
+functionality:
+  name: prepare_genome
+  namespace: workflows
+  description: |
+    A subworkflow for preparing all the required genome references
+  
+  arguments:
+    - name: "--fasta"
+      type: file
+      description: Path to FASTA genome file.
+      required: true
+    - name: "--gtf"
+      type: file
+      description: This parameter is *mandatory* if --genome is not specified.
+      required: false
+    - name: "--gff"
+      type: file
+      description: Path to GFF3 annotation file. Requires if "--gtf" is not specified.
+      required: false
+    - name: "--additional_fasta"
+      type: file
+      description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+    - name: "--transcript_fasta"
+      type: file
+      description: Path to FASTA transcriptome file.
+    - name: "--gene_bed"
+      type: file
+      description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
+    - name: "--splicesites"
+      type: file
+      description: Splice sites file required for HISAT2.
+    - name: "--bbsplit_fasta_list"
+      type: file
+      description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+    - name: "--star_index"
+      type: file
+      description: Path to directory or tar.gz archive for pre-built STAR index.
+    - name: "--rsem_index"
+      type: file
+      description: Path to directory or tar.gz archive for pre-built RSEM index.
+    - name: "--salmon_index"
+      type: file
+      description: Path to directory or tar.gz archive for pre-built Salmon index.
+    - name: "--hisat2_index"
+      type: file
+      description: Path to directory or tar.gz archive for pre-built HISAT2 index.
+    - name: "--bbsplit_index"
+      type: file
+      description: Path to directory or tar.gz archive for pre-built BBSplit index.
+    - name: "--gencode"
+      type: boolean
+      description: Specify if the GTF annotation is in GENCODE format.
+
+    # - name: "is_aws_igenome"
+    #   type: boolean
+    #   description: Specify if the genome files are from AWS iGenomes
+    - name: "--biotype"
+      type: string
+      description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
+    - name: "--prepare_tools_indices"
+      type: string
+      multiple: true
+      multiple_sep: ","
+      description: List of tools to prepare indices for.
+
+  resources:
+    - type: nextflow_script
+      path: main.nf
+      entrypoint: run_wf
+  dependencies:
+    - name: fastqc
+      repository: local
+    - name: umitools_extract
+      repository: local
+    - name: trimgalore
+      repository: local
+  repositories:
+    - name: local
+      type: local
+platforms:
+  - type: nextflow

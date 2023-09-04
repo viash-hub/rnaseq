@@ -41,6 +41,7 @@ workflow run_wf {
           ? [ id, state + [ "paired": true, input: [ state.umi_extract_output_1, state.umi_extract_output_2 ] ] ]
           : [ id, state + [ "paired": false, input: [ state.umi_extract_output_1 ] ] ]
     }
+    // TODO: Rename input files
     | trimgalore.run(
       auto: [publish: true], 
       fromState: ["paired", "input"],

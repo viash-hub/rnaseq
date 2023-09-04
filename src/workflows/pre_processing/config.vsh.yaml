@@ -38,6 +38,7 @@ functionality:
   # Extra pipeline options:
     - name: "--skip_qc"
       type: boolean
+      description: Skip QC steps of the workflow.
 
   # FastQC option
     - name: "--skip_fastqc"
@@ -48,7 +49,7 @@ functionality:
   # UMI-tools options
     - name: "--with_umi"
       type: boolean
-      description: "Enable UMI-based read deduplication."
+      description: Enable UMI-based read deduplication.
       default: true
     - name: "--skip_umi_extract"
       type: boolean
@@ -61,12 +62,11 @@ functionality:
       choices: [string, regex]
     - name: "--umitools_bc_pattern"
       type: string
-      description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
+      description: The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI.
       required: true
     - name: "--umitools_bc_pattern2"
       type: string
       description: The UMI barcode pattern to use if the UMI is located in read 2.
-      required: false
       default: ""
     - name: "--umi_discard_read"
       type: integer
@@ -88,32 +88,32 @@ functionality:
       default: false
     - name: "umi_dedup_stats"
       type: boolean
-      description: "Generate output stats when running `umi_tools dedup`."
+      description: Generate output stats when running "umi_tools dedup".
       default: false
   
   # Read trimming options
     - name: "--trimmer"
       type: string
-      description: "Specify the trimming tool to use"
+      description: Specify the trimming tool to use.
       choices: [ "trimgalore", "fastp"]
       default: "trimgalore"
     - name: "--extra_trimgalore_args"
       type: string
-      description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
+      description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
     - name: "--extra_fastp_args"
       type: string
-      description: "Extra arguments to pass to fastp command in addition to defaults defined by the pipeline."
+      description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
     - name: "--min_trimmed_reads"
       type: integer
-      description: "Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low."
+      description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
       default: 10000
     - name: "--skip_trimming"
       type: boolean
-      description: "Skip the adapter trimming step."
+      description: Skip the adapter trimming step.
       default: false
     - name: "--save_trimmed"
       type: boolean
-      description: "Save the trimmed FastQ files in the results directory."
+      description: Save the trimmed FastQ files in the results directory.
       default: false
 
 
