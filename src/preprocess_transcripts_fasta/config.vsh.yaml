@@ -1,0 +1,28 @@
+functionality:
+  name: "preprocess_transcripts_fasta"
+  description: |
+    Process transcripts FASTA if GTF file is GENOCODE format
+
+  arguments:
+    - name: "--transcript_fasta"
+      type: file 
+      required: true
+      description: Path of transcripts FASTA file
+    
+    - name: "--fixed_fasta"
+      type: file
+      direction: output
+      required: true
+      description: Path of processed output FASTA file.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+  - type: nextflow
