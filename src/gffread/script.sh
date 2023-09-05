@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 prefix=`echo "${par_input%%.gff*}"`
 # par_output="$prefix.gtf"
 
