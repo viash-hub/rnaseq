@@ -1,0 +1,37 @@
+functionality:
+  name: "gtf2bed"
+  description: |
+    Create BED annotation file from GTF.
+
+  arguments:
+    - name: "--gtf"
+      type: file 
+      required: true
+      description: A reference file in GTF format.
+    
+    - name: "--bed_output"
+      type: file
+      direction: output
+      required: true
+      description: BED file resulting from the conversion of the GTF input file.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: | 
+          apt-get update && \
+          apt-get install -y pip curl tar git && \
+          curl -fsSL https://github.com/fls-bioinformatics-core/GFFUtils/archive/refs/tags/v0.12.0.tar.gz -o GFFUtils-0.12.0.tar.gz && \
+          tar xvzf GFFUtils-0.12.0.tar.gz && \
+          pip install -r ./GFFUtils-0.12.0/requirements.txt && \
+          pip install ./GFFUtils-0.12.0/
+  - type: nextflow
