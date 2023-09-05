@@ -1,0 +1,45 @@
+functionality:
+  name: "cat_additional fasta"
+  description: |
+    Concatenate addional fasta file to reference FASTA and GTF files.
+
+  arguments:
+    - name: "--fasta"
+      type: file 
+      required: true
+      description: Path to FASTA genome file.
+    - name: "--gtf"
+      type: file
+      description: Path to GTF annotation file.
+    - name: "--additional_fasta"
+      type: file
+      description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+    - name: "--biotype"
+      type: string
+      description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
+
+    # Output
+    - name: "--fasta_output"
+      type: file
+      direction: output
+      description: Concatenated FASTA file.
+    - name: "--gtf_output"
+      type: file
+      direction: output
+      description: Concatenated GTF file.
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    - type: python_script
+      path: fasta2gtf.py
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: python
+  - type: nextflow
