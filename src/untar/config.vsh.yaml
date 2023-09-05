@@ -1,5 +1,5 @@
 functionality:
-  name: "gunzip"
+  name: "untar"
   description: |
     Extract tar.gz files.
 
@@ -23,9 +23,9 @@ functionality:
       path: test.sh
    
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: apt
-  #       packages: [ tar ]
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ tar ]
   - type: nextflow

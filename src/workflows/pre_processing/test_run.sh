@@ -32,5 +32,5 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --publish_dir "testData/paired_end_test" \
   --umitools_bc_pattern "NNNN" \
   --umitools_bc_pattern2 "NNNN" \
-#   -profile docker \
-#   -resume
+  -profile docker \
+  -resume
