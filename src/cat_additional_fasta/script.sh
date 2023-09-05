@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 genome_name="${par_fasta##*/}"
 genome_name="${genome_name%%.*}"
 

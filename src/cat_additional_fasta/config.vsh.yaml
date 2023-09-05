@@ -1,5 +1,5 @@
 functionality:
-  name: "cat_additional fasta"
+  name: "cat_additional_fasta"
   description: |
     Concatenate addional fasta file to reference FASTA and GTF files.
 
@@ -41,5 +41,7 @@ platforms:
   - type: docker
     image: ubuntu:22.04
     setup:
+      - type: apt
+        packages: [pip]
       - type: python
   - type: nextflow
