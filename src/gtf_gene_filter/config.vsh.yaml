@@ -1,0 +1,35 @@
+functionality:
+  name: "gtf_gene_filter"
+  description: | 
+    Filter GTF only for features in the genome
+
+  arguments:
+  - name: "--fasta"
+    type: file
+    description: Genome fasta file
+  - name: "--gtf"
+    type: file
+    description: GTF file
+
+  - name: "--filtered_gtf"
+    type: file
+    direction: output
+    description: Filtered GTF file containing only genes in the genome
+
+  resources:
+    - type: bash_script
+      path: script.sh
+    - type: python_script
+      path: filter_gtf_for_genes_in_genome.py
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [pip]
+      - type: python
+  - type: nextflow
