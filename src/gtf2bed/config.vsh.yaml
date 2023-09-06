@@ -31,7 +31,7 @@ platforms:
           apt-get update && \
           apt-get install -y pip curl tar git && \
           curl -fsSL https://github.com/fls-bioinformatics-core/GFFUtils/archive/refs/tags/v0.12.0.tar.gz -o GFFUtils-0.12.0.tar.gz && \
-          tar xvzf GFFUtils-0.12.0.tar.gz && \
+          tar -xvzf GFFUtils-0.12.0.tar.gz && \
           pip install -r ./GFFUtils-0.12.0/requirements.txt && \
           pip install ./GFFUtils-0.12.0/
   - type: nextflow
