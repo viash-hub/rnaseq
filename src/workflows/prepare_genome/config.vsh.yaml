@@ -9,13 +9,19 @@ functionality:
       type: file
       description: Path to FASTA genome file.
       required: true
+    - name: "--fasta_uncompressed"
+      type: file
+      direction: output
     - name: "--gtf"
       type: file
-      description: This parameter is *mandatory* if --genome is not specified.
+      description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
       required: false
+    - name: "--gtf_uncompressed"
+      type: file
+      direction: output
     - name: "--gff"
       type: file
-      description: Path to GFF3 annotation file. Requires if "--gtf" is not specified.
+      description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
       required: false
     - name: "--additional_fasta"
       type: file
@@ -67,12 +73,13 @@ functionality:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
+      
   dependencies:
-    - name: fastqc
+    - name: gunzip
       repository: local
-    - name: umitools_extract
+    - name: gffread
       repository: local
-    - name: trimgalore
+    - name: cat_additional_fasta
       repository: local
   repositories:
     - name: local
