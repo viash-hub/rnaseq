@@ -13,7 +13,7 @@ functionality:
       type: file
       direction: output
       required: true
-      description: Decompressed file.    
+      description: Decompressed file. 
 
   resources:
     - type: bash_script

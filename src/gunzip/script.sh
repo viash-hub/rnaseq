@@ -2,5 +2,9 @@
 
 set -eo pipefail
 
-par_output="${par_input%%.gz}"
-gunzip -f $par_input 
+if [ "${par_input##*.}" == "gz" ]; then
+    echo "${par_input##*.}"
+    gunzip -f "$par_input" > "$par_output"
+else
+    cat $par_input > $par_output
+fi
