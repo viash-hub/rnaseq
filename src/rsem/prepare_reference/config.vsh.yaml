@@ -1,0 +1,69 @@
+functionality:
+  name: "rsem_prepare_reference"
+  description: | 
+    Prepare a reference genome for RSEM.
+
+  arguments:
+  - name: "--fasta"
+    type: file
+    description: Genome fasta file
+  - name: "--gtf"
+    type: file
+    description: GTF file
+  - name: "--star"
+    type: boolean_true
+
+  - name: "--rsem"
+    type: file
+    direction: output
+    description: RSEM index directory.
+  - name: "--transcript_fasta"
+    type: file
+    direction: output
+    description: Fasta file of transcripts
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  # - type: docker
+  #   image: ubuntu:22.04
+  #   setup:
+  #     - type: docker
+  #       run: |
+  #         apt-get update && \
+  #         apt-get install -y build-essential gcc g++ make wget zlib1g-dev unzip perl r-base rsem && \
+  #         apt-get clean && \
+  #         wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
+  #         unzip 2.7.11a.zip && \
+  #         cd STAR-2.7.11a/source && \
+  #         autoheader && \
+  #         autoconf && \
+  #         make STARstatic && \
+  #         cp STAR /usr/local/bin && \
+  #         cd && \
+  #         wget --no-check-certificate https://github.com/deweylab/RSEM/archive/refs/tags/v1.3.3.zip && \
+  #         unzip v1.3.3.zip && \
+  #         cd RSEM-1.3.3 && \
+  #         cd samtools-1.3/htslib-1.3 && \
+  #         autoheader && \
+  #         autoconf && \
+  #         ./configure && \
+  #         make && \
+  #         make install && \
+  #         cd .. && \
+  #         autoheader && \
+  #         autoconf && \
+  #         ./configure && \
+  #         make && \
+  #         make install && \
+  #         cd .. && \
+  #         autoheader && \
+  #         autoconf && \
+  #         make && \
+  #         make install
+  - type: nextflow
