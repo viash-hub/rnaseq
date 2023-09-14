@@ -56,7 +56,7 @@ workflow run_wf {
         // | view {"State: $it"}
 
         // chromosome size and fai index
-        | getchromsize.run(auto: [publish: true], fromState: ["fasta": "concatenated_fasta", "gtf": "filtered_gtf"], toState: ["sizes": "sizes", "fai": "fai"], key: "chromsizes")
+        | getchromsize.run(auto: [publish: true], fromState: ["fasta": "concatenated_fasta", "gtf": "filtered_gtf"], toState: ["fai": "fai", "sizes": "sizes"], key: "chromsizes")
         | view {"Output: $it"}
 
     emit: 
