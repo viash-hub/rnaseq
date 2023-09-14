@@ -12,6 +12,7 @@ functionality:
     - name: "--fasta_uncompressed"
       type: file
       direction: output
+      example: genome.fasta
     - name: "--gtf"
       type: file
       description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
@@ -19,19 +20,36 @@ functionality:
     - name: "--gtf_uncompressed"
       type: file
       direction: output
+      example: genes.gtf
     - name: "--gff"
       type: file
       description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
       required: false
+    - name: "--gff_uncompressed"
+      type: file
+      direction: output
+      example: genes.gff
     - name: "--additional_fasta"
       type: file
       description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+    - name: "--additional_fasta_uncompressed"
+      type: file
+      direction: output
+      example: additional.fasta
     - name: "--transcript_fasta"
       type: file
       description: Path to FASTA transcriptome file.
+    - name: "--transcript_fasta_uncompressed"
+      type: file
+      direction: output
+      example: transcript.fasta
     - name: "--gene_bed"
       type: file
       description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
+    - name: "--gene_bed_uncompressed"
+      type: file
+      direction: output
+      example: genes.bed
     - name: "--splicesites"
       type: file
       description: Splice sites file required for HISAT2.
@@ -80,6 +98,16 @@ functionality:
     - name: gffread
       repository: local
     - name: cat_additional_fasta
+      repository: local
+    - name: gtf2bed
+      repository: local
+    - name: preprocess_transcripts_fasta
+      repository: local
+    - name: gtf_gene_filter
+      repository: local
+    - name: rsem/rsem_prepare_reference
+      repository: local
+    - name: getchromsize
       repository: local
   repositories:
     - name: local

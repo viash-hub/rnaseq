@@ -16,6 +16,5 @@ wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq3/reference/h
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq3/reference/rsem.tar.gz
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq3/reference/salmon.tar.gz
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq3/reference/transcriptome.fasta
-wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/gfp.fa.gz
 
 cd $CURR

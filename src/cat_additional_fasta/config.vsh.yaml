@@ -33,7 +33,6 @@ functionality:
       path: script.sh
     - type: python_script
       path: fasta2gtf.py
-      is_executable: true
   test_resources:
     - type: bash_script
       path: test.sh

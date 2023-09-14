@@ -16,7 +16,7 @@ add_name="${par_additional_fasta%%.*}"
 name="${genome_name}_${add_name}"
 
 # Use fasta2gtf.py to generate a GTF annotation file from the FASTA file
-fasta2gtf.py -o "$add_name.gtf" $biotype_name $par_additional_fasta
+cat_additional_fasta/fasta2gtf.py -o "$add_name.gtf" $biotype_name $par_additional_fasta
 
 cat $par_fasta $par_additional_fasta > $par_fasta_output
 cat $par_gtf "$add_name.gtf" > $par_gtf_output

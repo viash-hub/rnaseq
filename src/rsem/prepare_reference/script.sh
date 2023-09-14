@@ -7,8 +7,9 @@ meta_cpus=8
 
 set -eo pipefail
 
-# args=if RSEM_PREPAREREFERENCE_GENOME then '--STAR' else if MAKE_TRANSCRIPTS_FASTA then ''
-if [ $par_star ]; then 
+mkdir -p $par_rsem
+
+if $par_star; then 
     # memory = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     STAR --runMode genomeGenerate --genomeDir $par_rsem \
     --genomeFastaFiles $par_fasta --sjdbGTFfile $par_gtf \
@@ -16,7 +17,7 @@ if [ $par_star ]; then
     
     rsem-prepare-reference --gtf $par_gtf --star \
     --num-threads $meta_cpus \
-    $par_fasta "$par_rsem/genome"
+    $par_fasta $par_rsem/genome
     
     cp "$par_rsem/genome.transcripts.fa" $par_transcript_fasta
 

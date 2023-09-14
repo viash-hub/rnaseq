@@ -1,5 +1,7 @@
 functionality:
   name: "rsem_prepare_reference"
+  namespace: "rsem"
+
   description: | 
     Prepare a reference genome for RSEM.
 
@@ -11,7 +13,7 @@ functionality:
     type: file
     description: GTF file
   - name: "--star"
-    type: boolean_true
+    type: boolean
 
   - name: "--rsem"
     type: file

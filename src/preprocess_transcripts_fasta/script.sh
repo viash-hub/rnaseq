@@ -3,7 +3,7 @@
 set -eo pipefail
 
 command="cat"
-if [ "${par_transcript_fasta##*.}"==".gz" ]; then
+if [ "${par_transcript_fasta##*.}" == ".gz" ]; then
     command="zcat"
 fi
 
