@@ -6,13 +6,11 @@ functionality:
   arguments:
     - name: "--input"
       type: file 
-      required: true
       description: Path of file to be decompressed
     
     - name: "--output"
       type: file
       direction: output
-      required: true
       description: Directory containing contents of decompressed file.
 
   resources:

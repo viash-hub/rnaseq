@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-par_output=`echo "${par_input%%.tar.gz}"`
+#par_input="testData/reference/salmon.tar.gz"
 
 mkdir -p $par_output
 
