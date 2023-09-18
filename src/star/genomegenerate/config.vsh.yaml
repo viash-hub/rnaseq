@@ -1,0 +1,41 @@
+functionality:
+  name: "star_genomegenerate"
+  namespace: "star"
+
+  description: | 
+    Create index for STAR
+
+  arguments:
+  - name: "--fasta"
+    type: file
+    description: Genome fasta file
+  - name: "--gtf"
+    type: file
+    description: GTF file
+
+  - name: "--star_index"
+    type: file
+    direction: output
+    description: STAR index directory.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: |
+          apt-get update && \
+          apt-get install -y --no-install-recommends build-essential gcc g++ make wget zlib1g-dev unzip && \
+          apt-get clean && \
+          wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
+          unzip 2.7.11a.zip && \
+          cp STAR-2.7.11a/bin/Linux_x86_64_static/STAR /usr/local/bin 
+  - type: nextflow
+ 
