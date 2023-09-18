@@ -8,7 +8,8 @@ workflow run_wf {
     output_ch = input_ch
     // | view {"Input: $it"}
     | view { viewEvent(it) }
-    // // Parse input channel and convert to either paired or unpaired input
+    
+    // Parse input channel and convert to either paired or unpaired input
     | map { id, state ->
          (existsInDict(state, "fastq_2"))
            ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
@@ -19,11 +20,19 @@ workflow run_wf {
            ? [ id, state + [ "biotype": "gene_type" ] ]
            : [ id, state + [ "biotype": state.featurecounts_group_type ] ] }
     | view { viewEvent(it) }
+    
     // create list "prepareToolIndices"
+    
+    // prepare all the necessary files for reference genome
+    // | prepare_genome.run (auto: [publish: true],
+    //     fromState: ["fasta", "gtf", "additional_fasta", "transcript_fasta", "gencode", "biotype"],
+    //     toState: ["fasta": "concatenated_fasta", "gtf": "filtered_gtf"]
+    // )
     // | prepare_genome.run (
     //     fromState: ["fasta", "gtf", 'gff', "additional_fasta", "transcript_fasta", "gene_bed", "splicesites", "bbsplit_fasta_list", "star_index", "rsem_index", "salmon_index", "hisat2_index", "bbsplit_index", "gencode", "biotype", "prepareToolIndices"],
     //     toState: ["fasta": "uncompressed_fasta", "gtf", "fai", "gene_bed", "transcript_fasta", "chrom_sizes", "splicesites". "bbsplit_index", "star_index", "rsem_index", "hisat2_index", "salmon_index" ]
     // )
+
     // | pre_processing.run()
     // | view { viewEvent(it) }
     // | genome_alignment.run()

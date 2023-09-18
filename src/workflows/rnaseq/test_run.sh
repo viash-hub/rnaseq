@@ -14,6 +14,9 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --umitools_bc_pattern "NNNN" \
   --fasta testData/reference/genome.fasta \
   --gtf testData/reference/genes.gtf.gz \
+  --additional_fasta testData/reference/gfp.fa.gz \
+  --transcript_fasta testData/reference/transcriptome.fasta \
+  --gencode
   # -profile docker \
   # -resume
 

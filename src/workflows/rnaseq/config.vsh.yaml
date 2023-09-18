@@ -212,15 +212,17 @@ functionality:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
-  # dependencies:
+  dependencies:
+    - name: workflows/prepare_genome
+      repository: local
   #   - name: qc/fastqc
   #     repository: local
   #   - name: qc/umitools_extract
   #     repository: local
   #   - name: qc/trimgalore
   #     repository: local
-  # repositories:
-  #   - name: local
-  #     type: local
+  repositories:
+    - name: local
+      type: local
 platforms:
   - type: nextflow
