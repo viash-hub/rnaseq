@@ -12,6 +12,9 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --transcript_fasta testData/reference/transcriptome.fasta \
     --gencode true \
     --biotype gene_type \
+    --salmon_index testData/reference/salmon.tar.gz \
+    -profile docker
+
     # --prepare_tools_indices a,b,c \
     # --gene_bed "" \
     # --splicesites "" \

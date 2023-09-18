@@ -109,6 +109,11 @@ functionality:
       repository: local
     - name: getchromsize
       repository: local
+    - name: untar
+      repository: local
+    - name: salmon/salmon_index
+      repository: local
+      
   repositories:
     - name: local
       type: local
