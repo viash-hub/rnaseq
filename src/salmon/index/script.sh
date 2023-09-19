@@ -16,6 +16,6 @@ if [ ${par_genome_fasta##*.} == "gz" ]; then
 fi
 
 sed -i.bak -e 's/>//g' decoys.txt
-cat $transcript_fasta $genome_fasta > $gentrome
+cat $par_transcript_fasta $par_genome_fasta > $gentrome
 
-salmon index --threads $meta_cpus -t $gentrome --skipQuant -i salmon
+salmon index --threads $meta_cpus -t $gentrome -i $par_salmon_index
