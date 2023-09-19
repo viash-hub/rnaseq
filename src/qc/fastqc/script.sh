@@ -22,4 +22,4 @@ else
   fi
 fi
 
-eval fastqc "${input[*]}" -o $par_output
+fastqc "${input[*]}" -o $par_output

@@ -15,7 +15,7 @@ if [ "$par_paired" == "true" ]; then
         echo "Paired end input requires two read files and two UMI patterns"
         exit 1
     else
-        eval umi_tools extract -I "${input[0]}" --read2-in="${input[1]}" \
+        umi_tools extract -I "${input[0]}" --read2-in="${input[1]}" \
         -S "$par_output_1" \
         --read2-out="$par_output_2" \
         --extract-method $par_umitools_extract_method \
@@ -29,7 +29,7 @@ else
         echo "Single end input requires one read file and one UMI pattern"
         exit 1
     else
-        eval umi_tools extract -I "${input[0]}" -S "$par_output_1" \
+        umi_tools extract -I "${input[0]}" -S "$par_output_1" \
         --extract-method $par_umitools_extract_method \
         --bc-pattern "${pattern[0]}" \
         --umi-separator $par_umitools_umi_separator 

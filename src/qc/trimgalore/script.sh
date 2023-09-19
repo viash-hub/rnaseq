@@ -12,7 +12,7 @@ if [ "$par_paired" == "true" ]; then
         echo "Paired end input requires two files"
         exit 1
     else
-        eval trim_galore $par_extra_trimgalore_args --gzip "${input[*]}" -o $par_output
+        trim_galore $par_extra_trimgalore_args --gzip "${input[*]}" -o $par_output
     fi
 else
     echo "Not Paired - $count"
@@ -20,6 +20,6 @@ else
         echo "Single end input requires one file"
         exit 1
     else
-        eval trim_galore $par_extra_trimgalore_args --gzip $par_input -o $par_output
+        trim_galore $par_extra_trimgalore_args --gzip $par_input -o $par_output
     fi
 fi 
