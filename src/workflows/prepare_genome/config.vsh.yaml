@@ -111,6 +111,8 @@ functionality:
       repository: local
     - name: untar
       repository: local
+    - name: star/star_genomegenerate
+      repository: local
     - name: salmon/salmon_index
       repository: local
       

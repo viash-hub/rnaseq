@@ -13,7 +13,7 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --gencode true \
     --biotype gene_type \
     --salmon_index testData/reference/salmon.tar.gz \
-    -profile docker
+    # -profile docker
 
     # --prepare_tools_indices a,b,c \
     # --gene_bed "" \

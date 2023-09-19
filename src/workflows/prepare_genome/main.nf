@@ -8,7 +8,7 @@ workflow run_wf {
         | view {"Input: $it"}
 
         // decompress fasta
-        | gunzip.run(auto: [publish: true], fromState: ["input": "fasta"], toState: ["fasta_uncompressed": "output"], key: "gunzip_fasta")//, args: [output: "genome.fasta"])
+        | gunzip.run(auto: [publish: true], fromState: ["input": "fasta"], toState: ["fasta_uncompressed": "output"], key: "gunzip_fasta")
         | view {"State: $it"}
 
         // decompress gtf
@@ -29,13 +29,14 @@ workflow run_wf {
 
         // concatenate additional fasta
         | cat_additional_fasta.run(auto: [publish: true], fromState: ["fasta": "fasta_uncompressed", "gtf": "gtf_uncompressed", "additional_fasta": "additional_fasta_uncompressed", "biotype": "biotype"], toState: ["concatenated_fasta": "fasta_output", "concatenated_gtf": "gtf_output"], key: "cat_additional") 
+        | view {"State: $it"}
 
         // decompress bed file
         // | view {"State: $it"}
         // | gunzip.run(auto: [publish: true], fromState: ["input": "gene_bed"], toState: ["gene_bed_uncompressed": "output"], args: [output: "genes.bed"])
-        | view {"State: $it"}
+        // | view {"State: $it"}
 
-        // gtf to bed -> not working?
+        // gtf to bed (not working?)
         // | gtf2bed.run(auto: [publish: true], fromState: ["gtf": "concatenated_gtf"], toState: ["gene_bed_uncompressed": "bed_output"]) //, args: [bed_output: "genes.bed"])
         // | view {"State: $it"}
 
@@ -44,7 +45,7 @@ workflow run_wf {
         | view {"State: $it"}
 
         // preprocess transcripts fasta if gtf is in gencode format
-        | preprocess_transcripts_fasta.run(auto: [publish: true], fromState: ["transcript_fasta": "transcript_fasta_uncompressed"], toState: ["transcript_fasta_fixed": "fixed_fasta"], key: "transcript_fixed")
+        | preprocess_transcripts_fasta.run(auto: [publish: true], fromState: ["transcript_fasta": "transcript_fasta_uncompressed"], toState: ["transcript_fasta_fixed": "output"], key: "transcript_fixed")
         | view {"State: $it"}
 
         // filter gtf for genes in genome
@@ -67,6 +68,8 @@ workflow run_wf {
 
         // Uncompress STAR index or generate from scratch if required
         // | untar.run(auto: [publish: true], fromState: ["input": "star_index"], toState: ["star_index_uncompressed": "output"], key: "star_uncompressed")
+        | star_genomegenerate.run(auto: [publish: true], fromState: ["fasta": "fasta_uncompressed", "gtf": "filtered_gtf"], toState: ["star_index_uncompressed": "star_index"], key: "star_index_uncompressed")
+        | view {"State: $it"}
 
         // Uncompress RSEM index or generate from scratch if required
 
@@ -78,7 +81,7 @@ workflow run_wf {
         // | untar.run(auto: [publish: true], fromState: ["input": "salmon_index"], toState: ["salmon_index_uncompressed": "output"], key: "salmon_index_uncompressed")
         // | view {"State: $it"}
 
-        | salmon_index.run(auto: [publish: true], fromState: ["genome_fasta": "fasta_uncompressed", "transcript_fasta": "transcript_fasta_uncompressed"], toState: ["salmon_index_uncompressed": "output"], key: "salmon_index_uncompressed")
+        | salmon_index.run(auto: [publish: true], fromState: ["genome_fasta": "fasta_uncompressed", "transcript_fasta": "transcript_fasta_fixed"], toState: ["salmon_index_uncompressed": "salmon_index"], key: "salmon_index_uncompressed")
         | view {"State: $it"}
 
         | view {"Output: $it"}        
