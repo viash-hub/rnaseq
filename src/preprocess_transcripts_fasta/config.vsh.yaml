@@ -9,7 +9,7 @@ functionality:
       required: true
       description: Path of transcripts FASTA file
     
-    - name: "--fixed_fasta"
+    - name: "--output"
       type: file
       direction: output
       required: true
