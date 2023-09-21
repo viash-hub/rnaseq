@@ -1,0 +1,69 @@
+functionality:
+  name: "bbmap_bbsplit"
+  description: |
+    Split sequencing reads by mapping them to multiple references simultaneously.
+  arguments:
+    # Inputs
+    - name: "--id"
+      type: string
+      description: Sample ID
+    - name: "--paired"
+      type: boolean 
+      default: false
+      description: Paired fastq files or not?
+    - name: "--input"
+      type: file
+      multiple: true
+      multiple_sep: ","
+      description: Input fastq files, either one or two (paired)
+      example: sample.fastq
+    - name: "--primary_ref"
+      type: file
+      description: Primary reference FASTA
+    - name: "--bbsplit_fasta_list"
+      type: file
+      description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit.
+    - name: "--only_build_index"
+      type: boolean
+      description: true = only build index; false = mapping
+    - name: "--build"
+      type: integer
+      description: Designate index to use.  Corresponds to the number specified when building the index. If multiple references are indexed in the same directory, each needs a unique build ID.
+      default: 1
+
+    - name: "--bbsplit_index"
+      type: file
+      description: Directory with index files
+      direction: output
+    - name: "--primary_fastq"
+      type: file
+      description: Output reads that map to the primary reference
+      direction: output
+    - name: "--all_fastq"
+      type: file
+      description: All reads mapping to any of the references
+      direction: output
+    - name: "--stats"
+      type: file
+      description: Tab-delimited text file containing mapping statistics
+      direction: output
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+platforms:
+  - type: nextflow
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: | 
+          apt-get update && \
+          apt-get install -y build-essential openjdk-17-jdk wget && \
+          wget --no-check-certificate https://sourceforge.net/projects/bbmap/files/BBMap_39.01.tar.gz && \
+          tar xzf BBMap_39.01.tar.gz && \
+          cp bbmap/bbsplit.sh /usr/local/bin/bbsplit.sh
+  - type: nextflow
