@@ -23,7 +23,7 @@ functionality:
 
 platforms:
   - type: docker
-    image: ubuntu:18.04
+    image: ubuntu:22.04
     setup:
       - type: docker
         env: 
@@ -50,11 +50,11 @@ platforms:
           mkdir build && \
           cd build && \
           cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon && make && make install && \
-          apt-get update && \
+          cd && apt-get update && \
           apt-get install -y --no-install-recommends libhwloc5 && \
           rm -rf /var/lib/apt/lists/* && \
-          echo "export PATH=salmon-${SALMON_VERSION}/bin:${PATH}" > /etc/environment && \
-          echo "export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}" > /etc/environment
+          echo "export PATH=/usr/local/salmon/bin:${PATH}" > /etc/environment && \
+          echo "export LD_LIBRARY_PATH=/usr/local/salmon/lib:${LD_LIBRARY_PATH}" > /etc/environment
         # run: | 
         #   ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
         #   apt-get update && \
