@@ -113,6 +113,8 @@ functionality:
       repository: local
     - name: star/star_genomegenerate
       repository: local
+    - name: bbmap_bbsplit
+      repository: local
     - name: salmon/salmon_index
       repository: local
       

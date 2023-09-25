@@ -62,9 +62,11 @@ workflow run_wf {
         
         // untar bbsplit index, if available
         // | untar.run(auto: [publish: true], fromState: ["input": "bbsplit_index"], toState: ["bbsplit_index_uncompressed": "output"], key: "bbsplit_uncompressed")
-
+        
         // create bbsplit index, if not already availble
-        // bbmap_bbsplit.run()
+        | map { id, state -> [ id, state + [ "only_build_index": true ] ] }
+        | bbmap_bbsplit.run(auto: [publish: true], fromState: ["primary_ref": "fasta_uncompressed", "bbsplit_fasta_list": "bbsplit_fasta_list", "only_build_index": "only_build_index"], toState: ["bbsplit_index_uncompressed": "bbsplit_index"], key: "bbsplit_index_uncompressed")
+        | view {"State: $it"}
 
         // Uncompress STAR index or generate from scratch if required
         // | untar.run(auto: [publish: true], fromState: ["input": "star_index"], toState: ["star_index_uncompressed": "output"], key: "star_uncompressed")
@@ -81,7 +83,7 @@ workflow run_wf {
         // | untar.run(auto: [publish: true], fromState: ["input": "salmon_index"], toState: ["salmon_index_uncompressed": "output"], key: "salmon_index_uncompressed")
         // | view {"State: $it"}
 
-        | salmon_index.run(auto: [publish: true], fromState: ["genome_fasta": "fasta_uncompressed", "transcript_fasta": "transcript_fasta_fixed"], toState: ["salmon_index_uncompressed": "salmon_index"], key: "salmon_index_uncompressed")
+        | salmon_index.run(auto: [publish: true], fromState: ["genome_fasta": "fasta_uncompressed", "transcriptome_fasta": "transcript_fasta_fixed"], toState: ["salmon_index_uncompressed": "salmon_index"], key: "salmon_index_uncompressed")
         | view {"State: $it"}
 
         | view {"Output: $it"}        
