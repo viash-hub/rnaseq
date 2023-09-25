@@ -30,12 +30,22 @@ platforms:
     image: ubuntu:22.04
     setup:
       - type: docker
+        env: 
+          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
         run: |
           apt-get update && \
-          apt-get install -y --no-install-recommends build-essential gcc g++ make wget zlib1g-dev unzip && \
-          apt-get clean && \
+          apt-get install -y --no-install-recommends ${PACKAGES} && \
+          wget --no-check-certificate https://github.com/samtools/samtools/releases/download/1.18/samtools-1.18.tar.bz2 && \
+          tar -xjf samtools-1.18.tar.bz2 && \
+          rm samtools-1.18.tar.bz2 && \
+          cd samtools-1.18 && \
+          ./configure && \
+          make && \
+          make install && \
+          cd && \
           wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
           unzip 2.7.11a.zip && \
           cp STAR-2.7.11a/bin/Linux_x86_64_static/STAR /usr/local/bin 
+          
   - type: nextflow
  
