@@ -16,7 +16,7 @@ functionality:
       required: true
       multiple: true
       multiple_sep: ","
-      description: Input fastq files. Read 1 of paired end data
+      description: Input fastq files. 
       example: sample.fastq
     
     # Outputs
