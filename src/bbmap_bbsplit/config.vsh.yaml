@@ -30,23 +30,30 @@ functionality:
       type: integer
       description: Designate index to use.  Corresponds to the number specified when building the index. If multiple references are indexed in the same directory, each needs a unique build ID.
       default: 1
-
+    - name: "--built_bbsplit_index"
+      type: file
+      description: Directory with index files
+      
     - name: "--bbsplit_index"
       type: file
       description: Directory with index files
       direction: output
-    - name: "--primary_fastq"
+    - name: "--filtered_output"
       type: file
       description: Output reads that map to the primary reference
       direction: output
-    - name: "--all_fastq"
-      type: file
-      description: All reads mapping to any of the references
-      direction: output
-    - name: "--stats"
-      type: file
-      description: Tab-delimited text file containing mapping statistics
-      direction: output
+    # - name: "--primary_fastq"
+    #   type: file
+    #   description: Output reads that map to the primary reference
+    #   direction: output
+    # - name: "--all_fastq"
+    #   type: file
+    #   description: All reads mapping to any of the references
+    #   direction: output
+    # - name: "--stats"
+    #   type: file
+    #   description: Tab-delimited text file containing mapping statistics
+    #   direction: output
 
   resources:
     - type: bash_script
