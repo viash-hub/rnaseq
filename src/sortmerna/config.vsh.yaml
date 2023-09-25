@@ -1,0 +1,41 @@
+functionality:
+  name: "sortmerna"
+
+  description: | 
+    Local sequence alignment tool for filtering, mapping and clustering. The main application of SortMeRNA is filtering rRNA from metatranscriptomic data. SortMeRNA takes as input files of reads (fasta, fastq, fasta.gz, fastq.gz) and one or multiple rRNA database file(s), and sorts apart aligned and rejected reads into two files.
+
+  arguments:
+  - name: "--paired"
+    type: boolean
+    description: Are the reads single-end or paired-end
+  - name: "--input"
+    type: file
+    multiple: true
+    multiple_sep: ','
+    description: Input fastq
+  - name: "--ribo_database_manifest"
+    type: file
+    description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
+  - name: "--output_1"
+    type: file
+    multiple: true
+    multiple_sep: ','
+    direction: output
+    description: Filtered fastq
+  - name: "--output_2"
+    type: file
+    multiple: true
+    multiple_sep: ','
+    direction: output
+    description: Filtered fastq
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:      
+  - type: nextflow
+ 
