@@ -26,6 +26,15 @@ functionality:
           required: false
           default: auto
           description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+        - name: "--bbsplit_index"
+          type: file 
+          description: BBsplit index 
+        - name: "--bbsplit_fasta_list"
+          type: file
+          description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+        - name: "--ribo_database_manifest"
+          type: file
+          description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
 
     - name: Output
       arguments:
@@ -127,6 +136,10 @@ functionality:
     - name: qc/umitools_extract
       repository: local
     - name: qc/trimgalore
+      repository: local
+    - name: bbmap_bbsplit
+      repository: local
+    - name: sortmerna
       repository: local
   repositories:
     - name: openpipeline_modules
