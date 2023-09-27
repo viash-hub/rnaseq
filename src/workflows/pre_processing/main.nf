@@ -30,42 +30,29 @@ workflow run_wf {
     | umitools_extract.run(
       auto: [publish: true], 
       fromState: ["paired", "input", "bc_pattern"],
-      toState: ["umi_extract_output_1": "output_1"]
-      // toState: {id, output, state -> existsInDict(output, "output_2") 
-      //   ? ["fastqc_report": "fastqc_report", "bbsplit_index": "bbsplit_index", "umi_extract_output_1": output.output_1, "umi_extract_output_2": output.output_2 ]
-      //   : [ "umi_extract_output_1": output.output_1 ] }
+      toState: ["umi_extract_output": "output"]
     )
     // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ... ] ]
     | view { viewEvent(it) }
-    | map { id, state ->
-        (existsInDict(state, "umi_extract_output_2"))
-          ? [ id, state + [ "paired": true, input: [ state.umi_extract_output_1, state.umi_extract_output_2 ] ] ]
-          : [ id, state + [ "paired": false, input: [ state.umi_extract_output_1 ] ] ]
-    }
-    | view { "State: $it" }
     | trimgalore.run(
       auto: [publish: true], 
-      fromState: ["paired", "input"],
+      fromState: ["paired": "paired", "input": "umi_extract_output"],
       toState: ["trimgalore_output": "output"]
     )
     // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ..., trimgalore_output: ... ] ]
+    | view { "State: $it" }
+    | map { id, state -> [ id, state + [ "only_build_index": false ] ] }    
+    | bbmap_bbsplit.run(
+      auto: [publish: true], 
+      fromState: ["paired": "paired", "input": "trimgalore_output", "built_bbsplit_index": "bbsplit_index", "only_build_index": "only_build_index", "bbsplit_fasta_list": "bbsplit_fasta_list"],
+      toState: ["bbsplit_filtered_output": "filtered_output"]
+    )
+    // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ..., bbsplit_filtered_output: ... ] ]
     | view { viewEvent(it) }
-    // | map { id, state ->
-    //     (state.paired == true)
-    //       ? [ id, state + [ input: [ state.umi_extract_output_1, state.umi_extract_output_2 ] ] ]
-    //       : [ id, state + [ input: [ state.umi_extract_output_1 ] ] ]
-    // }
-    // | view { "State: $it" }
-    // | map { id, state -> [ id, state + [ "only_build_index": false ] ] }    
-    // | bbmap_bbsplit.run(
-    //   auto: [publish: true], 
-    //   fromState: ["paired": "paired", "input": "trimgalore_output", "built_bbsplit_index": "bbsplit_index", "only_build_index": "only_build_index", "bbsplit_fasta_list": "bbsplit_fasta_list"],
-    //   toState: ["bbsplit_filtered_output": "filtered_output"]
-    // )
     | sortmerna.run(
       auto: [publish: true], 
-      fromState: ["paired": "paired", "input": "trimgalore_output", "ribo_database_manifest": "ribo_database_manifest"],
-      toState: ["sortmerna_output_1": "output_1"]
+      fromState: ["paired": "paired", "input": "bbsplit_filtered_output", "ribo_database_manifest": "ribo_database_manifest"],
+      toState: ["sortmerna_output": "output"]
     )
     | view { "Output: $it" }
 
