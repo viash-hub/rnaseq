@@ -23,7 +23,7 @@ functionality:
 
 platforms:
   - type: docker
-    image: ubuntu:22.04
+    image: ubuntu:18.04
     setup:
       - type: docker
         env: 
@@ -55,12 +55,4 @@ platforms:
           rm -rf /var/lib/apt/lists/* && \
           echo "export PATH=/usr/local/salmon/bin:${PATH}" > /etc/environment && \
           echo "export LD_LIBRARY_PATH=/usr/local/salmon/lib:${LD_LIBRARY_PATH}" > /etc/environment
-        # run: | 
-        #   ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-        #   apt-get update && \
-        #   apt-get install -y --no-install-recommends ${PACKAGES} && \
-        #   apt-get clean && \
-        #   wget --no-check-certificate https://github.com/COMBINE-lab/salmon/releases/download/v1.10.0/salmon-1.10.0_linux_x86_64.tar.gz && \
-        #   tar xzf salmon-1.10.0_linux_x86_64.tar.gz && \
-        #   cp salmon-latest_linux_x86_64/bin/salmon /usr/bin 
   - type: nextflow  
