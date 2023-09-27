@@ -2,10 +2,9 @@
 
 set -eo pipefail
 
-# IFS="," read -ra input <<< "$par_input"
-# read_count="${#input[@]}"
-read1=$(find $par_input/ -iname *_1_trimmed.fq.gz*)
-read2=$(find $par_input/ -iname *_2_trimmed.fq.gz*)
+mkdir -p $par_output
+read1=$(find $par_input/ -iname primary_1*)
+read2=$(find $par_input/ -iname primary_2*)
 
 refs=()
 while IFS="," read -r path 
@@ -20,7 +19,7 @@ if [ "$par_paired" == "false" ]; then
     --aligned rRNA_reads --fastx --other non_rRNA_reads \
     # $args
 
-    mv non_rRNA_reads.f*q.gz $par_output_1
+    mv non_rRNA_reads.f*q.gz "$par_output/non_rRNA_reads.f*q.gz"
     # mv rRNA_reads.log ${par_id}.sortmerna.log
 else   
     sortmerna $refs \
@@ -30,7 +29,7 @@ else
     --other non_rRNA_reads --paired_in --out2 
     # $args 
     
-    mv non_rRNA_reads_fwd.f*q.gz ${par_output_1}
-    mv non_rRNA_reads_rev.f*q.gz ${par_output_2}
+    mv non_rRNA_reads_fwd.f*q.gz $par_output/non_rRNA_reads_1.fq.gz
+    mv non_rRNA_reads_rev.f*q.gz $par_output/non_rRNA_reads_2.fq.gz
     # mv rRNA_reads.log ${par_id}.sortmerna.log
 fi
