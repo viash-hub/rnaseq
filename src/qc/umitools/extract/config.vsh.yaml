@@ -26,16 +26,16 @@ functionality:
       multiple_sep: ","
     
     # Outputs
-    - name: "--output_1"
+    - name: "--output"
       type: file
       required: true
-      description: Output file for read 1.
+      description: Directory containing output files.
       direction: output
-    - name: "--output_2"
-      type: file
-      required: false
-      description: Output file for read 2.
-      direction: output
+    # - name: "--output_2"
+    #   type: file
+    #   required: false
+    #   description: Output file for read 2.
+    #   direction: output
 
     # Optional arguments
     - name: "--umitools_extract_method"

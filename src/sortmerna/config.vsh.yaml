@@ -10,23 +10,13 @@ functionality:
     description: Are the reads single-end or paired-end
   - name: "--input"
     type: file
-    # multiple: true
-    # multiple_sep: ','
     description: Input fastq
   - name: "--ribo_database_manifest"
     type: file
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
   
-  - name: "--output_1"
+  - name: "--output"
     type: file
-    multiple: true
-    multiple_sep: ','
-    direction: output
-    description: Filtered fastq
-  - name: "--output_2"
-    type: file
-    multiple: true
-    multiple_sep: ','
     direction: output
     description: Filtered fastq
 

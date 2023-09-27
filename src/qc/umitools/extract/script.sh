@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eo pipefail
-# mkdir -p $par_output
+mkdir -p $par_output
 
 IFS="," read -ra input <<< "$par_input"
 IFS="," read -ra pattern <<< "$par_bc_pattern"
@@ -16,8 +16,8 @@ if [ "$par_paired" == "true" ]; then
         exit 1
     else
         umi_tools extract -I "${input[0]}" --read2-in="${input[1]}" \
-        -S "$par_output_1" \
-        --read2-out="$par_output_2" \
+        -S "$par_output/umi_extracted_${input[0]}" \
+        --read2-out="$par_output/umi_extracted_${input[1]}" \
         --extract-method $par_umitools_extract_method \
         --bc-pattern "${pattern[0]}" \
         --bc-pattern2 "${pattern[1]}" \
@@ -29,7 +29,7 @@ else
         echo "Single end input requires one read file and one UMI pattern"
         exit 1
     else
-        umi_tools extract -I "${input[0]}" -S "$par_output_1" \
+        umi_tools extract -I "${input[0]}" -S "$par_output/umi_extracted_${input[0]}" \
         --extract-method $par_umitools_extract_method \
         --bc-pattern "${pattern[0]}" \
         --umi-separator $par_umitools_umi_separator 

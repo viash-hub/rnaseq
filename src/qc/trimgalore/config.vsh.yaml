@@ -14,8 +14,6 @@ functionality:
     - name: "--input"
       type: file
       required: true
-      multiple: true
-      multiple_sep: ","
       description: Input fastq files. 
       example: sample.fastq
     

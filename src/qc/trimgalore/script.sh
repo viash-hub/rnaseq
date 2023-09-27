@@ -3,24 +3,12 @@
 set -eo pipefail
 
 mkdir -p $par_output
-IFS="," read -ra input <<< "$par_input"
 
-count="${#input[@]}"
+read1=$(find $par_input/ -iname *_1.f*q*)
+read2=$(find $par_input/ -iname *_2.f*q*)
 
 if [ "$par_paired" == "true" ]; then
-    echo "Paired - $count"
-    if [ "$count" -ne 2 ]; then
-        echo "Paired end input requires two files"
-        exit 1
-    else
-        trim_galore $par_extra_trimgalore_args --paired --gzip "${input[*]}" -o $par_output
-    fi
+    trim_galore $par_extra_trimgalore_args --paired --gzip $read1 $read2 -o $par_output
 else
-    echo "Not Paired - $count"
-    if [ "$count" -ne 1 ]; then
-        echo "Single end input requires one file"
-        exit 1
-    else
-        trim_galore $par_extra_trimgalore_args --gzip $par_input -o $par_output
-    fi
+    trim_galore $par_extra_trimgalore_args --gzip $read1 -o $par_output
 fi 
