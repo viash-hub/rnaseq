@@ -1,0 +1,124 @@
+functionality:
+  name: "star_align"
+  namespace: "star"
+
+  description: | 
+    Align reads to a reference genome using STAR
+ 
+  arguments:
+  - name: "--paired"
+    type: boolean 
+    required: false
+    default: false
+    description: Paired fastq files or not?
+  - name: "--input"
+    type: file
+    required: true
+    multiple: true
+    multiple_sep: ","
+    description: Input fastq files. 
+    example: sample.fastq
+  - name: "--gtf"
+    type: file
+    description: GTF file
+  - name: "--star_index"
+    type: file
+    description: STAR index directory.
+  - name: "--star_ignore_sjdbgtf"
+    type: boolean
+    description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
+  - name: "--seq_platform"
+    type: string
+    description: Sequencing platform.
+  - name: "--seq_center"
+    type: string
+    description: sequencing center.
+  - name: "--extra_star_align_args"
+    type: string
+    default: ''
+    description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+
+  # - name: "--bam"
+  #   type: file
+  #   description: Output BAM file containing read alignments
+  #   example: sample.bam
+  # - name: "--log_final"
+  #   type: file
+  #   description: STAR final log file
+  #   example: "*Log.final.out"
+  # - name: "--log_out"
+  #   type: file
+  #   description: STAR lot out file
+  #   example: sampleLog.out
+  # - name: "--log_progress"
+  #   type: file
+  #   description: STAR log progress file
+  #   example: sampleLog.progress.out
+  # - name: "--versions"
+  #   type: file
+  #   description: File containing software versions
+  #   example: versions.yml
+  # - name: "--bam_sorted"
+  #   type: file
+  #   description: Sorted BAM file of read alignments (optional)
+  #   example: sortedByCoord.out.bam
+  # - name: "--bam_transcript"
+  #   type: file
+  #   description: Output BAM file of transcriptome alignment (optional)
+  #   example: toTranscriptome.out.bam
+  # - name: "--bam_unsorted"
+  #   type: file
+  #   description: Unsorted BAM file of read alignments (optional)
+  #   example: Aligned.unsort.out.bam
+  # - name: "--fastq"
+  #   type: file
+  #   description: Unmapped FastQ files (optional)
+  #   example: fastq.gz
+  # - name: "--tab"
+  #   type: file
+  #   description: STAR output tab file(s) (optional)
+  #   example: sample.tab
+  # - name: "--junction"
+  #   type: file
+  #   description: STAR chimeric junction output file (optional)
+  #   example: sample.out.junction
+  # - name: "--wig"
+  #   type: file
+  #   description: STAR output wiggle format file(s) (optional)
+  #   example: sample.wig
+  # - name: "--bedgraph"
+  #   type: file
+  #   description: STAR output bedGraph format file(s) (optional)
+  #   example: sample.bg
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        env: 
+          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
+        run: |
+          apt-get update && \
+          apt-get install -y --no-install-recommends ${PACKAGES} && \
+          wget --no-check-certificate https://github.com/samtools/samtools/releases/download/1.18/samtools-1.18.tar.bz2 && \
+          tar -xjf samtools-1.18.tar.bz2 && \
+          rm samtools-1.18.tar.bz2 && \
+          cd samtools-1.18 && \
+          ./configure && \
+          make && \
+          make install && \
+          cd && \
+          wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
+          unzip 2.7.11a.zip && \
+          cp STAR-2.7.11a/bin/Linux_x86_64_static/STAR /usr/local/bin 
+          
+  - type: nextflow
+ 
