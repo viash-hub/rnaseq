@@ -1,6 +1,5 @@
 functionality:
   name: "trimgalore"
-  namespace: "qc"
   description: |
     A wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files. See https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ for more infomration.
 

@@ -1,9 +1,10 @@
 functionality:
   name: "umitools_extract"
-  namespace: "qc"
+  namespace: "umitools"
   description: |
     UMI-tools contains tools for dealing with Unique Molecular Identifiers (UMIs)/Random Molecular Tags (RMTs) and single cell RNA-Seq cell barcodes. See https://umi-tools.readthedocs.io/en/latest/ for more information.
     This component flexible removes UMI sequences from fastq reads. UMIs are removed and appended to the read name.
+    This component extracts UMI barcode from a read and add it to the read name, leaving any sample barcode in place
   arguments:
     # Inputs
     - name: "--paired"
