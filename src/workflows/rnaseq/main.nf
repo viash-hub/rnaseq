@@ -13,37 +13,37 @@ workflow run_wf {
     | map { id, state ->
          (existsInDict(state, "fastq_2"))
            ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
-           : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ] }
+           : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ] 
+    }
     | view { viewEvent(it) }
     | map { id, state ->
          (state.gencode)
            ? [ id, state + [ "biotype": "gene_type" ] ]
-           : [ id, state + [ "biotype": state.featurecounts_group_type ] ] }
-    | view { viewEvent(it) }
-    
+           : [ id, state + [ "biotype": state.featurecounts_group_type ] ] 
+    }
+        
     // create list "prepareToolIndices"
     
     // prepare all the necessary files for reference genome
-    // | prepare_genome.run (auto: [publish: true],
-    //     fromState: ["fasta", "gtf", "additional_fasta", "transcript_fasta", "gencode", "biotype"],
-    //     toState: ["fasta": "concatenated_fasta", "gtf": "filtered_gtf"]
-    // )
-    // | prepare_genome.run (
-    //     fromState: ["fasta", "gtf", 'gff', "additional_fasta", "transcript_fasta", "gene_bed", "splicesites", "bbsplit_fasta_list", "star_index", "rsem_index", "salmon_index", "hisat2_index", "bbsplit_index", "gencode", "biotype", "prepareToolIndices"],
-    //     toState: ["fasta": "uncompressed_fasta", "gtf", "fai", "gene_bed", "transcript_fasta", "chrom_sizes", "splicesites". "bbsplit_index", "star_index", "rsem_index", "hisat2_index", "salmon_index" ]
-    // )
-
-    // | pre_processing.run()
+    | prepare_genome ( 
+        auto: [publish: true], 
+        fromState: ["fasta": "fasta", "gtf": "gtf", "additional_fasta": "additional_fasta", "transcript_fasta": "transcript_fasta", "bbsplit_fasta_list": "bbsplit_fasta_list", "gencode": "gencode", "biotype": "biotype"],
+        toState: ["fasta": "uncompressed_fasta", "gtf": "filtered_gtf", "transcript_fasta": "transcript_fasta_fixed", "fai": "fai", "chrom_sizes": "sizes", "bbsplit_index": "bbsplit_index_uncompressed", "star_index": "star_index_uncompressed", "salmon_index": "salmon_index_uncompressed"]
+    )
     // | view { viewEvent(it) }
-    // | genome_alignment.run()
+    // | pre_processing.run ( 
+    //     auto: [publish: true]
+    // )
     // | view { viewEvent(it) }
-    // | pseudo_alignment.run()
+    // | genome_alignment_and_quant.run(auto: [publish: true])
+    // | view { viewEvent(it) }
+    // | pseudo_alignment_and_quant.run()
     // | view { viewEvent(it) }
     // | post_processing.run()
     // | view { viewEvent(it) }
     // | final_qc.run()
     // | view { viewEvent(it) }
-    // | view { "Output: $it" }
+    | view { "Output: $it" }
 
   emit:
     output_ch

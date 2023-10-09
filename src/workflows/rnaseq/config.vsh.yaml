@@ -215,10 +215,10 @@ functionality:
   dependencies:
     - name: workflows/prepare_genome
       repository: local
-  #   - name: qc/fastqc
-  #     repository: local
-  #   - name: qc/umitools_extract
-  #     repository: local
+    - name: workflows/pre_processing
+      repository: local
+    - name: workflows/genome_alignment_and_quant
+      repository: local
   #   - name: qc/trimgalore
   #     repository: local
   repositories:

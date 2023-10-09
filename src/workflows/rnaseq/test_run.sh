@@ -16,19 +16,14 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --gtf testData/reference/genes.gtf.gz \
   --additional_fasta testData/reference/gfp.fa.gz \
   --transcript_fasta testData/reference/transcriptome.fasta \
-  --gencode
-  # -profile docker \
-  # -resume
-
+  --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
+  --gencode \
+  -profile docker \
+  -resume
   # --gff testData/reference/genes.gff.gz \
-  # --additional_fasta testData/reference/gfp.fa.gz \
-  # --transcript_fasta testData/reference/transcriptome.fasta \
-  # --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
   # --rsem_index testData/reference/rsem.tar.gz \
   # --salmon_index testData/reference/salmon.tar.gz \
   # --hisat2_index testData/reference/hisat2.tar.gz \
-  # --gencode true \
-  # --biotype gene_type \
 
 # Test paired-end data
 # cat > testData/test/sample_sheet.csv << HERE
@@ -41,5 +36,13 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
 #   --publish_dir "testData/paired_end_test" \
 #   --umitools_bc_pattern "NNNN" \
 #   --umitools_bc_pattern2 "NNNN" \
+#   --fasta testData/reference/genome.fasta \
+#   --gtf testData/reference/genes.gtf.gz \
+#   --additional_fasta testData/reference/gfp.fa.gz \
+#   --transcript_fasta testData/reference/transcriptome.fasta \
+#   --additional_fasta testData/reference/gfp.fa.gz \
+#   --transcript_fasta testData/reference/transcriptome.fasta \
+#   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
+#   --gencode \
 #   -profile docker \
 #   -resume
