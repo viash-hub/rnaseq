@@ -1,5 +1,7 @@
 functionality:
   name: "samtools_flagstat"
+  namespace: "samtools"
+
   description: |
     Counts the number of alignments in a BAM file for each FLAG type
   arguments:

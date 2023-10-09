@@ -1,5 +1,7 @@
 functionality:
   name: "samtools_sort"
+  namespace: "samtools"
+
   description: |
     Sort BAM file.
   arguments:

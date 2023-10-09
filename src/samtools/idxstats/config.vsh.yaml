@@ -1,5 +1,7 @@
 functionality:
   name: "samtools_idxstats"
+  namespace: "samtools"
+
   description: |
     Reports alignment summary statistics for a BAM file
   arguments:

@@ -3,8 +3,6 @@
 set -eo pipefail
 
 ## VIASH START
-par_input="test_index"
-par_output="test_stats"
 meta_cpus=2
 ## VIASH END
 

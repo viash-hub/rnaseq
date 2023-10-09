@@ -37,59 +37,11 @@ functionality:
     type: string
     default: ''
     description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+  - name: "--output"
+    type: file
+    direction: output 
+    description: Path to output directory
 
-  # - name: "--bam"
-  #   type: file
-  #   description: Output BAM file containing read alignments
-  #   example: sample.bam
-  # - name: "--log_final"
-  #   type: file
-  #   description: STAR final log file
-  #   example: "*Log.final.out"
-  # - name: "--log_out"
-  #   type: file
-  #   description: STAR lot out file
-  #   example: sampleLog.out
-  # - name: "--log_progress"
-  #   type: file
-  #   description: STAR log progress file
-  #   example: sampleLog.progress.out
-  # - name: "--versions"
-  #   type: file
-  #   description: File containing software versions
-  #   example: versions.yml
-  # - name: "--bam_sorted"
-  #   type: file
-  #   description: Sorted BAM file of read alignments (optional)
-  #   example: sortedByCoord.out.bam
-  # - name: "--bam_transcript"
-  #   type: file
-  #   description: Output BAM file of transcriptome alignment (optional)
-  #   example: toTranscriptome.out.bam
-  # - name: "--bam_unsorted"
-  #   type: file
-  #   description: Unsorted BAM file of read alignments (optional)
-  #   example: Aligned.unsort.out.bam
-  # - name: "--fastq"
-  #   type: file
-  #   description: Unmapped FastQ files (optional)
-  #   example: fastq.gz
-  # - name: "--tab"
-  #   type: file
-  #   description: STAR output tab file(s) (optional)
-  #   example: sample.tab
-  # - name: "--junction"
-  #   type: file
-  #   description: STAR chimeric junction output file (optional)
-  #   example: sample.out.junction
-  # - name: "--wig"
-  #   type: file
-  #   description: STAR output wiggle format file(s) (optional)
-  #   example: sample.wig
-  # - name: "--bedgraph"
-  #   type: file
-  #   description: STAR output bedGraph format file(s) (optional)
-  #   example: sample.bg
 
   resources:
     - type: bash_script

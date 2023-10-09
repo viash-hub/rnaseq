@@ -1,5 +1,7 @@
 functionality:
   name: "samtools_index"
+  namespace: "samtools"
+
   description: |
     Index BAM file.
   arguments:

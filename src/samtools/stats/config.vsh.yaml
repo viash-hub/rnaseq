@@ -1,5 +1,7 @@
 functionality:
   name: "samtools_stats"
+  namespace: "samtools"
+
   description: |
     Produces comprehensive statistics from BAM file.
   arguments:
