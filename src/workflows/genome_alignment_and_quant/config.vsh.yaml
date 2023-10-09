@@ -1,0 +1,91 @@
+functionality:
+  name: genome_alignment_and_quant
+  namespace: workflows
+  description: |
+    A viash sub-workflow for genome alignment and quantification stage of nf-core/rnaseq pipeline.
+  
+  arguments:
+    - name: "--id"
+      required: true
+      type: string
+      description: ID of the sample.
+      example: foo
+    - name: "--fastq_1"
+      alternatives: [-i]
+      type: file
+      description: Path to the sample (or read 1 of paired end sample).
+      required: true
+      example: input.fastq.gz
+    - name: "--fastq_2"
+      type: file
+      required: false
+      description: Path to read 2 of the sample.
+    - name: "--strandedness"
+      type: string 
+      required: false
+      default: auto
+      description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+    - name: "--paired"
+      type: boolean 
+      required: false
+      default: false
+      description: Paired fastq files or not?
+    - name: "--input"
+      type: file
+      required: true
+      multiple: true
+      multiple_sep: ","
+      description: Input fastq files. 
+      example: sample.fastq
+    - name: "--gtf"
+      type: file
+      description: GTF file
+    - name: "--star_index"
+      type: file
+      description: STAR index directory.
+    - name: "--star_ignore_sjdbgtf"
+      type: boolean
+      description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
+    - name: "--seq_platform"
+      type: string
+      description: Sequencing platform.
+    - name: "--seq_center"
+      type: string
+      description: sequencing center.
+    - name: "--extra_star_align_args"
+      type: string
+      default: ''
+      description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+    - name: "--bam_csi_index"
+      type: boolean
+      default: false
+      description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
+    - name: "--umi_dedup_stats"
+      type: boolean
+      description: Generate output stats when running "umi_tools dedup".
+      default: false
+
+  resources:
+    - type: nextflow_script
+      path: main.nf
+      entrypoint: run_wf
+  dependencies:
+    - name: star/star_align
+      repository: local
+    - name: samtools/samtools_sort
+      repository: local
+    - name: samtools/samtools_index
+      repository: local
+    - name: samtools/samtools_stats
+      repository: local
+    - name: samtools/samtools_flagstat
+      repository: local
+    - name: samtools/samtools_idxstats
+      repository: local
+    - name: umitools/umitools_dedup
+      repository: local
+  repositories:
+    - name: local
+      type: local
+platforms:
+  - type: nextflow
