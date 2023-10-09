@@ -1,0 +1,42 @@
+functionality:
+  name: "umitools_dedup"
+  namespace: "umitools"
+  description: |
+    Deduplicate reads based on the mapping co-ordinate and the UMI attached to the read.
+  arguments:
+    # Inputs
+    - name: "--paired"
+      type: boolean 
+      description: Paired fastq files or not?
+    - name: "--input"
+      type: file
+      description: Input indexed BAM files
+    - name: "--get_output_stats"
+      type: boolean
+      description: Whether or not to generate output stats.
+    
+    # Outputs
+    - name: "--output"
+      type: file
+      description: Directory containing output files.
+      direction: output
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [pip]
+      - type: python
+        packages: [umi-tools]
+  - type: nextflow
+
+ 
+  
+  
