@@ -1,60 +1,85 @@
-// Note: some helper functionality is added at the end of this file
-
 workflow run_wf {
   take:
     input_ch
 
   main:
-
     output_ch = input_ch
-    | view { viewEvent(it) }
-    // Parse input channel and convert to either paired or unpaired input
-    | map { id, state ->
-        (existsInDict(state, "fastq_2"))
-          ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
-          : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ]
-    }
-    // [ id, [ paired: ..., input: ... ]]
-    | fastqc.run(
-      auto: [publish: true], 
-      fromState: ["paired", "input"],
-      toState: ["fastqc_report": "output"]
-    )
-    // [ id, [ paired: ..., input: ..., fastqc_report: ... ] ]
-    | view { viewEvent(it) }
-    | map { id, state ->
-        (existsInDict(state, "umitools_bc_pattern2"))
-          ? [ id, state + [ bc_pattern: [ state.umitools_bc_pattern, state.umitools_bc_pattern2 ] ] ]
-          : [ id, state + [ bc_pattern: [ state.umitools_bc_pattern ] ] ]
-    }
-    | umitools_extract.run(
-      auto: [publish: true], 
-      fromState: ["paired", "input", "bc_pattern"],
-      toState: ["umi_extract_output": "output"]
-    )
-    // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ... ] ]
-    | view { viewEvent(it) }
-    | trimgalore.run(
-      auto: [publish: true], 
-      fromState: ["paired": "paired", "input": "umi_extract_output"],
-      toState: ["trimgalore_output": "output"]
-    )
-    // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ..., trimgalore_output: ... ] ]
-    | view { "State: $it" }
-    | map { id, state -> [ id, state + [ "only_build_index": false ] ] }    
-    | bbmap_bbsplit.run(
-      auto: [publish: true], 
-      fromState: ["paired": "paired", "input": "trimgalore_output", "built_bbsplit_index": "bbsplit_index", "only_build_index": "only_build_index", "bbsplit_fasta_list": "bbsplit_fasta_list"],
-      toState: ["bbsplit_filtered_output": "filtered_output"]
-    )
-    // [ id, [ paired: ..., input: ..., fastqc_report: ..., umi_extract_output: ..., bbsplit_filtered_output: ... ] ]
-    | view { viewEvent(it) }
-    | sortmerna.run(
-      auto: [publish: true], 
-      fromState: ["paired": "paired", "input": "bbsplit_filtered_output", "ribo_database_manifest": "ribo_database_manifest"],
-      toState: ["sortmerna_output": "output"]
-    )
-    | view { "Output: $it" }
+
+      // Check whether input is paired or not
+      | map { id, state ->
+        def input = state.fastq_2 ? 
+          [ state.fastq_1, state.fastq_2 ] :
+          [ state.fastq_1 ]
+        [ id, state + [ paired = input.size() == 2, input: input] ]
+      }
+
+      // perform QC on input fastq files
+      //   input format: [ id, [ paired: ..., input: ... ]]
+      | fastqc.run(
+        auto: [publish: true], 
+        fromState: ["paired", "input"],
+        toState: ["fastqc_report": "output"]
+      )
+
+      // extract UMIs from fastq files
+      //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ... ] ]
+      | umitools_extract.run(
+        auto: [publish: true], 
+        fromState: { id, state ->
+          def bc_pattern = state.umitools_bc_pattern2 ? 
+            [ state.umitools_bc_pattern, state.umitools_bc_pattern2 ] :
+            [ state.umitools_bc_pattern ]
+          [
+            paired: state.paired,
+            input: state.input,
+            bc_pattern: bc_pattern
+          ]
+        },
+        toState: ["output": "output"]
+      )
+
+      // trim reads
+      //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+      | trimgalore.run(
+        auto: [publish: true], 
+        fromState: ["paired": "paired", "input": "output"],
+        toState: ["trimgalore_output": "output"]
+      )
+
+      // filter out rRNA reads
+      //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+      | bbmap_bbsplit.run(
+        auto: [publish: true], 
+        fromState: [
+          "paired": "paired",
+          "input": "output",
+          "built_bbsplit_index": "bbsplit_index",
+          "bbsplit_fasta_list": "bbsplit_fasta_list"
+        ],
+        args: ["only_build_index": false]
+        toState: ["output": "output"]
+      )
+
+      // sort reads by rRNA and non-rRNA?
+      //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+      | sortmerna.run(
+        // example of skip argument
+        // runIf: { id, state -> !state.skip_sort}
+        auto: [publish: true], 
+        fromState: [
+          "paired": "paired",
+          "input": "output",
+          "ribo_database_manifest": "ribo_database_manifest"
+        ],
+        toState: ["output": "output"]
+      )
+
+      // Clean up state such that the state only contains arguments
+      // with `direction: output` in the viash config
+      | setState([
+        "output": "output", 
+        "output_fastqc": "fastqc_report"
+      ])
 
   emit:
     output_ch
