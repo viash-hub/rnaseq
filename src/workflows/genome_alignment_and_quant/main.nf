@@ -50,6 +50,32 @@ workflow run_wf {
         fromState: ["paired": "paired", "input": "star_alignment_indexed"],
         toState: ["umitools_deduped": "output"]
     )
+    | samtools_index.run (
+        auto: [publish: true],
+        fromState: ["input": "umitools_deduped", "bam_csi_index": "bam_csi_index"],
+        toState: ["umitools_deduped_indexed": "output"]
+    )
+    | samtools_stats.run (
+        auto: [publish: true],
+        fromState: ["input": "star_alignment_indexed"],
+        toState: ["umitools_deduped_stats": "output"]
+    )
+    | samtools_flagstat.run (
+        auto: [publish: true],
+        fromState: ["input": "umitools_deduped_indexed"],
+        toState: ["umitools_deduped_flagstat": "output"]
+    )
+    | samtools_idxstats.run(
+        auto: [publish: true],
+        fromState: ["input": "umitools_deduped_indexed"],
+        toState: ["umitools_deduped_stats": "output"]
+    )
+    | view { viewEvent(it) }
+    | umitools_dedup.run (
+        auto: [publish: true],
+        fromState: ["input": "umitools_deduped_indexed"],
+        toState: ["umitools_deduped": "output"]
+    )
     | view { "Output: $it" }
 
   emit:
