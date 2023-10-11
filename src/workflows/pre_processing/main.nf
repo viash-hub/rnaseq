@@ -9,11 +9,11 @@ workflow run_wf {
     output_ch = input_ch
     | view { viewEvent(it) }
     // Parse input channel and convert to either paired or unpaired input
-    // | map { id, state ->
-    //     (existsInDict(state, "fastq_2"))
-    //       ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
-    //       : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ]
-    // }
+    | map { id, state ->
+        (existsInDict(state, "fastq_2"))
+          ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
+          : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ]
+    }
     // [ id, [ paired: ..., input: ... ]]
     | fastqc.run(
       auto: [publish: true], 

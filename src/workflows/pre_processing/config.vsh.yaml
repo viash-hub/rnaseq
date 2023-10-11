@@ -133,7 +133,7 @@ functionality:
   dependencies:
     - name: fastqc
       repository: local
-    - name: umitools_extract
+    - name: umitools/umitools_extract
       repository: local
     - name: trimgalore
       repository: local
