@@ -42,88 +42,97 @@ functionality:
           type: file
           description: Path to output directory
           required: true
+        - name: "--output_fastqc"
+          type: file
+          description: Path to the FastQC output directory
+          required: false
   
-  arguments:
-  # Extra pipeline options:
-    - name: "--skip_qc"
-      type: boolean
-      description: Skip QC steps of the workflow.
+    # use --skip_qc or remove
+    - name: "Extra pipeline options"
+      arguments:
+        - name: "--skip_qc"
+          type: boolean
+          description: Skip QC steps of the workflow.
 
-  # FastQC option
-    - name: "--skip_fastqc"
-      type: boolean
-      description: Skip FatQC step.
-      default: false
+    # use --skip_fastqc or remove
+    - name: "FastQC options"
+      arguments:
+      - name: "--skip_fastqc"
+        type: boolean
+        description: Skip FatQC step.
+        default: false
   
-  # UMI-tools options
-    - name: "--with_umi"
-      type: boolean
-      description: Enable UMI-based read deduplication.
-      default: true
-    - name: "--skip_umi_extract"
-      type: boolean
-      description: Skip umi_tools extract step.
-      default: false
-    - name: "--umitools_extract_method"
-      type: string
-      description: UMI pattern to use.
-      default: string
-      choices: [string, regex]
-    - name: "--umitools_bc_pattern"
-      type: string
-      description: The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI.
-      required: true
-    - name: "--umitools_bc_pattern2"
-      type: string
-      description: The UMI barcode pattern to use if the UMI is located in read 2.
-      default: ""
-    - name: "--umi_discard_read"
-      type: integer
-      description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-      choices: [0, 1, 2]
-      default: 0
-    - name: "--umitools_umi_separator"
-      type: string
-      description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
-      default: "_"
-    - name: "--umitools_grouping_method"
-      type: string
-      description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
-      choices: [ "unique", "percentile", "cluster", "adjacency", "directional" ]
-      default: "directional"
-    - name: "--save_umi_intermeds"
-      type: boolean
-      description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.
-      default: false
-    - name: "umi_dedup_stats"
-      type: boolean
-      description: Generate output stats when running "umi_tools dedup".
-      default: false
+    - name: "UMI-tools options"
+      arguments:
+        - name: "--with_umi"
+          type: boolean
+          description: Enable UMI-based read deduplication.
+          default: true
+        - name: "--skip_umi_extract"
+          type: boolean
+          description: Skip umi_tools extract step.
+          default: false
+        - name: "--umitools_extract_method"
+          type: string
+          description: UMI pattern to use.
+          default: string
+          choices: [string, regex]
+        - name: "--umitools_bc_pattern"
+          type: string
+          description: The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI.
+          required: true
+        - name: "--umitools_bc_pattern2"
+          type: string
+          description: The UMI barcode pattern to use if the UMI is located in read 2.
+          default: ""
+        - name: "--umi_discard_read"
+          type: integer
+          description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
+          choices: [0, 1, 2]
+          default: 0
+        - name: "--umitools_umi_separator"
+          type: string
+          description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
+          default: "_"
+        - name: "--umitools_grouping_method"
+          type: string
+          description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
+          choices: [ "unique", "percentile", "cluster", "adjacency", "directional" ]
+          default: "directional"
+        - name: "--save_umi_intermeds"
+          type: boolean
+          description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.
+          default: false
+        - name: "umi_dedup_stats"
+          type: boolean
+          description: Generate output stats when running "umi_tools dedup".
+          default: false
   
-  # Read trimming options
-    - name: "--trimmer"
-      type: string
-      description: Specify the trimming tool to use.
-      choices: [ "trimgalore", "fastp"]
-      default: "trimgalore"
-    - name: "--extra_trimgalore_args"
-      type: string
-      description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-    - name: "--extra_fastp_args"
-      type: string
-      description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
-    - name: "--min_trimmed_reads"
-      type: integer
-      description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
-      default: 10000
-    - name: "--skip_trimming"
-      type: boolean
-      description: Skip the adapter trimming step.
-      default: false
-    - name: "--save_trimmed"
-      type: boolean
-      description: Save the trimmed FastQ files in the results directory.
-      default: false
+    - name: "Read trimming options"
+      arguments:
+        - name: "--trimmer"
+          type: string
+          description: Specify the trimming tool to use.
+          choices: [ "trimgalore", "fastp"]
+          default: "trimgalore"
+        - name: "--extra_trimgalore_args"
+          type: string
+          description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
+        - name: "--extra_fastp_args"
+          type: string
+          description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
+        - name: "--min_trimmed_reads"
+          type: integer
+          description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
+          default: 10000
+        - name: "--skip_trimming"
+          type: boolean
+          description: Skip the adapter trimming step.
+          default: false
+        - name: "--save_trimmed"
+          type: boolean
+          description: Save the trimmed FastQ files in the results directory.
+          default: false
 
 
   resources:
@@ -132,17 +141,9 @@ functionality:
       entrypoint: run_wf
   dependencies:
     - name: fastqc
-      repository: local
     - name: umitools/umitools_extract
-      repository: local
     - name: trimgalore
-      repository: local
     - name: bbmap_bbsplit
-      repository: local
     - name: sortmerna
-      repository: local
-  repositories:
-    - name: local
-      type: local
 platforms:
   - type: nextflow
