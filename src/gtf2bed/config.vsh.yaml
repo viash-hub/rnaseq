@@ -25,13 +25,12 @@ functionality:
 platforms:
   - type: docker
     image: ubuntu:22.04
-    setup:
+    setup:   
       - type: docker
         run: | 
           apt-get update && \
-          apt-get install -y pip curl tar git && \
-          curl -fsSL https://github.com/fls-bioinformatics-core/GFFUtils/archive/refs/tags/v0.12.0.tar.gz -o GFFUtils-0.12.0.tar.gz && \
-          tar xzf GFFUtils-0.12.0.tar.gz && \
-          pip install -r ./GFFUtils-0.12.0/requirements.txt && \
-          pip install ./GFFUtils-0.12.0/
+          apt-get install -y wget tar bzip2 && \
+          wget https://github.com/bedops/bedops/releases/download/v2.4.41/bedops_linux_x86_64-v2.4.41.tar.bz2 && \
+          tar jxvf bedops_linux_x86_64-v2.4.41.tar.bz2 && \
+          cp bin/* /usr/local/bin
   - type: nextflow

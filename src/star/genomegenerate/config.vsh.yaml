@@ -31,7 +31,7 @@ platforms:
     setup:
       - type: docker
         env: 
-          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
+          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
         run: |
           apt-get update && \
           apt-get install -y --no-install-recommends ${PACKAGES} && \

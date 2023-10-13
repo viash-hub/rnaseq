@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-prefix=`echo "${par_input%%.gff*}"`
-# par_output="$prefix.gtf"
+filename="$(basename -- $par_input/*.gff)"
+mkdir -p $par_output
 
-gffread $par_input -o $par_output
+gffread $par_input -o $par_output/${filename%%.*}.gtf

@@ -2,9 +2,11 @@
 
 set -eo pipefail
 
-command="cat"
-if [ "${par_transcript_fasta##*.}" == ".gz" ]; then
-    command="zcat"
-fi
+filename="$(basename -- "$par_transcript_fasta")"
+mkdir -p $par_output
 
-$command $par_transcript_fasta | cut -d "|" -f1 > $par_output
+if [ ${filename##*.} == "gz" ]; then
+    zcat $par_transcript_fasta/$filename | cut -d "|" -f1 > $par_output/${filename%.*}
+else 
+    cat $par_transcript_fasta/$filename | cut -d "|" -f1 > $par_output/$filename
+fi

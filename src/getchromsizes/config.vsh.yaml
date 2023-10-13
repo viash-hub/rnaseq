@@ -9,9 +9,6 @@ functionality:
     description: Genome fasta files
   
   # output
-  # - name: meta
-  #   type: string
-  #   description: Map containing sample information e.g. [ id:'test', single_end:false ]
   - name: "--sizes"
     type: file
     direction: output

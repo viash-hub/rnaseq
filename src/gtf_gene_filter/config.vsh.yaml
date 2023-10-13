@@ -19,8 +19,8 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
-    - type: python_script
-      path: filter_gtf_for_genes_in_genome.py
+    # copied from https://github.com/nf-core/rnaseq/blob/master/bin/filter_gtf_for_genes_in_genome.py
+    - path: filter_gtf_for_genes_in_genome.py
   test_resources:
     - type: bash_script
       path: test.sh
