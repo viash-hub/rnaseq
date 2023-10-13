@@ -20,7 +20,7 @@ wget https://raw.githubusercontent.com/nf-core/rnaseq/3.12.0/assets/rrna-db-defa
 
 cd $CURR
 
-NEWDEST1="testData/reference/rRNA"
+NEWDEST1="$CURR/testData/reference/rRNA"
 mkdir -p $NEWDEST1
 cd $NEWDEST1
 for LINE in `cat ../rrna-db-defaults.txt`
@@ -30,7 +30,7 @@ done
 cd $CURR
 find $NEWDEST1 -type f > $DEST/rrna-db-defaults.txt
 
-NEWDEST2="testData/reference/bbsplit_fasta"
+NEWDEST2="$CURR/testData/reference/bbsplit_fasta"
 mkdir -p $NEWDEST2
 while IFS=, read -r -a line; do
     url="${line[1]}"
