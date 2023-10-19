@@ -1,5 +1,10 @@
 functionality:
   name: "gunzip"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/gunzip/main.nf, modules/nf-core/gunzip/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Compress or decompress a file or list of files.
 

@@ -1,5 +1,10 @@
 functionality:
   name: "cat_additional_fasta"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/cat_additional_fasta.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
   description: |
     Concatenate addional fasta file to reference FASTA and GTF files.
 

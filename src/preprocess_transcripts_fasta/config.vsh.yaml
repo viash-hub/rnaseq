@@ -1,5 +1,10 @@
 functionality:
   name: "preprocess_transcripts_fasta"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/preprocess_transcripts_fasta_gencode.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
   description: |
     Process transcripts FASTA if GTF file is GENOCODE format
 

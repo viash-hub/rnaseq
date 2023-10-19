@@ -1,6 +1,11 @@
 functionality:
   name: "rsem_prepare_reference"
   namespace: "rsem"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/rsem/preparereference/main.nf, modules/nf-core/rsem/preparereference/meta.yml]
+      last_sha: 92b2a7857de1dda9d1c19a088941fc81e2976ff7
 
   description: | 
     Prepare a reference genome for RSEM.

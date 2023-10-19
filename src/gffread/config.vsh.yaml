@@ -1,5 +1,10 @@
 functionality:
   name: "gffread"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/gffread/main.nf, modules/nf-core/gffread/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Validate, filter, convert and perform various other operations on GFF files.
 
