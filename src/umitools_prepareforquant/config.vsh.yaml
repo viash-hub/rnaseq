@@ -1,0 +1,32 @@
+functionality:
+  name: "umitools_prepareforquant"
+  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+
+  arguments: 
+    - name: "--bam"
+      type: file
+    - name: "--output"
+      type: file
+      direction: output
+    - name: "--log"
+      type: file
+      direction: output
+
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/prepare-for-rsem.py
+    - path: prepare-for-rsem.py
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [pip]
+      - type: python
+  - type: nextflow
