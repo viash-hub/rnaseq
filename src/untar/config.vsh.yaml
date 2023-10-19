@@ -1,5 +1,10 @@
 functionality:
   name: "untar"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/untar/main.nf, modules/nf-core/untar/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Extract tar.gz files.
 

@@ -38,14 +38,14 @@ functionality:
 
     - name: Output
       arguments:
-        - name: "--output"
+        - name: "--qc_output"
           type: file
+          direction: output
           description: Path to output directory
-          required: true
-        - name: "--output_fastqc"
+        - name: "--fastqc_report"
           type: file
+          direction: output
           description: Path to the FastQC output directory
-          required: false
   
     # use --skip_qc or remove
     - name: "Extra pipeline options"
@@ -133,17 +133,25 @@ functionality:
           type: boolean
           description: Save the trimmed FastQ files in the results directory.
           default: false
-
+    
+    - name: "Alignment options"
+      arguments:
+        - name: "--extra_salmon_quant_args"
+          type: string
+          default: ''
+          description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
 
   resources:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
+  
   dependencies:
     - name: fastqc
     - name: umitools/umitools_extract
     - name: trimgalore
     - name: bbmap_bbsplit
     - name: sortmerna
+
 platforms:
   - type: nextflow

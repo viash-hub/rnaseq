@@ -19,5 +19,4 @@ else
     stats=""
 fi
 
-
-PYTHONHASHSEED=0 umi_tools dedup -I $par_input/*.bam -S $par_output/deduplicated.bam $stats $paired $args
+PYTHONHASHSEED=0 umi_tools dedup -I $par_input/*.bam -S "$par_output/${par_id}_deduplicated_aligned.bam" $stats $paired $args

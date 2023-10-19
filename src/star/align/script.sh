@@ -9,7 +9,7 @@ IFS="," read -ra input <<< "$par_input"
 if $star_ignore_sjdbgtf; then
     ignore_gtf='' 
 else
-    ignore_gtf="--sjdbGTFfile $gtf"
+    ignore_gtf="--sjdbGTFfile $par_gtf/*"
 fi
 
 if $par_seq_platform; then
@@ -43,7 +43,13 @@ else
 fi
 
 mkdir -p $par_output
+mkdir -p $par_star_align_bam
+mkdir -p $par_star_align_bam_transcriptome
+
 STAR --genomeDir $par_star_index --readFilesIn $input --runThreadN $meta_cpus --outFileNamePrefix $par_output/ $out_sam_type $ignore_gtf $attrRG $par_extra_star_align_args
+
+cp "$par_output/Aligned.out.bam" "$par_star_align_bam/aligned.genome.bam"
+cp "$par_output/Aligned.toTranscriptome.out.bam" "$par_star_align_bam_transcriptome/aligned.transcriptome.bam"
 
 $mv_unsorted_bam
 

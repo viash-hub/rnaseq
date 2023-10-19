@@ -30,16 +30,19 @@ functionality:
       required: false
       default: false
       description: Paired fastq files or not?
-    - name: "--input"
-      type: file
-      required: true
-      multiple: true
-      multiple_sep: ","
-      description: Input fastq files. 
-      example: sample.fastq
+    # - name: "--input"
+    #   type: file
+    #   required: true
+    #   multiple: true
+    #   multiple_sep: ","
+    #   description: Input fastq files. 
+    #   example: sample.fastq
     - name: "--gtf"
       type: file
       description: GTF file
+    - name: "--transcript_fasta"
+      type: file
+      description: Fasta file of the reference transcriptome.
     - name: "--star_index"
       type: file
       description: STAR index directory.
@@ -64,28 +67,29 @@ functionality:
       type: boolean
       description: Generate output stats when running "umi_tools dedup".
       default: false
+    - name: "--salmon_quant_libtype"
+      type: string
+      description: Override Salmon library type inferred based on strandedness defined in meta object.
+    - name: "--extra_salmon_quant_args"
+      type: string
+      default: ''
+      description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
 
   resources:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
+  
   dependencies:
     - name: star/star_align
-      repository: local
     - name: samtools/samtools_sort
-      repository: local
     - name: samtools/samtools_index
-      repository: local
     - name: samtools/samtools_stats
-      repository: local
     - name: samtools/samtools_flagstat
-      repository: local
     - name: samtools/samtools_idxstats
-      repository: local
     - name: umitools/umitools_dedup
-      repository: local
-  repositories:
-    - name: local
-      type: local
+    - name: umitools_prepareforquant
+    - name: salmon/salmon_quant
+
 platforms:
   - type: nextflow

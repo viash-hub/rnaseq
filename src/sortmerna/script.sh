@@ -23,7 +23,7 @@ if [ "$par_paired" == "false" ]; then
     # mv rRNA_reads.log ${par_id}.sortmerna.log
 else   
     sortmerna $refs \
-    --reads "$read1" --reads "$read2" \
+    --reads $read1 --reads $read2 \
     --threads $meta_cpus --workdir . \
     --aligned rRNA_reads --fastx \
     --other non_rRNA_reads --paired_in --out2 

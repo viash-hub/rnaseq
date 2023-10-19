@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bin/viash ns build --setup cb
+viash ns build --setup cb
 
 # nextflow run target/nextflow/workflows/pre_processing/main.nf \
 #   --id SRR6357070_1 \
@@ -21,9 +21,9 @@ bin/viash ns build --setup cb
 #   --publish_dir "testData/single_end_test" \
 #   --umitools_bc_pattern "NNNN" \
 #   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-#   --fasta testData/reference/genome.fasta \
-#   --bbsplit_index testData/test_output/ref.bbsplit_index_uncompressed.bbsplit_index \
-#   --ribo_database_manifest testData/reference/rrna-db-defaults.txt
+#   --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
+#   --bbsplit_index testData/test_output/ref.prepare_genome.bbsplit_index_uncompressed \
+#   --ribo_database_manifest testData/reference/rrna-db-defaults.txt 
 
 # Test paired-end data
 cat > testData/test/sample_sheet.csv << HERE
@@ -37,8 +37,8 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --umitools_bc_pattern "NNNN" \
   --umitools_bc_pattern2 "NNNN" \
   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-  --fasta testData/reference/genome.fasta \
-  --bbsplit_index testData/test_output/ref.bbsplit_index_uncompressed.bbsplit_index \
-  --ribo_database_manifest testData/reference/rrna-db-defaults.txt
-#   -profile docker \
+  --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
+  --bbsplit_index testData/test_output/ref.prepare_genome.bbsplit_index_uncompressed \
+  --ribo_database_manifest testData/reference/rrna-db-defaults.txt \
+  # -profile docker \
 #   -resume

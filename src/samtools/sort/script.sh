@@ -6,4 +6,6 @@ set -eo pipefail
 meta_cpus=2
 ## VIASH END
 
-samtools sort -@ $meta_cpus -o $par_output $par_input/*d.out.bam
+mkdir -p $par_output
+filename="$(basename -- $par_input/*.bam)"
+samtools sort -@ $meta_cpus -o $par_output/sorted_$filename $par_input/$filename

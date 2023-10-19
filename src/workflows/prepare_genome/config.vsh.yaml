@@ -115,32 +115,17 @@ functionality:
       
   dependencies:
     - name: gunzip
-      repository: local
     - name: gffread
-      repository: local
     - name: cat_additional_fasta
-      repository: local
     - name: gtf2bed
-      repository: local
     - name: preprocess_transcripts_fasta
-      repository: local
     - name: gtf_gene_filter
-      repository: local
     - name: rsem/rsem_prepare_reference
-      repository: local
     - name: getchromsize
-      repository: local
     - name: untar
-      repository: local
     - name: star/star_genomegenerate
-      repository: local
     - name: bbmap_bbsplit
-      repository: local
     - name: salmon/salmon_index
-      repository: local
-      
-  repositories:
-    - name: local
-      type: local
+
 platforms:
   - type: nextflow

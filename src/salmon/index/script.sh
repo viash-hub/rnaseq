@@ -6,7 +6,7 @@ set -eo pipefail
 meta_cpus=8
 ## VIASH END
 
-filename="$(basename -- "$par_genome_fasta")"
+filename="$(basename -- $par_genome_fasta/*)"
 
 grep '^>' $par_genome_fasta/$filename | cut -d ' ' -f 1 > decoys.txt
 gentrome="gentrome.fa"

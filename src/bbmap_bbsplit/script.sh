@@ -3,8 +3,9 @@
 set -eo pipefail
 
 avail_mem=3072
-
-filename="$(basename -- $par_primary_ref/*)"
+if $par_only_build_index; then
+    filename="$(basename -- $par_primary_ref/*)"
+fi 
 
 other_refs=()
 while IFS="," read -r name path 

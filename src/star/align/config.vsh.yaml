@@ -41,6 +41,14 @@ functionality:
     type: file
     direction: output 
     description: Path to output directory
+  - name: "--star_align_bam"
+    type: file
+    direction: output 
+  - name: "--star_align_bam_transcriptome"
+    type: file
+    direction: output 
+  
+
 
 
   resources:
