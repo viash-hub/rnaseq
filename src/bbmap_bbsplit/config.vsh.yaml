@@ -38,10 +38,25 @@ functionality:
       type: file
       description: Directory with index files
       direction: output
-    - name: "--filtered_output"
+    
+    # Output
+    # - name: "--filtered_output"
+    #   type: file
+    #   description: Directory containing output reads that map to the different references
+    #   direction: output
+    - name: "--fastq_1"
       type: file
-      description: Directory containing output reads that map to the different references
+      required: false
+      description: Output file for read 1.
       direction: output
+      default: $id.$key.read1.fq.gz
+    - name: "--fastq_2"
+      type: file
+      required: false
+      must_exist: false
+      description: Output file for read 2.
+      direction: output
+      default: $id.$key.read2.fq.gz
 
   resources:
     - type: bash_script

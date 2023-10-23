@@ -2,6 +2,10 @@
 
 set -eo pipefail
 
+function clean_up {
+    rm -rf "$tmpdir"
+}
+
 avail_mem=3072
 if $par_only_build_index; then
     filename="$(basename -- $par_primary_ref/*)"
@@ -21,7 +25,8 @@ if $par_only_build_index; then
         echo "ERROR: Please specify as input a primary fasta file along with names and paths to non-primary fasta files."
     fi
 else
-    mkdir -p $par_filtered_output
+    IFS="," read -ra input <<< "$par_input"
+    tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
     index_files=''
     if [ -d "$par_built_bbsplit_index" ]; then
     index_files="path=$par_built_bbsplit_index"
@@ -31,14 +36,15 @@ else
         echo "ERROR: Please either specify a BBSplit index as input or a primary fasta file along with names and paths to non-primary fasta files."
     fi
     if $par_paired; then
-        read1=$(find $par_input/ -iname *_1*.fq.gz*)
-        read2=$(find $par_input/ -iname *_2*.fq.gz*)
-        fastq_in="in=$read1 in2=$read2"
-        fastq_out="basename=${par_filtered_output}/%_#.fastq.gz"
+        bbsplit.sh -Xmx${avail_mem}M $index_files threads=$meta_cpus in=${input[0]} in2=${input[1]} basename=${tmpdir}/%_#.fastq.gz refstats=bbsplit_stats.txt
+        read1=$(find $tmpdir/ -iname primary_1*)
+        read2=$(find $tmpdir/ -iname primary_2*)
+        cp $read1 $par_fastq_1
+        cp $read2 $par_fastq_2
     else
-        read1=$(find $par_input/ -iname *trimmed.fq.gz*)
-        fastq_in="in=$read1"
-        fastq_out="basename=${par_filtered_output}/%.fastq.gz"
+        bbsplit.sh -Xmx${avail_mem}M $index_files threads=$meta_cpus in=${input[0]} basename=${tmpdir}/%.fastq.gz refstats=bbsplit_stats.txt
+        read1=$(find $tmpdir/ -iname primary*)
+        cp $read1 $par_fastq_1
     fi
-    bbsplit.sh -Xmx${avail_mem}M $index_files threads=$meta_cpus $fastq_in $fastq_out refstats=bbsplit_stats.txt
+    trap clean_up EXIT 
 fi

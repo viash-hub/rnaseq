@@ -15,14 +15,29 @@ functionality:
       required: true
       description: Input fastq files. 
       example: sample.fastq
+      multiple: true
+      multiple_sep: ","
     
     # Outputs
-    - name: "--output"
-      alternatives: [ "-o" ]
+    # - name: "--output"
+    #   alternatives: [ "-o" ]
+    #   type: file
+    #   required: true
+    #   description: Output directory to write reports to.
+    #   direction: output
+    - name: "--fastq_1"
       type: file
       required: true
-      description: Output directory to write reports to.
+      description: Output file for read 1.
       direction: output
+      default: $id.$key.read1.fq.gz
+    - name: "--fastq_2"
+      type: file
+      required: false
+      must_exist: false
+      description: Output file for read 2.
+      direction: output
+      default: $id.$key.read2.fq.gz
 
     # Optional arguments
     - name: "--extra_trimgalore_args"

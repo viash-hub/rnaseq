@@ -6,8 +6,6 @@ workflow run_wf {
   main:
     output_ch = input_ch
 
-    | view {"Input: $it"}
-
     // Check whether input is paired or not
     | map { id, state ->
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
@@ -17,69 +15,71 @@ workflow run_wf {
 
     // perform QC on input fastq files
     //   input format: [ id, [ paired: ..., input: ... ]]
-    | fastqc.run(
+    | fastqc.run (
       fromState: ["paired", "input"],
       toState: ["fastqc_report": "output"]
     )
 
     // extract UMIs from fastq files
-    //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ... ] ]
+    // input format: [ id, [ paired: ..., input: ..., fastqc_report: ... ] ]
     | map { id, state ->
       def bc_pattern = state.umitools_bc_pattern2 ? [ state.umitools_bc_pattern, state.umitools_bc_pattern2 ] : [ state.umitools_bc_pattern ] 
       [ id, state + [bc_pattern: bc_pattern] ] }
-    | view {"State: $it"}
 
-    | umitools_extract.run(
+    | umitools_extract.run (
+      runIf: {id, state -> state.with_umi},
       fromState: [ "paired": "paired", "input": "input", "bc_pattern": "bc_pattern" ],
-      toState: ["output": "output", "fastq_1": "fastq_1", "fastq_2": "fastq_2"]
+      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
     )
-    | view {"State: $it"}
 
     // trim reads
-    //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    // | map { id, state ->
-    //       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-    //       [ id, state + [input: input] ]
-    // }
-    | trimgalore.run(
-      fromState: ["paired": "paired", "input": "output"],
-      toState: ["output": "output"]
+    // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+    | map { id, state ->
+      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+      [ id, state + [input: input] ] }
+    | trimgalore.run (
+      fromState: ["paired": "paired", "input": "input"],
+      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
     )
-    | view {"State: $it"}
 
     // filter out rRNA reads
-    //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    | bbmap_bbsplit.run(
+    // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+    | map { id, state ->
+      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+      [ id, state + [input: input] ] }
+    | bbmap_bbsplit.run (
       fromState: [
         "paired": "paired",
-        "input": "output",
+        "input": "input",
         "built_bbsplit_index": "bbsplit_index",
         "bbsplit_fasta_list": "bbsplit_fasta_list"
       ],
       args: ["only_build_index": false], 
-      toState: ["output": "filtered_output"]
+      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
     )
-    | view {"State: $it"}
 
-    // // sort reads by rRNA and non-rRNA?
-    // //   input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    | sortmerna.run(
+    // sort reads by rRNA and non-rRNA?
+    // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
+    | map { id, state ->
+      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+      [ id, state + [input: input] ] }
+    | sortmerna.run (
       // example of skip argument
       // runIf: { id, state -> !state.skip_sort}
       fromState: [
         "paired": "paired",
-        "input": "output",
+        "input": "input",
         "ribo_database_manifest": "ribo_database_manifest"
       ],
-      toState: ["output": "output"]
+      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
     )
-    | view {"State: $it"}
 
     // Clean up state such that the state only contains arguments
     // with `direction: output` in the viash config
     | setState ( 
         [ "fastqc_report": "fastqc_report", 
-        "qc_output": "output" ] )
+        "qc_output1": "fastq_1",
+        "qc_output2": "fastq_2" ] )
 
   emit:
     output_ch
@@ -146,3 +146,5 @@ workflow run_wf {
 // def existsInDict(dict, key) {
 //   return dict.containsKey(key) && dict[key] != ""
 // }
+
+// def getInput()

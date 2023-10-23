@@ -1,7 +1,12 @@
 #!/bin/bash
 
 set -eo pipefail
-mkdir -p $par_output
+
+function clean_up {
+    rm -rf "$tmpdir"
+}
+
+tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
 IFS="," read -ra input <<< "$par_input"
 IFS="," read -ra pattern <<< "$par_bc_pattern"
@@ -18,14 +23,14 @@ if [ "$par_paired" == "true" ]; then
         read1="$(basename -- ${input[0]})"
         read2="$(basename -- ${input[1]})"
         umi_tools extract -I "${input[0]}" --read2-in="${input[1]}" \
-        -S "$par_output/$read1" \
-        --read2-out="$par_output/$read2" \
+        -S "$tmpdir/$read1" \
+        --read2-out="$tmpdir/$read2" \
         --extract-method $par_umitools_extract_method \
         --bc-pattern "${pattern[0]}" \
         --bc-pattern2 "${pattern[1]}" \
         --umi-separator $par_umitools_umi_separator
-        cp $par_output/$read1 $par_fastq_1
-        cp $par_output/$read2 $par_fastq_2
+        cp $tmpdir/$read1 $par_fastq_1
+        cp $tmpdir/$read2 $par_fastq_2
     fi
 else
     echo "Not Paired - $read_count"
@@ -34,10 +39,12 @@ else
         exit 1
     else
         read1="$(basename -- ${input[0]})"
-        umi_tools extract -I "${input[0]}" -S "$par_output/$read1" \
+        umi_tools extract -I "${input[0]}" -S "$tmpdir/$read1" \
         --extract-method $par_umitools_extract_method \
         --bc-pattern "${pattern[0]}" \
         --umi-separator $par_umitools_umi_separator 
-        cp $par_output/$read1 $par_fastq_1
+        cp $tmpdir/$read1 $par_fastq_1
     fi
 fi
+
+trap clean_up EXIT 

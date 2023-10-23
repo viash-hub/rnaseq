@@ -5,6 +5,7 @@ functionality:
     UMI-tools contains tools for dealing with Unique Molecular Identifiers (UMIs)/Random Molecular Tags (RMTs) and single cell RNA-Seq cell barcodes. See https://umi-tools.readthedocs.io/en/latest/ for more information.
     This component flexible removes UMI sequences from fastq reads. UMIs are removed and appended to the read name.
     This component extracts UMI barcode from a read and add it to the read name, leaving any sample barcode in place
+  
   arguments:
     # Inputs
     - name: "--paired"
@@ -27,16 +28,24 @@ functionality:
       multiple_sep: ","
     
     # Outputs
-    - name: "--output"
+    # - name: "--output"
+    #   type: file
+    #   required: true
+    #   description: Directory containing output files.
+    #   direction: output
+    - name: "--fastq_1"
       type: file
       required: true
-      description: Directory containing output files.
+      description: Output file for read 1.
       direction: output
-    # - name: "--output_2"
-    #   type: file
-    #   required: false
-    #   description: Output file for read 2.
-    #   direction: output
+      default: $id.$key.read1.fq.gz
+    - name: "--fastq_2"
+      type: file
+      required: false
+      must_exist: false
+      description: Output file for read 2.
+      direction: output
+      default: $id.$key.read2.fq.gz
 
     # Optional arguments
     - name: "--umitools_extract_method"
@@ -48,15 +57,15 @@ functionality:
       type: string
       default: "_"
       description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
-    # - name: "--umitools_grouping_method"
-    #   type: string
-    #   description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
-    #   default: "directional"
-    #   choices: ["unique", "percentile", "cluster", "adjacency", "directional"]
-    # - name: "--umi_discard_read"
-    #   type: integer
-    #   description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-    #   choices: [1, 2]
+    - name: "--umitools_grouping_method"
+      type: string
+      description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
+      default: "directional"
+      choices: ["unique", "percentile", "cluster", "adjacency", "directional"]
+    - name: "--umi_discard_read"
+      type: integer
+      description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
+      choices: [1, 2]
     - name: "--save_umi_intermeds"
       type: boolean
       description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.

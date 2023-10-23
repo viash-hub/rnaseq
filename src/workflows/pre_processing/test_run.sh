@@ -1,6 +1,6 @@
 #!/bin/bash
 
-viash ns build --setup cb
+viash ns build --parallel --setup cb
 
 # nextflow run target/nextflow/workflows/pre_processing/main.nf \
 #   --id SRR6357070_1 \
@@ -14,6 +14,7 @@ viash ns build --setup cb
 # cat > testData/test/sample_sheet.csv << HERE
 # id,fastq_1
 # SRR6357070_1,SRR6357070_1.fastq.gz
+# SRR6357071_1,SRR6357071_1.fastq.gz
 # HERE
 
 # nextflow run target/nextflow/workflows/pre_processing/main.nf \
@@ -29,6 +30,7 @@ viash ns build --setup cb
 cat > testData/test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
+SRR6357071,SRR6357071_1.fastq.gz,SRR6357071_2.fastq.gz
 HERE
 
 nextflow run target/nextflow/workflows/pre_processing/main.nf \

@@ -1,6 +1,10 @@
 functionality:
   name: "sortmerna"
-
+  # info:
+  #   migration_info:
+  #     git_repo: https://github.com/nf-core/rnaseq.git
+  #     paths: [modules/nf-core/gunzip/main.nf, modules/nf-core/gunzip/meta.yml]
+  #     last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: | 
     Local sequence alignment tool for filtering, mapping and clustering. The main application of SortMeRNA is filtering rRNA from metatranscriptomic data. SortMeRNA takes as input files of reads (fasta, fastq, fasta.gz, fastq.gz) and one or multiple rRNA database file(s), and sorts apart aligned and rejected reads into two files.
 
@@ -10,15 +14,30 @@ functionality:
     description: Are the reads single-end or paired-end
   - name: "--input"
     type: file
+    multiple: true
+    multiple_sep: ","
     description: Input fastq
   - name: "--ribo_database_manifest"
     type: file
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
   
-  - name: "--output"
+  # - name: "--output"
+  #   type: file
+  #   direction: output
+  #   description: Filtered fastq
+  - name: "--fastq_1"
     type: file
+    required: true
+    description: Output file for read 1.
     direction: output
-    description: Filtered fastq
+    default: $id.$key.read1.fq.gz
+  - name: "--fastq_2"
+    type: file
+    required: false
+    must_exist: false
+    description: Output file for read 2.
+    direction: output
+    default: $id.$key.read2.fq.gz
 
   resources:
     - type: bash_script
