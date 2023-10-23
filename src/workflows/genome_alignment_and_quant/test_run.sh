@@ -1,6 +1,8 @@
 #!/bin/bash
 
-bin/viash ns build --setup cb
+viash ns build --setup cb --parallel
+
+CURR=`pwd` 
 
 # Test single-end data
 # cat > testData/test/sample_sheet.csv << HERE
@@ -11,9 +13,10 @@ bin/viash ns build --setup cb
 # nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
 #   --param_list testData/test/sample_sheet.csv \
 #   --publish_dir "testData/single_end_test" \
-#   --fasta testData/reference/genome.fasta \
-#   --gtf testData/test_output/ref.gtf_gene_filter.filtered_gtf \
-#   --star_index testData/test_output/ref.star_index_uncompressed.star_index \
+#   --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
+#   --gtf testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf \
+#   --star_index testData/test_output/ref.prepare_genome.star_index_uncompressed \
+#   --transcript_fasta testData/test_output/ref.prepare_genome.transcript_fasta_uncompressed.fasta \
 #   --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif" \
   # -profile docker \
   # -resume
@@ -21,15 +24,18 @@ bin/viash ns build --setup cb
 # Test paired-end data
 cat > testData/test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
-SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
+SRR6357070,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read1.fq.gz
+SRR6357071,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read1.fq.gz
 HERE
 
 nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --param_list testData/test/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
-  --fasta testData/reference/genome.fasta \
-  --gtf testData/test_output/ref.gtf_gene_filter.filtered_gtf \
-  --star_index testData/test_output/ref.star_index_uncompressed.star_index \
+  --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
+  --gtf testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf \
+  --star_index testData/test_output/ref.prepare_genome.star_index_uncompressed \
+  --transcript_fasta testData/test_output/ref.prepare_genome.transcript_fasta_uncompressed.fasta \
   --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif" \
+  # --umi_dedup_stats true
   # -profile docker \
   # -resume

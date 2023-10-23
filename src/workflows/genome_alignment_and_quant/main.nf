@@ -8,74 +8,207 @@ workflow run_wf {
     output_ch = input_ch
     | view {"Input: $it"}
     | map { id, state ->
-         (existsInDict(state, "fastq_2"))
-           ? [ id, state + [ "paired": true, "input": [ state.fastq_1, state.fastq_2 ] ] ]
-           : [ id, state + [ "paired": false, "input": [ state.fastq_1 ] ] ] 
+      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+      def paired = input.size() == 2
+      [ id, state + [paired: paired, input: input] ]
     }
-    | view { viewEvent(it) }
     | star_align.run (
         auto: [publish: true],
-        fromState: ["paired", "input", "gtf", "star_index", "extra_star_align_args"],
-        toState: ["star_alignment": "output"]
+        fromState: [
+          "paired", "input", 
+          "gtf", "star_index", 
+          "extra_star_align_args" ],
+        toState: [
+          "star_alignment": "output", 
+          "genome_bam": "star_align_bam", 
+          "transcriptome_bam": "star_align_bam_transcriptome" ]
     )
-    | view { viewEvent(it) }
+
+    // GENOME BAM
     | samtools_sort.run (
         auto: [publish: true],
-        fromState: ["input": "star_alignment"],
-        toState: ["star_alignment_sorted": "output"]
+        fromState: ["input": "genome_bam"],
+        toState: ["genome_bam_sorted": "output"],
+        key: "genome_bam_sort"
     )
     | samtools_index.run (
         auto: [publish: true],
-        fromState: ["input": "star_alignment_sorted", "bam_csi_index": "bam_csi_index"],
-        toState: ["star_alignment_indexed": "output"]
+        fromState: [ 
+          "input": "genome_bam_sorted", 
+          "bam_csi_index": "bam_csi_index" ],
+        toState: ["genome_bam_indexed": "output"],
+        key: "genome_bam_index"
     )
     | samtools_stats.run (
         auto: [publish: true],
-        fromState: ["input": "star_alignment_indexed"],
-        toState: ["star_alignment_stats": "output"]
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_bam_stats": "output"],
+        key: "genome_bam_stats"
     )
     | samtools_flagstat.run (
         auto: [publish: true],
-        fromState: ["input": "star_alignment_indexed"],
-        toState: ["star_alignment_flagstat": "output"]
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_bam_flagstat": "output"],
+        key: "genome_bam_flagstat"
     )
     | samtools_idxstats.run(
         auto: [publish: true],
-        fromState: ["input": "star_alignment_indexed"],
-        toState: ["star_alignment_stats": "output"]
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_bam_stats": "output"],
+        key: "genome_bam_idxstats"
     )
-    | view { viewEvent(it) }
-    | umitools_dedup.run (
+
+    // TRANSCRIPTOME BAM
+    | samtools_sort.run (
         auto: [publish: true],
-        fromState: ["paired": "paired", "input": "star_alignment_indexed"],
-        toState: ["umitools_deduped": "output"]
+        fromState: ["input": "transcriptome_bam"],
+        toState: ["transcriptome_bam_sorted": "output"],
+        key: "transcriptome_bam_sort"
     )
     | samtools_index.run (
         auto: [publish: true],
-        fromState: ["input": "umitools_deduped", "bam_csi_index": "bam_csi_index"],
-        toState: ["umitools_deduped_indexed": "output"]
+        fromState: [
+          "input": "transcriptome_bam_sorted", 
+          "bam_csi_index": "bam_csi_index" ],
+        toState: ["transcriptome_bam_indexed": "output"],
+        key: "transcriptome_bam_index", 
+        debug: true
     )
     | samtools_stats.run (
         auto: [publish: true],
-        fromState: ["input": "star_alignment_indexed"],
-        toState: ["umitools_deduped_stats": "output"]
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_bam_stats": "output"],
+        key: "transcriptome_bam_stats"
     )
     | samtools_flagstat.run (
         auto: [publish: true],
-        fromState: ["input": "umitools_deduped_indexed"],
-        toState: ["umitools_deduped_flagstat": "output"]
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_bam_flagstat": "output"],
+        key: "transcriptome_bam_flagstat"
     )
     | samtools_idxstats.run(
         auto: [publish: true],
-        fromState: ["input": "umitools_deduped_indexed"],
-        toState: ["umitools_deduped_stats": "output"]
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_bam_stats": "output"],
+        key: "transcriptome_bam_idxstats"
     )
-    | view { viewEvent(it) }
+    
+    // Remove duplicate reads from BAM file based on UMIs
+
+    // Deduplicate genome BAM file
+    | umitools_dedup.run ( 
+        runIf: {id, state -> state.with_umi},
+        auto: [publish: true],
+        fromState: ["paired": "paired", "id": "id", "input": "genome_bam_indexed", "get_output_stats": "umi_dedup_stats"],
+        toState: ["umitools_genome_deduped": "output"],
+        key: "genome_dedup", 
+        debug: true
+    )
+    | samtools_index.run (
+        runIf: {id, state -> state.with_umi},
+        auto: [publish: true],
+        fromState: ["input": "umitools_genome_deduped", "bam_csi_index": "bam_csi_index"],
+        toState: ["genome_bam_indexed": "output"],
+        key: "genome_deduped_index"
+    )
+    | samtools_stats.run (
+        runIf: {id, state -> state.with_umi},
+        auto: [publish: true],
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_deduped_stats": "output"],
+        key: "genome_deduped_stats"
+    )
+    | samtools_flagstat.run (
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_deduped_flagstat": "output"],
+        key: "genome_deduped_flagstat"
+    )
+    | samtools_idxstats.run(
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: ["input": "genome_bam_indexed"],
+        toState: ["genome_deduped_stats": "output"],
+        key: "genome_deduped_idxstats"
+    )
+    
+    // Deduplicate transcriptome BAM file
     | umitools_dedup.run (
         auto: [publish: true],
-        fromState: ["input": "umitools_deduped_indexed"],
-        toState: ["umitools_deduped": "output"]
+        runIf: {id, state -> state.with_umi},
+        fromState: [
+          "paired": "paired", 
+          "id": "id", 
+          "input": "transcriptome_bam_indexed", 
+          "get_output_stats": "umi_dedup_stats"],
+        toState: ["umitools_transcriptome_deduped": "output"],
+        key: "transcriptome_dedup", 
+        debug: true
     )
+    | samtools_index.run (
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: [
+          "input": "umitools_transcriptome_deduped", 
+          "bam_csi_index": "bam_csi_index"],
+        toState: ["transcriptome_bam_indexed": "output"],
+        key: "transcriptome_deduped_index"
+    )
+    | samtools_stats.run (
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_deduped_stats": "output"],
+        key: "transcriptome_deduped_stats"
+    )
+    | samtools_flagstat.run (
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_deduped_flagstat": "output"],
+        key: "transcriptome_deduped_flagstat"
+    )
+    | samtools_idxstats.run(
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi},
+        fromState: ["input": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_deduped_stats": "output"],
+        key: "transcriptome_deduped_idxstats"
+    )
+
+    // Fix paired-end reads in name sorted BAM file
+    | umitools_prepareforquant.run (
+        auto: [publish: true],
+        runIf: {id, state -> state.with_umi && state.paired},
+        fromState: ["bam": "transcriptome_bam_indexed"],
+        toState: ["transcriptome_deduped_indexed": "output"]
+    )
+
+    // Count reads from BAM alignments using Salmon
+    | salmon_quant.run ( 
+        auto: [publish: true],
+        fromState: [
+          "paired": "paired", 
+          "strandedness": "strandedness", 
+          "input": "transcriptome_bam_indexed", 
+          "transcript_fasta": "transcript_fasta", 
+          "gtf": "gtf", 
+          "star_index": "star_index"],
+        args: ["alignment_mode": true],
+        toState: ["salmon_quant_output": "output"]
+    )
+    | salmon_tx2gene.run (
+        auto: [publish: true],
+        fromState: [ 
+          "salmon_quant_results": "salmon_quant_output", 
+          "gtf_extra_attributes": "gtf_extra_attributes", 
+          "gtf": "gtf", 
+          "gtf_group_features": "gtf_group_features"],
+        toState: ["salmon_tx2gene_tsv": "tsv"]
+    )
+
+
     | view { "Output: $it" }
 
   emit:
@@ -112,34 +245,4 @@ workflow test_wf {
         // ...
       }
   
-}
-
-// Parse a general Channel event to:
-// - render proper Paths
-// Modified because `rootDir` is not defined here by default
-def parseEvent(root) {
-  if (root instanceof List) {
-    root.collect{ parseEvent(it) }
-  } else if (root instanceof Map) {
-    root.collectEntries{ [ (it.key): parseEvent(it.value) ] }
-  } else {
-    root.toString()
-  } 
-}
-
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.DumperOptions
-
-// Function to be used in Nextflow's view operator
-def viewEvent(element) {
-  dumperOptions = new DumperOptions()
-  dumperOptions.setPrettyFlow(true)
-  dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-  Yaml yaml = new Yaml(dumperOptions)
-  yaml.dump(parseEvent(element))
-}
-
-// Helper function
-def existsInDict(dict, key) {
-  return dict.containsKey(key) && dict[key] != ""
 }

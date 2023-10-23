@@ -30,13 +30,6 @@ functionality:
       required: false
       default: false
       description: Paired fastq files or not?
-    # - name: "--input"
-    #   type: file
-    #   required: true
-    #   multiple: true
-    #   multiple_sep: ","
-    #   description: Input fastq files. 
-    #   example: sample.fastq
     - name: "--gtf"
       type: file
       description: GTF file
@@ -67,6 +60,10 @@ functionality:
       type: boolean
       description: Generate output stats when running "umi_tools dedup".
       default: false
+    - name: "--with_umi"
+      type: boolean
+      description: Enable UMI-based read deduplication.
+      default: false
     - name: "--salmon_quant_libtype"
       type: string
       description: Override Salmon library type inferred based on strandedness defined in meta object.
@@ -74,6 +71,14 @@ functionality:
       type: string
       default: ''
       description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+    - name: "--gtf_group_features"
+      type: string
+      default: 'gene_id'
+      description: Define the attribute type used to group features in the GTF file when running Salmon.
+    - name: "--gtf_extra_attributes"
+      type: string
+      default: 'gene_name'
+      description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
 
   resources:
     - type: nextflow_script
@@ -90,6 +95,9 @@ functionality:
     - name: umitools/umitools_dedup
     - name: umitools_prepareforquant
     - name: salmon/salmon_quant
+    - name: salmon/salmon_tx2gene
+    - name: salmon/salmon_tximport
+    - name: salmon/salmon_summarizedexperiment
 
 platforms:
   - type: nextflow
