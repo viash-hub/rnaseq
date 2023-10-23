@@ -1,21 +1,13 @@
 #!/bin/bash
 
 set -eo pipefail
-# par_paired=true
-# input="testData/paired_end_test/SRR6357070.transcriptome_deduped_index.output"
-# par_alignment_mode=true
-# par_transcript_fasta="testData/test_output/ref.prepare_genome.transcript_fasta_uncompressed.fasta"
-# par_gtf="testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf"
-# par_extra_salmon_quant_args=""
-# par_output="salmon_quant_test"
-# meta_cpus=2
 
-# IFS="," read -ra input <<< $par_input
-# if $par_paired; then
-#     input_reads="-1 ${input[0]} -2 ${input[1]}"
-# else 
-#     input_reads="-r ${input[0]}"
-# fi
+IFS="," read -ra input <<< $par_input
+if $par_paired; then
+    input_reads="-1 ${input[0]} -2 ${input[1]}"
+else 
+    input_reads="-r ${input[0]}"
+fi
 
 reference="--index $par_star_index"
 if $par_alignment_mode; then
