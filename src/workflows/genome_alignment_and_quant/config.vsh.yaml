@@ -80,6 +80,47 @@ functionality:
       default: 'gene_name'
       description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
 
+    # Output
+    - name: "--star_alignment"
+      type: file
+      direction: output
+    - name: "--genome_bam_indexed"
+      type: file
+      direction: output
+    - name: "--genome_bam_stats"
+      type: file
+      direction: output
+    - name: "--genome_bam_flagstat"
+      type: file
+      direction: output
+    - name: "--genome_bam_idxstats"
+      type: file
+      direction: output
+    - name: "--transcriptome_bam_indexed"
+      type: file
+      direction: output
+    - name: "--transcriptome_bam_stats"
+      type: file
+      direction: output
+    - name: "--transcriptome_bam_flagstat"
+      type: file
+      direction: output
+    - name: "--transcriptome_bam_idxstats"
+      type: file
+      direction: output
+    - name: "--salmon_quant_results"
+      type: file
+      direction: output
+    - name: "--salmon_tx2gene"
+      type: file
+      direction: output
+    - name: "--salmon_tximport"
+      type: file
+      direction: output
+    - name: "--salmon_summarizedexperiment"
+      type: file
+      direction: output
+
   resources:
     - type: nextflow_script
       path: main.nf
