@@ -1,0 +1,59 @@
+functionality:
+  name: "salmon_summarizedexperiment"
+  namespace: "salmon"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/salmon_summarizedexperiment.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+
+  arguments: 
+    - name: "--input"
+      type: file
+    # - name: "--counts"
+    #   type: file
+    # - name: "--tpm"
+    #   type: file
+    - name: "--tx2gene"
+      type: file
+    - name: "--rds"
+      type: file
+    - name: "--output"
+      type: file
+      direction: output
+    # - name: "--merged_gene_rds"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.merged_gene.rds
+    # - name: "--merged_gene_rds_length_scaled"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.merged_gene_length_scaled.rds
+    # - name: "--merged_gene_rds_scaled"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.merged_gene_scaled.rds
+    # - name: "--merged_transcript_rds"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.merged_transcript.rds
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_summarizedexperiment.r
+    - path: salmon_summarizedexperiment.r
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ r-base ]
+      - type: r
+        bioc: [ SummarizedExperiment ]
+  - type: nextflow

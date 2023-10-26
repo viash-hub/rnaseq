@@ -1,0 +1,63 @@
+functionality:
+  name: "salmon_tximport"
+  namespace: "salmon"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/salmon_tximport.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+
+  arguments: 
+    - name: "--salmon_quant_results"
+      type: file
+    - name: "--tx2gene_tsv"
+      type: file
+    
+    # Output
+    - name: "--output"
+      type: file
+      direction: output
+    # - name: "--tpm_gene"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.gene_tpm.tsv
+    # - name: "--counts_gene"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.gene_counts.tsv
+    # - name: "--counts_gene_length_scaled"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.gene_counts_length_scaled.tsv
+    # - name: "--counts_gene_scaled"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.gene_counts_scaled.tsv
+    # - name: "--tpm_transcript"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.transcript_tpm.tsv
+    # - name: "--counts_transcript"
+    #   type: file
+    #   direction: output
+    #   default: $id.$key.transcript_counts.tsv
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_tximport.r
+    - path: salmon_tximport.r
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ r-base ]
+      - type: r
+        bioc: [ SummarizedExperiment, tximport ]
+  - type: nextflow

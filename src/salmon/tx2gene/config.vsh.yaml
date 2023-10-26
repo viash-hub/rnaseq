@@ -1,0 +1,44 @@
+functionality:
+  name: "salmon_tx2gene"
+  namespace: "salmon"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/salmon_tx2gene.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+
+  arguments: 
+    - name: "--salmon_quant_results"
+      type: file
+    - name: "--gtf"
+      type: file
+    - name: "--gtf_extra_attributes"
+      type: string
+      default: 'gene_name'
+    - name: "--gtf_group_features"
+      type: string
+      default: 'gene_id'
+    - name: "--tsv"
+      type: file
+      direction: output
+      default: $id.salmon_tx2gene.tsv
+
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_tx2gene.py
+    - path: salmon_tx2gene.py
+  test_resources:
+    - type: bash_script
+      path: test.sh
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [pip]
+      - type: python
+  - type: nextflow
