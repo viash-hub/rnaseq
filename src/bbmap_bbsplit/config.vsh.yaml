@@ -1,5 +1,10 @@
 functionality:
   name: "bbmap_bbsplit"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/bbmap/bbsplit/main.nf, modules/nf-core/bbmap/bbsplit/meta.yml]
+      last_sha: 277bd337739a8b8f753fa7b5eda6743b9b6acb89
   description: |
     Split sequencing reads by mapping them to multiple references simultaneously.
   arguments:
@@ -39,11 +44,7 @@ functionality:
       description: Directory with index files
       direction: output
     
-    # Output
-    # - name: "--filtered_output"
-    #   type: file
-    #   description: Directory containing output reads that map to the different references
-    #   direction: output
+    # Outputs
     - name: "--fastq_1"
       type: file
       required: false

@@ -1,11 +1,11 @@
 functionality:
   name: "umitools_dedup"
   namespace: "umitools"
-  # info:
-  #   migration_info:
-  #     git_repo: https://github.com/nf-core/rnaseq.git
-  #     paths: [modules/nf-core/gunzip/main.nf, modules/nf-core/gunzip/meta.yml]
-  #     last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/umitools/dedup/main.nf, modules/nf-core/umitools/dedup/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Deduplicate reads based on the mapping co-ordinate and the UMI attached to the read.
   

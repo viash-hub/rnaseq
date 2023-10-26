@@ -1,5 +1,10 @@
 functionality:
   name: "trimgalore"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/trimgalore/main.nf, modules/nf-core/trimgalore/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     A wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files. See https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ for more infomration.
 

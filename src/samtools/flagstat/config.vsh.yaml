@@ -1,6 +1,11 @@
 functionality:
   name: "samtools_flagstat"
   namespace: "samtools"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/samtools/flagstat/main.nf, modules/nf-core/samtools/flagstat/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
 
   description: |
     Counts the number of alignments in a BAM file for each FLAG type

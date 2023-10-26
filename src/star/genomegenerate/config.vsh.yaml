@@ -1,6 +1,11 @@
 functionality:
   name: "star_genomegenerate"
   namespace: "star"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/star/genomegenerate/main.nf, modules/nf-core/star/genomegenerate/meta.yml]
+      last_sha: 92b2a7857de1dda9d1c19a088941fc81e2976ff7
 
   description: | 
     Create index for STAR

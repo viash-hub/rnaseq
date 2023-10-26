@@ -1,6 +1,11 @@
 functionality:
   name: "samtools_sort"
   namespace: "samtools"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/samtools/sort/main.nf, modules/nf-core/samtools/sort/meta.yml]
+      last_sha: 88280ca1e495f0e1f0ec014635799c784f1f0ca3
 
   description: |
     Sort BAM file.

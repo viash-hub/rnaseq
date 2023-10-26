@@ -1,6 +1,11 @@
 functionality:
   name: salmon_index
   namespace: salmon
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/salmon/index/main.nf, modules/nf-core/salmon/index/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: | 
     Create Salmon index.
   

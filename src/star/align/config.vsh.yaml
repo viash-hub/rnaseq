@@ -1,6 +1,11 @@
 functionality:
   name: "star_align"
   namespace: "star"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/star/align/main.nf, modules/nf-core/star/align/meta.yml]
+      last_sha: 55398de6ab7577acfe9b1180016a93d7af7eb859
 
   description: | 
     Align reads to a reference genome using STAR
