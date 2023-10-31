@@ -9,7 +9,6 @@ functionality:
       type: file
       description: Path to FASTA genome file.
       required: true
-      example: genome.fasta
     - name: "--gtf"
       type: file
       description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
@@ -67,22 +66,24 @@ functionality:
     - name: "--fasta_uncompressed"
       type: file
       direction: output
+      # default: $id.$key.genome.fasta
     - name: "--gtf_uncompressed"
       type: file
       direction: output
-      example: genes.gtf
+      # default: $id.$key.genes.fasta
     - name: "--transcript_fasta_uncompressed"
       type: file
       direction: output
-      example: transcript.fasta
+      # default: $id.$key.transcript.fasta
     - name: "--gene_bed_uncompressed"
       type: file
       direction: output
-      example: genes.bed
+      # default: $id.$key.genes.bed
     - name: "--star_index_uncompressed"
       type: file
       direction: output
       description: Path to STAR index.
+      # default: $id.$key.star_index
     # - name: "--rsem_index_uncompressed"
     #   type: file
     #   direction: output
@@ -91,6 +92,7 @@ functionality:
       type: file
       direction: output
       description: Path to Salmon index.
+      # default: $id.$key.salmon_index
     # - name: "--hisat2_index_uncompressed"
     #   type: file
     #   direction: output
@@ -99,14 +101,17 @@ functionality:
       type: file
       direction: output
       description: Path to BBSplit index.
+      # default: $id.$key.bbsplit_index
     - name: "--chrom_sizes"
       type: file
       direction: output
       description: File containing chromosome lengths
+      # default: $id.$key.genome.fasta.sizes
     - name: "--fai"
       type: file
       description: FASTA index file
       direction: output
+      # default: $id.$key.genome.fasta.fai
 
   resources:
     - type: nextflow_script

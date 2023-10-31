@@ -40,7 +40,8 @@ workflow run_wf {
         | gunzip.run (
             runIf: {id, state -> state.additional_fasta}, 
             fromState: ["input": "additional_fasta"], 
-            toState: ["additional_fasta": "output"], key: "gunzip_additional_fasta" 
+            toState: ["additional_fasta": "output"], 
+            key: "gunzip_additional_fasta" 
         )
 
         // concatenate additional fasta
@@ -69,7 +70,7 @@ workflow run_wf {
         | gtf2bed.run (
             runIf: { id, state -> !state.gene_bed}, 
             fromState: ["gtf": "gtf"], 
-            toState: ["gene_bed": "bed_output"] 
+            toState: ["gene_bed": "bed_output"]
         ) 
 
         // decompress transcript fasta
@@ -175,6 +176,7 @@ workflow run_wf {
             [ "fasta_uncompressed": "fasta", 
             "gtf_uncompressed": "gtf", 
             "transcript_fasta_uncompressed": "transcript_fasta", 
+            "gene_bed_uncompressed": "gene_bed",
             "star_index_uncompressed": "star_index", 
             "salmon_index_uncompressed": "salmon_index", 
             "bbsplit_index_uncompressed": "bbsplit_index", 

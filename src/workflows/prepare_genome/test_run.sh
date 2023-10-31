@@ -1,6 +1,6 @@
 #!/bin/bash
 
-viash ns build --setup cb
+viash ns build --setup cb --parallel
 
 nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --id ref \
@@ -11,9 +11,9 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --transcript_fasta testData/reference/transcriptome.fasta \
     --gencode true \
     --biotype gene_type \
-    --salmon_index testData/reference/salmon.tar.gz \
     --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-    -profile docker \
+    --salmon_index testData/reference/salmon.tar.gz \
+    # -profile docker \ 
     # -resume
     # --gff testData/reference/genes.gff.gz \
     # --prepare_tools_indices a,b,c \
