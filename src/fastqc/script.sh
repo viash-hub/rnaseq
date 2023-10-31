@@ -5,9 +5,9 @@ set -eo pipefail
 mkdir -p $par_output 
 
 IFS="," read -ra input <<< $par_input
-
 count=${#input[@]}
-if [ "$par_paired" == true ]; then
+
+if $par_paired; then
   echo "Paired - $count"
   if [ $count -ne 2 ]; then
     echo "Paired end input requires two files"

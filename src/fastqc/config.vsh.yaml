@@ -15,7 +15,6 @@ functionality:
       default: false
       description: Paired fastq files or not?
     - name: "--input"
-      alternatives: [ "-i" ]
       type: file
       required: true
       multiple: true
@@ -23,7 +22,6 @@ functionality:
       description: Input fastq files, either one or two (paired)
       example: sample.fastq
     - name: "--output"
-      alternatives: [ "-o" ]
       type: file
       direction: output
       description: Output directory to write reports to.
