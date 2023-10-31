@@ -13,13 +13,13 @@ functionality:
     - name: "--input"
       type: file 
       required: true
-      description: directory to the bam file to calculate statistics of
+      description: bam file to calculate statistics of
     
     - name: "--output"
       type: file
       direction: output
       required: true
-      description: directory for output of bam statistics report (txt)
+      description: directory for output of bam statistics report
 
   resources:
     - type: bash_script
