@@ -5,73 +5,83 @@ workflow run_wf {
 
   main:
     output_ch = input_ch
-
-    // Check whether input is paired or not
+    
     | map { id, state ->
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
       def paired = input.size() == 2
       [ id, state + [paired: paired, input: input] ]
     }
-
     // perform QC on input fastq files
     //   input format: [ id, [ paired: ..., input: ... ]]
     | fastqc.run (
-      fromState: ["paired", "input"],
+      fromState: [ 
+        "paired": "paired",
+        "input": "input" 
+      ],
       toState: ["fastqc_report": "output"]
     )
 
     // extract UMIs from fastq files
     // input format: [ id, [ paired: ..., input: ..., fastqc_report: ... ] ]
-    | map { id, state ->
-      def bc_pattern = state.umitools_bc_pattern2 ? [ state.umitools_bc_pattern, state.umitools_bc_pattern2 ] : [ state.umitools_bc_pattern ] 
-      [ id, state + [bc_pattern: bc_pattern] ] }
-
     | umitools_extract.run (
       runIf: {id, state -> state.with_umi},
-      fromState: [ "paired": "paired", "input": "input", "bc_pattern": "bc_pattern" ],
-      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
+      fromState: { id, state ->
+        def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        [ paired: state.paired,
+        input: state.input, 
+        bc_pattern: state.bc_pattern ]
+      },
+      toState: [
+        "fastq_1": "fastq_1", 
+        "fastq_2": "fastq_2"
+      ]
     )
 
     // trim reads
     // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    | map { id, state ->
-      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      [ id, state + [input: input] ] }
     | trimgalore.run (
-      fromState: ["paired": "paired", "input": "input"],
-      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
+      fromState: { id, state ->
+        def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        [ paired: state.paired,
+        input: state.input ]
+      },
+      toState: [
+        "fastq_1": "fastq_1", 
+        "fastq_2": "fastq_2" 
+      ]
     )
 
     // filter out rRNA reads
     // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    | map { id, state ->
-      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      [ id, state + [input: input] ] }
     | bbmap_bbsplit.run (
-      fromState: [
-        "paired": "paired",
-        "input": "input",
-        "built_bbsplit_index": "bbsplit_index",
-        "bbsplit_fasta_list": "bbsplit_fasta_list"
-      ],
+      fromState: { id, state ->
+        def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        [ paired: state.paired,
+        input: state.input,
+        built_bbsplit_index: state.bbsplit_index,
+        bbsplit_fasta_list: state.bbsplit_fasta_list ]
+      },
       args: ["only_build_index": false], 
-      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
+      toState: [
+        "fastq_1": "fastq_1", 
+        "fastq_2": "fastq_2"
+      ]
     )
 
     // sort reads by rRNA and non-rRNA?
     // input format: [ id, [ paired: ..., input: ..., fastqc_report: ..., output: ... ] ]
-    | map { id, state ->
-      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      [ id, state + [input: input] ] }
     | sortmerna.run (
       // example of skip argument
       // runIf: { id, state -> !state.skip_sort}
-      fromState: [
-        "paired": "paired",
-        "input": "input",
-        "ribo_database_manifest": "ribo_database_manifest"
-      ],
-      toState: ["fastq_1": "fastq_1", "fastq_2": "fastq_2"]
+      fromState: { id, state ->
+        def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        [ paired: state.paired,
+          input: state.input,
+          ribo_database_manifest: state.ribo_database_manifest ] 
+      },
+      toState: [
+        "fastq_1": "fastq_1", 
+        "fastq_2": "fastq_2" ] 
     )
 
     // Clean up state such that the state only contains arguments

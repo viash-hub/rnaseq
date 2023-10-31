@@ -15,10 +15,12 @@ functionality:
           type: file
           description: Path to the sample (or read 1 of paired end sample).
           required: true
+          must_exist: true
           example: input.fastq.gz
         - name: "--fastq_2"
           type: file
           required: false
+          must_exist: false
           description: Path to read 2 of the sample.
         - name: "--strandedness"
           type: string 
