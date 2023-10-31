@@ -12,22 +12,10 @@ else
     ignore_gtf="--sjdbGTFfile $par_gtf/*"
 fi
 
-if $par_seq_platform; then
-    seq_platform="PL:$par_seq_platform" 
-else
-    seq_platform=''
-fi
-
-if $par_seq_center; then
-    seq_center="CN:$par_seq_center" 
-else
-    seq_center=''
-fi
-
 if [[ $par_extra_star_align_args == *"--outSAMattrRGline"* ]]; then
     attrRG="" 
 else
-    attrRG="--outSAMattrRGline ID:$par_output $seq_center SM:$par_output $seq_platform"
+    attrRG="--outSAMattrRGline ID:$par_output CN:$seq_center SM:$par_output PL:$seq_platform"
 fi
 
 if [[ $par_extra_star_align_args == *"--outSAMtype"* ]]; then
@@ -46,10 +34,19 @@ mkdir -p $par_output
 mkdir -p $par_star_align_bam
 mkdir -p $par_star_align_bam_transcriptome
 
-STAR --genomeDir $par_star_index --readFilesIn $input --runThreadN $meta_cpus --outFileNamePrefix $par_output/ $out_sam_type $ignore_gtf $attrRG $par_extra_star_align_args
+STAR \
+    --genomeDir $par_star_index \
+    --readFilesIn $input \
+    --runThreadN $meta_cpus \
+    --outFileNamePrefix $par_output/ \
+    $out_sam_type \
+    $ignore_gtf \
+    $attrRG \
+    $par_extra_star_align_args
 
 cp "$par_output/Aligned.out.bam" "$par_star_align_bam/aligned.genome.bam"
 cp "$par_output/Aligned.toTranscriptome.out.bam" "$par_star_align_bam_transcriptome/aligned.transcriptome.bam"
+cp "$par_output/Log.final.out" "$par_log_final"
 
 $mv_unsorted_bam
 

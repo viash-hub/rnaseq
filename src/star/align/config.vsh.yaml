@@ -11,50 +11,51 @@ functionality:
     Align reads to a reference genome using STAR
  
   arguments:
-  - name: "--paired"
-    type: boolean 
-    required: false
-    default: false
-    description: Paired fastq files or not?
-  - name: "--input"
-    type: file
-    required: true
-    multiple: true
-    multiple_sep: ","
-    description: Input fastq files. 
-    example: sample.fastq
-  - name: "--gtf"
-    type: file
-    description: GTF file
-  - name: "--star_index"
-    type: file
-    description: STAR index directory.
-  - name: "--star_ignore_sjdbgtf"
-    type: boolean
-    description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
-  - name: "--seq_platform"
-    type: string
-    description: Sequencing platform.
-  - name: "--seq_center"
-    type: string
-    description: sequencing center.
-  - name: "--extra_star_align_args"
-    type: string
-    default: ''
-    description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
-  - name: "--output"
-    type: file
-    direction: output 
-    description: Path to output directory
-  - name: "--star_align_bam"
-    type: file
-    direction: output 
-  - name: "--star_align_bam_transcriptome"
-    type: file
-    direction: output 
-  
-
-
+    - name: "--paired"
+      type: boolean 
+      required: false
+      default: false
+      description: Paired fastq files or not?
+    - name: "--input"
+      type: file
+      required: true
+      multiple: true
+      multiple_sep: ","
+      description: Input fastq files. 
+      example: sample.fastq
+    - name: "--gtf"
+      type: file
+      description: GTF file
+    - name: "--star_index"
+      type: file
+      description: STAR index directory.
+    - name: "--star_ignore_sjdbgtf"
+      type: boolean
+      description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
+    - name: "--seq_platform"
+      type: string
+      description: Sequencing platform.
+    - name: "--seq_center"
+      type: string
+      description: sequencing center.
+    - name: "--extra_star_align_args"
+      type: string
+      default: ''
+      description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+    - name: "--output"
+      type: file
+      direction: output 
+      description: Path to output directory
+    - name: "--star_align_bam"
+      type: file
+      direction: output 
+    - name: "--star_align_bam_transcriptome"
+      type: file
+      direction: output 
+    - name: "--log_final"
+      type: file
+      direction: output 
+      default: $id.$key.log.final.out
 
   resources:
     - type: bash_script
