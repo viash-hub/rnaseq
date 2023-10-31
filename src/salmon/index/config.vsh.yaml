@@ -54,10 +54,11 @@ platforms:
           cd salmon-${SALMON_VERSION} && \
           mkdir build && \
           cd build && \
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon && make && make install && \
+          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon_tmp && make && make install && \
           cd && apt-get update && \
           apt-get install -y --no-install-recommends libhwloc5 && \
           rm -rf /var/lib/apt/lists/* && \
-          echo "export PATH=/usr/local/salmon/bin:${PATH}" > /etc/environment && \
-          echo "export LD_LIBRARY_PATH=/usr/local/salmon/lib:${LD_LIBRARY_PATH}" > /etc/environment
+          cp /usr/local/salmon_tmp/bin/salmon /usr/local/bin && \
+          cp -r /usr/local/salmon_tmp/lib/* /usr/local/lib && \
+          rm -r /usr/local/salmon_tmp
   - type: nextflow  
