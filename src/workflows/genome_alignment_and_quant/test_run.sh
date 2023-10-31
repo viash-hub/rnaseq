@@ -2,6 +2,9 @@
 
 viash ns build --setup cb --parallel
 
+# Split error message from standard output
+# viash ns list > /dev/null 
+
 CURR=`pwd` 
 
 # Test single-end data
@@ -36,6 +39,5 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --star_index testData/test_output/ref.prepare_genome.star_index_uncompressed \
   --transcript_fasta testData/test_output/ref.prepare_genome.transcript_fasta_uncompressed.fasta \
   --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif" \
-  # --umi_dedup_stats true
   # -profile docker \
   # -resume

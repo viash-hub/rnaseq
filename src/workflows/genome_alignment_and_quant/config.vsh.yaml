@@ -25,11 +25,6 @@ functionality:
       required: false
       default: auto
       description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
-    - name: "--paired"
-      type: boolean 
-      required: false
-      default: false
-      description: Paired fastq files or not?
     - name: "--gtf"
       type: file
       description: GTF file
@@ -41,13 +36,14 @@ functionality:
       description: STAR index directory.
     - name: "--star_ignore_sjdbgtf"
       type: boolean
+      default: false
       description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
     - name: "--seq_platform"
       type: string
       description: Sequencing platform.
     - name: "--seq_center"
       type: string
-      description: sequencing center.
+      description: Sequencing center.
     - name: "--extra_star_align_args"
       type: string
       default: ''
@@ -82,6 +78,9 @@ functionality:
 
     # Output
     - name: "--star_alignment"
+      type: file
+      direction: output
+    - name: "--star_multiqc"
       type: file
       direction: output
     - name: "--genome_bam_indexed"

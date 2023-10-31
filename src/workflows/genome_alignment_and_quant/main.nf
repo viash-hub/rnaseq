@@ -13,13 +13,18 @@ workflow run_wf {
     }
     | star_align.run (
         fromState: [
-          "paired", "input", 
-          "gtf", "star_index", 
-          "extra_star_align_args" ],
+          "paired", 
+          "input", 
+          "gtf", 
+          "star_index", 
+          "extra_star_align_args", 
+          "seq_platform", 
+          "seq_center" ],
         toState: [
           "star_alignment": "output", 
           "genome_bam": "star_align_bam", 
-          "transcriptome_bam": "star_align_bam_transcriptome" ]
+          "transcriptome_bam": "star_align_bam_transcriptome", 
+          "star_multiqc": "log_final" ]
     )
 
     // GENOME BAM
@@ -86,14 +91,20 @@ workflow run_wf {
     // Deduplicate genome BAM file
     | umitools_dedup.run ( 
         runIf: {id, state -> state.with_umi},
-        fromState: ["paired": "paired", "id": "id", "input": "genome_bam_indexed", "get_output_stats": "umi_dedup_stats"],
+        fromState: [
+          "paired": "paired", 
+          "id": "id", 
+          "input": "genome_bam_indexed", 
+          "get_output_stats": "umi_dedup_stats"],
         toState: ["umitools_genome_deduped": "output"],
         key: "genome_dedup", 
         debug: true
     )
     | samtools_index.run (
         runIf: {id, state -> state.with_umi},
-        fromState: ["input": "umitools_genome_deduped", "bam_csi_index": "bam_csi_index"],
+        fromState: [
+          "input": "umitools_genome_deduped", 
+           "bam_csi_index": "bam_csi_index"],
         toState: ["genome_bam_indexed": "output"],
         key: "genome_deduped_index"
     )
@@ -170,7 +181,8 @@ workflow run_wf {
           "input": "transcriptome_bam_indexed", 
           "transcript_fasta": "transcript_fasta", 
           "gtf": "gtf", 
-          "star_index": "star_index"],
+          "star_index": "star_index",
+          "star_ignore_sjdbgtf": "star_ignore_sjdbgtf" ],
         args: ["alignment_mode": true],
         toState: ["salmon_quant_output": "output"]
     )
@@ -201,6 +213,7 @@ workflow run_wf {
 
     | setState (
       [ "star_alignment": "star_alignment", 
+        "star_multiqc": "star_multiqc", 
         "genome_bam_indexed": "genome_bam_indexed", 
         "genome_bam_stats": "genome_bam_stats", 
         "genome_bam_flagstat": "genome_bam_flagstat", 
