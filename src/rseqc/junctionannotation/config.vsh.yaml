@@ -15,7 +15,7 @@ functionality:
       required: true
       description: bam file to calculate statistics of
 
-    - name: "--bed_input"
+    - name: "--refgene"
       type: file 
       required: true
       description: a bed file for the reference gene model
