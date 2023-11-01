@@ -10,7 +10,7 @@ functionality:
     Generate statistics from a bam file.
 
   arguments:
-    - name: "--input"
+    - name: "--bam_input"
       type: file 
       required: true
       description: bam file to calculate statistics of
