@@ -10,15 +10,22 @@ functionality:
     Generate statistics from a bam file.
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
       description: bam file to calculate statistics of
+
+    - name: "--map_qual"
+      type: integer
+      required: false
+      default: 30
+      description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads. default=30.
     
     - name: "--output"
       type: file
       direction: output
-      required: true
+      default: output/rseqc_bamstat
+      required: false
       description: directory for output of bam statistics report
 
   resources:
