@@ -7,7 +7,7 @@ functionality:
       paths: [modules/nf-core/rseqc/inferexperiment/main.nf]
       last_sha: 
   description: |
-    Generate statistics from a bam file.
+    Infer strandedness from sequencing reads
 
   arguments:
     - name: "--bam_input"
@@ -15,7 +15,7 @@ functionality:
       required: true
       description: bam file to calculate statistics of
 
-    - name: "--bed_input"
+    - name: "--refgene"
       type: file 
       required: true
       description: a bed file for the reference gene model
