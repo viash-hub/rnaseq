@@ -1,25 +1,20 @@
 functionality:
-  name: "rseqc_junctionsaturation"
+  name: "rseqc_readduplication"
   namespace: "rseqc"
   info:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/rseqc/junctionsaturation/main.nf]
+      paths: [modules/nf-core/rseqc/readduplication/main.nf]
       last_sha: 
   description: |
-    Compare detected splice junctions to reference gene model.
+    Calculate read duplication rate.
 
   arguments:
     - name: "--bam_input"
       type: file 
       required: true
       description: bam file to calculate statistics of
-
-    - name: "--refgene"
-      type: file 
-      required: true
-      description: a bed file for the reference gene model
-   
+      
     - name: "--output"
       type: file
       direction: output
