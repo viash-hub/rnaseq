@@ -37,6 +37,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/test
    
 platforms:
   - type: docker

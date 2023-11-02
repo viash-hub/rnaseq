@@ -1,31 +1,22 @@
 #!/bin/bash
 
+
+## VIASH START
+meta_executable="target/docker/rseqc/rseqc_bamstat/rseqc_bamstat"
+meta_resources_dir="testData/test"
+meta_temp_dir="output/bamstat"
+## VIASH END
+
 sample="SRR6357070"
-CURR=`pwd` 
 
-echo ">>> Testing RSeQC bamstat module functionality"
 
-viash ns build --setup cb --parallel -q bamstat
+"$meta_executable" \
+    --input "$meta_resources_dir/$sample.bam" \
+    --output "$meta_temp_dir"
 
-echo ">> Docker"
-target/docker/rseqc/rseqc_bamstat/rseqc_bamstat \
-    --input "$CURR/testData/test/$sample.bam" \
-    --output output/bamstat
 
-echo "> Checking whether output dir exists"
-[[ ! -d output/bamstat ]] && echo "Output dir could not be found!" && exit 1
+[[ ! -d "$meta_temp_dir" ]] && echo "Output dir could not be found!" && exit 1
 
-echo "> Checking if correct file is present"
-[[ ! -f output/bamstat/"$sample".bamstat.txt ]] && echo "Bamstat summary file missing" && exit 1
+[[ ! -f "$meta_temp_dir/$sample".bamstat.txt ]] && echo "Bamstat summary file missing" && exit 1
 
-echo ">> Nextflow"
-nextflow run target/nextflow/rseqc/rseqc_bamstat/main.nf \
-    --input "$CURR/testData/test/$sample.bam" \
-    --output bamstat \
-    --publish_dir nxf_output
-
-echo "> Checking whether output dir exists"
-[[ ! -d nxf_output/bamstat ]] && echo "Output dir could not be found!" && exit 1
-
-echo "> Checking if correct file is present"
-[[ ! -f nxf_output/bamstat/"$sample".bamstat.txt ]] && echo "Bamstat summary file missing" && exit 1
+exit 0
