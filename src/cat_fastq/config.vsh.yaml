@@ -1,0 +1,41 @@
+functionality:
+  name: "cat_fastq"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/cat/fastq/main.nf, modules/nf-core/cat/fastq/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: Concatenate multiple fastq files 
+
+  arguments:
+    - name: "--read_1"
+      type: file
+      multiple: true
+      multiple_sep: " "
+      description: Read 1 fastq files to be concatenated
+    - name: "--read_2"
+      type: file
+      multiple: true
+      multiple_sep: " "
+      description: Read 2 fastq files to be concatenated
+    
+    - name: "--fastq_1"
+      type: file
+      direction: output
+      default: $id.read1.merged.fq.gz
+      description: Concatenated read 1 fastq
+    - name: "--fastq_2"
+      type: file
+      direction: output
+      must_exist: false
+      default: $id.read2.merged.fq.gz
+      description: Concatenated read 2 fastq
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+  - type: nextflow
