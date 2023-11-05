@@ -1,0 +1,54 @@
+functionality:
+  name: "fq_subsample"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/fq/subsample/main.nf, modules/nf-core/fq/subsample/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: | 
+    fq subsample outputs a subset of records from single or paired FASTQ files. This requires a seed (--seed) to be set in ext.args
+  
+  arguments: 
+    - name: "--input"
+      type: file
+      description: Input fastq files to subsample
+      multiple: true
+      multiple_sep: ","
+    - name: "--extra_args"
+      type: string
+      default: "--record-count 1000000 --seed 1"
+      description: Extra arguments to pass to fq subsample
+
+    - name: "--output_1"
+      type: file
+      direction: output
+      default: $id.read1.subsampled.fastq.gz
+      description: Sampled read 1 fastq files
+    - name: "--output_2"
+      type: file
+      must_exist: false
+      direction: output
+      default: $id.read2.subsampled.fastq.gz
+      description: Sampled read 2 fastq files
+
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup: 
+      - type: docker
+        env: 
+            - TZ Europe/Brussels
+        run: | 
+          ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+          apt-get update && \
+          apt-get install -y --no-install-recommends build-essential git-all curl && \
+          curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+          . "$HOME/.cargo/env" && \
+          git clone --depth 1 --branch v0.11.0 https://github.com/stjude-rust-labs/fq.git && \
+          cd fq && \
+          cargo install --locked --path .
+  - type: nextflow
