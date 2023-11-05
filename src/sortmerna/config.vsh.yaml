@@ -21,10 +21,13 @@ functionality:
     type: file
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
   
-  # - name: "--output"
-  #   type: file
-  #   direction: output
-  #   description: Filtered fastq
+  - name: "--sortmerna_log"
+    type: file
+    direction: output
+    default: $id.sortmerna.log
+    required: false
+    must_exist: false
+    description: Sortmerna log file.
   - name: "--fastq_1"
     type: file
     required: true

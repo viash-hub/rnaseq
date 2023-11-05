@@ -26,5 +26,6 @@ else
     # $args 
     mv non_rRNA_reads_fwd.f*q.gz $par_fastq_1
     mv non_rRNA_reads_rev.f*q.gz $par_fastq_2
-    # mv rRNA_reads.log ${par_id}.sortmerna.log
 fi
+
+mv rRNA_reads.log $par_sortmerna_log

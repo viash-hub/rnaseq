@@ -10,9 +10,6 @@ functionality:
       last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   
   arguments: 
-    - name: "--id"
-      type: string
-      description: Sample ID
     - name: "--paired"
       type: boolean
       description: Paired-end reads or not?
@@ -24,9 +21,9 @@ functionality:
       multiple: true
       multiple_sep: ","
       description: List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.
-    - name: "--star_index"
+    - name: "--salmon_index"
       type: file
-      description: Folder containing the star index files
+      description: Folder containing the salmon index files
     - name: "--gtf"
       type: file
       description: GTF of the reference transcriptome
@@ -39,14 +36,22 @@ functionality:
     - name: "--lib_type"
       type: string
       description: Override library type inferred based on strandedness defined in meta object
+      default: ''
     - name: "--extra_salmon_quant_args"
       type: string
       description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+      default: ''
 
     - name: "--output"
       type: file
       direction: output
       description: Folder containing the quantification results for a specific sample
+    - name: "--json_info"
+      type: file
+      direction: output
+      description: File containing meta information from Salmon quant
+      default: $id.$key.meta_info.json
+
 
   resources:
     - type: bash_script

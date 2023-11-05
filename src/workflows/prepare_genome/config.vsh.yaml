@@ -66,24 +66,24 @@ functionality:
     - name: "--fasta_uncompressed"
       type: file
       direction: output
-      # default: $id.$key.genome.fasta
+      default: reference_genome.fasta
     - name: "--gtf_uncompressed"
       type: file
       direction: output
-      # default: $id.$key.genes.fasta
+      default: gene_annotation.gtf
     - name: "--transcript_fasta_uncompressed"
       type: file
       direction: output
-      # default: $id.$key.transcript.fasta
+      default: transcriptome.fasta
     - name: "--gene_bed_uncompressed"
       type: file
       direction: output
-      # default: $id.$key.genes.bed
+      default: gene_annotation.bed
     - name: "--star_index_uncompressed"
       type: file
       direction: output
       description: Path to STAR index.
-      # default: $id.$key.star_index
+      default: star_index
     # - name: "--rsem_index_uncompressed"
     #   type: file
     #   direction: output
@@ -92,7 +92,7 @@ functionality:
       type: file
       direction: output
       description: Path to Salmon index.
-      # default: $id.$key.salmon_index
+      default: salmon_index
     # - name: "--hisat2_index_uncompressed"
     #   type: file
     #   direction: output
@@ -101,17 +101,17 @@ functionality:
       type: file
       direction: output
       description: Path to BBSplit index.
-      # default: $id.$key.bbsplit_index
+      default: bbsplit_index
     - name: "--chrom_sizes"
       type: file
       direction: output
       description: File containing chromosome lengths
-      # default: $id.$key.genome.fasta.sizes
+      default: reference_genome.fasta.sizes
     - name: "--fai"
       type: file
       description: FASTA index file
       direction: output
-      # default: $id.$key.genome.fasta.fai
+      default: reference_genome.fasta.fai
 
   resources:
     - type: nextflow_script
