@@ -24,12 +24,6 @@ functionality:
       multiple_sep: ","
     
     # Outputs
-    # - name: "--output"
-    #   alternatives: [ "-o" ]
-    #   type: file
-    #   required: true
-    #   description: Output directory to write reports to.
-    #   direction: output
     - name: "--fastq_1"
       type: file
       required: true
@@ -43,6 +37,19 @@ functionality:
       description: Output file for read 2.
       direction: output
       default: $id.$key.read2.fq.gz
+    - name: "--trim_log"
+      type: file
+      direction: output
+    - name: "--trim_html"
+      type: file
+      direction: output
+    - name: "--trim_zip"
+      type: file
+      direction: output
+    # - name: "--trim_read_count"
+    #   type: integer
+    #   direction: output
+
 
     # Optional arguments
     - name: "--extra_trimgalore_args"
@@ -50,10 +57,10 @@ functionality:
       example: "--three_prime_clip_R1 15 --three_prime_clip_R2 15"
       description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
       default: ""
-    # - name: "--min_trimmed_reads"
-    #   type: integer 
-    #   description: "Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low."
-    #   default: 10000   
+    - name: "--min_trimmed_reads"
+      type: integer 
+      description: "Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low."
+      default: 10000   
     
   resources:
     - type: bash_script

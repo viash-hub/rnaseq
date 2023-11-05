@@ -33,11 +33,6 @@ functionality:
       multiple_sep: ","
     
     # Outputs
-    # - name: "--output"
-    #   type: file
-    #   required: true
-    #   description: Directory containing output files.
-    #   direction: output
     - name: "--fastq_1"
       type: file
       required: true
@@ -70,7 +65,8 @@ functionality:
     - name: "--umi_discard_read"
       type: integer
       description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-      choices: [1, 2]
+      choices: [0, 1, 2]
+      default: 0
     - name: "--save_umi_intermeds"
       type: boolean
       description: If this option is specified, intermediate FastQ and BAM files produced by UMI-tools are also saved in the results directory.

@@ -5,6 +5,7 @@ set -eo pipefail
 function clean_up {
     rm -rf "$tmpdir"
 }
+trap clean_up EXIT 
 
 tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
@@ -29,8 +30,14 @@ if [ "$par_paired" == "true" ]; then
         --bc-pattern "${pattern[0]}" \
         --bc-pattern2 "${pattern[1]}" \
         --umi-separator $par_umitools_umi_separator
-        cp $tmpdir/$read1 $par_fastq_1
-        cp $tmpdir/$read2 $par_fastq_2
+        if [ $par_umi_discard_read == 1 ]; then
+            cp $tmpdir/$read1 $par_fastq_1
+        elif [ $par_umi_discard_read == 2 ]; then
+            cp $tmpdir/$read2 $par_fastq_2
+        else
+            cp $tmpdir/$read1 $par_fastq_1
+            cp $tmpdir/$read2 $par_fastq_2
+        fi
     fi
 else
     echo "Not Paired - $read_count"
@@ -47,4 +54,3 @@ else
     fi
 fi
 
-trap clean_up EXIT 
