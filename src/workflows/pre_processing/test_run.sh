@@ -39,8 +39,12 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --umitools_bc_pattern "NNNN" \
   --umitools_bc_pattern2 "NNNN" \
   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-  --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
-  --bbsplit_index testData/test_output/ref.prepare_genome.bbsplit_index_uncompressed \
+  --transcript_fasta testData/test_output/transcriptome.fasta \
+  --gtf testData/test_output/gene_annotation.gtf \
+  --bbsplit_index testData/test_output/bbsplit_index \
   --ribo_database_manifest testData/reference/rrna-db-defaults.txt \
+  --salmon_index testData/test_output/salmon_index \
+  --skip_trimming false \
+  --remove_ribo_rna true
   # -profile docker \
 #   -resume

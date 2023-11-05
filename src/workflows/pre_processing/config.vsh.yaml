@@ -36,6 +36,15 @@ functionality:
         - name: "--ribo_database_manifest"
           type: file
           description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
+        - name: "--transcript_fasta"
+          type: file
+          description: Path to FASTA transcriptome file.
+        - name: "--gtf"
+          type: file
+          description: Path to GTF annotation file. 
+        - name: "--salmon_index"
+          type: file
+          description: Path to directory containing the Salmon index
 
     - name: Output
       arguments:
@@ -57,6 +66,33 @@ functionality:
           type: file
           direction: output
           description: Path to the FastQC output directory
+        - name: "--trim_log"
+          type: file
+          direction: output
+          default: $id.trim_log
+          required: false
+          must_exist: false
+        - name: "--trim_html"
+          type: file
+          direction: output
+          default: $id.trim_html
+          required: false
+          must_exist: false
+        - name: "--trim_zip"
+          type: file
+          direction: output
+          default: $id.trim_zip
+          required: false
+          must_exist: false
+        - name: "--trim_read_count"
+          type: integer
+        - name: "--sortmerna_log"
+          type: file
+          direction: output
+          default: $id.sortmerna.log
+          required: false
+          must_exist: false
+          description: Sortmerna log file.
   
     # use --skip_qc or remove
     - name: "Extra pipeline options"
@@ -147,6 +183,24 @@ functionality:
           type: string
           default: ''
           description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+    
+    - name: "Read filtering options"
+      arguments: 
+        - name: "--skip_bbsplit"
+          type: boolean
+          description: Skip BBSplit for removal of non-reference genome reads.
+          default: true
+        - name: "--remove_ribo_rna"
+          type: boolean
+          description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
+          default: false
+    
+    - name: "Other options"
+      arguments: 
+        - name: "--extra_fq_subsample_args"
+          type: string
+          default: '--record-count 1000000 --seed 1'
+          description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
 
   resources:
     - type: nextflow_script
@@ -154,6 +208,9 @@ functionality:
       entrypoint: run_wf
   
   dependencies:
+    - name: fq_subsample
+    - name: salmon/salmon_quant
+    - name: infer_strandedness
     - name: fastqc
     - name: umitools/umitools_extract
     - name: trimgalore
