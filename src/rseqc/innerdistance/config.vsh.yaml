@@ -5,31 +5,58 @@ functionality:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/nf-core/rseqc/innerdistance/main.nf]
-      last_sha: 
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Calculate inner distance between read pairs. 
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: input alignment file in BAM or SAM format
 
     - name: "--refgene"
       type: file 
       required: true
-      description: a bed file for the reference gene model
-   
+      description: Reference gene model in bed format
+
     - name: "--paired"
-      type: boolean 
+      type: boolean
       required: false
-      default: false
-   
-    - name: "--output"
-      type: file
-      direction: output
-      required: true
-      description: directory for output of bam statistics report
+      default: true
+      description: input alignment file consists of paired reads (default is true).
+
+    - name: "--sample_size"
+      type: integer
+      required: false
+      default: 200000
+      min: 1
+      description: Numer of reads sampled from SAM/BAM file, default = 200000.
+    
+    - name: "--map_qual"
+      type: integer
+      required: false
+      default: 30 
+      description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+      min: 0
+
+    - name: "--lower_bound_size"
+      type: integer
+      required: false
+      default: -250 
+      description: Lower bound of inner distance (bp). This option is used for ploting histograme, default=-250.
+
+    - name: "--upper_bound_size"
+      type: integer
+      required: false
+      default: 250 
+      description: Upper bound of inner distance (bp). This option is used for ploting histograme, default=250.
+
+    - name: "--step_size"
+      type: integer
+      required: false
+      default: 5 
+      description: Step size (bp) of histograme. This option is used for plotting histogram, default=5.
 
   resources:
     - type: bash_script
@@ -44,8 +71,7 @@ platforms:
     image: ubuntu:22.04
     setup:   
       - type: apt
-        packages: [python3-pip, r-base]
-      - type: docker
-        run: | 
-          pip3 install RSeQC 
+        packages: [python3-pip, r-base, tree]
+      - type: python
+        packages: [ RSeQC ]
   - type: nextflow
