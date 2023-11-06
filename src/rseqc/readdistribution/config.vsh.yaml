@@ -1,0 +1,46 @@
+functionality:
+  name: "rseqc_readdistribution"
+  namespace: "rseqc"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/rseqc/readdistribution/main.nf]
+      last_sha: 
+  description: |
+    Calculate how mapped reads are distributed over genomic features.
+
+  arguments:
+    - name: "--input"
+      type: file 
+      required: true
+      description: input alignment file in BAM or SAM format
+
+    - name: "--refgene"
+      type: file 
+      required: true
+      description: Reference gene model in bed format
+   
+    - name: "--output"
+      type: file
+      direction: output
+      required: false
+      default: read_distribution.txt
+      description: output file (txt) of read distribution analysis.
+
+  resources:
+    - type: bash_script
+      path: script.sh
+  test_resources:
+    - type: bash_script
+      path: test.sh
+    - path: /testData/test
+   
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:   
+      - type: apt
+        packages: [ python3-pip ]
+      - type: python
+        packages: [ RSeQC ]
+  - type: nextflow
