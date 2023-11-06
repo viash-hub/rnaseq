@@ -71,7 +71,7 @@ platforms:
     image: ubuntu:22.04
     setup:   
       - type: apt
-        packages: [python3-pip, r-base, tree]
+        packages: [python3-pip, r-base]
       - type: python
         packages: [ RSeQC ]
   - type: nextflow
