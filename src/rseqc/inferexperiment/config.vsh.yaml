@@ -26,6 +26,13 @@ functionality:
       default: 200000
       min: 1
       description: Numer of reads sampled from SAM/BAM file, default = 200000.
+
+    - name: "--map_qual"
+      type: integer
+      required: false
+      default: 30 
+      description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+      min: 0
     
     - name: "--output"
       type: file
