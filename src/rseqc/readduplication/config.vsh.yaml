@@ -10,16 +10,52 @@ functionality:
     Calculate read duplication rate.
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: input alignment file in BAM or SAM format
+
+    - name: "--read_count_upper_limit"
+      type: integer
+      required: false
+      default: 500
+      description: Upper limit of reads' occurence. Only used for plotting, default = 500 (times).
+      min: 1
+
+    - name: "--map_qual"
+      type: integer
+      required: false
+      default: 30 
+      description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+      min: 0
       
-    - name: "--output"
+    - name: "--output_duplication_rate_plot_r"
       type: file
       direction: output
-      required: true
-      description: directory for output of bam statistics report
+      required: false
+      default: duplication_rate_plot.r
+      description: R script for generating duplication rate plot
+
+    - name: "--output_duplication_rate_plot"
+      type: file
+      direction: output
+      required: false
+      default: duplication_rate_plot.pd
+      description: duplication rate plot (pdf)
+
+    - name: "--output_duplication_rate_mapping"
+      type: file
+      direction: output
+      required: false
+      default: duplication_rate_mapping.xls
+      description: Summary of mapping-based read duplication
+
+    - name: "--output_duplication_rate_sequence"
+      type: file
+      direction: output
+      required: false
+      default: duplication_rate_sequencing.xls
+      description: Summary of sequencing-based read duplication
 
   resources:
     - type: bash_script
@@ -27,6 +63,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/test
    
 platforms:
   - type: docker
@@ -34,7 +71,6 @@ platforms:
     setup:   
       - type: "apt"
         packages: [python3-pip, r-base]
-      - type: docker
-        run: | 
-          pip3 install RSeQC
+      - type: python
+        packages: [RSeQC]
   - type: nextflow

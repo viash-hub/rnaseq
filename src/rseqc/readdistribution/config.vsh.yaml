@@ -13,12 +13,12 @@ functionality:
     - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: input alignment file in BAM or SAM format
 
     - name: "--refgene"
       type: file 
       required: true
-      description: a bed file for the reference gene model
+      description: Reference gene model in bed format
    
     - name: "--output"
       type: file
