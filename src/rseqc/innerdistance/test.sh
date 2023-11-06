@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-## VIASH START
-meta_executable="target/docker/rseqc/rseqc_inferexperiment/rseqc_inferexperiment"
-meta_resources_dir="testData/test"
-meta_temp_dir="output/inferexperiment"
-## VIASH END
-
 echo "> Running $meta_functionality_name for unpaired reads."
 
 sample="SRR6357070"
@@ -28,7 +21,7 @@ echo ">> asserting no output has been created for unpaired read input"
 [[ -f "$meta_temp_dir/$sample.inner_distance_plot.pdf" ]] && echo "inner_distance_plot.pdf has been created" && exit 1
 [[ -f "$meta_temp_dir/$sample.inner_distance_plot.r" ]] && echo "inner_distance_plot.r has been created" && exit 1
 
-echo "> Running $meta_functionality_name for unpaired reads."
+echo "> Running $meta_functionality_name for paired reads."
 
 sample="Pairend_nonStrandSpecific_36mer_Human_hg19"
 genome="hg19_rRna"
