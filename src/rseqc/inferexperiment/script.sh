@@ -2,8 +2,8 @@
 
 set -eo pipefail 
 
-filename="$(basename -- $par_bam_input)"
-ref_file="$(basename -- $par_refgene)"
-mkdir -p $par_output
-
-infer_experiment.py -i $par_bam_input -r > $par_output/${filename%%.*}.${ref_file%%.*}.infer_experiment.txt
+infer_experiment.py \
+    -i $par_input \
+    -r $par_refgene \
+    -s $par_sample_size \
+> $par_output

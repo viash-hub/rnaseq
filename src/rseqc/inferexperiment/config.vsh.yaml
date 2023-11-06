@@ -5,42 +5,50 @@ functionality:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/nf-core/rseqc/inferexperiment/main.nf]
-      last_sha: 
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
     Infer strandedness from sequencing reads
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: input alignment file in BAM or SAM format
 
     - name: "--refgene"
       type: file 
       required: true
-      description: a bed file for the reference gene model
+      description: Reference gene model in bed format
+
+    - name: "--sample_size"
+      type: integer
+      required: false
+      default: 200000
+      min: 1
+      description: Numer of reads sampled from SAM/BAM file, default = 200000.
     
     - name: "--output"
       type: file
       direction: output
-      required: true
-      description: directory for output of bam statistics report
+      required: false
+      default: strandness.txt
+      description: output file (txt) of strandness report
 
   resources:
     - type: bash_script
       path: script.sh
+
   test_resources:
     - type: bash_script
       path: test.sh
-   
+    - path: /testData/test
+
 platforms:
   - type: docker
     image: ubuntu:22.04
     setup:   
-      - type: "apt"
-        packages:
-        - "python3-pip"
-      - type: docker
-        run: | 
-          pip3 install RSeQC
+      - type: apt
+        packages: [ python3-pip ]
+      - type: python
+        packages: [ RSeQC ]
   - type: nextflow
