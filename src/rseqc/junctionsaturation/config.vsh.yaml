@@ -10,21 +10,74 @@ functionality:
     Compare detected splice junctions to reference gene model.
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: input alignment file in BAM or SAM format
 
     - name: "--refgene"
       type: file 
       required: true
-      description: a bed file for the reference gene model
+      description: Reference gene model in bed format
+
+    - name: "--sampling_percentile_lower_bound"
+      type: integer
+      required: false
+      default: 5 
+      description: Sampling starts from this percentile, must be an integer between 0 and 100, default =5.
+      min: 0
+      max: 100
+
+    - name: "--sampling_percentile_upper_bound"
+      type: integer
+      required: false
+      default: 100
+      description: Sampling ends at this percentile, must be an integer between 0 and 100, default =5.
+      min: 0
+      max: 100
    
-    - name: "--output"
+    - name: "--sampling_percentile_step"
+      type: integer
+      required: false
+      default: 5
+      description: Sampling frequency in %. Smalle value means more sampling times. Must be an integer between 0 and 100, default = 5.
+      min: 0
+      max: 100
+   
+    - name: "--min_intron"
+      type: integer
+      required: false
+      default: 50
+      min: 1 
+      description: Minimum intron length (bp), default = 50.
+
+    - name: "--min_splice_read"
+      type: integer
+      required: false
+      default: 1
+      min: 1 
+      description: Minimum number of supporting reads to call a junction, default = 1.
+
+    - name: "--map_qual"
+      type: integer
+      required: false
+      default: 30 
+      description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+      min: 0
+      
+    - name: "--output_plot_r"
       type: file
       direction: output
-      required: true
-      description: directory for output of bam statistics report
+      required: false
+      default: junction_saturation_plot.r
+      description: r script to generate junction_saturation_plot plot
+
+    - name: "--output_plot"
+      type: file
+      direction: output
+      required: false
+      default: junction_saturation_plot.pdf
+      description: plot of junction saturation (pdf)
 
   resources:
     - type: bash_script
@@ -32,14 +85,14 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/test
    
 platforms:
   - type: docker
     image: ubuntu:22.04
     setup:   
-      - type: "apt"
-        packages: [python3-pip, r-base]
-      - type: docker
-        run: | 
-          pip3 install RSeQC
+      - type: apt
+        packages: [ python3-pip, r-base]
+      - type: python
+        packages: [ RSeQC ]
   - type: nextflow
