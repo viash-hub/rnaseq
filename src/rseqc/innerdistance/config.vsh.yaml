@@ -58,6 +58,46 @@ functionality:
       default: 5 
       description: Step size (bp) of histograme. This option is used for plotting histogram, default=5.
 
+    - name: "--output_stats"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: inner_distance_stats.txt
+      description: output file (txt) with summary statistics of inner distances of paired reads
+
+    - name: "--output_dist"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: inner_distance.txt
+      description: output file (txt) with inner distances of all paired reads
+
+    - name: "--output_freq"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: inner_distance_freq.txt
+      description: output file (txt) with frequencies of inner distances of all paired reads
+
+    - name: "--output_plot"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: inner_distance_plot.pdf
+      description: output file (pdf) with histogram plot of of inner distances of all paired reads
+
+    - name: "--output_plot_r"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: inner_distance_plot.r
+      description: output file (R) with script of histogram plot of of inner distances of all paired reads
+
   resources:
     - type: bash_script
       path: script.sh
