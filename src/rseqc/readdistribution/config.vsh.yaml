@@ -10,7 +10,7 @@ functionality:
     Calculate how mapped reads are distributed over genomic features.
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
       description: bam file to calculate statistics of
@@ -23,8 +23,9 @@ functionality:
     - name: "--output"
       type: file
       direction: output
-      required: true
-      description: directory for output of bam statistics report
+      required: false
+      default: read_distribution.txt
+      description: output file (txt) of read distribution analysis.
 
   resources:
     - type: bash_script
@@ -32,14 +33,14 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/test
    
 platforms:
   - type: docker
     image: ubuntu:22.04
     setup:   
-      - type: "apt"
-        packages: python3-pip
-      - type: docker
-        run: | 
-          pip3 install RSeQC
+      - type: apt
+        packages: [ python3-pip ]
+      - type: python
+        packages: [ RSeQC ]
   - type: nextflow
