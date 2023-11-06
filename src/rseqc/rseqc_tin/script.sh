@@ -2,8 +2,12 @@
 
 set -eo pipefail 
 
-filename="$(basename -- $par_bam_input)"
-ref_file="$(basename -- $par_refgene)"
-mkdir -p $par_output
+filename="$(basename -- $par_input)"
 
-read_distribution.py -i $par_bam_input -r $par_refgene -o $par_output
+tin.py \
+    -i $par_input \
+    -r $par_refgene \
+    -c $par_minimum_coverage \
+
+mv ${filename%.*}.summary.txt $par_output_tin_summary
+mv ${filename%.*}.tin.xls $par_output_tin

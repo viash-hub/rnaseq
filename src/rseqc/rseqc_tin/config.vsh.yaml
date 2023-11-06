@@ -10,21 +10,42 @@ functionality:
     Calculte TIN (transcript integrity number) from RNA-seq reads
 
   arguments:
-    - name: "--bam_input"
+    - name: "--input"
       type: file 
       required: true
-      description: bam file to calculate statistics of
+      description: bam file to calculate statistics of, bai file of must be in the same directory.
  
     - name: "--refgene"
       type: file 
       required: true
       description: BED file containing the reference gene model
 
-    - name: "--output"
+    - name: "--minimum_coverage"
+      type: integer
+      required: false
+      default: 10
+      min: 1
+      description: Minimum number of reads mapped to a transcript, default = 10.
+
+    - name: "--subtract_backtround"
+      type: boolean
+      required: false
+      default: false
+      description: Subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads, default = false.
+
+    - name: "--output_tin_summary"
       type: file
       direction: output
-      required: true
-      description: directory for output of bam statistics report
+      required: false
+      default: tin_summary.txt
+      description: summary statistics (txt) of calculated TIN metrics
+
+    - name: "--output_tin"
+      type: file
+      direction: output
+      required: false
+      default: tin.xls
+      description: file with TIN metrics (xls)
 
   resources:
     - type: bash_script
@@ -38,7 +59,7 @@ platforms:
     image: ubuntu:22.04
     setup:   
       - type: "apt"
-        packages: [python3-pip, r-base]
+        packages: [python3-pip]
       - type: docker
         run: | 
           pip3 install RSeQC
