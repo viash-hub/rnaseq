@@ -8,6 +8,8 @@ junction_annotation.py \
     -i $par_input \
     -r $par_refgene \
     -o "$filename" \
+    -m $par_min_intron \
+    -q $par_map_qual
 2> $par_output_log
 
 mv $filename.junction.bed $par_output_junction_bed
