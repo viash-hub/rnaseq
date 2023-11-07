@@ -19,6 +19,13 @@ functionality:
       required: true
       description: Annotations file in Ensembl GTF format.
 
+    - name: "--output"
+      direction: output
+      type: file
+      required: false
+      default: qualimap_output
+      description: Output directory for raw data and report.
+
     - name: "--output_pdf"
       type: file
       direction: output
@@ -84,6 +91,7 @@ functionality:
     - type: bash_script
       path: test.sh
     - path: /testData/test
+    - path: /testData/reference
    
 platforms:
   - type: docker

@@ -2,6 +2,8 @@
 
 set -eo pipefail
 
+mkdir -p $par_output
+
 qualimap \
     rnaseq \
     --java-mem-size=$par_java_memory_size \
@@ -13,5 +15,9 @@ qualimap \
     -gtf $par_gtf \
     ${par_paired:+-pe} \
     ${par_sorted:+-s} \
-    -outdir $meta_temp_dir \
+    -outdir $par_output \
     -outformat $par_output_format 
+
+echo "+++++++++++"
+echo "$meta_temp_dir"
+echo "++++++++++++"
