@@ -1,0 +1,118 @@
+functionality:
+  name: "dupradar"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/dupradar.nf]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: |
+    Assessment of duplication rates in RNA-Seq datasets
+
+  arguments:
+    - name: "--input"
+      type: file 
+      required: true
+      description: Path to input alignment file in BAM format
+
+    - name: "--gtf_annotation"
+      type: file 
+      required: true
+      description: Path to GTF annotation file.
+
+    - name: "--paired"
+      type: boolean
+      required: false
+      default: true
+      description: input alignment file consists of paired reads (default is TRUE).
+
+    - name: "--strandedness"
+      type: string
+      required: false
+      default: none
+      description: Strandedness of input bam file reads (forward, reverse or none (default, applicable to paired reads)).
+
+    - name: "--cpus"
+      type: integer
+      required: false
+      default: 1
+      min: 1
+      description: maximum number of (logical) cpus dupRadar is allowed to use, default = 1.
+  
+    - name: "--output_dupmatrix"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: dup_matrix.txt
+      description: path to output file (txt) of duplicate tag counts.
+   
+    - name: "--output_dup_intercept_mqc"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: dup_intercept_mqc.txt
+      description: path to output file (txt) of multiqc intercept value DupRadar
+ 
+    - name: "--output_duprate_exp_boxplot"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: duprate_exp_boxplot.pdf
+      description: path to output file (pdf) of distribution of expression box plot
+   
+    - name: "--output_duprate_exp_densplot"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: duprate_exp_densityplot.pdf
+      description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts
+   
+    - name: "--output_duprate_exp_denscurve_mqc"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: duprate_exp_density_curve_mqc.pdf
+      description: path to output file (pdf) of density curve of gene duplication multiqc
+   
+    - name: "--output_expression_histogram"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: expression_hist.pdf
+      description: path to output file (pdf) of distribution of RPK values per gene histogram
+    
+    - name: "--output_intercept_slope"
+      type: file
+      direction: output
+      required: false
+      must_exist: true
+      default: intercept_slope.txt
+      description: output file (txt) with progression of duplication rate value 
+
+
+  resources:
+    - type: bash_script
+      path: script.sh
+    - type: r_script
+      path: dupradar.r
+
+  test_resources:
+    - type: bash_script
+      path: test.sh
+    - path: /testData/test
+    - path: /testData/reference
+    
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:   
+      - type: apt
+        packages: [ r-base ]
+      - type: r
+        bioc: [ dupRadar ]
+  - type: nextflow
