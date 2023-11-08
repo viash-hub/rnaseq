@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-## VIASH START
-meta_executable="target/docker/rseqc/rseqc_inferexperiment/rseqc_inferexperiment"
-meta_resources_dir="testData/test"
-meta_temp_dir="output/inferexperiment"
-## VIASH END
-
 sample="SRR6357070"
 genome="genome_gfp"
 
