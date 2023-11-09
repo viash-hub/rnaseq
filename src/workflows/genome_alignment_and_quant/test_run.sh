@@ -34,10 +34,10 @@ HERE
 nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --param_list testData/test/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
-  --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
-  --gtf testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf \
-  --star_index testData/test_output/ref.prepare_genome.star_index_uncompressed \
-  --transcript_fasta testData/test_output/ref.prepare_genome.transcript_fasta_uncompressed.fasta \
+  --fasta testData/test_output/reference_genome.fasta \
+  --gtf testData/test_output/gene_annotation.gtf \
+  --star_index testData/test_output/star_index \
+  --transcript_fasta testData/test_output/transcriptome.fasta \
   --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif" \
   # -profile docker \
   # -resume

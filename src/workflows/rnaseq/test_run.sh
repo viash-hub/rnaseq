@@ -44,5 +44,5 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --additional_fasta testData/reference/gfp.fa.gz \
   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
   --gencode \
-  # -profile docker \
+  -profile docker \
 #   -resume

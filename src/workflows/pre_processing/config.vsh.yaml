@@ -2,7 +2,7 @@ functionality:
   name: pre_processing
   namespace: workflows
   description: |
-    A subworkflow for stage 1 of the nf-core/rnaseq pipeline.
+    A subworkflow for the pre-processing stage of the nf-core/rnaseq pipeline.
   argument_groups:
     - name: Inputs
       arguments:
@@ -45,6 +45,9 @@ functionality:
         - name: "--salmon_index"
           type: file
           description: Path to directory containing the Salmon index
+        - name: "--trim_read_count"
+          type: integer
+          description: NUmber of reads trimmed
 
     - name: Output
       arguments:
@@ -72,20 +75,18 @@ functionality:
           default: $id.trim_log
           required: false
           must_exist: false
-        - name: "--trim_html"
-          type: file
-          direction: output
-          default: $id.trim_html
-          required: false
-          must_exist: false
+        # - name: "--trim_html"
+        #   type: file
+        #   direction: output
+        #   # default: $id.trim_html
+        #   required: false
+        #   must_exist: false
         - name: "--trim_zip"
           type: file
           direction: output
           default: $id.trim_zip
           required: false
           must_exist: false
-        - name: "--trim_read_count"
-          type: integer
         - name: "--sortmerna_log"
           type: file
           direction: output

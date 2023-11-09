@@ -50,18 +50,9 @@ functionality:
     - name: "--gencode"
       type: boolean
       description: Specify if the GTF annotation is in GENCODE format.
-
-    # - name: "is_aws_igenome"
-    #   type: boolean
-    #   description: Specify if the genome files are from AWS iGenomes
     - name: "--biotype"
       type: string
-      description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
-    # - name: "--prepare_tools_indices"
-    #   type: string
-    #   multiple: true
-    #   multiple_sep: ","
-    #   description: List of tools to prepare indices for.
+      description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
 
     - name: "--fasta_uncompressed"
       type: file

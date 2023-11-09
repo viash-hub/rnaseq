@@ -83,7 +83,10 @@ functionality:
     - name: "--star_multiqc"
       type: file
       direction: output
-    - name: "--genome_bam_indexed"
+    - name: "--genome_bam_sorted"
+      type: file
+      direction: output
+    - name: "--genome_bam_index"
       type: file
       direction: output
     - name: "--genome_bam_stats"
@@ -95,7 +98,10 @@ functionality:
     - name: "--genome_bam_idxstats"
       type: file
       direction: output
-    - name: "--transcriptome_bam_indexed"
+    - name: "--transcriptome_bam_sorted"
+      type: file
+      direction: output
+    - name: "--transcriptome_bam_index"
       type: file
       direction: output
     - name: "--transcriptome_bam_stats"
