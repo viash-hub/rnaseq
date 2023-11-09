@@ -4,7 +4,7 @@ set -eo pipefail
 
 if $par_alignment_mode; then
     reference="-t $par_transcript_fasta"
-    input_reads="-a $input"
+    input_reads="-a $par_input"
 else
     IFS="," read -ra input <<< $par_input
     if $par_paired; then

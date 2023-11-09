@@ -46,6 +46,7 @@ functionality:
       type: file
       direction: output
       description: Folder containing the quantification results for a specific sample
+      default: $id.$key
     - name: "--json_info"
       type: file
       direction: output
