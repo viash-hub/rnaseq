@@ -1,0 +1,46 @@
+functionality:
+  name: "subread_featurecounts"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/subread/featurecounts/main.nf, modules/nf-core/subread/featurecounts/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: Count reads that map to genomic features
+
+  arguments: 
+    - name: "--paired"
+      type: boolean
+      description: Paired-end read?
+    - name: "--strandedness"
+      type: string
+      description: Sample strand-specificity
+    - name: "--bam"
+      type: file
+      description: BAM file containing read alignments
+    - name: "--gtf"
+      type: file
+      description: Genomic features annotation in GTF
+
+    - name: "--counts"
+      type: file
+      direction: output
+      description: Counts of reads mapping to features
+      default: $id.featureCounts.txt
+    - name: "--summary"
+      type: file
+      direction: output
+      description: Summary log file
+      default: $id.featureCounts.txt.summary
+
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages:
+          - subread
+  - type: nextflow
