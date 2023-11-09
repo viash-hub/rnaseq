@@ -10,14 +10,15 @@ functionality:
   description: |
     Sort BAM file.
   arguments:
-    # Inputs
     - name: "--input"
       type: file
       description: BAM input file.
+    
     - name: "--output"
       type: file 
       description: Sorted BAM
       direction: output
+      default: $id.$key.bam
 
   resources:
     - type: bash_script

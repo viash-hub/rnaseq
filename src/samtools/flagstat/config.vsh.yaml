@@ -10,14 +10,18 @@ functionality:
   description: |
     Counts the number of alignments in a BAM file for each FLAG type
   arguments:
-    # Inputs
-    - name: "--input"
+    - name: "--bam"
       type: file
-      description: BAM and indexed BAM input files.
+      description: BAM input files.
+    - name: "--bai"
+      type: file
+      description: BAM index file.
+   
     - name: "--output"
       type: file 
-      description: File containing samtools flagstat output.
+      description: File containing samtools stats output.
       direction: output
+      default: $id.$key.flagstat
 
   resources:
     - type: bash_script

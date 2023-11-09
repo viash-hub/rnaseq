@@ -42,6 +42,7 @@ functionality:
       type: string
       default: ''
       description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+    
     - name: "--output"
       type: file
       direction: output 
@@ -49,13 +50,15 @@ functionality:
     - name: "--star_align_bam"
       type: file
       direction: output 
+      default: $id.star_aligned.genome.bam
     - name: "--star_align_bam_transcriptome"
       type: file
       direction: output 
+      default: $id.star_aligned.transcriptome.bam
     - name: "--log_final"
       type: file
       direction: output 
-      default: $id.$key.log.final.out
+      default: $id.star_aligned.log.final.out
 
   resources:
     - type: bash_script
@@ -70,7 +73,7 @@ platforms:
     setup:
       - type: docker
         env: 
-          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
+          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
         run: |
           apt-get update && \
           apt-get install -y --no-install-recommends ${PACKAGES} && \

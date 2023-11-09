@@ -2,14 +2,12 @@
 
 set -eo pipefail
 
-meta_cpus=2
-
 IFS="," read -ra input <<< "$par_input"
 
 if $star_ignore_sjdbgtf; then
     ignore_gtf='' 
 else
-    ignore_gtf="--sjdbGTFfile $par_gtf/*"
+    ignore_gtf="--sjdbGTFfile $par_gtf"
 fi
 
 if [[ $par_extra_star_align_args == *"--outSAMattrRGline"* ]]; then
@@ -24,15 +22,7 @@ else
     out_sam_type="--outSAMtype BAM Unsorted"
 fi
 
-if [[ $par_extra_star_align_args == *"--outSAMtype BAM Unsorted SortedByCoordinate"* ]]; then
-    mv_unsorted_bam="mv ${par_output}/Aligned.out.bam ${par_output}/Aligned.unsort.out.bam" 
-else
-    mv_unsorted_bam=""
-fi
-
 mkdir -p $par_output
-mkdir -p $par_star_align_bam
-mkdir -p $par_star_align_bam_transcriptome
 
 STAR \
     --genomeDir $par_star_index \
@@ -44,11 +34,23 @@ STAR \
     $attrRG \
     $par_extra_star_align_args
 
-cp "$par_output/Aligned.out.bam" "$par_star_align_bam/aligned.genome.bam"
-cp "$par_output/Aligned.toTranscriptome.out.bam" "$par_star_align_bam_transcriptome/aligned.transcriptome.bam"
-cp "$par_output/Log.final.out" "$par_log_final"
+if [[ $par_extra_star_align_args == *"--outSAMtype BAM Unsorted SortedByCoordinate"* ]]; then
+    mv ${par_output}/Aligned.out.bam ${par_output}/Aligned.unsort.out.bam 
+fi
 
-$mv_unsorted_bam
+if [ -f "$par_output/Aligned.out.bam" ]; then
+    cp "$par_output/Aligned.out.bam" $par_star_align_bam
+elif [ -f "$par_output/Aligned.sortedByCoord.out.bam" ]; then
+    cp "$par_output/Aligned.sortedByCoord.out.bam" $par_star_align_bam
+fi
+
+if [ -f "$par_output/Aligned.toTranscriptome.out.bam" ]; then
+    cp "$par_output/Aligned.toTranscriptome.out.bam" $par_star_align_bam_transcriptome
+fi
+
+if [ -f "$par_output/Log.final.out" ]; then
+    cp "$par_output/Log.final.out" $par_log_final
+fi
 
 if [ -f "$par_output/Unmapped.out.mate1" ]; then
     mv $par_output/Unmapped.out.mate1 $par_output/unmapped_1.fastq

@@ -10,17 +10,21 @@ functionality:
   description: |
     Produces comprehensive statistics from BAM file.
   arguments:
-    # Inputs
-    - name: "--input"
+    - name: "--bam"
       type: file
-      description: BAM and indexed BAM input files.
+      description: BAM input files.
+    - name: "--bai"
+      type: file
+      description: BAM index file.
     - name: "--fasta"
       type: file
       description: Reference file the CRAM was created with (optional).
+    
     - name: "--output"
       type: file 
       description: File containing samtools stats output.
       direction: output
+      default: $id.$key.stats
 
   resources:
     - type: bash_script
