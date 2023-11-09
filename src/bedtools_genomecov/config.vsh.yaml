@@ -1,0 +1,42 @@
+functionality:
+  name: bedtools_genomecov
+  info: 
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/bedtools_genomecov.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+  description: Compute BEDGRAPH (-bg) summaries of feature coverage
+
+  arguments: 
+    - name: "--bam"
+      type: file
+      description: Genome BAM file
+    - name: "--extra_bedtools_args"
+      type: string
+      default: ''
+
+    - name: "--bedgraph_forward"
+      type: file
+      default: $id.forward.bedgraph
+      direction: output
+    - name: "--bedgraph_reverse"
+      type: file
+      default: $id.reverse.bedgraph
+      direction: output
+
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: | 
+          apt-get update && \
+          apt-get install -y build-essential wget && \
+          wget --no-check-certificate https://github.com/arq5x/bedtools2/releases/download/v2.31.0/bedtools.static && \
+          mv bedtools.static /usr/local/bin/bedtools && \
+          chmod a+x /usr/local/bin/bedtools
+  - type: nextflow
