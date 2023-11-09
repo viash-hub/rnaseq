@@ -15,21 +15,26 @@ functionality:
       type: boolean 
       default: false
       description: Paired fastq files or not?
-    - name: "--id"
-      type: string
-      description: Sample ID
-    - name: "--input"
+    - name: "--bam"
       type: file
-      description: Input indexed BAM files
+      description: Input BAM file
+    - name: "--bai"
+      type: file
+      description: BAM index
     - name: "--get_output_stats"
       type: boolean
       description: Whether or not to generate output stats.
     
     # Outputs
-    - name: "--output"
+    - name: "--output_bam"
       type: file
-      description: Directory containing output files.
+      description: Deduplicated BAM file
       direction: output
+      default: $id.$key.bam
+    - name: "--output_stats"
+      type: file
+      description: Directory containing UMI based dedupllication statistics files
+      default: $id.umi_dedup.stats
 
   resources:
     - type: bash_script

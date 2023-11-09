@@ -13,9 +13,11 @@ functionality:
     - name: "--output"
       type: file
       direction: output
+      default: $id.transcriptome_sorted.bam
     - name: "--log"
       type: file
       direction: output
+      default: $id.$key.log
 
   
   resources:

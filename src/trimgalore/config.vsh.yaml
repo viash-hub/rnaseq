@@ -46,15 +46,14 @@ functionality:
     - name: "--trim_zip"
       type: file
       direction: output
-    # - name: "--trim_read_count"
-    #   type: integer
-    #   direction: output
+    - name: "--trim_read_count"
+      type: integer
+      direction: output
 
 
     # Optional arguments
     - name: "--extra_trimgalore_args"
       type: string
-      example: "--three_prime_clip_R1 15 --three_prime_clip_R2 15"
       description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
       default: ""
     - name: "--min_trimmed_reads"

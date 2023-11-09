@@ -23,13 +23,14 @@ if [ "$par_paired" == "true" ]; then
     else
         read1="$(basename -- ${input[0]})"
         read2="$(basename -- ${input[1]})"
-        umi_tools extract -I "${input[0]}" --read2-in="${input[1]}" \
-        -S "$tmpdir/$read1" \
-        --read2-out="$tmpdir/$read2" \
-        --extract-method $par_umitools_extract_method \
-        --bc-pattern "${pattern[0]}" \
-        --bc-pattern2 "${pattern[1]}" \
-        --umi-separator $par_umitools_umi_separator
+        umi_tools extract \
+            -I "${input[0]}" --read2-in="${input[1]}" \
+            -S "$tmpdir/$read1" \
+            --read2-out="$tmpdir/$read2" \
+            --extract-method $par_umitools_extract_method \
+            --bc-pattern "${pattern[0]}" \
+            --bc-pattern2 "${pattern[1]}" \
+            --umi-separator $par_umitools_umi_separator
         if [ $par_umi_discard_read == 1 ]; then
             cp $tmpdir/$read1 $par_fastq_1
         elif [ $par_umi_discard_read == 2 ]; then
@@ -46,10 +47,11 @@ else
         exit 1
     else
         read1="$(basename -- ${input[0]})"
-        umi_tools extract -I "${input[0]}" -S "$tmpdir/$read1" \
-        --extract-method $par_umitools_extract_method \
-        --bc-pattern "${pattern[0]}" \
-        --umi-separator $par_umitools_umi_separator 
+        umi_tools extract \
+            -I "${input[0]}" -S "$tmpdir/$read1" \
+            --extract-method $par_umitools_extract_method \
+            --bc-pattern "${pattern[0]}" \
+            --umi-separator $par_umitools_umi_separator 
         cp $tmpdir/$read1 $par_fastq_1
     fi
 fi

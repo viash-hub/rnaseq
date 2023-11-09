@@ -2,8 +2,6 @@
 
 set -eo pipefail
 
-mkdir -p $par_output
-
 args="--random-seed=100"
 
 if $par_paired; then
@@ -14,9 +12,10 @@ else
 fi
 
 if $par_get_output_stats; then
-    stats="--output-stats $par_output/"
+    mkdir -p $par_output_stats
+    stats="--output-stats $par_output_stats/"
 else
     stats=""
 fi
 
-PYTHONHASHSEED=0 umi_tools dedup -I $par_input/*.bam -S "$par_output/${par_id}_deduplicated_aligned.bam" $stats $paired $args
+PYTHONHASHSEED=0 umi_tools dedup -I $par_bam -S $par_output_bam $stats $paired $args
