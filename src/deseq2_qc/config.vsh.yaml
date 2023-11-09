@@ -1,0 +1,65 @@
+functionality:
+  name: deseq2_qc
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/deseq2_qc.nf]
+      last_sha: 92b2a7857de1dda9d1c19a088941fc81e2976ff7
+  description: | 
+    Run DESeq2, perform PCA, generate heatmaps and scatterplots for samples in the counts files
+
+  arguments: 
+    # INPUT
+    - name: "--counts"
+      type: file
+      description: Count file matrix where rows are genes and columns are samples
+    - name: "--pca_header_multiqc"
+      type: file
+      default: assets/multiqc/deseq2_pca_header.txt
+    - name: "--clustering_header_multiqc"
+      type: file
+      default: assets/multiqc/deseq2_clustering_header.txt
+    - name: "--deseq2_vst"
+      type: boolean
+      default: true
+      description: Use vst transformation instead of rlog with DESeq2
+    - name: "--extra_args"
+      type: string
+      default: "--id_col 1 --sample_suffix '' -outprefix deseq2 --count_col 3"
+    - name: "--extra_args2"
+      type: string
+      default: star_salmon
+
+    # OUTPUT
+    - name: "--deseq2_output"
+      type: file
+      direction: output
+      default: deseq2_qc
+    - name: "--pca_multiqc"
+      type: file
+      direction: output
+      default: $id.star_salmon.pca.vals_mqc.tsv
+    - name: "--dists_multiqc"
+      type: file
+      direction: output
+      default: $id.star_salmon.sample.dists_mqc.tsv
+  
+  resources:
+    - type: bash_script
+      path: script.sh
+    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/deseq2_qc.r
+    - path: deseq2_qc.r
+  test_resources:
+    - type: bash_script
+      path: test.sh
+
+platforms: 
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [r-base]
+      - type: r
+        cran: [ optparse, ggplot2, RColorBrewer, pheatmap ]
+        bioc: [ DESeq2 ]
+  - type: nextflow
