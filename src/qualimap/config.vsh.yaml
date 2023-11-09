@@ -12,19 +12,19 @@ functionality:
     - name: "--input"
       type: file
       required: true
-      description: Input mapping file in BAM format.
+      description: path to input mapping file in BAM format.
 
     - name: "--gtf"
       type: file
       required: true
-      description: Annotations file in Ensembl GTF format.
+      description: path to annotations file in Ensembl GTF format.
 
     - name: "--output"
       direction: output
       type: file
       required: false
       default: qualimap_output
-      description: Output directory for raw data and report.
+      description: path to output directory for raw data and report.
 
     - name: "--output_pdf"
       type: file
@@ -32,7 +32,7 @@ functionality:
       required: false
       must_exist: false
       default: report.pdf
-      description: Output file for pdf report.
+      description: path to output file for pdf report.
 
     - name: "--output_format"
       type: string
@@ -67,16 +67,12 @@ functionality:
       description: Sequencing library protocol (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
    
     - name: "--paired"
-      type: boolean
-      default: false
-      required: false
-      description: Setting thisflag for paired-end experiments will result in counting fragments instead of reads.
+      type: boolean_true
+      description: Setting this flag for paired-end experiments will result in counting fragments instead of reads.
 
     - name: "--sorted"
-      type: boolean
-      default: false
-      required: false
-      description: This flag indicates that the input file is already sorted by name. If not set, additional sorting by name will be performed. Only requiredfor paired-end analysis.
+      type: boolean_true
+      description: Setting this flag indicates that the input file is already sorted by name. If flag is not set, additional sorting by name will be performed. Only requiredfor paired-end analysis.
 
     - name: "--java_memory_size"
       type: string
@@ -90,8 +86,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/test
-    - path: /testData/reference
+    - path: /testData/test/SRR6357070.bam
+    - path: /testData/reference/genes.gtf.gz
    
 platforms:
   - type: docker
