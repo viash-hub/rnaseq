@@ -7,7 +7,7 @@ meta_cpus=10
 
 set -exo pipefail 
 
-filename="$(basename -- $par_input)"
+prefix=$(openssl rand -hex 8)
 
 function num_strandness {
     if [ $par_strandedness == 'none' ]; then echo 1
@@ -18,24 +18,18 @@ function num_strandness {
     fi
 }
 
-function str_paired {
-    if $par_paired; then echo paired
-    else echo single
-    fi
-}
-
 Rscript $meta_resources_dir/dupRadar.r \
     $par_input \
-    $filename \
+    $prefix \
     $par_gtf_annotation \
     $(num_strandness) \
     $par_paired \
-    $par_cpus
+    ${meta_cpus:-1}
 
-mv "$filename"_dupMatrix.txt $par_output_dupmatrix
-mv "$filename"_dup_intercept_mqc.txt $par_output_dup_intercept_mqc
-mv "$filename"_duprateExpBoxplot.pdf $par_output_duprate_exp_boxplot
-mv "$filename"_duprateExpDens.pdf $par_output_duprate_exp_densplot
-mv "$filename"_duprateExpDensCurve_mqc.txt $par_output_duprate_exp_denscurve_mqc
-mv "$filename"_expressionHist.pdf $par_output_expression_histogram
-mv "$filename"_intercept_slope.txt $par_output_intercept_slope
+mv "$prefix"_dupMatrix.txt $par_output_dupmatrix
+mv "$prefix"_dup_intercept_mqc.txt $par_output_dup_intercept_mqc
+mv "$prefix"_duprateExpBoxplot.pdf $par_output_duprate_exp_boxplot
+mv "$prefix"_duprateExpDens.pdf $par_output_duprate_exp_densplot
+mv "$prefix"_duprateExpDensCurve_mqc.txt $par_output_duprate_exp_denscurve_mqc
+mv "$prefix"_expressionHist.pdf $par_output_expression_histogram
+mv "$prefix"_intercept_slope.txt $par_output_intercept_slope

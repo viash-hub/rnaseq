@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # define input and output for script
-sample="SRR6357070"
-genes="genes"
 
-gunzip "$meta_resources_dir/reference/$genes.gtf.gz"
+gunzip "$meta_resources_dir/genes.gtf.gz"
+
+input_bam="$meta_resources_dir/SRR6357070.bam"
+input_gtf="$meta_resources_dir/genes.gtf"
 
 output_dupmatrix="dup_matrix.txt"
 output_dup_intercept_mqc="dup_intercept_mqc.txt"
@@ -25,9 +26,8 @@ trap clean_up EXIT
 echo "> Running $meta_functionality_name for unpaired reads, writing to tmpdir $tmpdir."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/test/$sample.bam" \
-    --gtf_annotation "$meta_resources_dir/reference/$genes.gtf" \
-    --paired "false" \
+    --input "$input_bam" \
+    --gtf_annotation "$input_gtf" \
     --strandedness "forward" \
     --output_dupmatrix $tmpdir/$output_dupmatrix \
     --output_dup_intercept_mqc $tmpdir/$output_dup_intercept_mqc \
@@ -35,7 +35,7 @@ echo "> Running $meta_functionality_name for unpaired reads, writing to tmpdir $
     --output_duprate_exp_densplot $tmpdir/$output_duprate_exp_densplot \
     --output_duprate_exp_denscurve_mqc $tmpdir/$output_duprate_exp_denscurve_mqc \
     --output_expression_histogram $tmpdir/$output_expression_histogram \
-     --output_intercept_slope $tmpdir/$output_intercept_slope
+    --output_intercept_slope $tmpdir/$output_intercept_slope
 
 exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1

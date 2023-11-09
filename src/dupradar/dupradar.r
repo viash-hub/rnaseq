@@ -5,11 +5,15 @@ args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 5) {
     stop("Usage: dupRadar.r <input.bam> <annotation.gtf> <strandDirection:0=unstranded/1=forward/2=reverse> <paired/single> <nbThreads> <R-package-location (optional)>", call.=FALSE)
 }
+
+message("paired_end is", args[5])
+message("the type is is", class(args[5]))
+
 input_bam <- args[1]
 output_prefix <- args[2]
 annotation_gtf <- args[3]
 stranded <- as.numeric(args[4])
-paired_end <- ifelse(args[5]=="true", TRUE, FALSE)
+paired_end <- ifelse(args[5] == "true", TRUE, FALSE)
 threads <- as.numeric(args[6])
 
 bamRegex <- "(.+)\\.bam$"
