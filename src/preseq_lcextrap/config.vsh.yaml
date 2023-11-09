@@ -1,0 +1,44 @@
+functionality:
+  name: "preseq_lcextrap"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/preseq/lcextrap/main.nf, modules/nf-core/preseq/lcextrap/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: Predicting library complexity and genome coverage in high-throughput sequencing
+
+  arguments: 
+    - name: "--bam"
+      type: file
+      description: Input genome BAM file
+    - name: "--extra_preseq_args"
+      type: string
+    - name: "--paired"
+      type: boolean
+      description: Paired-end reads?
+
+    - name: output
+      type: file
+      direction: output
+      default: $id.lc_extrap.txt
+
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: | 
+          apt-get update && \
+          apt-get install -y build-essential wget gcc autoconf automake make libz-dev && \
+          wget --no-check-certificate https://github.com/smithlabcode/preseq/releases/download/v3.2.0/preseq-3.2.0.tar.gz && \
+          tar -xzf preseq-3.2.0.tar.gz && \
+          cd preseq-3.2.0 && \
+          mkdir build && cd build && \
+          ../configure && \
+          make && make install 
+  - type: nextflow
+  
