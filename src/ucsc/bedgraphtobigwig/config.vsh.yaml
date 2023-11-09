@@ -1,0 +1,38 @@
+functionality:
+  name: "ucsc_bedgraphtobigwig"
+  namespace: "ucsc"
+  info:
+    migration_info:
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/nf-core/ucsc/bedgraphtobigwig/main.nf, modules/nf-core/ucsc/bedgraphtobigwig/meta.yml]
+      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+  description: Convert a bedGraph file to bigWig format
+
+  arguments:
+    - name: "--bedgraph"
+      type: file
+      description: bedGraph file which should be converted
+    - name: "--sizes"
+      type: file
+      description: File with chromosome sizes
+
+    - name: "--bigwig"
+      type: file
+      direction: output
+      description: bigWig coverage file relative to genes on the input file
+      default: $id.$key.bigwig
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages:
+          - rsync
+      - type: docker
+        run: | 
+          rsync -aP rsync://hgdownload.soe.ucsc.edu/genome/admin/exe/linux.x86_64/bedGraphToBigWig ./
+  - type: nextflow
