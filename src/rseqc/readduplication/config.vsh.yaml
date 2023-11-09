@@ -40,7 +40,7 @@ functionality:
       type: file
       direction: output
       required: false
-      default: duplication_rate_plot.pd
+      default: duplication_rate_plot.pdf
       description: duplication rate plot (pdf)
 
     - name: "--output_duplication_rate_mapping"

@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-## VIASH START
-meta_executable="target/docker/rseqc/rseqc_bamstat/rseqc_bamstat"
-meta_resources_dir="testData/test"
-meta_temp_dir="output/bamstat"
-## VIASH END
-
 sample="SRR6357070"
 
 echo "> Running $meta_functionality_name."
