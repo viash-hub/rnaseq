@@ -16,7 +16,7 @@ functionality:
       multiple_sep: ","
     - name: "--extra_args"
       type: string
-      default: "--record-count 1000000 --seed 1"
+      default: ""
       description: Extra arguments to pass to fq subsample
 
     - name: "--output_1"
