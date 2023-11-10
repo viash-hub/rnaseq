@@ -17,7 +17,3 @@ qualimap \
     ${par_sorted:+-s} \
     -outdir $par_output \
     -outformat $par_output_format 
-
-echo "+++++++++++"
-echo "$meta_temp_dir"
-echo "++++++++++++"
