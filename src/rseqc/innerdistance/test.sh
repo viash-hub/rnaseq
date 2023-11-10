@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # define input and output for script
-sample_1_unpaired="SRR6357070"
-genome_1="genome_gfp"
+input_bam_1_unpaired="SRR6357070.bam"
+input_bed_1="genome_gfp.bed"
 
-sample_2_paired="Pairend_nonStrandSpecific_36mer_Human_hg19"
-genome_2="hg19_rRna"
+input_bam_2_paired="Pairend_nonStrandSpecific_36mer_Human_hg19.bam"
+input_bed_2="hg19_rRna.bed"
 
 output_stats="inner_distance_stats.txt"
 output_dist="inner_distance.txt"
@@ -25,9 +25,8 @@ trap clean_up EXIT
 echo "> Running $meta_functionality_name for unpaired reads, writing to tmpdir $tmpdir."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/test/$sample_1_unpaired.bam" \
-    --refgene "$meta_resources_dir/test/$genome_1.bed" \
-    --paired "false" \
+    --input "$meta_resources_dir/$input_bam_1_upaired" \
+    --refgene "$meta_resources_dir/$input_bed_1" \
     --output_stats $tmpdir/$output_stats \
     --output_dist $tmpdir/$output_dist \
     --output_plot $tmpdir/$output_plot \
@@ -48,9 +47,9 @@ echo ">> asserting no output has been created for unpaired read input"
 echo "> Running $meta_functionality_name for paired reads, writing to tmpdir $tmpdir."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/test/$sample_2_paired.bam" \
-    --refgene "$meta_resources_dir/test/$genome_2.bed" \
-    --paired "true" \
+    --input "$meta_resources_dir/$input_bam_2_paired" \
+    --refgene "$meta_resources_dir/$input_bed_2" \
+    --paired \
     --output_stats $tmpdir/$output_stats \
     --output_dist $tmpdir/$output_dist \
     --output_plot $tmpdir/$output_plot \

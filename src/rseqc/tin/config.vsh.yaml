@@ -27,11 +27,16 @@ functionality:
       min: 1
       description: Minimum number of reads mapped to a transcript, default = 10.
 
-    - name: "--subtract_backtround"
-      type: boolean
+    - name: "--sample_size"
+      type: integer
       required: false
-      default: false
-      description: Subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads, default = false.
+      default: 100
+      min: 1
+      description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
+
+    - name: "--subtract_background"
+      type: boolean_true
+      description: Set flag to subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads.
 
     - name: "--output_tin_summary"
       type: file
@@ -53,7 +58,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/test
+    - path: /testData/test/SRR6357070.bam
+    - path: /testData/test/SRR6357070.bam.bai
+    - path: /testData/test/genome_gfp.bed
    
 platforms:
   - type: docker
