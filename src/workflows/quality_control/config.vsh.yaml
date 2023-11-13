@@ -1,0 +1,68 @@
+functionality:
+  name: quality_control
+  namespace: workflows
+  description: |
+    A subworkflow for the pre-processing stage of the nf-core/rnaseq pipeline.
+  argument_groups:
+    - name: Input
+      arguments:
+        - name: "--id"
+          required: true
+          description: ID of the sample
+          type: string 
+          example: test
+
+        - name: "--bam_input"
+          required: true
+          type: file
+          required: true
+          description: Path to input alignment file in BAM or SAM format.
+          example: sample.bam
+
+        - name: "--refgene"
+          type: file 
+          required: true
+          description: path to reference gene model in bed format
+
+        - name: "--map_qual"
+          type: integer
+          required: false
+          default: 30 
+          description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+          min: 0
+
+        - name: "--infer_experiment_sample_size"
+          type: integer
+          required: false
+          default: 200000
+          min: 1
+          description: Numer of reads sampled from SAM/BAM file to infer strandedness, default = 200000.
+
+        
+    - name: Output
+      arguments:
+        - name: "--bamstat_output"
+          type: file
+          direction: output
+          required: false
+          description: Path to output file (txt) of mapping quality statistics
+          default: mapping_quality.txt
+
+        - name: "--strandedness_output"
+          type: file
+          direction: output
+          required: false
+          default: strandedness.txt
+          description: Path to output report (txt) of inferred strandedness
+
+  resources:
+    - type: nextflow_script
+      path: main.nf
+      entrypoint: run_wf
+
+  dependencies:
+    - name: rseqc/rseqc_bamstat
+    - name: rseqc/rseqc_inferexperiment
+
+platforms:
+  - type: nextflow
