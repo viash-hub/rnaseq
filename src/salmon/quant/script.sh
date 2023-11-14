@@ -17,8 +17,8 @@ fi
 
 strandedness_opts=('A' 'U' 'SF' 'SR' 'IS' 'IU' 'ISF' 'ISR' 'OS' 'OU' 'OSF' 'OSR' 'MS' 'MU' 'MSF' 'MSR')
 strandedness='A'
-if $par_lib_type; then
-    if [ ${strandedness_opts[@]} =~ $par_lib_type ]; then
+if [ $par_lib_type != '' ]; then
+    if [[ ${strandedness_opts[@]} =~ $par_lib_type ]]; then
         strandedness=$par_lib_type
     else 
         echo "[Salmon Quant] Invalid library type specified '--libType=$lib_type', defaulting to auto-detection with '--libType=A'."
@@ -45,7 +45,14 @@ else
     fi
 fi
 
-salmon quant --geneMap $par_gtf --threads $meta_cpus --libType=$strandedness $reference $input_reads $par_extra_salmon_quant_args -o $par_output
+salmon quant \
+    --geneMap $par_gtf \
+    --threads $meta_cpus \
+    --libType=$strandedness \
+    $reference \
+    $input_reads \
+    $par_extra_salmon_quant_args \
+    -o $par_output
 
 if [ -f "$par_output/aux_info/meta_info.json" ]; then
     cp "$par_output/aux_info/meta_info.json" $par_json_info
