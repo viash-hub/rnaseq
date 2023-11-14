@@ -10,6 +10,14 @@ else
     strandedness=0
 fi
 
+if $par_gencode; then 
+    par_extra_featurecounts_args+=" -g gene_type"
+else
+    par_extra_featurecounts_args+=" -g $par_featurecounts_group_type"
+fi
+
+par_extra_featurecounts_args+=" -t $par_featurecounts_feature_type"
+
 featureCounts \
     $par_extra_featurecounts_args \
     ${par_paired:+-p} \
@@ -19,4 +27,3 @@ featureCounts \
     -o $par_counts \
     $par_bam
 
-mv $par_counts.summary $par_summary

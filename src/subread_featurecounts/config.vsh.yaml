@@ -20,6 +20,20 @@ functionality:
     - name: "--gtf"
       type: file
       description: Genomic features annotation in GTF
+    - name: "--extra_featurecounts_args"
+      type: string
+      description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+    - name: "--featurecounts_group_type"
+      type: string
+      description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
+      default: gene_biotype
+    - name: "--featurecounts_feature_type"
+      type: string
+      description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
+      default: exon
+    - name: "--gencode"
+      type: boolean
+      description: Specify if the GTF annotation is in GENCODE format.
 
     - name: "--counts"
       type: file
