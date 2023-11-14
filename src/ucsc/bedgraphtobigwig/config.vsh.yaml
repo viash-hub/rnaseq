@@ -32,7 +32,8 @@ platforms:
       - type: apt
         packages:
           - rsync
+          - libcurl4
       - type: docker
         run: | 
-          rsync -aP rsync://hgdownload.soe.ucsc.edu/genome/admin/exe/linux.x86_64/bedGraphToBigWig ./
+          rsync -aP rsync://hgdownload.soe.ucsc.edu/genome/admin/exe/linux.x86_64/bedGraphToBigWig /usr/local/bin/
   - type: nextflow
