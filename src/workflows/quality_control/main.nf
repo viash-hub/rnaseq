@@ -126,12 +126,36 @@ workflow run_wf {
 
         | mix
 
-        | view
+        | toSortedList
 
-        // | setState(
-        //     "bamstat_output": "bamstat_output",
-        //     "strandedness_output": "strandedness_output",
-        // )
+        | map { list -> 
+            def ids = list.collect{it[0]}.unique()
+            assert ids.size() == 1
+            def id = ids[0]
+            def state = list.inject([:]){currentState, tuple -> return currentState + tuple[1] }
+            [id, state]
+        }
+
+        | niceView()
+
+        | setState(
+            "bamstat_output": "bamstat_output",
+            "strandedness_output": "strandedness_output",
+            "inner_dist_output_stats": "inner_dist_output_stats",
+            "inner_dist_output_dist": "inner_dist_output_dist",
+            "inner_dist_output_freq": "inner_dist_output_freq",
+            "inner_dist_output_plot": "inner_dist_output_plot",
+            "inner_dist_output_plot_r": "inner_dist_output_plot_r",
+            "junction_annotation_output_log": "junction_annotation_output_log",
+            "junction_annotation_output_plot_r": "junction_annotation_output_plot_r",
+            "junction_annotation_output_junction_bed": "junction_annotation_output_junction_bed",
+            "junction_annotation_output_junction_interact": "junction_annotation_output_junction_interact",
+            "junction_annotation_output_junction_sheet": "junction_annotation_output_junction_sheet",
+            "junction_annotation_output_splice_events_plot": "junction_annotation_output_splice_events_plot",
+            "junction_annotation_output_splice_junctions_plot": "junction_annotation_output_splice_junctions_plot",
+            "junction_saturation_output_plot_r": "junction_saturation_output_plot_r",
+            "junction_saturation_output_plot": "junction_saturation_output_plot"
+        )
 
     emit:
         output_ch
