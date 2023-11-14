@@ -24,6 +24,35 @@ functionality:
           required: true
           description: path to reference gene model in bed format
 
+        - name: "--paired"
+          type: boolean_true
+          description: Setting this flag indicates a paired-end experiment.
+
+        - name: "--sample_size"
+          type: integer
+          required: false
+          default: 200000
+          min: 1
+          description: Numer of reads sampled from SAM/BAM file to infer experiment and calculate inner distance, default = 200000.
+
+        - name: "--lower_bound_size"
+          type: integer
+          required: false
+          default: -250 
+          description: Lower bound of inner distance (bp). This option is used for ploting histograme, default=-250.
+
+        - name: "--upper_bound_size"
+          type: integer
+          required: false
+          default: 250 
+          description: Upper bound of inner distance (bp). This option is used for ploting histograme, default=250.
+
+        - name: "--step_size"
+          type: integer
+          required: false
+          default: 5 
+          description: Step size (bp) of histograme of inner distance. This option is used for plotting histogram, default=5.        
+
         - name: "--map_qual"
           type: integer
           required: false
@@ -31,14 +60,6 @@ functionality:
           description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
           min: 0
 
-        - name: "--infer_experiment_sample_size"
-          type: integer
-          required: false
-          default: 200000
-          min: 1
-          description: Numer of reads sampled from SAM/BAM file to infer strandedness, default = 200000.
-
-        
     - name: Output
       arguments:
         - name: "--bamstat_output"
@@ -55,6 +76,47 @@ functionality:
           default: strandedness.txt
           description: Path to output report (txt) of inferred strandedness
 
+        - name: "--inner_dist_output_stats"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: inner_distance_stats.txt
+          description: output file (txt) with summary statistics of inner distances of paired reads
+
+        - name: "--inner_dist_output_dist"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: inner_distance.txt
+          description: output file (txt) with inner distances of all paired reads
+
+        - name: "--inner_dist_output_freq"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: inner_distance_freq.txt
+          description: output file (txt) with frequencies of inner distances of all paired reads
+
+        - name: "--inner_dist_output_plot"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: inner_distance_plot.pdf
+          description: output file (pdf) with histogram plot of of inner distances of all paired reads
+
+        - name: "--inner_dist_output_plot_r"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: inner_distance_plot.r
+          description: output file (R) with script of histogram plot of of inner distances of all paired reads
+
+
   resources:
     - type: nextflow_script
       path: main.nf
@@ -63,6 +125,7 @@ functionality:
   dependencies:
     - name: rseqc/rseqc_bamstat
     - name: rseqc/rseqc_inferexperiment
+    - name: rseqc/rseqc_innerdistance
 
 platforms:
   - type: nextflow
