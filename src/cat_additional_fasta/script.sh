@@ -1,12 +1,8 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-## VIASH END
-
 set -eo pipefail
 
-add_name="$(basename -- $par_additional_fasta/*)"
+add_name="$(basename -- $par_additional_fasta)"
 
 # Use fasta2gtf.py to generate a GTF annotation file from the FASTA file
 "$meta_resources_dir/fasta2gtf.py" \
