@@ -5,10 +5,14 @@ set -eo pipefail
 IFS="," read -ra input <<< $par_input
 n_fastq=${#input[@]}
 
-if [ ! $par_extra_args == *'-p'* ] && [ ! $par_extra_args == *'--probability'* ] && [ ! $par_extra_args == *'-n'* ] && [ ! $par_extra_args == *'--record-count'* ]; then
-    echo "FQ/SUBSAMPLE requires --probability (-p) or --record-count (-n) specified in task.ext.args!"
-    exit 1
-fi
+required_args=("-p" "--probability" "-n" "--read-count")
+
+for arg in "${required_args[@]}"; do
+    if [[ "$par_extra_args" == *"$arg"* ]]; then
+        echo "FQ/SUBSAMPLE requires --probability (-p) or --record-count (-n) specified in task.ext.args!"
+        exit 1
+    fi
+done
 
 if [ $n_fastq -eq 1 ]; then
     fq subsample $par_extra_args ${input[*]} --r1-dst $par_output_1
