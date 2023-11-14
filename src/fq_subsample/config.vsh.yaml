@@ -50,5 +50,6 @@ platforms:
           . "$HOME/.cargo/env" && \
           git clone --depth 1 --branch v0.11.0 https://github.com/stjude-rust-labs/fq.git && \
           mv fq /usr/local/ && cd /usr/local/fq && \
-          cargo install --locked --path .
+          cargo install --locked --path . && \
+          mv /usr/local/fq/target/release/fq /usr/local/bin/
   - type: nextflow
