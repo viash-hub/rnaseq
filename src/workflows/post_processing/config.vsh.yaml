@@ -36,7 +36,6 @@ functionality:
       description: Genome BAM file
     - name: "--chrom_sizes"
       type: file
-      direction: output
       description: File containing chromosome lengths
     - name: "--star_multiqc"
       type: file
@@ -56,6 +55,10 @@ functionality:
       type: string
       default: ''
       description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
+    - name: "--extra_featurecounts_args"
+      type: string
+      description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+      default: '-B -C'
     - name: "--bam_csi_index"
       type: boolean
       default: false
@@ -84,14 +87,17 @@ functionality:
       type: boolean
     - name: "--skip_bigwig"
       type: boolean
-    
-    - name: "--percent_mapped"
-      type: double
-      description: Percentage of mapped reads
-    - name: "--star_pass"
+    - name: "--featurecounts_group_type"
+      type: string
+      description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
+      default: gene_biotype
+    - name: "--featurecounts_feature_type"
+      type: string
+      description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
+      default: exon
+    - name: "--gencode"
       type: boolean
-      description: Whether the percentage of uniquely mapped reads for the sample is above the threshold or not?
-
+      description: Specify if the GTF annotation is in GENCODE format.
 
     # Output
     - name: "--processed_genome_bam"
@@ -152,7 +158,6 @@ functionality:
       entrypoint: run_wf
   
   dependencies:
-    - name: map_star_pass_fail
     - name: picard_markduplicates
     - name: samtools/samtools_sort
     - name: samtools/samtools_index
@@ -160,7 +165,6 @@ functionality:
     - name: samtools/samtools_flagstat
     - name: samtools/samtools_idxstats
     - name: stringtie
-    - name: check_biotype_in_gtf
     - name: subread_featurecounts
     - name: multiqc_custom_biotype
     - name: bedtools_genomecov

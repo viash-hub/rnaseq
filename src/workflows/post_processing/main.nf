@@ -5,23 +5,7 @@ workflow run_wf {
     input_ch
 
   main:
-    output_ch = input_ch
-
-    // TODO: Move to final_qc
-    // | deseq2_qc.run (
-    //     runIf: { id, state -> !state.skip_qc && !skip_deseq2_qc },
-    //     fromState: [
-    //         "counts": "counts_gene_length_scaled",
-    //         "pca_header_multiqc": "pca_header_multiqc", 
-    //         "clustering_header_multiqc": "clustering_header_multiqc",
-    //         "deseq2_vst": "deseq2_vst"
-    //     ], 
-    //     toState: [
-    //         "deseq2_output": "deseq2_output", 
-    //         "deseq2_pca_multiqc": "pca_multiqc", 
-    //         "deseq2_dists_multiqc": "dists_multiqc"
-    //     ]
-    // )
+    output_ch = input_ch   
     
     // Filter channels to get samples that passed STAR minimum mapping percentage
     // | map_star_pass_fail.run (
@@ -36,19 +20,8 @@ workflow run_wf {
     //     ]
     // )
     // | filter { id, state -> state.star_passed }
-    // TODO: star_failed_multiqc: multiqcTsvFromList
+    // TODO: star_failed_multiqc: multiqcTsvFromList    
 
-    // TODO: Move to final_qc
-    // | preseq_lcextrap.run (
-    //     runIf: { id, state -> !state.skip_qc && !skip_preseq },
-    //     fromState: [
-    //         "paired": "paired",
-    //         "bam": "genome_bam",
-    //         "extra_preseq_arg": "extra_preseq_arg"
-    //     ],
-    //     toState: [ "preseq_output": "output" ],
-    // )
-    
     | picard_markduplicates.run (
         runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
         fromState: [
@@ -66,7 +39,8 @@ workflow run_wf {
         runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
         fromState: ["input": "genome_bam"],
         toState: ["genome_bam": "output"],
-        key: "genome_sorted_MarkDuplicates"    )
+        key: "genome_sorted_MarkDuplicates" 
+    )
     | samtools_index.run (
       runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
       fromState: [
@@ -127,45 +101,55 @@ workflow run_wf {
         ]
     )
 
-    // // Feature biotype QC using featureCounts
-    // | check_biotype_in_gtf.run (
-    //   runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
-    //     fromState: [
-    //         "gtf": "gtf",
-    //         "biotype": "biotype"
-    //     ],
-    //     toState: [ "biotype_exists": "biotype_exists" ]
-    // )
+    // Feature biotype QC using featureCounts
+    // PREPARE_GENOME
+    //         .out
+    //         .gtf
+    //         .map { WorkflowRnaseq.biotypeInGtf(it, biotype, log) }
+    //         .set { biotype_in_gtf }
 
-    // | subread_featurecounts.run (
-    //     runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
-    //     fromState: [
-    //         "paired": "paired", 
-    //         "strandedness": "strandedness", 
-    //         "gtf": "gtf", 
-    //         "bam": "genome_bam"
-    //     ],
-    //     toState: [
-    //         "featurecounts": "counts",
-    //         "featurecounts_summary": "summary"
-    //     ]
-    // )
+    //     // Prevent any samples from running if GTF file doesn't have a valid biotype
+    //     ch_genome_bam
+    //         .combine(PREPARE_GENOME.out.gtf)
+    //         .combine(biotype_in_gtf)
+    //         .filter { it[-1] }
+    //         .map { it[0..<it.size()-1] }
+    //         .set { ch_featurecounts }
 
-    // | multiqc_custom_biotype.run (
-    //     runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
-    //     fromState: [
-    //         "id": "id",
-    //         "biocounts": "featurecounts", 
-    //         "biotypes_header": "biotypes_header"
-    //     ],
-    //     toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
-    // )
+    | subread_featurecounts.run (
+        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
+        fromState: [
+            "paired": "paired", 
+            "strandedness": "strandedness", 
+            "gtf": "gtf", 
+            "bam": "genome_bam", 
+            "gencode": "gencode",
+            "extra_featurecounts_args": "extra_featurecounts_args",
+            "featurecounts_group_type": "featurecounts_group_type",
+            "featruecount_feature_type": "featruecount_feature_type",
+        ],
+        toState: [
+            "featurecounts": "counts",
+            "featurecounts_summary": "summary"
+        ]
+    )
+
+    | multiqc_custom_biotype.run (
+        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
+        fromState: [
+            "id": "id",
+            "biocounts": "featurecounts", 
+            "biotypes_header": "biotypes_header"
+        ],
+        toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
+    )
 
     // Genome-wide coverage with BEDTools
 
     | bedtools_genomecov.run (
         runIf: { id, state -> !state.skip_bigwig },
         fromState: [
+            "strandedness": "strandedness", 
             "bam": "genome_bam",
             "extra_bedtools_args": "extra_bedtools_args"
         ],
@@ -191,7 +175,7 @@ workflow run_wf {
             "bedgraph": "bedgraph_forward", 
             "sizes": "chrom_sizes"
         ],
-        toState: [ " bigwig_forward": "bigwig" ], 
+        toState: [ "bigwig_forward": "bigwig" ], 
         key: "bedgraphtobigwig_forward"
     )
 
@@ -217,12 +201,11 @@ workflow run_wf {
 
     | setState (
         "processed_genome_bam": "genome_bam", 
-        "genome_bam_indexed": "genome_bam_indexed",
+        "genome_bam_index": "genome_bam_index",
         "genome_bam_stats": "genome_bam_stats",
         "genome_bam_flagstat": "genome_bam_flagstat", 
         "genome_bam_idxstats": "genome_bam_idxstats", 
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
-        "transcript_gtf": "transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
         "stringtie_ballgown": "stringtie_ballgown", 
@@ -241,3 +224,26 @@ workflow run_wf {
     output_ch
 }
 
+//
+// Function to check whether biotype field exists in GTF file
+//
+def biotypeInGtf(gtf_file, biotype, log) {
+    def hits = 0
+    gtf_file.eachLine { line ->
+        def attributes = line.split('\t')[-1].split()
+        if (attributes.contains(biotype)) {
+            hits += 1
+        }
+    }
+    if (hits) {
+        return true
+    } else {
+        log.warn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+            "  Biotype attribute '${biotype}' not found in the last column of the GTF file!\n\n" +
+            "  Biotype QC will be skipped to circumvent the issue below:\n" +
+            "  https://github.com/nf-core/rnaseq/issues/460\n\n" +
+            "  Amend '--featurecounts_group_type' to change this behaviour.\n" +
+            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        return false
+    }
+}
