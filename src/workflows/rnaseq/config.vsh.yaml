@@ -87,7 +87,7 @@ functionality:
       type: string
       description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
       default: gene_biotype
-    - name: "--featruecount_feature_type"
+    - name: "--featurecounts_feature_type"
       type: string
       description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
       default: exon
@@ -215,14 +215,6 @@ functionality:
     - name: "--seq_center"
       type: string
       description: Sequencing center.
-    - name: "--seq_platform"
-      type: string
-      default: ''
-      description: Sequencing platform.
-    - name: "--seq_center"
-      type: string
-      default: ''
-      description: Sequencing center.
     - name: "--salmon_quant_libtype"
       type: string
       description: Override Salmon library type inferred based on strandedness defined in meta object.
@@ -246,6 +238,14 @@ functionality:
       type: string
       default: '-split -du'
       description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
+    - name: "--extra_featurecounts_args"
+      type: string
+      description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+      default: '-B -C'
+    - name: "--extra_preseq_args"
+      type: string
+      description: Extra arguments to pass to preseq lc_extrap command in addition to defaults defined by the pipeline
+      default: '-verbose -bam -seed 1 -seg_len 100000000'
 
     # Extra pipeline options:
     - name: "--skip_qc"
@@ -259,14 +259,23 @@ functionality:
       type: boolean_true
     - name: "--skip_bigwig"
       type: boolean_true
+    - name: "--with_preseq"
+      type: boolean_true
     - name: "--extra_fq_subsample_args"
       type: string
       default: '--record-count 1000000 --seed 1'
       description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
-    - name: "--extra_picard_args"
+
+    # Multiqc paramenters
+    - name: "--multiqc_custom_config"
+      type: file
+    - name: "--multiqc_title"
       type: string
-      description: Additional argument to be passed to Picard MarkDuplicates
-      default: '--ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp'
+    - name: "--multiqc_logo"
+      type: file
+    - name: "--multiqc_methods_description"
+      type: file
+      default: assets/methods_description_template.yml
      
     - name: "--output"
       type: file
@@ -278,13 +287,13 @@ functionality:
       path: main.nf
       entrypoint: run_wf
 
-  dependencies:
+  dependencies: 
     - name: workflows/prepare_genome
-    - name: check_contig_size
     - name: cat_fastq
     - name: workflows/pre_processing
     - name: workflows/genome_alignment_and_quant
-    - name: workflows/post_processing_and_qc
+    - name: workflows/post_processing
+    - name: workflows/final_qc
 
 platforms:
   - type: nextflow
