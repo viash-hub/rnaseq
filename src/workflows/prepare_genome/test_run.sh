@@ -9,8 +9,8 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --gtf testData/reference/genes.gtf.gz \
     --additional_fasta testData/reference/gfp.fa.gz \
     --transcript_fasta testData/reference/transcriptome.fasta \
-    --gencode true \
-    --biotype gene_type \
+    --genotype false \
+    --biotype gene_biotype \
     --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
     --salmon_index testData/reference/salmon.tar.gz \
     # -profile docker \ 

@@ -64,8 +64,8 @@ workflow run_wf {
             ], 
             key: "cat_additional",
             args: [
-                fasta_output: "genome_additional_concat.fasta", 
-                gtf_output: "genome_additional_concat.gtf"]  
+                fasta_output: "genome_additional.fasta", 
+                gtf_output: "genome_additional.gtf"]  
         ) 
 
         // decompress bed file
@@ -74,7 +74,7 @@ workflow run_wf {
             fromState: ["input": "gene_bed"], 
             toState: ["gene_bed": "output"], 
             key: "gunzip_gene_bed",
-            args: [output: "genome_additional_concat.bed"]
+            args: [output: "genome_additional.bed"]
         )
 
         // gtf to bed 
@@ -82,7 +82,7 @@ workflow run_wf {
             runIf: { id, state -> !state.gene_bed}, 
             fromState: ["gtf": "gtf"], 
             toState: ["gene_bed": "bed_output"], 
-            args: [bed_output: "genome_additional_concat.bed"]
+            args: [bed_output: "genome_additional.bed"]
         ) 
 
         // decompress transcript fasta
@@ -142,7 +142,7 @@ workflow run_wf {
             fromState: ["input": "bbsplit_index"], 
             toState: ["bbsplit_index": "output"], 
             key: "bbsplit_uncompressed",
-            args: [output: "bbsplit_index"] 
+            args: [output: "BBSplit_index"] 
         )
         
         // create bbsplit index, if not already availble
@@ -155,7 +155,7 @@ workflow run_wf {
             toState: ["bbsplit_index": "bbsplit_index"], 
             args: [
                 "only_build_index": true, 
-                bbsplit_index: "bbsplit_index"
+                bbsplit_index: "BBSplit_index"
             ], 
             key: "bbsplit_index_uncompressed" 
         )
@@ -166,7 +166,7 @@ workflow run_wf {
             fromState: ["input": "star_index"], 
             toState: ["star_index": "output"], 
             key: "star_index_uncompressed",
-            args: [output: "star_index"]
+            args: [output: "STAR_index"]
         )
         
         | star_genomegenerate.run (
@@ -177,7 +177,7 @@ workflow run_wf {
             ], 
             toState: ["star_index": "star_index"], 
             key: "star_index_uncompressed",
-            args: [star_index: "star_index"]
+            args: [star_index: "STAR_index"]
         )
 
         // TODO: Uncompress RSEM index or generate from scratch if required
@@ -190,7 +190,7 @@ workflow run_wf {
             fromState: ["input": "salmon_index"], 
             toState: ["salmon_index": "output"], 
             key: "salmon_index_uncompressed",
-            args: [output: "salmon_index"]
+            args: [output: "Salmon_index"]
         )
 
         | salmon_index.run (
@@ -201,7 +201,7 @@ workflow run_wf {
             ], 
             toState: ["salmon_index": "salmon_index"], 
             key: "salmon_index_uncompressed",
-            args: [salmon_index: "salmon_index"] 
+            args: [salmon_index: "Salmon_index"] 
         )
 
         | setState ( 
