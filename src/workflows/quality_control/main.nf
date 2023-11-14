@@ -40,7 +40,7 @@ workflow run_wf {
                 & 
                 
                 rseqc_innerdistance.run(
-                    // runIf: {id, state -> state.paired},
+                    runIf: {id, state -> state.paired},
                     fromState: [
                             "input": "bam_input",
                             "refgene": "refgene",
@@ -96,6 +96,31 @@ workflow run_wf {
 
                     },
                     auto: [ publish: true ]
+                )
+
+                & 
+
+                rseqc_junctionsaturation.run(
+                    fromState: [
+                        "input": "bam_input",
+                        "refgene": "refgene",
+                        "sampling_percentile_lower_bound": "sampling_percentile_lower_bound",
+                        "sampling_percentile_upper_bound": "sampling_percentile_upper_bound",
+                        "sampling_percentile_step": "sampling_percentile_step",
+                        "min_intron": "min_intron",
+                        "min_splice_read": "min_splice_read",
+                        "map_qual": "map_qual",
+                        "output_plot_r": "junction_saturation_output_plot_r",
+                        "output_plot": "junction_saturation_output_plot"
+
+                    ],
+                    toState: { id, output, state ->
+                        [
+                            "junction_saturation_output_plot_r": output.output_plot_r,
+                            "junction_saturation_output_plot": output.output_plot
+                        ]
+                    },
+                    auto: [publish: true]
                 )
             )
 
