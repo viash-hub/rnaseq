@@ -9,7 +9,7 @@ workflow run_wf {
     | map { id, state ->
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
       def paired = input.size() == 2
-      [ id, state + [paired: paired, input: input] ]
+      [ id, state + [ paired: paired, input: input ] ]
     }
     | star_align.run (
         fromState: [
@@ -268,34 +268,47 @@ workflow run_wf {
         toState: ["salmon_quant_output": "output"]
     )
 
-    // | toSortedList
-    // | map { list -> 
-    //   salmon_quant_merged = list.collect{id, state -> state.salmon_quant_output}
-    //   ["merged", [ salmon_quant_merged: salmon_quant_merged, gtf: list[1][-1].gtf, gtf_extra_attributes: list[1][-1].gtf_extra_attributes, gtf_group_features: list[1][-1].gtf_group_features ] ]
+    //
+    // Filter channels to get samples that passed STAR minimum mapping percentage
+    //
+    // ch_fail_mapping_multiqc = Channel.empty()
+    // if (!params.skip_alignment && params.aligner.contains('star')) {
+    //     ch_star_multiqc
+    //         .map { meta, align_log -> [ meta ] + WorkflowRnaseq.getStarPercentMapped(params, align_log) }
+    //         .set { ch_percent_mapped }
+
+    //     ch_genome_bam
+    //         .join(ch_percent_mapped, by: [0])
+    //         .map { meta, ofile, mapped, pass -> if (pass) [ meta, ofile ] }
+    //         .set { ch_genome_bam }
+
+    //     ch_genome_bam_index
+    //         .join(ch_percent_mapped, by: [0])
+    //         .map { meta, ofile, mapped, pass -> if (pass) [ meta, ofile ] }
+    //         .set { ch_genome_bam_index }
+
+    //     ch_percent_mapped
+    //         .branch { meta, mapped, pass ->
+    //             pass: pass
+    //                 pass_mapped_reads[meta.id] = true
+    //                 return [ "$meta.id\t$mapped" ]
+    //             fail: !pass
+    //                 pass_mapped_reads[meta.id] = false
+    //                 return [ "$meta.id\t$mapped" ]
+    //         }
+    //         .set { ch_pass_fail_mapped }
+
+    //     ch_pass_fail_mapped
+    //         .fail
+    //         .collect()
+    //         .map {
+    //             tsv_data ->
+    //                 def header = ["Sample", "STAR uniquely mapped reads (%)"]
+    //                 WorkflowRnaseq.multiqcTsvFromList(tsv_data, header)
+    //         }
+    //         .set { ch_fail_mapping_multiqc }
     // }
 
-    | salmon_tx2gene.run (
-        fromState: [ 
-          "salmon_quant_results": "salmon_quant_output", 
-          "gtf_extra_attributes": "gtf_extra_attributes", 
-          "gtf": "gtf", 
-          "gtf_group_features": "gtf_group_features"],
-        toState: ["salmon_tx2gene_tsv": "tsv"]
-    )
-    | salmon_tximport.run (
-        fromState: [ 
-          "salmon_quant_results": "salmon_quant_output", 
-          "tx2gene_tsv": "salmon_tx2gene_tsv" ],
-        toState: ["salmon_tximport": "output"]
-    )
-    | salmon_summarizedexperiment.run (
-        fromState: [ 
-          "input": "salmon_tximport", 
-          "tx2gene": "salmon_tx2gene_tsv" ],
-        toState: [ "salmon_summarizedexperiment": "output" ]
-    )
-    | view { "Output: $it" }
-          
     | setState (
       [ "star_alignment": "star_alignment", 
         "star_multiqc": "star_multiqc", 
@@ -309,10 +322,7 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_output",
-        "salmon_tx2gene": "salmon_tx2gene_tsv", 
-        "salmon_tximport": "salmon_tximport", 
-        "salmon_summarizedexperiment": "salmon_summarizedexperiment" ]
+        "salmon_quant_results": "salmon_quant_output" ]
     )
 
   emit:
@@ -350,3 +360,34 @@ workflow run_wf {
 //       }
   
 // }
+
+//
+// Function that parses and returns the alignment rate from the STAR log output
+//
+public static ArrayList getStarPercentMapped(params, align_log) {
+  def percent_aligned = 0
+  def pattern = /Uniquely mapped reads %\s*\|\s*([\d\.]+)%/
+  align_log.eachLine { line ->
+    def matcher = line =~ pattern
+    if (matcher) {
+        percent_aligned = matcher[0][1].toFloat()
+    }
+  }
+  def pass = false
+  if (percent_aligned >= params.min_mapped_reads.toFloat()) {
+    pass = true
+  }
+  return [ percent_aligned, pass ]
+}
+
+//
+// Create MultiQC tsv custom content from a list of values
+//
+def multiqcTsvFromList(tsv_data, header) {
+  def tsv_string = ""
+  if (tsv_data.size() > 0) {
+    tsv_string += "${header.join('\t')}\n"
+    tsv_string += tsv_data.join('\n')
+  }
+  return tsv_string
+}

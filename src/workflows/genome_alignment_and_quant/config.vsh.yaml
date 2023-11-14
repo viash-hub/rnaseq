@@ -80,51 +80,55 @@ functionality:
     - name: "--star_alignment"
       type: file
       direction: output
+      default: $id.STAR
     - name: "--star_multiqc"
       type: file
       direction: output
+      default: $id.star_align.log
     - name: "--genome_bam_sorted"
       type: file
       direction: output
+      default: $id.genome.bam
     - name: "--genome_bam_index"
       type: file
       direction: output
+      default: $id.genome.bam.bai
     - name: "--genome_bam_stats"
       type: file
       direction: output
+      default: $id.genome.stats
     - name: "--genome_bam_flagstat"
       type: file
       direction: output
+      default: $id.genome.flagstat
     - name: "--genome_bam_idxstats"
       type: file
       direction: output
+      default: $id.genome.idxstats
     - name: "--transcriptome_bam_sorted"
       type: file
       direction: output
+      default: $id.transcriptome.bam
     - name: "--transcriptome_bam_index"
       type: file
       direction: output
+      default: $id.transcriptome.bam.bai
     - name: "--transcriptome_bam_stats"
       type: file
       direction: output
+      default: $id.transcriptome.stats
     - name: "--transcriptome_bam_flagstat"
       type: file
       direction: output
+      default: $id.transcriptome.flagstat
     - name: "--transcriptome_bam_idxstats"
       type: file
       direction: output
+      default: $id.transcriptome.idxstats
     - name: "--salmon_quant_results"
       type: file
       direction: output
-    - name: "--salmon_tx2gene"
-      type: file
-      direction: output
-    - name: "--salmon_tximport"
-      type: file
-      direction: output
-    - name: "--salmon_summarizedexperiment"
-      type: file
-      direction: output
+      default: $id.salmon_quant
 
   resources:
     - type: nextflow_script
