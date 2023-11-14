@@ -26,7 +26,7 @@ mkdir -p $par_output
 
 STAR \
     --genomeDir $par_star_index \
-    --readFilesIn $input \
+    --readFilesIn ${input[*]} \
     --runThreadN $meta_cpus \
     --outFileNamePrefix $par_output/ \
     $out_sam_type \
