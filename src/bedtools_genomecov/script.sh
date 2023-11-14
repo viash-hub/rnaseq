@@ -13,15 +13,13 @@ bedtools genomecov \
     -ibam $par_bam \
     -bg \
     -strand + \
-    $par_extra_bedtools_args \
-    | bedtools sort > $prefix_forward.bedGraph
+    $par_extra_bedtools_args | bedtools sort > $prefix_forward.bedGraph
 
 bedtools genomecov \
     -ibam $par_bam \
     -bg \
     -strand - \
-    $par_extra_bedtools_args \
-    | bedtools sort > $prefix_reverse.bedGraph
+    $par_extra_bedtools_args | bedtools sort > $prefix_reverse.bedGraph
 
 mv $prefix_forward.bedGraph $par_bedgraph_forward
 mv $prefix_reverse.bedGraph $par_bedgraph_reverse
