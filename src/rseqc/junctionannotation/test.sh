@@ -1,9 +1,8 @@
 #!/bin/bash
 
-echo "> Running $meta_functionality_name."
-
-sample="SRR6357070"
-genome="genome_gfp"
+# define input and output for script
+input_bam="SRR6357070.bam"
+input_bed="genome_gfp.bed"
 
 output_junction_bed="junction_annotation.bed"
 output_junction_interact="junction_annotation.Interact.bed"
@@ -20,12 +19,12 @@ function clean_up {
 }
 trap clean_up EXIT
 
-#Run executable
+# run executable and test
 echo "> Running $meta_functionality_name, writing to tmpdir $tmpdir."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/test/$sample.bam" \
-    --refgene "$meta_resources_dir/test/$genome.bed" \
+    --input "$meta_resources_dir/$input_bam" \
+    --refgene "$meta_resources_dir/$input_bed" \
     --output_log "$tmpdir/$output_log" \
     --output_plot_r "$tmpdir/$output_plot_r" \
     --output_junction_bed "$tmpdir/$output_junction_bed" \
