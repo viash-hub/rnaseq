@@ -17,7 +17,7 @@ functionality:
       type: boolean
       description: Paired-end reads?
 
-    - name: output
+    - name: "--output"
       type: file
       direction: output
       default: $id.lc_extrap.txt
