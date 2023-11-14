@@ -1,0 +1,113 @@
+functionality:
+  name: "multiqc"
+  info:
+    migration_info": 
+      git_repo: https://github.com/nf-core/rnaseq.git
+      paths: [modules/local/multiqc.nf]
+      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+  description: |
+    Present QC for raw read, alignment, gene biotype, sample similarity, and strand-specificity checks in a single report.
+
+  argument_groups: 
+    - name: "Input"
+      arguments:
+        - name: "--multiqc_custom_config"
+          type: file
+        - name: "--multiqc_title"
+          type: string
+        - name: "--multiqc_logo"
+          type: file
+        - name: "--multiqc_methods_description"
+          type: file
+          default: assets/methods_description_template.yml
+        - name: "--mqc_yml"
+          type: file
+        - name: "--workflow_summary"
+          type: file
+        - name: "--fail_trimming_multiqc"
+          type: string
+        - name: "--fail_mappingg_multiqc"
+          type: file
+        - name: "--fail_strand_multiqc"
+          type: file
+        - name: "--fastqc_raw_multiqc"
+          type: file
+        - name: "--fastqc_trim_multiqc"
+          type: file
+        - name: "--trim_log_multiqc"
+          type: string
+        - name: "--sortmerna_multiqc"
+          type: file
+        - name: "--star_multiqc"
+          type: file
+        # - name: "--hisat2_multiqc"
+        #   type: file
+        # - name: "--rsem_multiqc"
+        #   type: file
+        - name: "--salmon_multiqc"
+          type: string
+        - name: "--samtools_stats"
+          type: file
+        - name: "--samtools_flagstat"
+          type: file
+        - name: "--samtools_idxstats"
+          type: file
+        - name: "--markduplicates_multiqc"
+          type: file
+        - name: "--featurecounts_multiqc"
+          type: string
+        - name: "--aligner_pca_multiqc"
+          type: file
+        - name: "--aligner_clustering_multiqc"
+          type: file
+        # - name: "--pseudoaligner_pca_multiqc"
+        #   type: file
+        # - name: "--pseudoaligner_clustering_multiqc"
+        #   type: file
+        - name: "--preseq_multiqc"
+          type: file
+        - name: "--qualimap_multiqc"
+          type: file
+        - name: "--dupradar_multiqc"
+          type: file
+        - name: "--bamstat_multiqc"
+          type: file
+        - name: "--inferexperiment_multiqc"
+          type: file
+        - name: "--innerdistance_multiqc"
+          type: file
+        - name: "--junctionannotation_multiqc"
+          type: file
+        - name: "--junctionsaturation_multiqc"
+          type: file
+        - name: "--readdistribution_multiqc"
+          type: file
+        - name: "--readduplication_multiqc"
+          type: file
+        - name: "--tin_multiqc"
+          type: file
+
+    - name: "Ouput"
+      arguments:
+        - name: "--report"
+          type: file
+        - name: "--data"
+          type: string
+        - name: "--plots"
+          type: file
+        - name: "--versions"
+          type: file
+      
+  resources:
+    - type: bash_script
+      path: script.sh
+
+platforms:
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: apt
+        packages: [ pip ]
+      - type: python
+        pip: multiqc
+  - type: nextflow
