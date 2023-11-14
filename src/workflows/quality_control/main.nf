@@ -40,7 +40,7 @@ workflow run_wf {
                 & 
                 
                 rseqc_innerdistance.run(
-                    runIf: {id, state -> state.paired},
+                    // runIf: {id, state -> state.paired},
                     fromState: [
                             "input": "bam_input",
                             "refgene": "refgene",
@@ -56,7 +56,7 @@ workflow run_wf {
                             "output_plot": "inner_dist_output_plot",
                             "output_plot_r": "inner_dist_output_plot_r"
                         ],
-                    toState: {id, output, state -> 
+                    toState: { id, output, state -> 
                         [
                             "inner_dist_output_stats": output.output_stats,
                             "inner_dist_output_dist": output.output_dist,
@@ -64,6 +64,37 @@ workflow run_wf {
                             "inner_dist_output_plot": output.output_plot,
                             "inner_dist_output_plot_r": output.output_plot_r
                         ]},
+                    auto: [ publish: true ]
+                )
+
+                & 
+                
+                rseqc_junctionannotation.run(
+                    fromState: [
+                            "input": "bam_input",
+                            "refgene": "refgene",
+                            "map_qual": "map_qual",
+                            "min_intron": "min_intron",
+                            "output_log": "junction_annotation_output_log",
+                            "output_plot_r": "junction_annotation_output_plot_r",
+                            "output_junction_bed": "junction_annotation_output_junction_bed",
+                            "output_junction_interact": "junction_annotation_output_junction_interact",
+                            "output_junction_sheet": "junction_annotation_output_junction_sheet",
+                            "output_splice_events_plot": "junction_annotation_output_splice_events_plot",
+                            "output_splice_junctions_plot": "junction_annotation_output_splice_junctions_plot"
+                        ],
+                    toState: { id, output, state ->
+                        [
+                            "junction_annotation_output_log": output.output_log,
+                            "junction_annotation_output_plot_r": output.output_plot_r,
+                            "junction_annotation_output_junction_bed": output.output_junction_bed,
+                            "junction_annotation_output_junction_interact": output.output_junction_interact,
+                            "junction_annotation_output_junction_sheet": output.output_junction_sheet,
+                            "junction_annotation_output_splice_events_plot": output.output_splice_events_plot,
+                            "junction_annotation_output_splice_junctions_plot": output.output_splice_junctions_plot
+                        ]
+
+                    },
                     auto: [ publish: true ]
                 )
             )

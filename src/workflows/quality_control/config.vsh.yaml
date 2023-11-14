@@ -60,6 +60,13 @@ functionality:
           description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
           min: 0
 
+        - name: "--min_intron"
+          type: integer
+          required: false
+          default: 50
+          min: 1 
+          description: Minimum intron length (bp) for junction annotation, default = 50.
+
     - name: Output
       arguments:
         - name: "--bamstat_output"
@@ -116,6 +123,54 @@ functionality:
           default: inner_distance_plot.r
           description: output file (R) with script of histogram plot of of inner distances of all paired reads
 
+        - name: "--junction_annotation_output_log"
+          type: file
+          direction: output
+          required: false
+          default: junction_annotation.log
+          description: output log of junction annotation script
+
+        - name: "--junction_annotation_output_plot_r"
+          type: file
+          direction: output
+          required: false
+          default: junction_annotation_plot.r
+          description: r script to generate splice_junction and splice_events plot
+
+        - name: "--junction_annotation_output_junction_bed"
+          type: file
+          direction: output
+          required: false
+          default: junction_annotation.bed
+          description: junction annotation file (bed format)
+
+        - name: "--junction_annotation_output_junction_interact"
+          type: file
+          direction: output
+          required: false
+          default: junction_annotation.Interact.bed
+          description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
+
+        - name: "--junction_annotation_output_junction_sheet"
+          type: file
+          direction: output
+          required: false
+          default: junction_annotation.xls
+          description: junction annotation file (xls format)
+
+        - name: "--junction_annotation_output_splice_events_plot"
+          type: file
+          direction: output
+          required: false
+          default: splice_events.pdf
+          description: plot of splice events (pdf)
+
+        - name: "--junction_annotation_output_splice_junctions_plot"
+          type: file
+          direction: output
+          required: false
+          default: splice_junctions_plot.pdf
+          description: plot of junctions (pdf)
 
   resources:
     - type: nextflow_script
@@ -126,6 +181,11 @@ functionality:
     - name: rseqc/rseqc_bamstat
     - name: rseqc/rseqc_inferexperiment
     - name: rseqc/rseqc_innerdistance
+    - name: rseqc/rseqc_junctionannotation
+    - name: rseqc/rseqc_junctionsaturation
+    - name: rseqc/rseqc_readdistribution
+    - name: rseqc/rseqc_readduplication
+    - name: rseqc/rseqc_tin
 
 platforms:
   - type: nextflow
