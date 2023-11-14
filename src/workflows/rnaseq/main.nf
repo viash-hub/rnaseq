@@ -44,8 +44,9 @@ workflow run_wf {
     )
 
     // Check if contigs in genome fasta file > 512 Mbp
-    // | map { checkMaxContigSize(it[1].fai) }
-    // | niceView()
+    | map { id, state -> 
+      (isBelowMaxContigSize(state.fai)) ? [id, state] : [id, state + [bam_csi_index: true]]
+    }
 
     // Concatenate FastQ files from same sample if required
     | cat_fastq.run (
@@ -177,7 +178,19 @@ workflow run_wf {
 
     // Final QC
     // | final_qc.run (
-    //     fromState: [], 
+    //     fromState: [
+    //       "id": "id", 
+    //       "paired": "paired", 
+    //       "strandedness": "strandedness", 
+    //       "gtf": "gtf", 
+    //       "genome_bam": "genome_bam_sorted", 
+    //       "genome_bam_index": "genome_bam_index",
+    //       "salmon_quant_results": "salmon_quant_output", 
+    //       "gene_bed": "gene_bed",
+    //       "extra_preseq_args": "extra_preseq_args", 
+    //       "extra_deseq2_args": "extra_deseq2_args",
+    //       "extra_deseq2_args2": "extra_deseq2_args2",
+    //     ], 
     //     toState: [] 
     // )
 
@@ -224,7 +237,7 @@ import nextflow.Nextflow
 //
 // Function to generate an error if contigs in genome fasta file > 512 Mbp
 //
-def checkMaxContigSize(fai_file) {
+def isBelowMaxContigSize(fai_file) {
   def max_size = 512000000
   fai_file.eachLine { line ->
     def lspl  = line.split('\t')
@@ -232,13 +245,15 @@ def checkMaxContigSize(fai_file) {
     def size  = lspl[1]
     if (size.toInteger() > max_size) {
       def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-          "  Contig longer than ${max_size}bp found in reference genome!\n\n" +
-          "  ${chrom}: ${size}\n\n" +
-          "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n" +
-          "  Please see:\n" +
-          "  https://github.com/nf-core/rnaseq/issues/744\n" +
-          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        "  Contig longer than ${max_size}bp found in reference genome!\n\n" +
+        "  ${chrom}: ${size}\n\n" +
+        "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n" +
+        "  Please see:\n" +
+        "  https://github.com/nf-core/rnaseq/issues/744\n" +
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       Nextflow.error(error_string)
+      return false
     }
   }
+  return true
 }
