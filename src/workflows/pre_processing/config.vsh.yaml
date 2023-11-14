@@ -75,12 +75,12 @@ functionality:
           default: $id.trim_log
           required: false
           must_exist: false
-        # - name: "--trim_html"
-        #   type: file
-        #   direction: output
-        #   # default: $id.trim_html
-        #   required: false
-        #   must_exist: false
+        - name: "--trim_html"
+          type: file
+          direction: output
+          default: $id.trim_html
+          required: false
+          must_exist: false
         - name: "--trim_zip"
           type: file
           direction: output
@@ -211,7 +211,6 @@ functionality:
   dependencies:
     - name: fq_subsample
     - name: salmon/salmon_quant
-    - name: infer_strandedness
     - name: fastqc
     - name: umitools/umitools_extract
     - name: trimgalore

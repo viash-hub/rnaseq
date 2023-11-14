@@ -47,11 +47,15 @@ workflow run_wf {
         ]
     )
 
-    | infer_strandedness.run (
-      runIf: { id, state -> state.strandedness == 'auto' }, 
-      fromState: [ "json": "salmon_json_info" ], 
-      toState: [ "strandedness": "strandedness"], 
-    )
+    // FASTQ_SUBSAMPLE_FQ_SALMON
+    //     .out
+    //     .json_info
+    //     .join(ch_strand_fastq.auto_strand)
+    //     .map { meta, json, reads ->
+    //         return [ meta + [ strandedness: WorkflowRnaseq.getSalmonInferredStrandedness(json) ], reads ]
+    //     }
+    //     .mix(ch_strand_fastq.known_strand)
+    //     .set { ch_strand_inferred_fastq }
 
     // perform QC on input fastq files
     | fastqc.run (
@@ -103,6 +107,22 @@ workflow run_wf {
     // | filter { id, state -> state.skip_trimming || state.trim_read_count >= state.min_trimmed_reads }
     
     // TODO: Get list of samples that failed trimming threshold for MultiQC report
+    // ch_trim_read_count
+    //     .map {
+    //         meta, num_reads ->
+    //             pass_trimmed_reads[meta.id] = true
+    //             if (num_reads <= params.min_trimmed_reads.toFloat()) {
+    //                 pass_trimmed_reads[meta.id] = false
+    //                 return [ "$meta.id\t$num_reads" ]
+    //             }
+    //     }
+    //     .collect()
+    //     .map {
+    //         tsv_data ->
+    //             def header = ["Sample", "Reads after trimming"]
+    //             WorkflowRnaseq.multiqcTsvFromList(tsv_data, header)
+    //     }
+    //     .set { ch_fail_trimming_multiqc }
 
     // filter out rRNA reads
     | bbmap_bbsplit.run (
@@ -144,7 +164,9 @@ workflow run_wf {
         "qc_output2": "fastq_2", 
         "trim_log": "trim_log", 
         "trim_zip": "trim_zip",
-        "sortmerna_log": "sortmerna_log" ] )
+        "trim_html": "trim_html",
+        "sortmerna_log": "sortmerna_log" ] 
+    )
 
   emit:
     output_ch
@@ -182,34 +204,51 @@ workflow run_wf {
   
 // }
 
-// // Parse a general Channel event to:
-// // - render proper Paths
-// // Modified because `rootDir` is not defined here by default
-// def parseEvent(root) {
-//   if (root instanceof List) {
-//     root.collect{ parseEvent(it) }
-//   } else if (root instanceof Map) {
-//     root.collectEntries{ [ (it.key): parseEvent(it.value) ] }
-//   } else {
-//     root.toString()
-//   } 
-// }
+import groovy.json.JsonSlurper
 
-// import org.yaml.snakeyaml.Yaml
-// import org.yaml.snakeyaml.DumperOptions
+//
+// Function that parses Salmon quant 'meta_info.json' output file to get inferred strandedness
+//
+def getSalmonInferredStrandedness(json_file) {
+  def lib_type = new JsonSlurper().parseText(json_file.text).get('library_types')[0]
+  def strandedness = 'reverse'
+  if (lib_type) {
+    if (lib_type in ['U', 'IU']) {
+      strandedness = 'unstranded'
+    } 
+    else if (lib_type in ['SF', 'ISF']) {
+      strandedness = 'forward'
+    } 
+    else if (lib_type in ['SR', 'ISR']) {
+      strandedness = 'reverse'
+    }
+  }
+  return strandedness
+}
 
-// // Function to be used in Nextflow's view operator
-// def viewEvent(element) {
-//   dumperOptions = new DumperOptions()
-//   dumperOptions.setPrettyFlow(true)
-//   dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-//   Yaml yaml = new Yaml(dumperOptions)
-//   yaml.dump(parseEvent(element))
-// }
+//
+// Function that parses TrimGalore log output file to get total number of reads after trimming
+//
+def getTrimGaloreReadsAfterFiltering(log_file) {
+  def total_reads = 0
+  def filtered_reads = 0
+  log_file.eachLine { line ->
+    def total_reads_matcher = line =~ /([\d\.]+)\ssequences processed in total/
+    def filtered_reads_matcher = line =~ /shorter than the length cutoff[^:]+:\s([\d\.]+)/
+    if (total_reads_matcher) total_reads = total_reads_matcher[0][1].toFloat()
+    if (filtered_reads_matcher) filtered_reads = filtered_reads_matcher[0][1].toFloat()
+  }
+  return total_reads - filtered_reads
+}
 
-// // Helper function
-// def existsInDict(dict, key) {
-//   return dict.containsKey(key) && dict[key] != ""
-// }
-
-// def getInput()
+//
+// Create MultiQC tsv custom content from a list of values
+//
+def multiqcTsvFromList(tsv_data, header) {
+  def tsv_string = ""
+  if (tsv_data.size() > 0) {
+    tsv_string += "${header.join('\t')}\n"
+    tsv_string += tsv_data.join('\n')
+  }
+  return tsv_string
+}
