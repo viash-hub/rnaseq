@@ -47,15 +47,11 @@ workflow run_wf {
         ]
     )
 
-    // FASTQ_SUBSAMPLE_FQ_SALMON
-    //     .out
-    //     .json_info
-    //     .join(ch_strand_fastq.auto_strand)
-    //     .map { meta, json, reads ->
-    //         return [ meta + [ strandedness: WorkflowRnaseq.getSalmonInferredStrandedness(json) ], reads ]
-    //     }
-    //     .mix(ch_strand_fastq.known_strand)
-    //     .set { ch_strand_inferred_fastq }
+    | map { id, state -> 
+      (state.strandedness == 'auto') ? 
+        [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_json_info)] ] : 
+        [id, state] 
+    }
 
     // perform QC on input fastq files
     | fastqc.run (
@@ -103,7 +99,7 @@ workflow run_wf {
       ]
     )
 
-    // TODO: Filter FATQ files based on minimum trimmed read count after adapter trimming
+    // TODO: Filter FASTQ files based on minimum trimmed read count after adapter trimming
     // | filter { id, state -> state.skip_trimming || state.trim_read_count >= state.min_trimmed_reads }
     
     // TODO: Get list of samples that failed trimming threshold for MultiQC report
@@ -159,13 +155,13 @@ workflow run_wf {
     // Clean up state such that the state only contains arguments
     // with `direction: output` in the viash config
     | setState ( 
-        [ "fastqc_report": "fastqc_report", 
+        "fastqc_report": "fastqc_report", 
         "qc_output1": "fastq_1",
         "qc_output2": "fastq_2", 
         "trim_log": "trim_log", 
         "trim_zip": "trim_zip",
         "trim_html": "trim_html",
-        "sortmerna_log": "sortmerna_log" ] 
+        "sortmerna_log": "sortmerna_log"
     )
 
   emit:
