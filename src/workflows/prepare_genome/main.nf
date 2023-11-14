@@ -205,7 +205,7 @@ workflow run_wf {
         )
 
         | setState ( 
-            [ "fasta_uncompressed": "fasta", 
+            "fasta_uncompressed": "fasta", 
             "gtf_uncompressed": "gtf", 
             "transcript_fasta_uncompressed": "transcript_fasta", 
             "gene_bed_uncompressed": "gene_bed",
@@ -213,7 +213,8 @@ workflow run_wf {
             "salmon_index_uncompressed": "salmon_index", 
             "bbsplit_index_uncompressed": "bbsplit_index", 
             "chrom_sizes": "sizes", 
-            "fai": "fai" ] )      
+            "fai": "fai"
+        )      
 
     emit: 
         output_ch
