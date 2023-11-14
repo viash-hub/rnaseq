@@ -8,6 +8,10 @@ functionality:
   description: Compute BEDGRAPH (-bg) summaries of feature coverage
 
   arguments: 
+    - name: "--strandedness"
+      type: string
+      choices: ["unstranded", "forward", "reverse", "auto"]
+      description: Sample strand-specificity. 
     - name: "--bam"
       type: file
       description: Genome BAM file
