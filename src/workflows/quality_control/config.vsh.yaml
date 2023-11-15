@@ -19,6 +19,13 @@ functionality:
           description: Path to input alignment file in BAM or SAM format.
           example: sample.bam
 
+        - name: "--bai_input"
+          required: true
+          type: file
+          required: true
+          description: Path to bam index file in bai format.
+          example: sample.bai
+
         - name: "--refgene"
           type: file 
           required: true
@@ -97,6 +104,31 @@ functionality:
           description: Read sampling for junction saturation frequency in %. Smaller value means more sampling times. Must be an integer between 0 and 100, default = 5.
           min: 0
           max: 100
+
+        - name: "--read_count_upper_limit"
+          type: integer
+          required: false
+          default: 500
+          description: Upper limit of reads' occurence to determine read duplication. Only used for plotting, default = 500 (times).
+          min: 1 
+
+        - name: "--minimum_coverage"
+          type: integer
+          required: false
+          default: 10
+          min: 1
+          description: Minimum number of reads mapped to a transcript to determin tin, default = 10.
+
+        - name: "--tin_sample_size"
+          type: integer
+          required: false
+          default: 100
+          min: 1
+          description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
+
+        - name: "--subtract_background"
+          type: boolean_true
+          description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
           
     - name: Output
       arguments:
@@ -216,6 +248,55 @@ functionality:
           required: false
           default: junction_saturation_plot.pdf
           description: plot of junction saturation (pdf)
+
+        - name: "--read_distribution_output"
+          type: file
+          direction: output
+          required: false
+          default: read_distribution.txt
+          description: output file (txt) of read distribution analysis.
+    
+        - name: "--read_duplication_output_duplication_rate_plot_r"
+          type: file
+          direction: output
+          required: false
+          default: duplication_rate_plot.r
+          description: R script for generating duplication rate plot
+
+        - name: "--read_duplication_output_duplication_rate_plot"
+          type: file
+          direction: output
+          required: false
+          default: duplication_rate_plot.pdf
+          description: duplication rate plot (pdf)
+
+        - name: "--read_duplication_output_duplication_rate_mapping"
+          type: file
+          direction: output
+          required: false
+          default: duplication_rate_mapping.xls
+          description: Summary of mapping-based read duplication
+
+        - name: "--read_duplication_output_duplication_rate_sequence"
+          type: file
+          direction: output
+          required: false
+          default: duplication_rate_sequencing.xls
+          description: Summary of sequencing-based read duplication
+
+        - name: "--tin_output_summary"
+          type: file
+          direction: output
+          required: false
+          default: tin_summary.txt
+          description: summary statistics (txt) of calculated TIN metrics
+
+        - name: "--tin_output_metrics"
+          type: file
+          direction: output
+          required: false
+          default: tin.xls
+          description: file with TIN metrics (xls)
 
   resources:
     - type: nextflow_script
