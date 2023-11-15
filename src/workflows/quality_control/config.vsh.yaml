@@ -15,16 +15,20 @@ functionality:
         - name: "--bam_input"
           required: true
           type: file
-          required: true
           description: Path to input alignment file in BAM or SAM format.
           example: sample.bam
 
         - name: "--bai_input"
           required: true
           type: file
-          required: true
           description: Path to bam index file in bai format.
           example: sample.bai
+
+        - name: "--gtf_input"
+          required: true
+          type: file
+          description: Path to gtf annotation file (gz zipped format).
+          example: genes.gtf.gz
 
         - name: "--refgene"
           type: file 
@@ -34,6 +38,12 @@ functionality:
         - name: "--paired"
           type: boolean_true
           description: Setting this flag indicates a paired-end experiment.
+
+        - name: "--strandedness"
+          type: string
+          required: false
+          choices: ["forward", "reverse"]
+          description: strandedness of input bam file reads (forward, reverse or null (default, applicable to paired reads))
 
         - name: "--sample_size"
           type: integer
@@ -298,6 +308,61 @@ functionality:
           default: tin.xls
           description: file with TIN metrics (xls)
 
+        - name: "--dupradar_output_dupmatrix"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: dup_matrix.txt
+          description: path to output file (txt) of duplicate tag counts
+      
+        - name: "--dupradar_output_dup_intercept_mqc"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: dup_intercept_mqc.txt
+          description: path to output file (txt) of multiqc intercept value DupRadar
+    
+        - name: "--dupradar_output_duprate_exp_boxplot"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: duprate_exp_boxplot.pdf
+          description: path to output file (pdf) of distribution of expression box plot
+      
+        - name: "--dupradar_output_duprate_exp_densplot"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: duprate_exp_densityplot.pdf
+          description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts
+      
+        - name: "--dupradar_output_duprate_exp_denscurve_mqc"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: duprate_exp_density_curve_mqc.pdf
+          description: path to output file (pdf) of density curve of gene duplication multiqc
+      
+        - name: "--dupradar_output_expression_histogram"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: expression_hist.pdf
+          description: path to output file (pdf) of distribution of RPK values per gene histogram
+        
+        - name: "--dupradar_output_intercept_slope"
+          type: file
+          direction: output
+          required: false
+          must_exist: true
+          default: intercept_slope.txt
+      
   resources:
     - type: nextflow_script
       path: main.nf
@@ -312,6 +377,8 @@ functionality:
     - name: rseqc/rseqc_readdistribution
     - name: rseqc/rseqc_readduplication
     - name: rseqc/rseqc_tin
+    - name: dupradar
+    - name: qualimap
 
 platforms:
   - type: nextflow

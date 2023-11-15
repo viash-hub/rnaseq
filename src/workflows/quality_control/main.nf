@@ -174,7 +174,34 @@ workflow run_wf {
                     }
                 )
 
+                &
 
+                dupradar.run(
+                    fromState: [
+                            "input": "bam_input",
+                            "gtf_annotation": "gtf_input",
+                            "paired": "paired",
+                            "strandedness": "strandedness",
+                            "output_dupmatrix": "dupradar_output_dupmatrix",
+                            "output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc",
+                            "output_duprate_exp_boxplot": "dupradar_output_duprate_exp_boxplot",
+                            "output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
+                            "output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
+                            "output_expression_histogram": "dupradar_output_expression_histogram",
+                            "output_intercept_slope": "dupradar_output_intercept_slope"
+                        ],
+                    toState: { id, output, state ->
+                        [ 
+                            "dupradar_output_dupmatrix": output.output_dupmatrix,
+                            "dupradar_output_dup_intercept_mqc": output.output_dup_intercept_mqc,
+                            "dupradar_output_duprate_exp_boxplot": output.output_duprate_exp_boxplot,
+                            "dupradar_output_duprate_exp_densplot": output.output_duprate_exp_densplot,
+                            "dupradar_output_duprate_exp_denscurve_mqc": output.output_duprate_exp_denscurve_mqc,
+                            "dupradar_output_expression_histogram": output.output_expression_histogram,
+                            "dupradar_output_intercept_slope": output.output_intercept_slope
+                    ]
+                        }
+                )
             )
 
         | mix
@@ -214,7 +241,14 @@ workflow run_wf {
             "output_duplication_rate_mapping": "output_duplication_rate_mapping",
             "output_duplication_rate_sequence": "output_duplication_rate_sequence",
             "tin_output_summary": "tin_output_summary",
-            "tin_output_metrics": "tin_output_metrics"
+            "tin_output_metrics": "tin_output_metrics",
+            "dupradar_output_dupmatrix": "dupradar_output_dupmatrix",
+            "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc",
+            "dupradar_output_duprate_exp_boxplot": "dupradar_output_duprate_exp_boxplot",
+            "dupradar_output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
+            "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
+            "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
+            "dupradar_output_intercept_slope": "dupradar_output_intercept_slope"
         )
 
     emit:
