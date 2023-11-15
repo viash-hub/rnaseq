@@ -3,6 +3,7 @@
 # define input and output for script
 input_bam="SRR6357070.bam"
 input_bed="genome_gfp.bed"
+input_bai="SRR6357070.bam.bai"
 
 output_tin="tin.xls"
 output_tin_summary="tin_summary.txt"
@@ -18,7 +19,8 @@ trap clean_up EXIT
 echo "> Running $meta_functionality_name, writing to tmpdir $tmpdir."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/$input_bam" \
+    --bam_input "$meta_resources_dir/$input_bam" \
+    --bai_input "$meta_resources_dir/$input_bai" \
     --refgene "$meta_resources_dir/$input_bed" \
     --output_tin "$tmpdir/$output_tin" \
     --output_tin_summary "$tmpdir/$output_tin_summary"
