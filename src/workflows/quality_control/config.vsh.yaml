@@ -140,6 +140,49 @@ functionality:
           type: boolean_true
           description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
           
+        - name: "--output_format"
+          type: string
+          required: false
+          default: html
+          description: Format of the qualimap output report (PDF or HTML, default is HTML)
+
+        - name: "--pr_bases"
+          type: integer
+          required: false
+          default: 100
+          min: 1
+          description: Number of upstream/downstream nucleotide bases to compute 5'-3' bias for qualimap (default = 100).
+    
+        - name: "--tr_bias"
+          type: integer
+          required: false
+          default: 1000
+          min: 1
+          description: Number of top highly expressed transcripts to compute 5'-3' bias for qualimap (default = 1000).
+
+        - name: "--algorithm"
+          type: string
+          required: false
+          default: uniquely-mapped-reads
+          description: Counting algorithm for qualimap (uniquely-mapped-reads (default) or proportional).
+
+        - name: "--sequencing_protocol"
+          type: string
+          required: false
+          choices: ["non-strand-specific", "strand-specific-reverse", "strand-specific-forward"]
+          default: non-strand-specific
+          description: Sequencing library protocol for qualimap (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
+
+        - name: "--sorted"
+          type: boolean_true
+          description: Setting this flag indicates that the input file is already sorted by name. If flag is not set, additional sorting by name will be performed for qualimap. Only requiredfor paired-end analysis.
+
+        - name: "--java_memory_size"
+          type: string
+          required: false
+          default: 4G 
+          description: maximum Java heap memory size for qualimap, default = 4G.
+          
     - name: Output
       arguments:
         - name: "--bamstat_output"
@@ -312,7 +355,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: dup_matrix.txt
           description: path to output file (txt) of duplicate tag counts
       
@@ -320,7 +362,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: dup_intercept_mqc.txt
           description: path to output file (txt) of multiqc intercept value DupRadar
     
@@ -328,7 +369,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: duprate_exp_boxplot.pdf
           description: path to output file (pdf) of distribution of expression box plot
       
@@ -336,7 +376,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: duprate_exp_densityplot.pdf
           description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts
       
@@ -344,7 +383,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: duprate_exp_density_curve_mqc.pdf
           description: path to output file (pdf) of density curve of gene duplication multiqc
       
@@ -352,7 +390,6 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: expression_hist.pdf
           description: path to output file (pdf) of distribution of RPK values per gene histogram
         
@@ -360,9 +397,16 @@ functionality:
           type: file
           direction: output
           required: false
-          must_exist: true
           default: intercept_slope.txt
-      
+
+        - name: "--qualimap_output_pdf"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: qualimap_output.pdf
+
+
   resources:
     - type: nextflow_script
       path: main.nf

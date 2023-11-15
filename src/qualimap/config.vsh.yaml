@@ -19,7 +19,7 @@ functionality:
       required: true
       description: path to annotations file in Ensembl GTF format.
 
-    - name: "--output"
+    - name: "--output_dir"
       direction: output
       type: file
       required: false
@@ -63,6 +63,7 @@ functionality:
     - name: "--sequencing_protocol"
       type: string
       required: false
+      choices: ["non-strand-specific", "strand-specific-reverse", "strand-specific-forward"]
       default: non-strand-specific
       description: Sequencing library protocol (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
    
