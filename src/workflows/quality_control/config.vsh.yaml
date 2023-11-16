@@ -406,7 +406,6 @@ functionality:
           must_exist: false
           default: qualimap_output.pdf
 
-
   resources:
     - type: nextflow_script
       path: main.nf

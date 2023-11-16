@@ -202,9 +202,9 @@ workflow run_wf {
                     ]
                         }
                 )
-                
+
                 & 
-                // TODO: add "output_dir" param
+
                 qualimap.run(
                     fromState: [
                             "input": "bam_input",
@@ -216,19 +216,18 @@ workflow run_wf {
                             "algorithm": "algorithm",
                             "sequencing_protocol": "sequencing_protocol",
                             "sorted": "sorted",
-                            "java_memory_size": "java_memory_size"                        ],
+                            "java_memory_size": "java_memory_size"
+                        ],
                     toState: { id, output, state ->
                         [
                             "qualimap_output_pdf": output.output_pdf
                         ]
                     }
                 )
+                
             )
-
-        | mix
-
-        | toSortedList
-
+        | mix()
+        | toSortedList({a, b -> a[0] <=> b[0]})
         | map { list -> 
             def ids = list.collect{it[0]}.unique()
             assert ids.size() == 1
@@ -240,7 +239,7 @@ workflow run_wf {
         | niceView()
 
         | setState(
-            "bamstat_output": "bamstat_output",
+            ["bamstat_output": "bamstat_output",
             "strandedness_output": "strandedness_output",
             "inner_dist_output_stats": "inner_dist_output_stats",
             "inner_dist_output_dist": "inner_dist_output_dist",
@@ -269,9 +268,9 @@ workflow run_wf {
             "dupradar_output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
             "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
             "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
-            "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
-            "qualimap_output_pdf": "qualimap_output_pdf",
-                    )
+            "dupradar_output_intercept_slope": "dupradar_output_intercept_slope"]
+            
+            )
 
     emit:
         output_ch
