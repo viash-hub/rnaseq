@@ -37,19 +37,36 @@ functionality:
       description: Output file for read 2.
       direction: output
       default: $id.$key.read2.fq.gz
-    - name: "--trim_log"
+    - name: "--trim_log_1"
       type: file
       direction: output
-    - name: "--trim_html"
+      default: $id.$key.read1.trimming_report.txt
+    - name: "--trim_log_2"
       type: file
       direction: output
-    - name: "--trim_zip"
+      required: false
+      must_exist: false
+      default: $id.$key.read2.trimming_report.txt
+    - name: "--trim_html_1"
       type: file
       direction: output
-    - name: "--trim_read_count"
-      type: integer
+      default: $id.$key.read1.fastqc.html
+    - name: "--trim_html_2"
+      type: file
       direction: output
-
+      required: false
+      must_exist: false
+      default: $id.$key.read2.fastqc.html
+    - name: "--trim_zip_1"
+      type: file
+      direction: output
+      default: $id.$key.read1.fastqc.zip
+    - name: "--trim_zip_2"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      default: $id.$key.read2.fastqc.zip
 
     # Optional arguments
     - name: "--extra_trimgalore_args"

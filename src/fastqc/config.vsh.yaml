@@ -21,11 +21,31 @@ functionality:
       multiple_sep: ","
       description: Input fastq files, either one or two (paired)
       example: sample.fastq
-    - name: "--output"
+    
+    - name: "--fastqc_html_1"
       type: file
       direction: output
-      description: Output directory to write reports to.
-      example: qc/
+      description: FastQC HTML report for read 1.
+      default: $id.$key.read1.html
+    - name: "--fastqc_html_2"
+      type: file
+      direction: output
+      description: FastQC HTML report for read 2.
+      required: false
+      must_exist: false
+      default: $id.$key.read2.html
+    - name: "--fastqc_zip_1"
+      type: file
+      direction: output
+      description: FastQC report archive for read 1.
+      default: $id.$key.read1.zip
+    - name: "--fastqc_zip_2"
+      type: file
+      direction: output
+      description: FastQC report archive for read 2.
+      required: false
+      must_exist: false
+      default: $id.$key.read1.zip
 
   resources:
     - type: bash_script

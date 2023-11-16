@@ -16,7 +16,7 @@ read_count="${#input[@]}"
 pattern_count="${#pattern[@]}"
 
 if [ "$par_paired" == "true" ]; then
-    echo "Paired - $read_count"
+    echo "Paired - Reads: $read_count bc_patterns: $pattern_count"
     if [ "$read_count" -ne 2 ] || [ "$pattern_count" -ne 2 ]; then
         echo "Paired end input requires two read files and two UMI patterns"
         exit 1
@@ -32,9 +32,11 @@ if [ "$par_paired" == "true" ]; then
             --bc-pattern2 "${pattern[1]}" \
             --umi-separator $par_umitools_umi_separator
         if [ $par_umi_discard_read == 1 ]; then
+            # discard read 1
             cp $tmpdir/$read1 $par_fastq_1
         elif [ $par_umi_discard_read == 2 ]; then
-            cp $tmpdir/$read2 $par_fastq_2
+            # discard read 2
+            cp $tmpdir/$read2 $par_fastq_1
         else
             cp $tmpdir/$read1 $par_fastq_1
             cp $tmpdir/$read2 $par_fastq_2

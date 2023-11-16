@@ -21,8 +21,21 @@ if [ "$par_paired" == "true" ]; then
         trim_galore $par_extra_trimgalore_args --paired --gzip --fastqc ${input[0]} ${input[1]} -o $tmpdir 
         read1=$(find $tmpdir/ -iname *_1*.fq.gz*)
         read2=$(find $tmpdir/ -iname *_2*.fq.gz*)
+        log1=$(find $tmpdir/ -iname *read1*report.txt)
+        log2=$(find $tmpdir/ -iname *read2*report.txt)
+        html1=$(find $tmpdir/ -iname *_1*.html)
+        html2=$(find $tmpdir/ -iname *_2*.html)
+        zip1=$(find $tmpdir/ -iname *_1*.zip)
+        zip2=$(find $tmpdir/ -iname *_2*.zip)
+        echo "$log1 - $log2"
         cp $read1 $par_fastq_1
         cp $read2 $par_fastq_2
+        cp $log1 $par_trim_log_1
+        cp $log2 $par_trim_log_2
+        cp $html1 $par_trim_html_1
+        cp $html2 $par_trim_html_2
+        cp $zip1 $par_trim_zip_1
+        cp $zip2 $par_trim_zip_2
     fi
 else
     echo "Not Paired - $read_count"
@@ -32,31 +45,14 @@ else
     else
         read1="$(basename -- ${input[0]})"
         trim_galore $par_extra_trimgalore_args --gzip --fastqc ${input[0]} -o $tmpdir
-        read1=$(find $tmpdir/ -iname *trimmed.fq.gz*)
-        cp $read1 $par_fastq_1
+        read=$(find $tmpdir/ -iname *trimmed.fq.gz*)
+        log=$(find $tmpdir/ -iname *report.txt)
+        html=$(find $tmpdir/ -iname *.html)
+        zip=$(find $tmpdir/ -iname *.zip)
+        cp $read $par_fastq_1
+        cp $log $par_trim_log_1
+        cp $html $par_trim_html_1
+        cp $zip $par_trim_zip_1
     fi
 fi
 
-mkdir -p $par_trim_log
-mkdir -p $par_trim_html
-mkdir -p $par_trim_zip
-log=$(find $tmpdir/ -iname *report.txt)
-html=$(find $tmpdir/ -iname *.html)
-zip=$(find $tmpdir/ -iname *.zip)
-cp -r $log $par_trim_log
-cp -r $html $par_trim_html
-cp -r $zip $par_trim_zip
-
-# get total number of reads from the log ooutput file after trimming
-# if [ $(ls -l $par_trim_log | wc -l) > 0 ]; then
-#     if $par_paired; then
-#         log_file=`grep -rl "shorter than the length cutoff" $par_trim_log`
-#     else
-#         log_file=$par_trim_log/*
-#     fi
-#     total_reads=`grep "[^0-9]* sequences processed in total" $log_file | sed 's/[^0-9]*//g'`
-#     filtered_reads=`grep "shorter than the length cutoff" $log_file | sed -n 's/.*: \([0-9]\+\) .*/\1/p'`
-#     par_trim_read_count=$(($total_reads - $filtered_reads)) 
-# else
-#     par_trim_read_count=$(($par_min_trimmed_reads + 1))
-# fi

@@ -2,7 +2,12 @@
 
 set -eo pipefail
 
-mkdir -p $par_output 
+function clean_up {
+    rm -rf "$tmpdir"
+}
+trap clean_up EXIT
+
+tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
 IFS="," read -ra input <<< $par_input
 count=${#input[@]}
@@ -21,4 +26,13 @@ else
   fi
 fi
 
-fastqc -o $par_output ${input[*]} 
+fastqc -o $tmpdir ${input[*]} 
+html1=$(find $tmpdir/ -iname *read1*fastqc.html)
+html2=$(find $tmpdir/ -iname *read2*fastqc.html)
+zip1=$(find $tmpdir/ -iname *read1*fastqc.zip)
+zip2=$(find $tmpdir/ -iname *read2*fastqc.zip)
+cp $html1 $par_fastqc_html_1
+cp $html2 $par_fastqc_html_2
+cp $zip1 $par_fastqc_zip_1
+cp $zip2 $par_fastqc_zip_2
+
