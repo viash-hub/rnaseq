@@ -210,6 +210,7 @@ workflow run_wf {
                             "input": "bam_input",
                             "gtf": "gtf_input",
                             "output_pdf": "qualimap_output_pdf",
+                            "output": "qualimap_output_dir",
                             "output_format": "output_format",
                             "pr_bases": "pr_bases",
                             "tr_bias": "tr_bias",
@@ -220,7 +221,8 @@ workflow run_wf {
                         ],
                     toState: { id, output, state ->
                         [
-                            "qualimap_output_pdf": output.output_pdf
+                            "qualimap_output_pdf": output.output_pdf,
+                            "qualimap_output_dir": output.output
                         ]
                     }
                 )
@@ -268,8 +270,9 @@ workflow run_wf {
             "dupradar_output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
             "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
             "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
-            "dupradar_output_intercept_slope": "dupradar_output_intercept_slope"]
-            
+            "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
+            "qualimap_output_dir": "qualimap_output_dir",
+            "qualimap_output_pdf": "qualimap_output_pdf"]
             )
 
     emit:

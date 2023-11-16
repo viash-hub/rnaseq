@@ -406,6 +406,12 @@ functionality:
           must_exist: false
           default: qualimap_output.pdf
 
+        - name: "--qualimap_output_dir"
+          type: file
+          direction: output
+          required: false
+          default: $id_qualimap_output
+
   resources:
     - type: nextflow_script
       path: main.nf
