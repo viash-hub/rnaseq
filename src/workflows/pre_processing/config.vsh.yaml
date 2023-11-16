@@ -45,17 +45,18 @@ functionality:
         - name: "--salmon_index"
           type: file
           description: Path to directory containing the Salmon index
-        - name: "--trim_read_count"
+        - name: "--num_trimmed_reads"
           type: integer
-          description: NUmber of reads trimmed
+          description: Number of reads after trimming
+        
 
     - name: Output
       arguments:
         - name: "--qc_output1"
           type: file
           direction: output
-          required: true
-          must_exist: true
+          required: false
+          must_exist: false
           description: Path to output directory
           default: $id.$key.read1.fq.gz
         - name: "--qc_output2"
@@ -65,28 +66,70 @@ functionality:
           must_exist: false
           description: Path to output directory
           default: $id.$key.read2.fq.gz
-        - name: "--fastqc_report"
+        - name: "--fastqc_html_1"
           type: file
           direction: output
-          description: Path to the FastQC output directory
-        - name: "--trim_log"
-          type: file
-          direction: output
-          default: $id.trim_log
+          description: FastQC HTML report for read 1.
           required: false
           must_exist: false
-        - name: "--trim_html"
+          default: $id.read1.fastqc.html
+        - name: "--fastqc_html_2"
           type: file
           direction: output
-          default: $id.trim_html
+          description: FastQC HTML report for read 2.
           required: false
           must_exist: false
-        - name: "--trim_zip"
+          default: $id.read2.fastqc.html
+        - name: "--fastqc_zip_1"
           type: file
           direction: output
-          default: $id.trim_zip
+          description: FastQC report archive for read 1.
           required: false
           must_exist: false
+          default: $id.read1.fastqc.zip
+        - name: "--fastqc_zip_2"
+          type: file
+          direction: output
+          description: FastQC report archive for read 2.
+          required: false
+          must_exist: false
+          default: $id.read1.fastqc.zip
+        - name: "--trim_log_1"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read1.trimming_report.txt
+        - name: "--trim_log_2"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read2.trimming_report.txt
+        - name: "--trim_html_1"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read1.trimmed_fastqc.html
+        - name: "--trim_html_2"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read2.trimmed_fastqc.html
+        - name: "--trim_zip_1"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read1.trimmed_fastqc.zip
+        - name: "--trim_zip_2"
+          type: file
+          direction: output
+          required: false
+          must_exist: false
+          default: $id.read2.trimmed_fastqc.zip
         - name: "--sortmerna_log"
           type: file
           direction: output
@@ -94,6 +137,11 @@ functionality:
           required: false
           must_exist: false
           description: Sortmerna log file.
+        - name: "--salmon_json_info"
+          type: file
+          direction: output
+          description: File containing meta information from Salmon quant
+          default: $id.salmon_meta_info.json
   
     # use --skip_qc or remove
     - name: "Extra pipeline options"

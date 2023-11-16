@@ -72,7 +72,6 @@ functionality:
       default: false
     - name: "--biotype"
       type: string
-      default: 'gene_id'
       description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
     - name: "--biotypes_header"
       type: file

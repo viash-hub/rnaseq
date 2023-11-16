@@ -17,5 +17,5 @@ nextflow run target/nextflow/workflows/post_processing/main.nf \
   --extra_bedtools_args "-split -du" \
   --extra_featurecounts_args "-B -C" \
   --gencode false \
-  --biotype gene_type \
+  --biotype gene_biotype \
   -profile docker \

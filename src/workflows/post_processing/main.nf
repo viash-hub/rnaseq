@@ -5,22 +5,7 @@ workflow run_wf {
     input_ch
 
   main:
-    output_ch = input_ch   
-    
-    // Filter channels to get samples that passed STAR minimum mapping percentage
-    // | map_star_pass_fail.run (
-    //     fromState: [
-    //         "star_multiqc": "star_multiqc", 
-    //         "min_mapped_reads": "min_mapped_reads", 
-    //         "genome_bam": "genome_bam"
-    //     ], 
-    //     toState: [
-    //         "percent_mapped": "percent_mapped",
-    //         "star_passed": "star_pass"
-    //     ]
-    // )
-    // | filter { id, state -> state.star_passed }
-    // TODO: star_failed_multiqc: multiqcTsvFromList    
+    output_ch = input_ch     
 
     | picard_markduplicates.run (
         runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
@@ -102,22 +87,13 @@ workflow run_wf {
     )
 
     // Feature biotype QC using featureCounts
-    // PREPARE_GENOME
-    //         .out
-    //         .gtf
-    //         .map { WorkflowRnaseq.biotypeInGtf(it, biotype, log) }
-    //         .set { biotype_in_gtf }
-
-    //     // Prevent any samples from running if GTF file doesn't have a valid biotype
-    //     ch_genome_bam
-    //         .combine(PREPARE_GENOME.out.gtf)
-    //         .combine(biotype_in_gtf)
-    //         .filter { it[-1] }
-    //         .map { it[0..<it.size()-1] }
-    //         .set { ch_featurecounts }
+    | map { id, state -> 
+        def biotype_in_gtf = biotypeInGtf(state.gtf, state.biotype)
+        [ id, state + [biotype_in_gtf: biotype_in_gtf] ]
+    }
 
     | subread_featurecounts.run (
-        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
+        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf },
         fromState: [
             "paired": "paired", 
             "strandedness": "strandedness", 
@@ -135,7 +111,7 @@ workflow run_wf {
     )
 
     | multiqc_custom_biotype.run (
-        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype },
+        runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts },
         fromState: [
             "id": "id",
             "biocounts": "featurecounts", 
@@ -227,7 +203,7 @@ workflow run_wf {
 //
 // Function to check whether biotype field exists in GTF file
 //
-def biotypeInGtf(gtf_file, biotype, log) {
+def biotypeInGtf(gtf_file, biotype) {
     def hits = 0
     gtf_file.eachLine { line ->
         def attributes = line.split('\t')[-1].split()

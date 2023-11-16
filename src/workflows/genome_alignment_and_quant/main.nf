@@ -268,47 +268,6 @@ workflow run_wf {
         toState: ["salmon_quant_output": "output"]
     )
 
-    //
-    // Filter channels to get samples that passed STAR minimum mapping percentage
-    //
-    // ch_fail_mapping_multiqc = Channel.empty()
-    // if (!params.skip_alignment && params.aligner.contains('star')) {
-    //     ch_star_multiqc
-    //         .map { meta, align_log -> [ meta ] + WorkflowRnaseq.getStarPercentMapped(params, align_log) }
-    //         .set { ch_percent_mapped }
-
-    //     ch_genome_bam
-    //         .join(ch_percent_mapped, by: [0])
-    //         .map { meta, ofile, mapped, pass -> if (pass) [ meta, ofile ] }
-    //         .set { ch_genome_bam }
-
-    //     ch_genome_bam_index
-    //         .join(ch_percent_mapped, by: [0])
-    //         .map { meta, ofile, mapped, pass -> if (pass) [ meta, ofile ] }
-    //         .set { ch_genome_bam_index }
-
-    //     ch_percent_mapped
-    //         .branch { meta, mapped, pass ->
-    //             pass: pass
-    //                 pass_mapped_reads[meta.id] = true
-    //                 return [ "$meta.id\t$mapped" ]
-    //             fail: !pass
-    //                 pass_mapped_reads[meta.id] = false
-    //                 return [ "$meta.id\t$mapped" ]
-    //         }
-    //         .set { ch_pass_fail_mapped }
-
-    //     ch_pass_fail_mapped
-    //         .fail
-    //         .collect()
-    //         .map {
-    //             tsv_data ->
-    //                 def header = ["Sample", "STAR uniquely mapped reads (%)"]
-    //                 WorkflowRnaseq.multiqcTsvFromList(tsv_data, header)
-    //         }
-    //         .set { ch_fail_mapping_multiqc }
-    // }
-
     | setState (
       [ "star_alignment": "star_alignment", 
         "star_multiqc": "star_multiqc", 
@@ -364,7 +323,7 @@ workflow run_wf {
 //
 // Function that parses and returns the alignment rate from the STAR log output
 //
-public static ArrayList getStarPercentMapped(params, align_log) {
+def getStarPercentMapped(align_log) {
   def percent_aligned = 0
   def pattern = /Uniquely mapped reads %\s*\|\s*([\d\.]+)%/
   align_log.eachLine { line ->
@@ -373,21 +332,5 @@ public static ArrayList getStarPercentMapped(params, align_log) {
         percent_aligned = matcher[0][1].toFloat()
     }
   }
-  def pass = false
-  if (percent_aligned >= params.min_mapped_reads.toFloat()) {
-    pass = true
-  }
-  return [ percent_aligned, pass ]
-}
-
-//
-// Create MultiQC tsv custom content from a list of values
-//
-def multiqcTsvFromList(tsv_data, header) {
-  def tsv_string = ""
-  if (tsv_data.size() > 0) {
-    tsv_string += "${header.join('\t')}\n"
-    tsv_string += tsv_data.join('\n')
-  }
-  return tsv_string
+  return percent_aligned
 }

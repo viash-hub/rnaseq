@@ -26,5 +26,5 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --transcript_fasta testData/reference/transcriptome.fasta \
   --additional_fasta testData/reference/gfp.fa.gz \
   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-  # -profile docker \
-#   -resume
+  -profile docker \
+  -resume
