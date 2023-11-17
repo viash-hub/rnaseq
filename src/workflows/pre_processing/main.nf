@@ -148,7 +148,7 @@ workflow run_wf {
 
     | map { id, state -> 
       def mod_state = (!state.paired) ? 
-        [trim_log__2: state.remove(state.trim_log__2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
+        [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
         []
       [ id, state + mod_state ]
     }
@@ -163,7 +163,7 @@ workflow run_wf {
         "qc_output1": "fastq_1",
         "qc_output2": "fastq_2", 
         "trim_log_1": "trim_log_1", 
-        "trim_log_2": "trim_log__2", 
+        "trim_log_2": "trim_log_2", 
         "trim_zip_1": "trim_zip_1",
         "trim_zip_2": "trim_zip_2",
         "trim_html_1": "trim_html_1",
