@@ -190,13 +190,13 @@ functionality:
           direction: output
           required: false
           description: Path to output file (txt) of mapping quality statistics
-          default: mapping_quality.txt
+          default: $id.mapping_quality.txt
 
         - name: "--strandedness_output"
           type: file
           direction: output
           required: false
-          default: strandedness.txt
+          default: $id.strandedness.txt
           description: Path to output report (txt) of inferred strandedness
 
         - name: "--inner_dist_output_stats"
@@ -204,7 +204,7 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: inner_distance_stats.txt
+          default: $id.inner_distance_stats.txt
           description: output file (txt) with summary statistics of inner distances of paired reads
 
         - name: "--inner_dist_output_dist"
@@ -212,7 +212,7 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: inner_distance.txt
+          default: $id.inner_distance.txt
           description: output file (txt) with inner distances of all paired reads
 
         - name: "--inner_dist_output_freq"
@@ -220,7 +220,7 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: inner_distance_freq.txt
+          default: $id.inner_distance_freq.txt
           description: output file (txt) with frequencies of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot"
@@ -228,7 +228,7 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: inner_distance_plot.pdf
+          default: $id.inner_distance_plot.pdf
           description: output file (pdf) with histogram plot of of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot_r"
@@ -236,181 +236,181 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: inner_distance_plot.r
+          default: $id.inner_distance_plot.r
           description: output file (R) with script of histogram plot of of inner distances of all paired reads
 
         - name: "--junction_annotation_output_log"
           type: file
           direction: output
           required: false
-          default: junction_annotation.log
+          default: $id.junction_annotation.log
           description: output log of junction annotation script
 
         - name: "--junction_annotation_output_plot_r"
           type: file
           direction: output
           required: false
-          default: junction_annotation_plot.r
+          default: $id.junction_annotation_plot.r
           description: r script to generate splice_junction and splice_events plot
 
         - name: "--junction_annotation_output_junction_bed"
           type: file
           direction: output
           required: false
-          default: junction_annotation.bed
+          default: $id.junction_annotation.bed
           description: junction annotation file (bed format)
 
         - name: "--junction_annotation_output_junction_interact"
           type: file
           direction: output
           required: false
-          default: junction_annotation.Interact.bed
+          default: $id.junction_annotation.Interact.bed
           description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
 
         - name: "--junction_annotation_output_junction_sheet"
           type: file
           direction: output
           required: false
-          default: junction_annotation.xls
+          default: $id.junction_annotation.xls
           description: junction annotation file (xls format)
 
         - name: "--junction_annotation_output_splice_events_plot"
           type: file
           direction: output
           required: false
-          default: splice_events.pdf
+          default: $id.splice_events.pdf
           description: plot of splice events (pdf)
 
         - name: "--junction_annotation_output_splice_junctions_plot"
           type: file
           direction: output
           required: false
-          default: splice_junctions_plot.pdf
+          default: $id.splice_junctions_plot.pdf
           description: plot of junctions (pdf)
 
         - name: "--junction_saturation_output_plot_r"
           type: file
           direction: output
           required: false
-          default: junction_saturation_plot.r
+          default: $id.junction_saturation_plot.r
           description: r script to generate junction_saturation_plot plot
 
         - name: "--junction_saturation_output_plot"
           type: file
           direction: output
           required: false
-          default: junction_saturation_plot.pdf
+          default: $id.junction_saturation_plot.pdf
           description: plot of junction saturation (pdf)
 
         - name: "--read_distribution_output"
           type: file
           direction: output
           required: false
-          default: read_distribution.txt
+          default: $id.read_distribution.txt
           description: output file (txt) of read distribution analysis.
     
         - name: "--read_duplication_output_duplication_rate_plot_r"
           type: file
           direction: output
           required: false
-          default: duplication_rate_plot.r
+          default: $id.duplication_rate_plot.r
           description: R script for generating duplication rate plot
 
         - name: "--read_duplication_output_duplication_rate_plot"
           type: file
           direction: output
           required: false
-          default: duplication_rate_plot.pdf
+          default: $id.duplication_rate_plot.pdf
           description: duplication rate plot (pdf)
 
         - name: "--read_duplication_output_duplication_rate_mapping"
           type: file
           direction: output
           required: false
-          default: duplication_rate_mapping.xls
+          default: $id.duplication_rate_mapping.xls
           description: Summary of mapping-based read duplication
 
         - name: "--read_duplication_output_duplication_rate_sequence"
           type: file
           direction: output
           required: false
-          default: duplication_rate_sequencing.xls
+          default: $id.duplication_rate_sequencing.xls
           description: Summary of sequencing-based read duplication
 
         - name: "--tin_output_summary"
           type: file
           direction: output
           required: false
-          default: tin_summary.txt
+          default: $id.tin_summary.txt
           description: summary statistics (txt) of calculated TIN metrics
 
         - name: "--tin_output_metrics"
           type: file
           direction: output
           required: false
-          default: tin.xls
+          default: $id.tin.xls
           description: file with TIN metrics (xls)
 
         - name: "--dupradar_output_dupmatrix"
           type: file
           direction: output
           required: false
-          default: dup_matrix.txt
+          default: $id.dup_matrix.txt
           description: path to output file (txt) of duplicate tag counts
       
         - name: "--dupradar_output_dup_intercept_mqc"
           type: file
           direction: output
           required: false
-          default: dup_intercept_mqc.txt
+          default: $id.dup_intercept_mqc.txt
           description: path to output file (txt) of multiqc intercept value DupRadar
     
         - name: "--dupradar_output_duprate_exp_boxplot"
           type: file
           direction: output
           required: false
-          default: duprate_exp_boxplot.pdf
+          default: $id.duprate_exp_boxplot.pdf
           description: path to output file (pdf) of distribution of expression box plot
       
         - name: "--dupradar_output_duprate_exp_densplot"
           type: file
           direction: output
           required: false
-          default: duprate_exp_densityplot.pdf
+          default: $id.duprate_exp_densityplot.pdf
           description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts
       
         - name: "--dupradar_output_duprate_exp_denscurve_mqc"
           type: file
           direction: output
           required: false
-          default: duprate_exp_density_curve_mqc.pdf
+          default: $id.duprate_exp_density_curve_mqc.pdf
           description: path to output file (pdf) of density curve of gene duplication multiqc
       
         - name: "--dupradar_output_expression_histogram"
           type: file
           direction: output
           required: false
-          default: expression_hist.pdf
+          default: $id.expression_hist.pdf
           description: path to output file (pdf) of distribution of RPK values per gene histogram
         
         - name: "--dupradar_output_intercept_slope"
           type: file
           direction: output
           required: false
-          default: intercept_slope.txt
+          default: $id.intercept_slope.txt
 
         - name: "--qualimap_output_pdf"
           type: file
           direction: output
           required: false
           must_exist: false
-          default: qualimap_output.pdf
+          default: $id.qualimap_output.pdf
 
         - name: "--qualimap_output_dir"
           type: file
           direction: output
           required: false
-          default: $id_qualimap_output
+          default: qualimap_output
 
   resources:
     - type: nextflow_script
