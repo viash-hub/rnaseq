@@ -319,18 +319,3 @@ workflow run_wf {
 //       }
   
 // }
-
-//
-// Function that parses and returns the alignment rate from the STAR log output
-//
-def getStarPercentMapped(align_log) {
-  def percent_aligned = 0
-  def pattern = /Uniquely mapped reads %\s*\|\s*([\d\.]+)%/
-  align_log.eachLine { line ->
-    def matcher = line =~ pattern
-    if (matcher) {
-        percent_aligned = matcher[0][1].toFloat()
-    }
-  }
-  return percent_aligned
-}
