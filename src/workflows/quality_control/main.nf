@@ -34,11 +34,12 @@ workflow run_wf {
                         [ "strandedness_output": output.output ]
                     }
                 )
-
+                
                 & 
                 
                 rseqc_innerdistance.run(
                     runIf: {id, state -> state.paired},
+                    key: "inner_distance",
                     fromState: [
                         "input": "bam_input",
                         "refgene": "refgene",
@@ -147,9 +148,9 @@ workflow run_wf {
                     toState: { id, output, state ->
                         [
                              "read_duplication_output_duplication_rate_plot_r": output.output_duplication_rate_plot_r,
-                             "output_duplication_rate_plot": output.read_duplication_output_duplication_rate_plot,
-                             "output_duplication_rate_mapping": output.read_duplication_output_duplication_rate_mapping,
-                             "output_duplication_rate_sequence": output.read_duplication_output_duplication_rate_sequence     
+                             "read_duplication_output_duplication_rate_plot": output.output_duplication_rate_plot,
+                             "read_duplication_output_duplication_rate_mapping": output.output_duplication_rate_mapping,
+                             "read_duplication_output_duplication_rate_sequence": output.output_duplication_rate_sequence     
                         ]
                     }
                 )
@@ -231,7 +232,6 @@ workflow run_wf {
             )
         | mix()
         | toSortedList({a, b -> a[0] <=> b[0]})
-        | niceView()
         | map { list -> 
             def ids = list.collect{it[0]}.unique()
             assert ids.size() == 1
@@ -239,18 +239,16 @@ workflow run_wf {
             def state = list.inject([:]){currentState, tuple -> return currentState + tuple[1] }
             [id, state]
         }
-
         | niceView()
-
         | setState(
             [
                 "bamstat_output": "bamstat_output",
                 "strandedness_output": "strandedness_output",
-                "inner_dist_output_stats": "inner_dist_output_stats",
-                "inner_dist_output_dist": "inner_dist_output_dist",
-                "inner_dist_output_freq": "inner_dist_output_freq",
-                "inner_dist_output_plot": "inner_dist_output_plot",
-                "inner_dist_output_plot_r": "inner_dist_output_plot_r",
+                // "inner_dist_output_stats": "inner_dist_output_stats",
+                // "inner_dist_output_dist": "inner_dist_output_dist",
+                // "inner_dist_output_freq": "inner_dist_output_freq",
+                // "inner_dist_output_plot": "inner_dist_output_plot",
+                // "inner_dist_output_plot_r": "inner_dist_output_plot_r",
                 "junction_annotation_output_log": "junction_annotation_output_log",
                 "junction_annotation_output_plot_r": "junction_annotation_output_plot_r",
                 "junction_annotation_output_junction_bed": "junction_annotation_output_junction_bed",
@@ -262,9 +260,9 @@ workflow run_wf {
                 "junction_saturation_output_plot": "junction_saturation_output_plot",
                 "read_distribution_output": "read_distribution_output",
                 "read_duplication_output_duplication_rate_plot_r": "read_duplication_output_duplication_rate_plot_r",
-                "output_duplication_rate_plot": "output_duplication_rate_plot",
-                "output_duplication_rate_mapping": "output_duplication_rate_mapping",
-                "output_duplication_rate_sequence": "output_duplication_rate_sequence",
+                "read_duplication_output_duplication_rate_plot": "read_duplication_output_duplication_rate_plot",
+                "read_duplication_output_duplication_rate_mapping": "read_duplication_output_duplication_rate_mapping",
+                "read_duplication_output_duplication_rate_sequence": "read_duplication_output_duplication_rate_sequence",
                 "tin_output_summary": "tin_output_summary",
                 "tin_output_metrics": "tin_output_metrics",
                 "dupradar_output_dupmatrix": "dupradar_output_dupmatrix",

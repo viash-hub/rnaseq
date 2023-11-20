@@ -204,7 +204,6 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: $id.inner_distance_stats.txt
           description: output file (txt) with summary statistics of inner distances of paired reads
 
         - name: "--inner_dist_output_dist"
@@ -212,7 +211,6 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: $id.inner_distance.txt
           description: output file (txt) with inner distances of all paired reads
 
         - name: "--inner_dist_output_freq"
@@ -220,7 +218,6 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: $id.inner_distance_freq.txt
           description: output file (txt) with frequencies of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot"
@@ -228,7 +225,6 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: $id.inner_distance_plot.pdf
           description: output file (pdf) with histogram plot of of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot_r"
@@ -236,7 +232,6 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: $id.inner_distance_plot.r
           description: output file (R) with script of histogram plot of of inner distances of all paired reads
 
         - name: "--junction_annotation_output_log"
@@ -410,7 +405,7 @@ functionality:
           type: file
           direction: output
           required: false
-          default: qualimap_output
+          default: $id.qualimap_output
 
   resources:
     - type: nextflow_script
