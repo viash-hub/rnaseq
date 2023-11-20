@@ -14,7 +14,6 @@ counts_fn <- args[2]
 tpm_fn <- args[3]
 tx2gene <- args[4]
 
-# tx2gene <- "salmon_tx2gene.tsv"
 info <- file.info(tx2gene)
 if (info$size == 0) {
     tx2gene <- NULL
@@ -66,4 +65,4 @@ se <- SummarizedExperiment(
     rowData = rowdata
 )
 
-saveRDS(se, file = paste0(tools::file_path_sans_ext(counts_fn), ".rds"))
+saveRDS(se, file = paste0(tools::file_path_sans_ext(counts_fn), ".rds")) 

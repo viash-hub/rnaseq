@@ -2,12 +2,19 @@
 
 set -eo pipefail
 
-# function clean_up {
-#     rm -rf "$tmpdir"
-# }
+function clean_up {
+    # rm -rf "$tmpdir"
+    rm -rf "$salmon_tmpdir"
+}
+trap clean_up EXIT
 
 # tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
-mkdir -p $par_output
-"$meta_resources_dir/salmon_tximport.r" NULL $par_salmon_quant_results $par_output/salmon.merged $par_tx2gene_tsv
+salmon_tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
-# trap clean_up EXIT 
+IFS="," read -ra salmon_results <<< $par_salmon_quant_results
+for result in ${salmon_results[*]}
+do 
+    cp -r $result $salmon_tmpdir
+done
+
+"$meta_resources_dir/salmon_tximport.r" NULL $salmon_tmpdir salmon.merged $par_tx2gene_tsv

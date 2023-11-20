@@ -14,7 +14,6 @@ sample_name = args[3]
 tx2gene = args[4]
 
 prefix = sample_name
-# tx2gene = "salmon_tx2gene.tsv"
 info = file.info(tx2gene)
 if (info$size == 0) {
     tx2gene = NULL

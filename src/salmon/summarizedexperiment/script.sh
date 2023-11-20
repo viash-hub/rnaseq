@@ -4,15 +4,15 @@ set -eo pipefail
 
 mkdir -p $par_output
 
-"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_input/*gene_counts.tsv $par_input/*gene_tpm.tsv $par_tx2gene
+"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_counts_gene $par_tpm_gene $par_tx2gene_tsv 
 
-"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_input/*gene_counts_length_scaled.tsv $par_input/*gene_tpm.tsv $par_tx2gene
+"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_counts_gene_length_scaled $par_tpm_gene $par_tx2gene_tsv 
 
-"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_input/*gene_counts_scaled.tsv $par_input/*gene_tpm.tsv $par_tx2gene
+"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_counts_gene_scaled $par_tpm_gene $par_tx2gene_tsv 
 
-"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_input/*transcript_counts.tsv $par_input/*transcript_tpm.tsv $par_tx2gene
+"$meta_resources_dir/salmon_summarizedexperiment.r" NULL $par_counts_transcript $par_tpm_transcript $par_tx2gene_tsv 
 
-mv $par_input/*gene_counts.rds $par_output/
-mv $par_input/*gene_counts_length_scaled.rds $par_output/
-mv $par_input/*gene_counts_scaled.rds $par_output/
-mv $par_input/*transcript_counts.rds $par_output/
+mv ${par_counts_gene%.*}.rds $par_output/
+mv ${par_counts_gene_length_scaled%.*}.rds $par_output/
+mv ${par_counts_gene_scaled%.*}.rds $par_output/
+mv ${par_counts_transcript%.*}.rds $par_output/

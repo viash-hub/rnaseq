@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 from collections import OrderedDict, defaultdict, Counter
 import logging
@@ -14,7 +14,7 @@ logger.setLevel(logging.INFO)
 
 def read_top_transcript(salmon):
     txs = set()
-    fn = glob.glob(os.path.join(salmon, "quant.sf"))[0]
+    fn = glob.glob(os.path.join(salmon, "*", "quant.sf"))[0]
     with open(fn) as inh:
         for line in inh:
             if line.startswith("Name"):

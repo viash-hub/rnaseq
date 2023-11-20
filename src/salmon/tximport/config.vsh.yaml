@@ -6,42 +6,41 @@ functionality:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/local/salmon_tximport.nf]
       last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+  description: Get dataframe linking transcript ID, gene ID, and gene name
 
   arguments: 
     - name: "--salmon_quant_results"
       type: file
+      multiple: true
+      multiple_sep: ","
     - name: "--tx2gene_tsv"
       type: file
     
     # Output
-    - name: "--output"
+    - name: "--tpm_gene"
       type: file
       direction: output
-    # - name: "--tpm_gene"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.gene_tpm.tsv
-    # - name: "--counts_gene"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.gene_counts.tsv
-    # - name: "--counts_gene_length_scaled"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.gene_counts_length_scaled.tsv
-    # - name: "--counts_gene_scaled"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.gene_counts_scaled.tsv
-    # - name: "--tpm_transcript"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.transcript_tpm.tsv
-    # - name: "--counts_transcript"
-    #   type: file
-    #   direction: output
-    #   default: $id.$key.transcript_counts.tsv
+      default: salmon.merged.gene_tpm.tsv
+    - name: "--counts_gene"
+      type: file
+      direction: output
+      default: salmon.merged.gene_counts.tsv
+    - name: "--counts_gene_length_scaled"
+      type: file
+      direction: output
+      default: salmon.merged.gene_counts_length_scaled.tsv
+    - name: "--counts_gene_scaled"
+      type: file
+      direction: output
+      default: salmon.merged.gene_counts_scaled.tsv
+    - name: "--tpm_transcript"
+      type: file
+      direction: output
+      default: salmon.merged.transcript_tpm.tsv
+    - name: "--counts_transcript"
+      type: file
+      direction: output
+      default: salmon.merged.transcript_counts.tsv
   
   resources:
     - type: bash_script
@@ -56,8 +55,13 @@ platforms:
   - type: docker
     image: ubuntu:22.04
     setup:
+      - type: docker
+        env: TZ Europe/Brussels
+        run: |
+          ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
       - type: apt
         packages: [ r-base ]
-      - type: r
+      - type: r      
         bioc: [ SummarizedExperiment, tximport ]
+        cran: [ jsonlite ]
   - type: nextflow

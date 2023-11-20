@@ -6,11 +6,13 @@ functionality:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/local/salmon_tx2gene.nf]
       last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+  description: Get transcript id (tx) to gene names for tximport
 
   arguments: 
     - name: "--salmon_quant_results"
       type: file
+      multiple: true
+      multiple_sep: ","
     - name: "--gtf"
       type: file
     - name: "--gtf_extra_attributes"
@@ -22,8 +24,7 @@ functionality:
     - name: "--tsv"
       type: file
       direction: output
-      default: $id.salmon_tx2gene.tsv
-
+      default: salmon_tx2gene.tsv
   
   resources:
     - type: bash_script
