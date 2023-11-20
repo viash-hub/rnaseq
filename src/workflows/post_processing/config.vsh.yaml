@@ -114,6 +114,9 @@ functionality:
     - name: "--genome_bam_idxstats"
       type: file
       direction: output
+    - name: "--markduplicates_metrics"
+      type: file
+      direction: output
     - name: "--stringtie_transcript_gtf"
       type: file
       direction: output

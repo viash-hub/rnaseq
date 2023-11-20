@@ -265,7 +265,7 @@ workflow run_wf {
           "gtf": "gtf", 
         ],
         args: ["alignment_mode": true],
-        toState: ["salmon_quant_output": "output"]
+        toState: ["salmon_quant_results": "output"]
     )
 
     | setState (
@@ -281,7 +281,7 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_output" ]
+        "salmon_quant_results": "salmon_quant_results" ]
     )
 
   emit:

@@ -181,6 +181,7 @@ workflow run_wf {
         "genome_bam_stats": "genome_bam_stats",
         "genome_bam_flagstat": "genome_bam_flagstat", 
         "genome_bam_idxstats": "genome_bam_idxstats", 
+        "markduplicates_metrics": "markduplicates_metrics", 
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
@@ -193,8 +194,6 @@ workflow run_wf {
         "bigwig_forward": "bigwig_forward",
         "bigwig_reverse": "bigwig_reverse"
     )
-
-    | view { "Output: $it" }
 
   emit:
     output_ch
