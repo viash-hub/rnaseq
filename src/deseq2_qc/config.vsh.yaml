@@ -34,15 +34,15 @@ functionality:
     - name: "--deseq2_output"
       type: file
       direction: output
-      default: deseq2_qc
+      default: deseq2
     - name: "--pca_multiqc"
       type: file
       direction: output
-      default: $id.star_salmon.pca.vals_mqc.tsv
+      default: star_salmon.pca.vals_mqc.tsv
     - name: "--dists_multiqc"
       type: file
       direction: output
-      default: $id.star_salmon.sample.dists_mqc.tsv
+      default: star_salmon.sample.dists_mqc.tsv
   
   resources:
     - type: bash_script

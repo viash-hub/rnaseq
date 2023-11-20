@@ -1,12 +1,17 @@
 #!/bin/bash
 
-# par_counts="testData/paired_end_test/SRR6357071.genome_alignment_and_quant.salmon_tximport/salmon.merged.gene_counts_length_scaled.tsv"
+## VIASH START
+# par_counts="work/4e/709a2cba757cd071f1f7a7995d83c4/_viash_par/counts_gene_length_scaled_1/salmon.merged.gene_counts_length_scaled.tsv"
 # par_pca_header_multiqc="assets/multiqc/deseq2_pca_header.txt"
 # par_clustering_header_multiqc="assets/multiqc/deseq2_clustering_header.txt"
 # meta_cpus=2
 # par_extra_args2="star_salmon"
 # par_extra_args="--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
 # par_deseq2_vst=true
+# par_deseq2_output="deseq2_test"
+# par_pca_multiqc="test_multiqc"
+# par_dists_multiqc="dists_multiqc"
+## VIASH END
 
 set -eo pipefail
 
