@@ -274,7 +274,7 @@ functionality:
       description: Use vst transformation instead of rlog with DESeq2
     - name: "--extra_deseq2_args"
       type: string
-      default: "--id_col 1 --sample_suffix '' -outprefix deseq2 --count_col 3"
+      default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
     - name: "--extra_deseq2_args2"
       type: string
       default: star_salmon

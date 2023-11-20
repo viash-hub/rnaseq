@@ -18,8 +18,8 @@ set -eo pipefail
 if $par_deseq2_vst; then 
     par_extra_args+=" --vst TRUE"
 fi
-label_lower=${par_extra_args2,,}
-label_upper=${par_extra_args2^^}
+label_lower="${par_extra_args2,,}"
+label_upper="${par_extra_args2^^}"
 
 "$meta_resources_dir/deseq2_qc.r" --count_file $par_counts --outdir $par_deseq2_output --cores $meta_cpus $par_extra_args
 
