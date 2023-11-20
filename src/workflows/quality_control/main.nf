@@ -38,7 +38,6 @@ workflow run_wf {
                 & 
                 
                 rseqc_innerdistance.run(
-                    runIf: {id, state -> state.paired},
                     key: "inner_distance",
                     fromState: [
                         "input": "bam_input",
@@ -244,11 +243,11 @@ workflow run_wf {
             [
                 "bamstat_output": "bamstat_output",
                 "strandedness_output": "strandedness_output",
-                // "inner_dist_output_stats": "inner_dist_output_stats",
-                // "inner_dist_output_dist": "inner_dist_output_dist",
-                // "inner_dist_output_freq": "inner_dist_output_freq",
-                // "inner_dist_output_plot": "inner_dist_output_plot",
-                // "inner_dist_output_plot_r": "inner_dist_output_plot_r",
+                "inner_dist_output_stats": "inner_dist_output_stats",
+                "inner_dist_output_dist": "inner_dist_output_dist",
+                "inner_dist_output_freq": "inner_dist_output_freq",
+                "inner_dist_output_plot": "inner_dist_output_plot",
+                "inner_dist_output_plot_r": "inner_dist_output_plot_r",
                 "junction_annotation_output_log": "junction_annotation_output_log",
                 "junction_annotation_output_plot_r": "junction_annotation_output_plot_r",
                 "junction_annotation_output_junction_bed": "junction_annotation_output_junction_bed",

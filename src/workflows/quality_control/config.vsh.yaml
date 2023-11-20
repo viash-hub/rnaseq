@@ -202,35 +202,30 @@ functionality:
         - name: "--inner_dist_output_stats"
           type: file
           direction: output
-          required: false
           must_exist: false
           description: output file (txt) with summary statistics of inner distances of paired reads
 
         - name: "--inner_dist_output_dist"
           type: file
           direction: output
-          required: false
           must_exist: false
           description: output file (txt) with inner distances of all paired reads
 
         - name: "--inner_dist_output_freq"
           type: file
           direction: output
-          required: false
           must_exist: false
           description: output file (txt) with frequencies of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot"
           type: file
           direction: output
-          required: false
           must_exist: false
           description: output file (pdf) with histogram plot of of inner distances of all paired reads
 
         - name: "--inner_dist_output_plot_r"
           type: file
           direction: output
-          required: false
           must_exist: false
           description: output file (R) with script of histogram plot of of inner distances of all paired reads
 
