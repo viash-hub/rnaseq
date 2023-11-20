@@ -85,8 +85,8 @@ workflow run_wf {
           "fastqc_zip_2": "fastqc_zip_2",  
           "fastq_1": "qc_output1",
           "fastq_2": "qc_output2", 
-          "trim_log_1": "trim_log1", 
-          "trim_log_2": "trim_log2", 
+          "trim_log_1": "trim_log_1", 
+          "trim_log_2": "trim_log_2", 
           "trim_zip_1": "trim_zip_1",
           "trim_zip_2": "trim_zip_2",
           "trim_html_1": "trim_html_1",
@@ -104,19 +104,20 @@ workflow run_wf {
       [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_json_info)] ] : 
       [id, state] 
     }
-    | niceView()
+
     // Filter FastQ files based on minimum trimmed read count after adapter trimming
     | map { id, state -> 
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      def paired = input.size() == 2
-      def num_reads = (!state.skip_trimming) ? 
-        getTrimGaloreReadsAfterFiltering(state.paired ? state.trim_log_2 : state.trim_log_1) : 
-        (state.min_trimmed_reads + 1)
+      def num_reads = state.min_trimmed_reads + 1
+      num_reads = 
+        (!state.skip_trimming && input.size() == 2) ?
+          getTrimGaloreReadsAfterFiltering(state.trim_log_2) : 
+          getTrimGaloreReadsAfterFiltering(state.trim_log_1)
       def passed_trimmed_reads = 
-        (state.skip_trimming || (state.num_trimmed_reads >= state.min_trimmed_reads)) ? 
+        (state.skip_trimming || (num_reads >= state.min_trimmed_reads)) ? 
           true : 
           false 
-      [ id, state + [num_trimmed_reads: num_reads, passed_trimmed_reads: passed_trimmed_reads] ]
+      [ id, state + [num_trimmed_reads: num_reads, passed_trimmed_reads: passed_trimmed_reads] ] 
     }
     // | filter { id, state -> state.skip_trimming || state.passed_trimmed_reads }
     // TODO: Get list of samples that failed trimming threshold for MultiQC report
@@ -155,7 +156,7 @@ workflow run_wf {
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-          "salmon_quant_results": "salmon_quant_output"
+          "salmon_quant_results": "salmon_quant_results"
         ]
     )
 
@@ -169,54 +170,72 @@ workflow run_wf {
     // TODO: Get list of samples that failed mapping for MultiQC report
     
     // Post-processing
-    | post_processing.run (
-        fromState: [
-          "id": "id", 
-          "paired": "paired", 
-          "strandedness": "strandedness", 
-          "fasta": "fasta",
-          "fai": "fai", 
+    // | post_processing.run (
+    //     fromState: [
+    //       "id": "id", 
+    //       "paired": "paired", 
+    //       "strandedness": "strandedness", 
+    //       "fasta": "fasta",
+    //       "fai": "fai", 
+    //       "gtf": "gtf", 
+    //       "genome_bam": "genome_bam_sorted", 
+    //       "chrom_sizes": "chrom_sizes", 
+    //       "star_multiqc": "star_multiqc",
+    //       "extra_picard_args": "extra_picard_args", 
+    //       "extra_stringtie_args": "extra_stringtie_args", 
+    //       "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
+    //       "extra_bedtools_args": "extra_bedtools_args", 
+    //       "extra_featurecounts_args": "extra_featurecounts_args", 
+    //       "bam_csi_index": "bam_csi_index", 
+    //       "min_mapped_reads": "min_mapped_reads", 
+    //       "with_umi": "with_umi",
+    //       "biotype": "biotype", 
+    //       "biotypes_header": "biotypes_header",
+    //       "skip_qc": "skip_qc",
+    //       "skip_markdupkicates": "skip_markdupkicates", 
+    //       "skip_stringtie": "skip_stringtie", 
+    //       "skip_biotype_qc": "skip_biotype_qc", 
+    //       "skip_bigwig": "skip_bigwig", 
+    //       "featurecounts_group_type": "featurecounts_group_type", 
+    //       "featurecounts_feature_type": "featurecounts_feature_type", 
+    //       "gencode": "gencode"
+    //     ], 
+    //     toState: [
+    //       "genome_bam_sorted": "processed_genome_bam", 
+    //       "genome_bam_index": "genome_bam_index",
+    //       "genome_bam_stats": "genome_bam_stats",
+    //       "genome_bam_flagstat": "genome_bam_flagstat", 
+    //       "genome_bam_idxstats": "genome_bam_idxstats", 
+    //       "markduplicates_metrics": "markduplicates_metrics",
+    //       "stringtie_transcript_gtf": "stringtie_transcript_gtf",
+    //       "stringtie_coverage_gtf": "stringtie_coverage_gtf",
+    //       "stringtie_abundance": "stringtie_abundance",
+    //       "stringtie_ballgown": "stringtie_ballgown", 
+    //       "featurecounts": "featurecounts",
+    //       "featurecounts_summary": "featurecounts_summary", 
+    //       "featurecounts_multiqc": "featurecounts_multiqc", 
+    //       "bedgraph_forward": "bedgraph_forward",
+    //       "bedgraph_reverse": "bedgraph_reverse",
+    //       "bigwig_forward": "bigwig_forward",
+    //       "bigwig_reverse": "bigwig_reverse"
+    //     ], 
+    // )
+
+    | salmon_quant_merge_counts.run (
+        fromState: [ 
+          "salmon_quant_results": "salmon_quant_results", 
           "gtf": "gtf", 
-          "genome_bam": "genome_bam_sorted", 
-          "chrom_sizes": "chrom_sizes", 
-          "star_multiqc": "star_multiqc",
-          "extra_picard_args": "extra_picard_args", 
-          "extra_stringtie_args": "extra_stringtie_args", 
-          "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
-          "extra_bedtools_args": "extra_bedtools_args", 
-          "extra_featurecounts_args": "extra_featurecounts_args", 
-          "bam_csi_index": "bam_csi_index", 
-          "min_mapped_reads": "min_mapped_reads", 
-          "with_umi": "with_umi",
-          "biotype": "biotype", 
-          "biotypes_header": "biotypes_header",
-          "skip_qc": "skip_qc",
-          "skip_markdupkicates": "skip_markdupkicates", 
-          "skip_stringtie": "skip_stringtie", 
-          "skip_biotype_qc": "skip_biotype_qc", 
-          "skip_bigwig": "skip_bigwig", 
-          "featurecounts_group_type": "featurecounts_group_type", 
-          "featurecounts_feature_type": "featurecounts_feature_type", 
-          "gencode": "gencode"
-        ], 
+          "gtf_extra_attributes": "gtf_extra_attributes", 
+          "gtf_group_features": "gtf_group_features"],
         toState: [
-          "genome_bam_sorted": "processed_genome_bam", 
-          "genome_bam_index": "genome_bam_index",
-          "genome_bam_stats": "genome_bam_stats",
-          "genome_bam_flagstat": "genome_bam_flagstat", 
-          "genome_bam_idxstats": "genome_bam_idxstats", 
-          "stringtie_transcript_gtf": "stringtie_transcript_gtf",
-          "stringtie_coverage_gtf": "stringtie_coverage_gtf",
-          "stringtie_abundance": "stringtie_abundance",
-          "stringtie_ballgown": "stringtie_ballgown", 
-          "featurecounts": "featurecounts",
-          "featurecounts_summary": "featurecounts_summary", 
-          "featurecounts_multiqc": "featurecounts_multiqc", 
-          "bedgraph_forward": "bedgraph_forward",
-          "bedgraph_reverse": "bedgraph_reverse",
-          "bigwig_forward": "bigwig_forward",
-          "bigwig_reverse": "bigwig_reverse"
-        ], 
+          "tpm_gene": "tpm_gene",
+          "counts_gene": "counts_gene",
+          "counts_gene_length_scaled": "counts_gene_length_scaled",
+          "counts_gene_scaled": "counts_gene_scaled", 
+          "tpm_transcript": "tpm_transcript", 
+          "counts_transcript": "counts_transcript", 
+          "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment"
+        ]
     )
 
     // Final QC
@@ -334,6 +353,21 @@ def getTrimGaloreReadsAfterFiltering(log_file) {
     if (filtered_reads_matcher) filtered_reads = filtered_reads_matcher[0][1].toFloat()
   }
   return total_reads - filtered_reads
+}
+
+//
+// Function that parses and returns the alignment rate from the STAR log output
+//
+def getStarPercentMapped(align_log) {
+  def percent_aligned = 0
+  def pattern = /Uniquely mapped reads %\s*\|\s*([\d\.]+)%/
+  align_log.eachLine { line ->
+    def matcher = line =~ pattern
+    if (matcher) {
+        percent_aligned = matcher[0][1].toFloat()
+    }
+  }
+  return percent_aligned
 }
 
 //

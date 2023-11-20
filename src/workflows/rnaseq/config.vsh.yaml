@@ -306,7 +306,8 @@ functionality:
     - name: workflows/pre_processing
     - name: workflows/genome_alignment_and_quant
     - name: workflows/post_processing
-    - name: workflows/final_qc
+    - name: workflows/quality_control
+    - name: workflows/salmon_quant_merge_counts
 
 platforms:
   - type: nextflow
