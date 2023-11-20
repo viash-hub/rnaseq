@@ -38,6 +38,7 @@ workflow run_wf {
                 & 
                 
                 rseqc_innerdistance.run(
+                    filter: {id, state -> state.paired},
                     key: "inner_distance",
                     fromState: [
                         "input": "bam_input",
