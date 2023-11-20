@@ -56,22 +56,6 @@ workflow run_wf {
             toState: [ "salmon_merged_summarizedexperiment": "output" ]
         )
 
-        // | deseq2_qc.run (
-        //     fromState: [
-        //         "counts": "counts_gene_length_scaled",
-        //         "pca_header_multiqc": "pca_header_multiqc", 
-        //         "clustering_header_multiqc": "clustering_header_multiqc",
-        //         "deseq2_vst": "deseq2_vst", 
-        //         "extra_deseq2_args": "extra_deseq2_args",
-        //         "extra_deseq2_args2": "extra_deseq2_args2"
-        //     ], 
-        //     toState: [
-        //         "deseq2_output": "deseq2_output", 
-        //         "deseq2_pca_multiqc": "pca_multiqc", 
-        //         "deseq2_dists_multiqc": "dists_multiqc"
-        //     ]
-        // )
-
     | setState (
         "tpm_gene": "tpm_gene",
         "counts_gene": "counts_gene",
