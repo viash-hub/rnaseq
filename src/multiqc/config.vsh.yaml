@@ -26,7 +26,7 @@ functionality:
           type: file
         - name: "--fail_trimming_multiqc"
           type: string
-        - name: "--fail_mappingg_multiqc"
+        - name: "--fail_mapping_multiqc"
           type: file
         - name: "--fail_strand_multiqc"
           type: file

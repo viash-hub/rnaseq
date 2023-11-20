@@ -46,7 +46,7 @@ functionality:
       type: file
       direction: output
       description: Folder containing the quantification results for a specific sample
-      default: $id.$key
+      default: $id.salmon_quant
     - name: "--json_info"
       type: file
       direction: output
