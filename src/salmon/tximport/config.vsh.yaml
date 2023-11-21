@@ -55,13 +55,9 @@ platforms:
   - type: docker
     image: ubuntu:22.04
     setup:
-      - type: docker
-        env: TZ Europe/Brussels
-        run: |
-          ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
       - type: apt
-        packages: [ r-base ]
+        packages: [ r-base, libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
       - type: r      
-        bioc: [ SummarizedExperiment, tximport ]
+        bioc: [ SummarizedExperiment, tximport, tximeta ]
         cran: [ jsonlite ]
   - type: nextflow
