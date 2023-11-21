@@ -58,8 +58,8 @@ platforms:
     image: ubuntu:22.04
     setup:
       - type: apt
-        packages: [r-base]
+        packages: [ r-base ]
       - type: r
+        bioc: [ survival, DESeq2 ]
         cran: [ optparse, ggplot2, RColorBrewer, pheatmap ]
-        bioc: [ DESeq2 ]
   - type: nextflow
