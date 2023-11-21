@@ -40,7 +40,7 @@ functionality:
       type: integer
       required: false
       default: 5
-      description: Sampling frequency in %. Smalle value means more sampling times. Must be an integer between 0 and 100, default = 5.
+      description: Sampling frequency in %. Smaller value means more sampling times. Must be an integer between 0 and 100, default = 5.
       min: 0
       max: 100
    

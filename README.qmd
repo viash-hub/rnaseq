@@ -21,7 +21,7 @@ The original version of the nf-core/rnaseq pipeline allowed one to point to inpu
 
 As test data, we can use the small dataset nf-core provided with [their `test` profile](https://github.com/nf-core/test-datasets/blob/rnaseq3/samplesheet/v3.10/samplesheet_test.csv): <https://github.com/nf-core/test-datasets/tree/rnaseq3/testdata/GSE110004>.
 
-A simple script has been provided to fetch those files from the github repository and store them under `testData/test` (the subdirectory is created to support `full_test` later as well): `bin/get_testData.sh`.
+A simple script has been provided to fetch those files from the github repository and store them under `testData/test` (the subdirectory is created to support `full_test` later as well): `bin/get_testData.sh`. Additional test data are fetched from (provided by rseqc package) to evaluate paired-end experiments.
 
 Additionally, a script has been provided to fetch all the necessary reference data files from the github repository (https://github.com/nf-core/test-datasets/tree/rnaseq3/reference) and store them under `testData/reference`: `bin/get_reference.sh`
 

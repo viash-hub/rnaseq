@@ -38,7 +38,7 @@ functionality:
       type: file
       direction: output
       required: false
-      default: strandness.txt
+      default: strandedness.txt
       description: output file (txt) of strandness report
 
   resources:

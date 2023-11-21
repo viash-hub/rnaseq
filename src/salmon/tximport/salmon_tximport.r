@@ -2,6 +2,7 @@
 
 library(SummarizedExperiment)
 library(tximport)
+library(tximeta)
 
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 2) {
