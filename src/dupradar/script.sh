@@ -10,10 +10,10 @@ set -exo pipefail
 prefix=$(openssl rand -hex 8)
 
 function num_strandness {
-    if [ $par_strandedness == 'none' ]; then echo 1
+    if [ -z $par_strandedness ]; then echo 1
     elif [ $par_strandedness == 'forward' ]; then echo 1
     elif [ $par_strandedness == 'reverse' ]; then echo 2
-    else echo "strandedness must be none, forward or reverse." && \
+    else echo "strandedness must be null, forward or reverse." && \
         exit 1
     fi
 }

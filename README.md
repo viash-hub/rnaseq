@@ -26,7 +26,7 @@ profile](https://github.com/nf-core/test-datasets/blob/rnaseq3/samplesheet/v3.10
 
 A simple script has been provided to fetch those files from the github
 repository and store them under `testData/test` (the subdirectory is
-created to support `full_test` later as well): `bin/get_testData.sh`.
+created to support `full_test` later as well): `bin/get_testData.sh`. Additional test data are fetched from (provided by rseqc package) to evaluate paired-end experiments.
 
 Additionally, a script has been provided to fetch all the necessary
 reference data files from the github repository

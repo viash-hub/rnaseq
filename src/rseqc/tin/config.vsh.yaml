@@ -10,11 +10,16 @@ functionality:
     Calculte TIN (transcript integrity number) from RNA-seq reads
 
   arguments:
-    - name: "--input"
+    - name: "--bam_input"
       type: file 
       required: true
-      description: bam file to calculate statistics of, bai file of must be in the same directory.
+      description: Path to input alignment file in BAM or SAM format.
  
+    - name: "--bai_input"
+      type: file 
+      required: true
+      description: Path to bam index file in bai format.
+
     - name: "--refgene"
       type: file 
       required: true

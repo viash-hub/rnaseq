@@ -58,7 +58,7 @@ platforms:
     image: ubuntu:22.04
     setup:
       - type: apt
-        packages: [ r-base, libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
+        packages: [  r-base , libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
       - type: r
         cran: [ optparse, ggplot2, RColorBrewer, pheatmap ]
         bioc: [ DESeq2 ]
