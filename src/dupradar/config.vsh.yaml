@@ -9,6 +9,11 @@ functionality:
     Assessment of duplication rates in RNA-Seq datasets
 
   arguments:
+
+    - name: "--id"
+      type: string
+      description: Sample ID
+      
     - name: "--input"
       type: file 
       required: true
@@ -20,21 +25,21 @@ functionality:
       description: path to GTF annotation file.
 
     - name: "--paired"
-      type: boolean_true
+      type: boolean
       description: add flag if input alignment file consists of paired reads
 
     - name: "--strandedness"
       type: string
       required: false
-      choices: ["forward", "reverse"]
-      description: strandedness of input bam file reads (forward, reverse or null (default, applicable to paired reads))
+      choices: ["forward", "reverse", "unstranded"]
+      description: strandedness of input bam file reads (forward, reverse or unstranded (default, applicable to paired reads))
   
     - name: "--output_dupmatrix"
       type: file
       direction: output
       required: false
       must_exist: true
-      default: dup_matrix.txt
+      default: $id.dup_matrix.txt
       description: path to output file (txt) of duplicate tag counts
    
     - name: "--output_dup_intercept_mqc"
@@ -42,7 +47,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: dup_intercept_mqc.txt
+      default: $id.dup_intercept_mqc.txt
       description: path to output file (txt) of multiqc intercept value DupRadar
  
     - name: "--output_duprate_exp_boxplot"
@@ -50,7 +55,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: duprate_exp_boxplot.pdf
+      default: $id.duprate_exp_boxplot.pdf
       description: path to output file (pdf) of distribution of expression box plot
    
     - name: "--output_duprate_exp_densplot"
@@ -58,7 +63,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: duprate_exp_densityplot.pdf
+      default: $id.duprate_exp_densityplot.pdf
       description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts
    
     - name: "--output_duprate_exp_denscurve_mqc"
@@ -66,7 +71,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: duprate_exp_density_curve_mqc.pdf
+      default: $id.duprate_exp_density_curve_mqc.pdf
       description: path to output file (pdf) of density curve of gene duplication multiqc
    
     - name: "--output_expression_histogram"
@@ -74,7 +79,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: expression_hist.pdf
+      default: $id.expression_hist.pdf
       description: path to output file (pdf) of distribution of RPK values per gene histogram
     
     - name: "--output_intercept_slope"
@@ -82,14 +87,14 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: intercept_slope.txt
+      default: $id.intercept_slope.txt
       description: output file (txt) with progression of duplication rate value 
 
   resources:
     - type: bash_script
       path: script.sh
-    - type: r_script
-      path: dupradar.r
+    # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/dupradar.r
+    - path: dupradar.r
 
   test_resources:
     - type: bash_script

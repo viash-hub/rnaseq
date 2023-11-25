@@ -19,8 +19,8 @@ threads <- as.numeric(args[6])
 bamRegex <- "(.+)\\.bam$"
 
 if(!(grepl(bamRegex, input_bam) && file.exists(input_bam) &&  (!file.info(input_bam)$isdir))) stop("First argument '<input.bam>' must be an existing file (not a directory) with '.bam' extension...")
-if(!(file.exists(annotation_gtf) &&  (!file.info(annotation_gtf)$isdir))) stop("Second argument '<annotation.gtf>' must be an existing file (and not a directory)...")
-if(is.na(stranded) || (!(stranded %in% (0:2)))) stop("Third argument <strandDirection> must be a numeric value in 0(unstranded)/1(forward)/2(reverse)...")
+if(!(file.exists(annotation_gtf) &&  (!file.info(annotation_gtf)$isdir))) stop("Third argument '<annotation.gtf>' must be an existing file (and not a directory)...")
+if(is.na(stranded) || (!(stranded %in% (0:2)))) stop("Fourth argument <strandDirection> must be a numeric value in 0(unstranded)/1(forward)/2(reverse)...")
 if(is.na(threads) || (threads<=0)) stop("Fifth argument <nbThreads> must be a strictly positive numeric value...")
 
 # Debug messages (stderr)
