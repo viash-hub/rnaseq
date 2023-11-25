@@ -2,10 +2,9 @@
 
 set -eo pipefail
 
-mkdir -p $par_output
+mkdir -p $par_output_dir
 
-qualimap \
-    rnaseq \
+qualimap rnaseq \
     --java-mem-size=$par_java_memory_size \
     --algorithm $par_algorithm \
     --num-pr-bases $par_pr_bases \
@@ -15,5 +14,5 @@ qualimap \
     -gtf $par_gtf \
     ${par_paired:+-pe} \
     ${par_sorted:+-s} \
-    -outdir $par_output \
+    -outdir $par_output_dir \
     -outformat $par_output_format 

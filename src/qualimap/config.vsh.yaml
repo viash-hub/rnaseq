@@ -23,7 +23,7 @@ functionality:
       direction: output
       type: file
       required: false
-      default: qualimap_output
+      default: $id.qualimap_output
       description: path to output directory for raw data and report.
 
     - name: "--output_pdf"
@@ -31,7 +31,7 @@ functionality:
       direction: output
       required: false
       must_exist: false
-      default: report.pdf
+      default: $id.report.pdf
       description: path to output file for pdf report.
 
     - name: "--output_format"

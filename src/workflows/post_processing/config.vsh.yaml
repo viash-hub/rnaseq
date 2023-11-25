@@ -17,8 +17,6 @@ functionality:
       description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
     - name: "--paired"
       type: boolean 
-      required: false
-      default: false
       description: Paired fastq files or not?
     - name: "--fasta"
       type: file
@@ -102,57 +100,71 @@ functionality:
     - name: "--processed_genome_bam"
       type: file
       direction: output
-    - name: "--genome_bam_indexed"
+      default: $id.markdup.sorted.bam
+    - name: "--genome_bam_index"
       type: file
       direction: output
+      default: $id.markdup.sorted.bam
     - name: "--genome_bam_stats"
       type: file
       direction: output
+      default: $id.markdup.sorted.bam.stats
     - name: "--genome_bam_flagstat"
       type: file
       direction: output
+      default: $id.markdup.sorted.bam.flagstat
     - name: "--genome_bam_idxstats"
       type: file
       direction: output
+      default: $id.markdup.sorted.bam.idxstats
     - name: "--markduplicates_metrics"
       type: file
       direction: output
+      default: $id.markdup.sorted.MarkDuplicates.metrics.txt
     - name: "--stringtie_transcript_gtf"
       type: file
       direction: output
-    - name: "--transcript_gtf"
-      type: file
-      direction: output
+      default: $id.stringtie.transcripts.gtf
     - name: "--stringtie_coverage_gtf"
       type: file
       direction: output
+      default: $id.stringtie.coverage.gtf
     - name: "--stringtie_abundance"
       type: file
       direction: output
+      default: $id.stringtie.gene_abundance.txt
     - name: "--stringtie_ballgown"
       type: file
       direction: output
+      default: $id.stringtie.ballgown
     - name: "--featurecounts"
       type: file
       direction: output
+      default: $id.featureCounts.txt
     - name: "--featurecounts_summary"
       type: file
       direction: output
+      default: $id.featureCounts.txt.summary
     - name: "--featurecounts_multiqc"
       type: file
       direction: output
+      default: $id.featureCounts_mqc.tsv
     - name: "--bedgraph_forward"
       type: file
       direction: output
+      default: $id.forward.bedgraph
     - name: "--bedgraph_reverse"
       type: file
       direction: output
+      default: $id.reverse.bedgraph
     - name: "--bigwig_forward"
       type: file
       direction: output
+      default: $id.forward.bigwig
     - name: "--bigwig_reverse"
       type: file
       direction: output
+      default: $id.reverse.bigwig
 
   resources:
     - type: nextflow_script

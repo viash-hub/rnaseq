@@ -11,9 +11,6 @@ functionality:
     - name: "--bam"
       type: file
       description: Input genome BAM file
-    - name: "--bed"
-      type: file
-      description: Input bed file
     - name: "--extra_preseq_args"
       type: string
     - name: "--paired"

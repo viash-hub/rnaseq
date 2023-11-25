@@ -38,11 +38,11 @@ functionality:
     - name: "--pca_multiqc"
       type: file
       direction: output
-      default: star_salmon.pca.vals_mqc.tsv
+      default: deseq2.pca.vals_mqc.tsv
     - name: "--dists_multiqc"
       type: file
       direction: output
-      default: star_salmon.sample.dists_mqc.tsv
+      default: deseq2.sample.dists_mqc.tsv
   
   resources:
     - type: bash_script

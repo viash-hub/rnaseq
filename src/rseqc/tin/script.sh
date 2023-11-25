@@ -5,7 +5,8 @@ set -eo pipefail
 bam_file="$(basename -- $par_bam_input)"
 bai_file="$(basename -- $par_bai_input)"
 
-
+echo "$bam_file"
+echo "$bai_file"
 
 tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 function clean_up {

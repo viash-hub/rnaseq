@@ -26,7 +26,7 @@ functionality:
       type: file
       direction: output
       required: false
-      default: mapping_quality.txt
+      default: $id.mapping_quality.txt
       description: output file (txt) with mapping quality statistics
 
   resources:

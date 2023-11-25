@@ -38,49 +38,49 @@ functionality:
       type: file
       direction: output
       required: false
-      default: junction_annotation.log
+      default: $id.junction_annotation.log
       description: output log of junction annotation script
 
     - name: "--output_plot_r"
       type: file
       direction: output
       required: false
-      default: junction_annotation_plot.r
+      default: $id.junction_annotation_plot.r
       description: r script to generate splice_junction and splice_events plot
 
     - name: "--output_junction_bed"
       type: file
       direction: output
       required: false
-      default: junction_annotation.bed
+      default: $id.junction_annotation.bed
       description: junction annotation file (bed format)
 
     - name: "--output_junction_interact"
       type: file
       direction: output
       required: false
-      default: junction_annotation.Interact.bed
+      default: $id.junction_annotation.Interact.bed
       description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
 
     - name: "--output_junction_sheet"
       type: file
       direction: output
       required: false
-      default: junction_annotation.xls
+      default: $id.junction_annotation.xls
       description: junction annotation file (xls format)
 
     - name: "--output_splice_events_plot"
       type: file
       direction: output
       required: false
-      default: splice_events.pdf
+      default: $id.splice_events.pdf
       description: plot of splice events (pdf)
 
     - name: "--output_splice_junctions_plot"
       type: file
       direction: output
       required: false
-      default: splice_junctions_plot.pdf
+      default: $id.splice_junctions_plot.pdf
       description: plot of junctions (pdf)
 
   resources:

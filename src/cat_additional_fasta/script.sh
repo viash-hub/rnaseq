@@ -5,7 +5,7 @@ set -eo pipefail
 add_name="$(basename -- $par_additional_fasta)"
 
 # Use fasta2gtf.py to generate a GTF annotation file from the FASTA file
-"$meta_resources_dir/fasta2gtf.py" \
+python3 "$meta_resources_dir/fasta2gtf.py" \
   -o ${add_name%%.*}.gtf \
   ${par_biotype:+-b $par_biotype} \
   $biotype_name \

@@ -45,7 +45,7 @@ functionality:
       description: FastQC report archive for read 2.
       required: false
       must_exist: false
-      default: $id.$key.read1.zip
+      default: $id.$key.read2.zip
 
   resources:
     - type: bash_script

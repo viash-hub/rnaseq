@@ -85,12 +85,12 @@ workflow run_wf {
     )
     | samtools_index.run (
         fromState: [
-          "bam": "transcriptome_bam_sorted", 
+          "input": "transcriptome_bam_sorted", 
           "bam_csi_index": "bam_csi_index" 
         ],
         toState: [
-          "transcriptome_bam_bai": "bai", 
-          "transcriptome_bam_csi": "csi" 
+          "transcriptome_bam_bai": "output_bai", 
+          "transcriptome_bam_csi": "output_csi" 
         ],
         key: "transcriptome_sorted", 
     )
@@ -142,7 +142,7 @@ workflow run_wf {
     | samtools_index.run (
         runIf: { id, state -> state.with_umi },
         fromState: [
-          "bam": "genome_bam_sorted", 
+          "input": "genome_bam_sorted", 
           "bam_csi_index": "bam_csi_index"
         ],
         toState: [ 
@@ -207,12 +207,12 @@ workflow run_wf {
     | samtools_index.run (
       runIf: { id, state -> state.with_umi },
       fromState: [
-        "bam": "transcriptome_bam_sorted", 
+        "input": "transcriptome_bam_sorted", 
         "bam_csi_index": "bam_csi_index" 
       ],
       toState: [
-        "transcriptome_bam_bai": "bai", 
-        "transcriptome_bam_csi": "csi" 
+        "transcriptome_bam_bai": "output_bai", 
+        "transcriptome_bam_csi": "output_csi" 
       ],
       key: "transcriptome_deduped_sorted", 
     )
