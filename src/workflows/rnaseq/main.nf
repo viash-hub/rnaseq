@@ -97,7 +97,7 @@ workflow run_wf {
           "salmon_json_info": "salmon_json_info"
         ]
     )
-
+    | niceView()
     // Infer strandedness from Salmon pseudo-alignment results
     | map { id, state -> 
     (state.strandedness == 'auto') ? 
@@ -168,78 +168,66 @@ workflow run_wf {
     }
     // | filter { id, state -> state.passed_mapping) }
     // TODO: Get list of samples that failed mapping for MultiQC report
-    
-    // Post-processing
-    // | post_processing.run (
-    //     fromState: [
-    //       "id": "id", 
-    //       "paired": "paired", 
-    //       "strandedness": "strandedness", 
-    //       "fasta": "fasta",
-    //       "fai": "fai", 
-    //       "gtf": "gtf", 
-    //       "genome_bam": "genome_bam_sorted", 
-    //       "chrom_sizes": "chrom_sizes", 
-    //       "star_multiqc": "star_multiqc",
-    //       "extra_picard_args": "extra_picard_args", 
-    //       "extra_stringtie_args": "extra_stringtie_args", 
-    //       "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
-    //       "extra_bedtools_args": "extra_bedtools_args", 
-    //       "extra_featurecounts_args": "extra_featurecounts_args", 
-    //       "bam_csi_index": "bam_csi_index", 
-    //       "min_mapped_reads": "min_mapped_reads", 
-    //       "with_umi": "with_umi",
-    //       "biotype": "biotype", 
-    //       "biotypes_header": "biotypes_header",
-    //       "skip_qc": "skip_qc",
-    //       "skip_markdupkicates": "skip_markdupkicates", 
-    //       "skip_stringtie": "skip_stringtie", 
-    //       "skip_biotype_qc": "skip_biotype_qc", 
-    //       "skip_bigwig": "skip_bigwig", 
-    //       "featurecounts_group_type": "featurecounts_group_type", 
-    //       "featurecounts_feature_type": "featurecounts_feature_type", 
-    //       "gencode": "gencode"
-    //     ], 
-    //     toState: [
-    //       "genome_bam_sorted": "processed_genome_bam", 
-    //       "genome_bam_index": "genome_bam_index",
-    //       "genome_bam_stats": "genome_bam_stats",
-    //       "genome_bam_flagstat": "genome_bam_flagstat", 
-    //       "genome_bam_idxstats": "genome_bam_idxstats", 
-    //       "markduplicates_metrics": "markduplicates_metrics",
-    //       "stringtie_transcript_gtf": "stringtie_transcript_gtf",
-    //       "stringtie_coverage_gtf": "stringtie_coverage_gtf",
-    //       "stringtie_abundance": "stringtie_abundance",
-    //       "stringtie_ballgown": "stringtie_ballgown", 
-    //       "featurecounts": "featurecounts",
-    //       "featurecounts_summary": "featurecounts_summary", 
-    //       "featurecounts_multiqc": "featurecounts_multiqc", 
-    //       "bedgraph_forward": "bedgraph_forward",
-    //       "bedgraph_reverse": "bedgraph_reverse",
-    //       "bigwig_forward": "bigwig_forward",
-    //       "bigwig_reverse": "bigwig_reverse"
-    //     ], 
-    // )
 
-    | salmon_quant_merge_counts.run (
-        fromState: [ 
-          "salmon_quant_results": "salmon_quant_results", 
+    | map { id, state ->
+      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+      def paired = input.size() == 2
+      [ id, state + [ paired: paired ] ]
+    }
+    // Post-processing
+    | post_processing.run (
+        fromState: [
+          "id": "id", 
+          "paired": "paired", 
+          "strandedness": "strandedness", 
+          "fasta": "fasta",
+          "fai": "fai", 
           "gtf": "gtf", 
-          "gtf_extra_attributes": "gtf_extra_attributes", 
-          "gtf_group_features": "gtf_group_features"],
+          "genome_bam": "genome_bam_sorted", 
+          "chrom_sizes": "chrom_sizes", 
+          "star_multiqc": "star_multiqc",
+          "extra_picard_args": "extra_picard_args", 
+          "extra_stringtie_args": "extra_stringtie_args", 
+          "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
+          "extra_bedtools_args": "extra_bedtools_args", 
+          "extra_featurecounts_args": "extra_featurecounts_args", 
+          "bam_csi_index": "bam_csi_index", 
+          "min_mapped_reads": "min_mapped_reads", 
+          "with_umi": "with_umi",
+          "biotype": "biotype", 
+          "biotypes_header": "biotypes_header",
+          "skip_qc": "skip_qc",
+          "skip_markdupkicates": "skip_markdupkicates", 
+          "skip_stringtie": "skip_stringtie", 
+          "skip_biotype_qc": "skip_biotype_qc", 
+          "skip_bigwig": "skip_bigwig", 
+          "featurecounts_group_type": "featurecounts_group_type", 
+          "featurecounts_feature_type": "featurecounts_feature_type", 
+          "gencode": "gencode"
+        ], 
         toState: [
-          "tpm_gene": "tpm_gene",
-          "counts_gene": "counts_gene",
-          "counts_gene_length_scaled": "counts_gene_length_scaled",
-          "counts_gene_scaled": "counts_gene_scaled", 
-          "tpm_transcript": "tpm_transcript", 
-          "counts_transcript": "counts_transcript", 
-          "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment"
-        ]
+          "genome_bam_sorted": "processed_genome_bam", 
+          "genome_bam_index": "genome_bam_index",
+          "genome_bam_stats": "genome_bam_stats",
+          "genome_bam_flagstat": "genome_bam_flagstat", 
+          "genome_bam_idxstats": "genome_bam_idxstats", 
+          "markduplicates_metrics": "markduplicates_metrics",
+          "stringtie_transcript_gtf": "stringtie_transcript_gtf",
+          "stringtie_coverage_gtf": "stringtie_coverage_gtf",
+          "stringtie_abundance": "stringtie_abundance",
+          "stringtie_ballgown": "stringtie_ballgown", 
+          "featurecounts": "featurecounts",
+          "featurecounts_summary": "featurecounts_summary", 
+          "featurecounts_multiqc": "featurecounts_multiqc", 
+          "bedgraph_forward": "bedgraph_forward",
+          "bedgraph_reverse": "bedgraph_reverse",
+          "bigwig_forward": "bigwig_forward",
+          "bigwig_reverse": "bigwig_reverse"
+        ], 
     )
 
     // Final QC
-    // | final_qc.run (
+    // | quality_control.run (
     //     fromState: [
     //       "id": "id", 
     //       "paired": "paired", 
@@ -247,16 +235,91 @@ workflow run_wf {
     //       "gtf": "gtf", 
     //       "genome_bam": "genome_bam_sorted", 
     //       "genome_bam_index": "genome_bam_index",
-    //       "salmon_quant_results": "salmon_quant_output", 
+    //       "salmon_quant_results": "salmon_quant_results", 
     //       "gene_bed": "gene_bed",
-    //       "extra_preseq_args": "extra_preseq_args", 
+    //       "extra_preseq_args": "extra_preseq_args",
+    //       "skip_deseq2_qc": "skip_deseq2_qc",  
     //       "extra_deseq2_args": "extra_deseq2_args",
     //       "extra_deseq2_args2": "extra_deseq2_args2",
+    //       "multiqc_custom_config": "multiqc_custom_config", 
+    //       "multiqc_title": "multiqc_title", 
+    //       "multiqc_logo": "multiqc_logo",
+    //       "multiqc_methods_description": "multiqc_methods_description",
+    //       // "fail_trimming_multiqc": "fail_trimming_multiqc", 
+    //       // "fail_mapping_multiqc": "fail_mapping_multiqc", 
+    //       "fastqc_zip_1": "fastqc_zip_1",
+    //       "fastqc_zip_2": "fastqc_zip_2",  
+    //       "trim_log_1": "trim_log_1", 
+    //       "trim_log_2": "trim_log_2", 
+    //       "trim_zip_1": "trim_zip_1",
+    //       "trim_zip_2": "trim_zip_2",
+    //       "sortmerna_multiqc": "sortmerna_log", 
+    //       "star_multiqc": "star_multiqc", 
+    //       "genome_bam_stats": "genome_bam_stats", 
+    //       "genome_bam_flagstat": "genome_bam_flagstat", 
+    //       "genome_bam_idxstats": "genome_bam_idxstats", 
+    //       "markduplicates_multiqc": "markduplicates_metrics", 
+    //       "featurecounts_multiqc": "featurecounts_multiqc"        
     //     ], 
-    //     toState: [] 
+    //     toState: [
+    //       "multiqc_report": "multiqc_report", 
+    //       "multiqc_data": "multiqc_data",
+    //       "multiqc_plots": "multiqc_plots",
+    //       "multiqc_versions": "multiqc_versions"
+    //     ] 
     // )
 
     | niceView()
+
+    | setState (
+      [
+        "fasta": "fasta", 
+        "gtf": "gtf", 
+        "transcript_fasta": "transcript_fasta", 
+        "gene_bed": "gene_bed", 
+        "bbsplit_index": "bbsplit_index", 
+        "star_index": "star_index", 
+        "salmon_index": "salmon_index", 
+        "fastqc_html_1": "fastqc_html_1",
+        "fastqc_html_2": "fastqc_html_2",
+        "fastqc_zip_1": "fastqc_zip_1",
+        "fastqc_zip_2": "fastqc_zip_2",  
+        "fastq_1": "qc_output1",
+        "fastq_2": "qc_output2", 
+        "trim_log_1": "trim_log_1", 
+        "trim_log_2": "trim_log_2", 
+        "trim_zip_1": "trim_zip_1",
+        "trim_zip_2": "trim_zip_2",
+        "trim_html_1": "trim_html_1",
+        "trim_html_2": "trim_html_2",
+        "sortmerna_log": "sortmerna_log",
+        "star_alignment": "star_alignment", 
+        "star_multiqc": "star_multiqc", 
+        "genome_bam_sorted": "genome_bam_sorted",
+        "genome_bam_index": "genome_bam_index", 
+        "genome_bam_stats": "genome_bam_stats", 
+        "genome_bam_flagstat": "genome_bam_flagstat", 
+        "genome_bam_idxstats": "genome_bam_idxstats", 
+        "transcriptome_bam_sorted": "transcriptome_bam_sorted", 
+        "transcriptome_bam_index": "transcriptome_bam_index", 
+        "transcriptome_bam_stats": "transcriptome_bam_stats", 
+        "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
+        "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
+        "salmon_quant_results": "salmon_quant_results",
+        "markduplicates_metrics": "markduplicates_metrics",
+        "stringtie_transcript_gtf": "stringtie_transcript_gtf",
+        "stringtie_coverage_gtf": "stringtie_coverage_gtf",
+        "stringtie_abundance": "stringtie_abundance",
+        "stringtie_ballgown": "stringtie_ballgown", 
+        "featurecounts": "featurecounts",
+        "featurecounts_summary": "featurecounts_summary", 
+        "featurecounts_multiqc": "featurecounts_multiqc", 
+        "bedgraph_forward": "bedgraph_forward",
+        "bedgraph_reverse": "bedgraph_reverse",
+        "bigwig_forward": "bigwig_forward",
+        "bigwig_reverse": "bigwig_reverse"
+      ]
+    )
 
   emit:
     output_ch
