@@ -24,6 +24,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/reference/hisat2.tar.gz
    
 platforms:
   - type: docker

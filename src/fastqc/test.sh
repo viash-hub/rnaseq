@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 echo ">>> Testing files mode"
 
 sample="tinygex_S1_L001_I1_001"
