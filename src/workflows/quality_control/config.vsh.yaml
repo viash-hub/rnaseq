@@ -327,7 +327,7 @@ functionality:
           direction: output
           required: false
           default: $id.junction_annotation_plot.r
-          description: r script to generate splice_junction and splice_events plot
+          description: R script to generate splice_junction and splice_events plot
         - name: "--junction_annotation_output_junction_bed"
           type: file
           direction: output

@@ -97,7 +97,7 @@ workflow run_wf {
           "salmon_json_info": "salmon_json_info"
         ]
     )
-    | niceView()
+
     // Infer strandedness from Salmon pseudo-alignment results
     | map { id, state -> 
     (state.strandedness == 'auto') ? 
@@ -227,65 +227,314 @@ workflow run_wf {
     )
 
     // Final QC
-    // | quality_control.run (
-    //     fromState: [
-    //       "id": "id", 
-    //       "paired": "paired", 
-    //       "strandedness": "strandedness", 
-    //       "gtf": "gtf", 
-    //       "genome_bam": "genome_bam_sorted", 
-    //       "genome_bam_index": "genome_bam_index",
-    //       "salmon_quant_results": "salmon_quant_results", 
-    //       "gene_bed": "gene_bed",
-    //       "extra_preseq_args": "extra_preseq_args",
-    //       "skip_deseq2_qc": "skip_deseq2_qc",  
-    //       "extra_deseq2_args": "extra_deseq2_args",
-    //       "extra_deseq2_args2": "extra_deseq2_args2",
-    //       "multiqc_custom_config": "multiqc_custom_config", 
-    //       "multiqc_title": "multiqc_title", 
-    //       "multiqc_logo": "multiqc_logo",
-    //       "multiqc_methods_description": "multiqc_methods_description",
-    //       // "fail_trimming_multiqc": "fail_trimming_multiqc", 
-    //       // "fail_mapping_multiqc": "fail_mapping_multiqc", 
-    //       "fastqc_zip_1": "fastqc_zip_1",
-    //       "fastqc_zip_2": "fastqc_zip_2",  
-    //       "trim_log_1": "trim_log_1", 
-    //       "trim_log_2": "trim_log_2", 
-    //       "trim_zip_1": "trim_zip_1",
-    //       "trim_zip_2": "trim_zip_2",
-    //       "sortmerna_multiqc": "sortmerna_log", 
-    //       "star_multiqc": "star_multiqc", 
-    //       "genome_bam_stats": "genome_bam_stats", 
-    //       "genome_bam_flagstat": "genome_bam_flagstat", 
-    //       "genome_bam_idxstats": "genome_bam_idxstats", 
-    //       "markduplicates_multiqc": "markduplicates_metrics", 
-    //       "featurecounts_multiqc": "featurecounts_multiqc"        
-    //     ], 
-    //     toState: [
-    //       "multiqc_report": "multiqc_report", 
-    //       "multiqc_data": "multiqc_data",
-    //       "multiqc_plots": "multiqc_plots",
-    //       "multiqc_versions": "multiqc_versions"
-    //     ] 
-    // )
+    | quality_control.run (
+        fromState: [
+          "id": "id", 
+          "paired": "paired", 
+          "strandedness": "strandedness", 
+          "gtf": "gtf", 
+          "genome_bam": "genome_bam_sorted", 
+          "genome_bam_index": "genome_bam_index",
+          "salmon_quant_results": "salmon_quant_results", 
+          "gene_bed": "gene_bed",
+          "extra_preseq_args": "extra_preseq_args",
+          // "skip_deseq2_qc": "skip_deseq2_qc",  
+          // "extra_deseq2_args": "extra_deseq2_args",
+          // "extra_deseq2_args2": "extra_deseq2_args2",
+          // "multiqc_custom_config": "multiqc_custom_config", 
+          // "multiqc_title": "multiqc_title", 
+          // "multiqc_logo": "multiqc_logo",
+          // "multiqc_methods_description": "multiqc_methods_description",
+          // "fail_trimming_multiqc": "fail_trimming_multiqc", 
+          // "fail_mapping_multiqc": "fail_mapping_multiqc", 
+          // "fastqc_zip_1": "fastqc_zip_1",
+          // "fastqc_zip_2": "fastqc_zip_2",  
+          // "trim_log_1": "trim_log_1", 
+          // "trim_log_2": "trim_log_2", 
+          // "trim_zip_1": "trim_zip_1",
+          // "trim_zip_2": "trim_zip_2",
+          // "sortmerna_multiqc": "sortmerna_log", 
+          // "star_multiqc": "star_multiqc", 
+          // "genome_bam_stats": "genome_bam_stats", 
+          // "genome_bam_flagstat": "genome_bam_flagstat", 
+          // "genome_bam_idxstats": "genome_bam_idxstats", 
+          // "markduplicates_multiqc": "markduplicates_metrics", 
+          // "featurecounts_multiqc": "featurecounts_multiqc"        
+        ], 
+        toState: [
+          // "multiqc_report": "multiqc_report", 
+          // "multiqc_data": "multiqc_data",
+          // "multiqc_plots": "multiqc_plots",
+          // "multiqc_versions": "multiqc_versions",
+          "preseq_output": "preseq_output",
+          "bamstat_output": "bamstat_output",
+          "strandedness_output": "strandedness_output",
+          "inner_dist_output_stats": "inner_dist_output_stats",
+          "inner_dist_output_dist": "inner_dist_output_dist",
+          "inner_dist_output_freq": "inner_dist_output_freq",
+          "inner_dist_output_plot": "inner_dist_output_plot",
+          "inner_dist_output_plot_r": "inner_dist_output_plot_r",
+          "junction_annotation_output_log": "junction_annotation_output_log",
+          "junction_annotation_output_plot_r": "junction_annotation_output_plot_r",
+          "junction_annotation_output_junction_bed": "junction_annotation_output_junction_bed",
+          "junction_annotation_output_junction_interact": "junction_annotation_output_junction_interact",
+          "junction_annotation_output_junction_sheet": "junction_annotation_output_junction_sheet",
+          "junction_annotation_output_splice_events_plot": "junction_annotation_output_splice_events_plot",
+          "junction_annotation_output_splice_junctions_plot": "junction_annotation_output_splice_junctions_plot",
+          "junction_saturation_output_plot_r": "junction_saturation_output_plot_r",
+          "junction_saturation_output_plot": "junction_saturation_output_plot",
+          "read_distribution_output": "read_distribution_output",
+          "read_duplication_output_duplication_rate_plot_r": "read_duplication_output_duplication_rate_plot_r",
+          "read_duplication_output_duplication_rate_plot": "read_duplication_output_duplication_rate_plot",
+          "read_duplication_output_duplication_rate_mapping": "read_duplication_output_duplication_rate_mapping",
+          "read_duplication_output_duplication_rate_sequence": "read_duplication_output_duplication_rate_sequence",
+          "tin_output_summary": "tin_output_summary",
+          "tin_output_metrics": "tin_output_metrics",
+          "dupradar_output_dupmatrix": "dupradar_output_dupmatrix",
+          "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc",
+          "dupradar_output_duprate_exp_boxplot": "dupradar_output_duprate_exp_boxplot",
+          "dupradar_output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
+          "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
+          "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
+          "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
+          "qualimap_output_dir": "qualimap_output_dir",
+          "qualimap_output_pdf": "qualimap_output_pdf"
+        ] 
+    )
 
-    | niceView()
+    // | map { id, state -> 
+    //   def paired_state = (!state.paired) ? 
+    //     [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
+    //     []
+    //   def qc_state = (state.skip_qc || state.skip_fastqc) ? 
+    //     [fastqc_html_1: state.remove(state.fastqc_html_1), fastqc_html_2: state.remove(state.fastqc_html_2), fastqc_zip_1: state.remove(state.fastqc_zip_1), fastqc_zip_2: state.remove(state.fastqc_zip_2)] : 
+    //     []
+    //   def trimming_state = (state.skip_trimming) ? 
+    //     [trim_html_1: state.remove(state.trim_html_1), trim_html_2: state.remove(state.trim_html_2), trim_zip_1: state.remove(state.trim_zip_1), trim_zip_2: state.remove(state.trim_zip_2), trim_log_1: state.remove(state.trim_log_1), trim_log_2: state.remove(state.trim_log_2)] : 
+    //     []
+    //   def sortmerna_state = (!state.remove_ribo_rna) ? [sortmerna_log: state.remove(state.sortmerna_log)] : []
+    //   [ id, state + paired_state + qc_state + trimming_state + sortmerna_state ]
+    // }
+    // qc_ch = analysis_ch
+    | toSortedList
+    | map { list -> 
+        def fastqc_html_1 = list.collect{id, state -> state.fastqc_html_1}
+        def fastqc_html_2 = list.collect{id, state -> state.fastqc_html_2}
+        def fastqc_zip_1 = list.collect{id, state -> state.fastqc_zip_1}
+        def fastqc_zip_2 = list.collect{id, state -> state.fastqc_zip_2}
+        def trim_html_1 = list.collect{id, state -> state.trim_html_1}
+        def trim_html_2 = list.collect{id, state -> state.trim_html_2}
+        def trim_zip_1 = list.collect{id, state -> state.trim_zip_1}
+        def trim_zip_2 = list.collect{id, state -> state.trim_zip_2}
+        def trim_log_1 = list.collect{id, state -> state.trim_log_1}
+        def trim_log_2 = list.collect{id, state -> state.trim_log_2}
+        def fastq_1 = list.collect{id, state -> state.fastq_1}
+        def fastq_2 = list.collect{id, state -> state.fastq_2}
+        def sortmerna_log = list.collect{id, state -> state.sortmerna_log}
+        def star_multiqc = list.collect{id, state -> state.star_multiqc}
+        def salmon_quant_merged = list.collect{id, state -> state.salmon_quant_results}
+        def genome_bam_sorted = list.collect{id, state -> state.genome_bam_sorted}
+        def genome_bam_index = list.collect{id, state -> state.genome_bam_index}
+        def genome_bam_stats = list.collect{id, state -> state.genome_bam_stats}
+        def genome_bam_flagstat = list.collect{id, state -> state.genome_bam_flagstat}
+        def genome_bam_idxstats = list.collect{id, state -> state.genome_bam_idxstats}
+        def transcriptome_bam_sorted = list.collect{id, state -> state.transcriptome_bam_sorted}
+        def transcriptome_bam_index = list.collect{id, state -> state.transcriptome_bam_index}
+        def transcriptome_bam_stats = list.collect{id, state -> state.transcriptome_bam_stats}
+        def transcriptome_bam_flagstat = list.collect{id, state -> state.transcriptome_bam_flagstat}
+        def transcriptome_bam_idxstats = list.collect{id, state -> state.transcriptome_bam_idxstats}
+        def markduplicates_multiqc = list.collect{id, state -> state.markduplicates_metrics}
+        def featurecounts_multiqc = list.collect{id, state -> state.featurecounts_multiqc}
+        def stringtie_transcript_gtf = list.collect{id, state -> state.stringtie_transcript_gtf}
+        def stringtie_coverage_gtf = list.collect{id, state -> state.stringtie_coverage_gtf}
+        def stringtie_abundance = list.collect{id, state -> state.stringtie_abundance}
+        def stringtie_ballgown = list.collect{id, state -> state.stringtie_ballgown}
+        def featurecounts = list.collect{id, state -> state.featurecounts}
+        def featurecounts_summary = list.collect{id, state -> state.featurecounts_summary}
+        def bedgraph_forward = list.collect{id, state -> state.bedgraph_forward}
+        def bedgraph_reverse = list.collect{id, state -> state.bedgraph_reverse}
+        def bigwig_forward = list.collect{id, state -> state.bigwig_forward}
+        def bigwig_reverse = list.collect{id, state -> state.bigwig_reverse}
+        def preseq_output = list.collect{id, state -> state.preseq_output}
+        def qualimap_output_dir = list.collect{id, state -> state.qualimap_output_dir}
+        def dupradar_output_dup_intercept_mqc = list.collect{id, state -> state.dupradar_output_dup_intercept_mqc}
+        def bamstat_output = list.collect{id, state -> state.bamstat_output}
+        // def inferexperiment_multiqc = list.collect{id, state -> state.inferexperiment_multiqc}
+        def inner_dist_output_freq = list.collect{id, state -> state.inner_dist_output_freq}
+        def junction_annotation_output_log = list.collect{id, state -> state.junction_annotation_output_log}
+        def junction_saturation_output_plot_r = list.collect{id, state -> state.junction_saturation_output_plot_r}
+        def read_distribution_output = list.collect{id, state -> state.read_distribution_output}
+        def read_duplication_output_duplication_rate_mapping = list.collect{id, state -> state.read_duplication_output_duplication_rate_mapping}
+        def tin_output_summary = list.collect{id, state -> state.tin_output_summary}
+        ["merged", [
+            fastqc_html_1: fastqc_html_1,
+            fastqc_html_2: fastqc_html_2,
+            fastqc_zip_1: fastqc_zip_1,
+            fastqc_zip_2: fastqc_zip_2,
+            fastqc_zip: fastqc_zip_1 + fastqc_zip_2,
+            trim_html_1: trim_html_1,
+            trim_html_2: trim_html_2,
+            trim_zip_1: trim_zip_1, 
+            trim_zip_2: trim_zip_2, 
+            trim_zip: trim_zip_1 + trim_zip_2, 
+            trim_log_1: trim_log_1, 
+            trim_log_2: trim_log_2, 
+            fastq_1: fastq_1,
+            fastq_2: fastq_2,
+            // sortmerna_multiqc: sortmerna_log,
+            star_multiqc: star_multiqc, 
+            salmon_multiqc: salmon_quant_merged,
+            genome_bam_sorted: genome_bam_sorted,
+            genome_bam_index: genome_bam_index, 
+            samtools_stats: genome_bam_stats,
+            samtools_flagstat: genome_bam_flagstat,
+            samtools_dxstats: genome_bam_idxstats,
+            transcriptome_bam_sorted: transcriptome_bam_sorted, 
+            transcriptome_bam_index: transcriptome_bam_index, 
+            transcriptome_bam_stats: transcriptome_bam_stats, 
+            transcriptome_bam_flagstat: transcriptome_bam_flagstat, 
+            transcriptome_bam_idxstats: transcriptome_bam_idxstats,
+            markduplicates_multiqc: markduplicates_multiqc,
+            featurecounts_multiqc: featurecounts_multiqc,
+            stringtie_transcript_gtf: stringtie_transcript_gtf,
+            stringtie_coverage_gtf: stringtie_coverage_gtf,
+            stringtie_abundance: stringtie_abundance,
+            stringtie_ballgown: stringtie_ballgown, 
+            featurecounts: featurecounts,
+            featurecounts_summary: featurecounts_summary, 
+            bedgraph_forward: bedgraph_forward,
+            bedgraph_reverse: bedgraph_reverse,
+            bigwig_forward: bigwig_forward,
+            bigwig_reverse: bigwig_reverse,
+            preseq_output: preseq_output,
+            qualimap_output_dir: qualimap_output_dir,
+            dupradar_output_dup_intercept_mqc: dupradar_output_dup_intercept_mqc,
+            bamstat_output: bamstat_output,
+            inner_dist_output_freq: inner_dist_output_freq,
+            junction_annotation_output_log: junction_annotation_output_log,
+            junctionsaturation_multiqc: junction_saturation_output_plot_r,
+            read_distribution_output: read_distribution_output,
+            read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
+            tin_output_summary: tin_output_summary, 
+            salmon_quant_merged: salmon_quant_merged, 
+            fasta: list[1][-1].fasta,
+            gtf: list[1][-1].gtf,
+            transcript_fasta: list[1][-1].transcript_fasta,
+            gene_bed: list[1][-1].gene_bed,
+            star_index: list[1][-1].star_index,
+            salmon_index: list[1][-1].salmon_index,
+            bbsplit_index: list[1][-1].bbxplit_index, 
+            gtf_extra_attributes: list[1][-1].gtf_extra_attributes, 
+            gtf_group_features: list[1][-1].gtf_group_features,
+            pca_header_multiqc: list[1][-1].pca_header_multiqc, 
+            clustering_header_multiqc: list[1][-1].clustering_header_multiqc,
+            deseq2_vst: list[1][-1].deseq2_vst, 
+            extra_deseq2_args: list[1][-1].extra_deseq2_args,
+            extra_deseq2_args2: list[1][-1].extra_deseq2_args2,
+            skip_deseq2_qc: list[1][-1].skip_deseq2_qc 
+          ] 
+        ]
+    } 
 
+    | salmon_quant_merge_counts.run (
+        fromState: [ 
+            "salmon_quant_results": "salmon_quant_merged", 
+            "gtf": "gtf", 
+            "gtf_extra_attributes": "gtf_extra_attributes", 
+            "gtf_group_features": "gtf_group_features"
+        ],
+        toState: [
+            "tpm_gene": "tpm_gene",
+            "counts_gene": "counts_gene",
+            "counts_gene_length_scaled": "counts_gene_length_scaled",
+            "counts_gene_scaled": "counts_gene_scaled", 
+            "tpm_transcript": "tpm_transcript", 
+            "counts_transcript": "counts_transcript", 
+            "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment"
+        ]
+    )
+
+    | deseq2_qc.run (
+        runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc },
+        fromState: [
+            "counts": "counts_gene_length_scaled",
+            "pca_header_multiqc": "pca_header_multiqc", 
+            "clustering_header_multiqc": "clustering_header_multiqc",
+            "deseq2_vst": "deseq2_vst", 
+            "extra_deseq2_args": "extra_deseq2_args",
+            "extra_deseq2_args2": "extra_deseq2_args2"
+        ], 
+        toState: [
+            "deseq2_output": "deseq2_output", 
+            "deseq2_pca_multiqc": "pca_multiqc", 
+            "deseq2_dists_multiqc": "dists_multiqc"
+        ]
+    )
+
+    | multiqc.run (
+        fromState: [
+          "multiqc_custom_config": "multiqc_custom_config", 
+          "multiqc_title": "multiqc_title", 
+          "multiqc_logo": "multiqc_logo",
+          "multiqc_methods_description": "multiqc_methods_description",
+        //   "workflow_summary": "workflow_summary", 
+        //   "fail_trimming_multiqc": "fail_trimming_multiqc", 
+        //   "fail_mapping_multiqc": "fail_mapping_multiqc", 
+        //   "fail_strand_multiqc": "fail_strand_multiqc", 
+          "fastqc_raw_multiqc": "fastqc_zip",
+          "fastqc_trim_multiqc": "trim_zip",
+          "trim_log_multiqc": "trim_log",
+        //   "sortmerna_multiqc": "sortmerna_multiqc", 
+          "star_multiqc": "star_multiqc", 
+          "salmon_multiqc": "salmon_multiqc", 
+          "samtools_stats": "genome_bam_stats", 
+          "samtools_flagstat": "genome_bam_flagstat", 
+          "samtools_idxstats": "genome_bam_idxstats", 
+          "markduplicates_multiqc": "markduplicates_multiqc", 
+          "featurecounts_multiqc": "featurecounts_multiqc", 
+          "aligner_pca_multiqc": "deseq2_pca_multiqc", 
+          "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
+          "preseq_multiqc": "preseq_output", 
+          "qualimap_multiqc": "qualimap_output_dir", 
+          "dupradar_multiqc": "dupradar_output_dup_intercept_mqc", 
+          "bamstat_multiqc": "bamstat_output", 
+        //   "inferexperiment_multiqc": "inferexperiment_multiqc", 
+          "innerdistance_multiqc": "inner_dist_output_freq", 
+          "junctionannotation_multiqc": "junction_annotation_output_log", 
+          "junctionsaturation_multiqc": "junctionsaturation_multiqc",
+          "readdistribution_multiqc": "read_distribution_output",
+          "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
+          "tin_multiqc": "tin_output_summary", 
+          "deseq2_pca_multiqc": "deseq2_pca_multiqc", 
+          "deseq2_dists_multiqc": "deseq2_pca_multiqc"
+        ], 
+        toState: [
+          "multiqc_report": "report", 
+          "multiqc_data": "data",
+          "multiqc_plots": "plots", 
+          "multiqc_versions": "versions"
+        ]
+    )
+        
+    // output_ch = qc_ch.concat(analysis_ch)
+    // | map { id, state -> ["merged", state, join_id: ] }
+    | map { id, state -> 
+        [id, state + state.remove(skip_deseq2_qc) + state.remove(extra_deseq2_args2), state.remove(extra_deseq2_args) + state.remove(deseq2_vst) + state.remove(clustering_header_multiqc) + stat.remove(pca_header_multiqc) + state.remove(gtf_group_features) + state.remove(gtf_extra_attributes) + state.remove(markduplicates_multiqc) + state.remove(featurecounts_multiqc) + state.remove(salmon_multiqc) + state.remove(star_multiqc) + state.remove(samtools_stats) + state.remove(samtools_flagstat) + state.remove(samtools_idxstats) + state.remove(fastqc_zip) + state.remove(trim_zip)]}
     | setState (
       [
-        "fasta": "fasta", 
-        "gtf": "gtf", 
-        "transcript_fasta": "transcript_fasta", 
-        "gene_bed": "gene_bed", 
-        "bbsplit_index": "bbsplit_index", 
-        "star_index": "star_index", 
-        "salmon_index": "salmon_index", 
+        "output_fasta": "fasta", 
+        "output_gtf": "gtf", 
+        "output_transcript_fasta": "transcript_fasta", 
+        "output_gene_bed": "gene_bed", 
+        "output_bbsplit_index": "bbsplit_index", 
+        "output_star_index": "star_index", 
+        "output_salmon_index": "salmon_index", 
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
         "fastqc_zip_1": "fastqc_zip_1",
         "fastqc_zip_2": "fastqc_zip_2",  
-        "fastq_1": "qc_output1",
-        "fastq_2": "qc_output2", 
+        "output_fastq_1": "fastq_1",
+        "output_fastq_2": "fastq_2", 
         "trim_log_1": "trim_log_1", 
         "trim_log_2": "trim_log_2", 
         "trim_zip_1": "trim_zip_1",
@@ -294,32 +543,34 @@ workflow run_wf {
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
         "star_alignment": "star_alignment", 
-        "star_multiqc": "star_multiqc", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
-        "genome_bam_stats": "genome_bam_stats", 
-        "genome_bam_flagstat": "genome_bam_flagstat", 
-        "genome_bam_idxstats": "genome_bam_idxstats", 
+        "genome_bam_stats": "samtools_stats", 
+        "genome_bam_flagstat": "samtools_flagstat", 
+        "genome_bam_idxstats": "samtools_idxstats", 
         "transcriptome_bam_sorted": "transcriptome_bam_sorted", 
         "transcriptome_bam_index": "transcriptome_bam_index", 
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_results",
-        "markduplicates_metrics": "markduplicates_metrics",
+        "salmon_quant_results": "salmon_quant_merged",
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
         "stringtie_ballgown": "stringtie_ballgown", 
         "featurecounts": "featurecounts",
         "featurecounts_summary": "featurecounts_summary", 
-        "featurecounts_multiqc": "featurecounts_multiqc", 
         "bedgraph_forward": "bedgraph_forward",
         "bedgraph_reverse": "bedgraph_reverse",
         "bigwig_forward": "bigwig_forward",
-        "bigwig_reverse": "bigwig_reverse"
+        "bigwig_reverse": "bigwig_reverse",
+        "multiqc_report": "multiqc_report", 
+        "multiqc_data": "multiqc_data"
       ]
     )
+
+    | niceView()
+
 
   emit:
     output_ch

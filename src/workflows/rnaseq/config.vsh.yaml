@@ -294,49 +294,53 @@ functionality:
       default: assets/methods_description_template.yml
      
     # Output
-    - name: "--fasta"
+    - name: "--output_fasta"
       type: file
       direction: output
       default: genome/reference_genome.fasta
-    - name: "--gtf"
+    - name: "--output_gtf"
       type: file
       direction: output
       default: genome/gene_annotation.gtf
-    - name: "--transcript_fasta"
+    - name: "--output_transcript_fasta"
       type: file
       direction: output
       default: genome/transcriptome.fasta
-    - name: "--gene_bed"
+    - name: "--output_gene_bed"
       type: file
       direction: output
       default: genome/gene_annotation.bed
-    - name: "--star_index"
+    - name: "--output_star_index"
       type: file
       direction: output
       description: Path to STAR index.
       default: genome/index/STAR
-    - name: "--salmon_index"
+    - name: "--output_salmon_index"
       type: file
       direction: output
       description: Path to Salmon index.
       default: genome/index/salmon
-    - name: "--bbsplit_index"
+    - name: "--output_bbsplit_index"
       type: file
       direction: output
       description: Path to BBSplit index.
       default: genome/index/bbsplit
-    - name: "--fastq_1"
+    - name: "--output_fastq_1"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       description: Path to output directory
       default: fastq/$id.read1.fastq.gz
-    - name: "--fastq_2"
+    - name: "--output_fastq_2"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       description: Path to output directory
       default: fastq/$id.read2.fastq.gz
     - name: "--fastqc_html_1"
@@ -345,6 +349,8 @@ functionality:
       description: FastQC HTML report for read 1.
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: fastqc/$id.read1.fastqc.html
     - name: "--fastqc_html_2"
       type: file
@@ -352,6 +358,8 @@ functionality:
       description: FastQC HTML report for read 2.
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: fastqc/$id.read2.fastqc.html
     - name: "--fastqc_zip_1"
       type: file
@@ -359,6 +367,8 @@ functionality:
       description: FastQC report archive for read 1.
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: fastqc/$id.read1.fastqc.zip
     - name: "--fastqc_zip_2"
       type: file
@@ -366,142 +376,501 @@ functionality:
       description: FastQC report archive for read 2.
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: fastqc/$id.read2.fastqc.zip
     - name: "--trim_log_1"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read1.trimming_report.txt
     - name: "--trim_log_2"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read2.trimming_report.txt
     - name: "--trim_html_1"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read1.trimmed_fastqc.html
     - name: "--trim_html_2"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read2.trimmed_fastqc.html
     - name: "--trim_zip_1"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read1.trimmed_fastqc.zip
     - name: "--trim_zip_2"
       type: file
       direction: output
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       default: trimgalore/$id.read2.trimmed_fastqc.zip
     - name: "--sortmerna_log"
       type: file
       direction: output
-      default: sortmerna.$id.log
+      default: sortmerna/$id.log
       required: false
       must_exist: false
+      multiple: true
+      multiple_sep: ","
       description: Sortmerna log file.
     - name: "--star_alignment"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: STAR_alignment/$id.STAR
     - name: "--genome_bam_sorted"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: $id.genome.bam
     - name: "--genome_bam_index"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: $id.genome.bam.bai
     - name: "--genome_bam_stats"
       type: file
       direction: output
-      default: $id.genome.stats
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.genome.stats
     - name: "--genome_bam_flagstat"
       type: file
       direction: output
-      default: $id.genome.flagstat
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.genome.flagstat
     - name: "--genome_bam_idxstats"
       type: file
       direction: output
-      default: $id.genome.idxstats
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.genome.idxstats
     - name: "--transcriptome_bam_sorted"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: $id.transcriptome.bam
     - name: "--transcriptome_bam_index"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: $id.transcriptome.bam.bai
     - name: "--transcriptome_bam_stats"
       type: file
       direction: output
-      default: $id.transcriptome.stats
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.transcriptome.stats
     - name: "--transcriptome_bam_flagstat"
       type: file
       direction: output
-      default: $id.transcriptome.flagstat
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.transcriptome.flagstat
     - name: "--transcriptome_bam_idxstats"
       type: file
       direction: output
-      default: $id.transcriptome.idxstats
+      multiple: true
+      multiple_sep: ","
+      default: samtools_stats/$id.transcriptome.idxstats
     - name: "--salmon_quant_results"
       type: file
       direction: output
-      default: $id.salmon_quant
+      multiple: true
+      multiple_sep: ","
+      default: align_quantified/$id.salmon_quant
     - name: "--markduplicates_metrics"
       type: file
       direction: output
-      default: $id.markdup.sorted.MarkDuplicates.metrics.txt
+      multiple: true
+      multiple_sep: ","
+      default: picard_metrics/$id.markdup.sorted.MarkDuplicates.metrics.txt
     - name: "--stringtie_transcript_gtf"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: stringtie/$id.transcripts.gtf
     - name: "--stringtie_coverage_gtf"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: stringtie/$id.coverage.gtf
     - name: "--stringtie_abundance"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: stringtie/$id.gene_abundance.txt
     - name: "--stringtie_ballgown"
       type: file
       direction: output
+      multiple: true
+      multiple_sep: ","
       default: stringtie/$id.ballgown
     - name: "--featurecounts"
       type: file
       direction: output
-      default: $id.featureCounts.txt
+      multiple: true
+      multiple_sep: ","
+      default: featurecounts/$id.featureCounts.txt
     - name: "--featurecounts_summary"
       type: file
       direction: output
-      default: $id.featureCounts.txt.summary
+      multiple: true
+      multiple_sep: ","
+      default: featurecounts/$id.featureCounts.txt.summary
     - name: "--bedgraph_forward"
       type: file
       direction: output
-      default: $id.forward.bedgraph
+      multiple: true
+      multiple_sep: ","
+      default: bedgraph/$id.forward.bedgraph
     - name: "--bedgraph_reverse"
       type: file
       direction: output
-      default: $id.reverse.bedgraph
+      multiple: true
+      multiple_sep: ","
+      default: bedgraph/$id.reverse.bedgraph
     - name: "--bigwig_forward"
       type: file
       direction: output
-      default: $id.forward.bigwig
+      multiple: true
+      multiple_sep: ","
+      default: bigwig/$id.forward.bigwig
     - name: "--bigwig_reverse"
       type: file
       direction: output
-      default: $id.reverse.bigwig
+      multiple: true
+      multiple_sep: ","
+      default: bigwig/$id.reverse.bigwig
+    # preseq
+    - name: "--preseq_output"
+      type: file
+      direction: output
+      multiple: true
+      multiple_sep: ","
+      default: preseq/$id.lc_extrap.txt
+    # RSeQC
+    - name: "--bamstat_output"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      description: Path to output file (txt) of mapping quality statistics
+      default: RSeQC/bamstat/$id.mapping_quality.txt
+    - name: "--strandedness_output"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/inferexperiment/$id.strandedness.txt
+      description: Path to output report (txt) of inferred strandedness
+    - name: "--inner_dist_output_stats"
+      type: file
+      direction: output
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/innerdistance/$id.inner_distance.stats
+      description: output file (txt) with summary statistics of inner distances of paired reads
+    - name: "--inner_dist_output_dist"
+      type: file
+      direction: output
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/innerdistance/$id.inner_distance.txt
+      description: output file (txt) with inner distances of all paired reads
+    - name: "--inner_dist_output_freq"
+      type: file
+      direction: output
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/innerdistance/$id.inner_distance_freq.txt
+      description: output file (txt) with frequencies of inner distances of all paired reads
+    - name: "--inner_dist_output_plot"
+      type: file
+      direction: output
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/innerdistance/$id.inner_distance_plot.pdf
+      description: output file (pdf) with histogram plot of of inner distances of all paired reads
+    - name: "--inner_dist_output_plot_r"
+      type: file
+      direction: output
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/innerdistance/$id.inner_distance_plot.r
+      description: output file (R) with script of histogram plot of of inner distances of all paired reads
+    - name: "--junction_annotation_output_log"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.junction_annotation.log
+      description: output log of junction annotation script
+    - name: "--junction_annotation_output_plot_r"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.junction_annotation_plot.r
+      description: R script to generate splice_junction and splice_events plot
+    - name: "--junction_annotation_output_junction_bed"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.junction_annotation.bed
+      description: junction annotation file (bed format)
+    - name: "--junction_annotation_output_junction_interact"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.junction_annotation.Interact.bed
+      description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
+    - name: "--junction_annotation_output_junction_sheet"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.junction_annotation.xls
+      description: junction annotation file (xls format)
+    - name: "--junction_annotation_output_splice_events_plot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.splice_events.pdf
+      description: plot of splice events (pdf)
+    - name: "--junction_annotation_output_splice_junctions_plot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionannotation/$id.splice_junctions_plot.pdf
+      description: plot of junctions (pdf)
+    - name: "--junction_saturation_output_plot_r"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionsaturation/$id.junction_saturation_plot.r
+      description: r script to generate junction_saturation_plot plot
+    - name: "--junction_saturation_output_plot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/junctionsaturation/$id.junction_saturation_plot.pdf
+      description: plot of junction saturation (pdf
+    - name: "--read_distribution_output"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/readdistribution/$id.read_distribution.txt
+      description: output file (txt) of read distribution analysis.    
+    - name: "--read_duplication_output_duplication_rate_plot_r"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/readduplication/$id.duplication_rate_plot.r
+      description: R script for generating duplication rate plot
+    - name: "--read_duplication_output_duplication_rate_plot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/readduplication/$id.duplication_rate_plot.pdf
+      description: duplication rate plot (pdf)
+    - name: "--read_duplication_output_duplication_rate_mapping"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/readduplication/$id.duplication_rate_mapping.xls
+      description: Summary of mapping-based read duplication
+    - name: "--read_duplication_output_duplication_rate_sequence"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/readduplication/$id.duplication_rate_sequencing.xls
+      description: Summary of sequencing-based read duplication
+    - name: "--tin_output_summary"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/tin/$id.tin_summary.txt
+      description: summary statistics (txt) of calculated TIN metrics
+    - name: "--tin_output_metrics"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: RSeQC/tin/$id.tin.xls
+      description: file with TIN metrics (xls)
+
+    # dupRadar
+    - name: "--dupradar_output_dupmatrix"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.dup_matrix.txt
+      description: path to output file (txt) of duplicate tag counts
+    - name: "--dupradar_output_dup_intercept_mqc"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.dup_intercept_mqc.txt
+      description: path to output file (txt) of multiqc intercept value DupRadar
+    - name: "--dupradar_output_duprate_exp_boxplot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.duprate_exp_boxplot.pdf
+      description: path to output file (pdf) of distribution of expression box plot    
+    - name: "--dupradar_output_duprate_exp_densplot"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.duprate_exp_densityplot.pdf
+      description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
+    - name: "--dupradar_output_duprate_exp_denscurve_mqc"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.duprate_exp_density_curve_mqc.pdf
+      description: path to output file (pdf) of density curve of gene duplication multiqc
+    - name: "--dupradar_output_expression_histogram"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.expression_hist.pdf
+      description: path to output file (pdf) of distribution of RPK values per gene histogram
+    - name: "--dupradar_output_intercept_slope"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: dupradar/$id.intercept_slope.txt
+
+    # Qualimap
+    - name: "--qualimap_output_pdf"
+      type: file
+      direction: output
+      required: false
+      must_exist: false
+      multiple: true
+      multiple_sep: ","
+      default: qualimap/$id.qualimap_output.pdf
+    - name: "--qualimap_output_dir"
+      type: file
+      direction: output
+      required: false
+      multiple: true
+      multiple_sep: ","
+      default: qualimap/$id.qualimap_output
+
+    # DESeq2
+    - name: "--deseq2_output"
+      type: file
+      direction: output
+      default: deseq2
+    - name: "--pca_multiqc"
+      type: file
+      direction: output
+      default: deseq2.pca.vals_mqc.tsv
+    - name: "--dists_multiqc"
+      type: file
+      direction: output
+      default: deseq2.sample.dists_mqc.tsv
+
+    # MultiQC
+    - name: "--multiqc_report"
+      type: file
+      direction: output
+      default: multiqc/multiqc_report.html
+    - name: "--multiqc_data"
+      type: file
+      direction: output
+      default: multiqc/multiqc_data
+    - name: "--multiqc_plots"
+      type: file
+      direction: output
+      default: multiqc/multiqc_plots
+    - name: "--multiqc_versions"
+      type: file
+      direction: output
 
   resources:
     - type: nextflow_script
@@ -515,6 +884,9 @@ functionality:
     - name: workflows/genome_alignment_and_quant
     - name: workflows/post_processing
     - name: workflows/quality_control
+    - name: deseq2_qc
+    - name: multiqc
+    - name: workflows/salmon_quant_merge_counts
 
 platforms:
   - type: nextflow
