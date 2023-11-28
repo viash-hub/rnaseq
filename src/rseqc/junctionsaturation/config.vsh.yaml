@@ -69,14 +69,14 @@ functionality:
       type: file
       direction: output
       required: false
-      default: junction_saturation_plot.r
+      default: $id.junction_saturation_plot.r
       description: r script to generate junction_saturation_plot plot
 
     - name: "--output_plot"
       type: file
       direction: output
       required: false
-      default: junction_saturation_plot.pdf
+      default: $id.junction_saturation_plot.pdf
       description: plot of junction saturation (pdf)
 
   resources:

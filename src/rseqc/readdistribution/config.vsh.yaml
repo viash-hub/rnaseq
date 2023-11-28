@@ -24,7 +24,7 @@ functionality:
       type: file
       direction: output
       required: false
-      default: read_distribution.txt
+      default: $id.read_distribution.txt
       description: output file (txt) of read distribution analysis.
 
   resources:

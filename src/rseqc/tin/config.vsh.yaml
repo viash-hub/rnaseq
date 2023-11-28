@@ -47,14 +47,14 @@ functionality:
       type: file
       direction: output
       required: false
-      default: tin_summary.txt
+      default: $id.tin_summary.txt
       description: summary statistics (txt) of calculated TIN metrics
 
     - name: "--output_tin"
       type: file
       direction: output
       required: false
-      default: tin.xls
+      default: $id.tin.xls
       description: file with TIN metrics (xls)
 
   resources:

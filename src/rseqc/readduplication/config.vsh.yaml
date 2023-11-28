@@ -33,28 +33,28 @@ functionality:
       type: file
       direction: output
       required: false
-      default: duplication_rate_plot.r
+      default: $id.duplication_rate_plot.r
       description: R script for generating duplication rate plot
 
     - name: "--output_duplication_rate_plot"
       type: file
       direction: output
       required: false
-      default: duplication_rate_plot.pdf
+      default: $id.duplication_rate_plot.pdf
       description: duplication rate plot (pdf)
 
     - name: "--output_duplication_rate_mapping"
       type: file
       direction: output
       required: false
-      default: duplication_rate_mapping.xls
+      default: $id.duplication_rate_mapping.xls
       description: Summary of mapping-based read duplication
 
     - name: "--output_duplication_rate_sequence"
       type: file
       direction: output
       required: false
-      default: duplication_rate_sequencing.xls
+      default: $id.duplication_rate_sequencing.xls
       description: Summary of sequencing-based read duplication
 
   resources:
