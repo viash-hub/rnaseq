@@ -9,7 +9,7 @@ format: gfm
 library(tidyverse)
 ```
 
-A version of the [nf-core/rnaseq](https://github.com/nf-core/rnaseq) pipeline in the [Viash framework](http://www.viash.io).
+A version of the [nf-core/rnaseq](https://github.com/nf-core/rnaseq) pipeline (version 3.12.0) in the [Viash framework](http://www.viash.io).
 
 ## Rationale
 
@@ -27,11 +27,11 @@ Additionally, a script has been provided to fetch all the necessary reference da
 
 To get started, we need to:
 
-1. [Install `nextflow`](https://www.nextflow.io/docs/latest/getstarted.html) system-wide
+1.  [Install `nextflow`](https://www.nextflow.io/docs/latest/getstarted.html) system-wide
 
-2. Fetch the test data:
+2.  Fetch the test data:
 
-```bash
+``` bash
 bin/get_testData.sh
 bin/get_reference.sh
 ```
@@ -40,13 +40,13 @@ bin/get_reference.sh
 
 To actually run the pipeline, we first need to build the components and pipeline:
 
-```bash
+``` bash
 viash ns build --setup cb
 ```
 
 Now we can run the pipeline using the command:
 
-```bash
+``` bash
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
   -profile docker \
   --id test \
@@ -54,9 +54,9 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --publish_dir testData/test_output/
 ```
 
-Alternatively, we can run the pipeline with a sample sheet using the built-in `--param_list` functionality:
-(Read file paths must be specified relative to the sample sheet's path)
-```bash
+Alternatively, we can run the pipeline with a sample sheet using the built-in `--param_list` functionality: (Read file paths must be specified relative to the sample sheet's path)
+
+``` bash
 cat > testData/test/sample_sheet.csv << HERE
 id,fastq_1
 SRR6357070_1,SRR6357070_1.fastq.gz
@@ -72,13 +72,13 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
 
 ## Pipeline sub-workflows and components
 
-The pipeline has 5 sub-workflows that can be run separately. 
+The pipeline has 5 sub-workflows that can be run separately.
 
-1. Prepare genome: This sub-workflow can be used to prepare all the necessary reference data, i.e., uncompress provided reference data or generate required index files.
+1.  Prepare genome: This sub-workflow can be used to prepare all the necessary reference data, i.e., uncompress provided reference data or generate required index files.
 
 The following command can be used to run the workflow:
 
-```bash
+``` bash
 nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --id id \
     --publish_dir "testData/test_output" \
@@ -91,11 +91,11 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt
 ```
 
-2. Pre-processing: This sub-workflow can be used perform QC on the RNA-seq data. At the moment, it performs FastQC, extracts UMIs, trims adapters, and removes ribosomal RNA reads. Unlike the nf-core rnaseq pipeline which allows one to skip certain QC steps, this workflow performs all the steps. The option to skip steps can be added in the future.
+2.  Pre-processing: This sub-workflow can be used perform QC on the RNA-seq data. At the moment, it performs FastQC, extracts UMIs, trims adapters, and removes ribosomal RNA reads.
 
 The following command can be used to run the workflow:
 
-```bash
+``` bash
 cat > testData/test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
@@ -112,11 +112,11 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --ribo_database_manifest testData/reference/rrna-db-defaults.txt
 ```
 
-3. Genome alignment and quantification (Not complete): This sub-workflow can be used to perform genome alignment using STAR and alignment quantification using Salmon. Alignment sorting and indexing, as well as the UMI-based deduplication steps from the post-processing stage of the nf-core rnaseq pipeline are also included in this sub-workflow. 
+3.  Genome alignment and quantification: This sub-workflow can be used to perform genome alignment using STAR and alignment quantification using Salmon. Alignment sorting and indexing, as well as as well as computation of statistics from the BAM files is performed using Samtools. UMI-based deduplication can also be performed.
 
 The following command can be used to run the workflow:
 
-```bash
+``` bash
 cat > testData/test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
@@ -132,7 +132,6 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif"
 ```
 
-4. Post-processing (To be implemented)
+4.  Post-processing: This sub-workflow can be used for duplicate read marking (picard MarkDuplicates), transcript assembly and quantification (StringTie), feature biotype QC (featureCounts) and creation of bigWig coverage files.
 
-5. Final QC (To be implemented)
-
+5.  Final QC: This sub-workflow performs extensive quality control (RSeQC, dupRadar, Qualimap, Preseq, DESeq2) and presents QC for raw read, alignment, gene biotype, sample similarity, and strand specificity (MultiQC).
