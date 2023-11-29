@@ -62,11 +62,12 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
-  # TODO: create unit test for this component
+  
   test_resources:
     - type: bash_script
       path: test.sh
     - path: test_resources/fastq_data_dir
+
 platforms:
   - type: docker
     image: ubuntu:22.04
