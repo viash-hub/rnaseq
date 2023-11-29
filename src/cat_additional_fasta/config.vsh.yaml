@@ -41,6 +41,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/reference/genome.fasta
+    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/reference/gfp.fa.gz
    
 platforms:
   - type: docker
