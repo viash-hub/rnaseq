@@ -1,5 +1,3 @@
-// Note: some helper functionality is added at the end of this file
-
 workflow run_wf {
   take:
     input_ch
