@@ -8,13 +8,13 @@ viash ns build --setup cb --parallel
 CURR=`pwd` 
 
 # Test single-end data
-# cat > testData/test/sample_sheet.csv << HERE
+# cat > testData/minimal_test/sample_sheet.csv << HERE
 # id,fastq_1
 # SRR6357070_1,SRR6357070_1.fastq.gz
 # HERE
 
 # nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
-#   --param_list testData/test/sample_sheet.csv \
+#   --param_list testData/minimal_test/sample_sheet.csv \
 #   --publish_dir "testData/single_end_test" \
 #   --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
 #   --gtf testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf \
@@ -25,14 +25,14 @@ CURR=`pwd`
   # -resume
 
 # Test paired-end data
-cat > testData/test/sample_sheet.csv << HERE
+cat > testData/minimal_test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read2.fq.gz
 SRR6357071,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read2.fq.gz
 HERE
 
 nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
-  --param_list testData/test/sample_sheet.csv \
+  --param_list testData/minimal_test/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
   --fasta testData/test_output/reference_genome.fasta \
   --gtf testData/test_output/gene_annotation.gtf \

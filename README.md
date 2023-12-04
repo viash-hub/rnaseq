@@ -63,7 +63,7 @@ Now we can run the pipeline using the command:
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
   -profile docker \
   --id test \
-  --input testData/test/SRR6357070_1.fastq.gz \
+  --input testData/minimal_test/SRR6357070_1.fastq.gz \
   --publish_dir testData/test_output/
 ```
 
@@ -72,14 +72,14 @@ built-in `--param_list` functionality: (Read file paths must be
 specified relative to the sample sheet’s path)
 
 ``` bash
-cat > testData/test/sample_sheet.csv << HERE
+cat > testData/minimal_testsample_sheet.csv << HERE
 id,fastq_1
 SRR6357070_1,SRR6357070_1.fastq.gz
 SRR6357071_1,SRR6357071_1.fastq.gz
 HERE
 
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
-  --param_list testData/test/sample_sheet.csv \
+  --param_list testData/minimal_test/sample_sheet.csv \
   --publish_dir "testData/test_output" \
   -profile docker \
   -resume
@@ -115,13 +115,13 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
 The following command can be used to run the workflow:
 
 ``` bash
-cat > testData/test/sample_sheet.csv << HERE
+cat > testData/minimal_test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
 HERE
 
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
-  --param_list testData/test/sample_sheet.csv \
+  --param_list testData/minimal_test/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
   --umitools_bc_pattern "NNNN" \
   --umitools_bc_pattern2 "NNNN" \
@@ -140,13 +140,13 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
 The following command can be used to run the workflow:
 
 ``` bash
-cat > testData/test/sample_sheet.csv << HERE
+cat > testData/minimal_test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
 SRR6357070,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz
 HERE
 
 nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
-  --param_list testData/test/sample_sheet.csv \
+  --param_list testData/minimal_test/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
   --fasta testData/test_output/ref.prepare_genome.fasta_uncompressed \
   --gtf testData/test_output/ref.prepare_genome.gtf_uncompressed.gtf \
@@ -157,10 +157,9 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
 
 4.  Post-processing: This sub-workflow can be used for duplicate read
     marking (picard MarkDuplicates), transcript assembly and
-    quantification (StringTie), feature biotype QC (featureCounts) and
-    creation of bigWig coverage files.
+    quantification (StringTie), and creation of bigWig coverage files.
 
 5.  Final QC: This sub-workflow performs extensive quality control
-    (RSeQC, dupRadar, Qualimap, Preseq, DESeq2) and presents QC for raw
-    read, alignment, gene biotype, sample similarity, and strand
-    specificity (MultiQC).
+    (RSeQC, dupRadar, Qualimap, Preseq, DESeq2, featureCounts) and
+    presents QC for raw read, alignment, gene biotype, sample
+    similarity, and strand specificity (MultiQC).

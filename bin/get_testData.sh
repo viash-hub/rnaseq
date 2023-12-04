@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CURR=`pwd`
-DEST="testData/test/"
+DEST="testData/minimal_test/"
 mkdir -p $DEST
 cd $DEST
 
@@ -27,4 +27,8 @@ wget https://data.cyverse.org/dav-anon/iplant/home/liguow/RSeQC/Pairend_StrandSp
 wget http://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg19_rRNA.bed.gz
 gunzip hg19rRNA.bed.gz
 
+cd $CURR/testData
+
+wget https://multiqc.info/examples/rna-seq/data.zip
+unzip data.zip -d multiqc_test_data
 cd $CURR

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # define input and output for script
-input="genes.gff.gz"
+input="$meta_resources_dir/genes.gff.gz"
 output="genes.gff"
 
 # create temporary directory
@@ -15,7 +15,7 @@ trap clean_up EXIT
 echo "> Running $meta_functionality_name."
 
 "$meta_executable" \
-    --input "$meta_resources_dir/$input" \
+    --input "$input" \
     --output "$tmpdir/$output"
 
 exit_code=$?

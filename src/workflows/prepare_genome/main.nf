@@ -124,7 +124,7 @@ workflow run_wf {
         )
 
         // chromosome size and fai index
-        | getchromsize.run (
+        | getchromsizes.run (
             fromState: ["fasta": "fasta"], 
             toState: [
                 "fai": "fai", 

@@ -16,6 +16,40 @@ workflow run_wf {
             ],
             toState: [ "preseq_output": "output" ],
         )
+
+        // Feature biotype QC using featureCounts
+        | map { id, state -> 
+            def biotype_in_gtf = biotypeInGtf(state.gtf, state.biotype)
+            [ id, state + [biotype_in_gtf: biotype_in_gtf] ]
+        }
+
+        | subread_featurecounts.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf },
+            fromState: [
+                "paired": "paired", 
+                "strandedness": "strandedness", 
+                "gtf": "gtf", 
+                "bam": "genome_bam", 
+                "gencode": "gencode",
+                "extra_featurecounts_args": "extra_featurecounts_args",
+                "featurecounts_group_type": "featurecounts_group_type",
+                "featurecounts_feature_type": "featurecounts_feature_type",
+            ],
+            toState: [
+                "featurecounts": "counts",
+                "featurecounts_summary": "summary"
+            ]
+        )
+
+        | multiqc_custom_biotype.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts },
+            fromState: [
+                "id": "id",
+                "biocounts": "featurecounts", 
+                "biotypes_header": "biotypes_header"
+            ],
+            toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
+        )
    
         | rseqc_bamstat.run (
             fromState: [
@@ -259,8 +293,8 @@ workflow run_wf {
                 "deseq2_dists_multiqc": "dists_multiqc"
             ]
         )
-        
-        | multiqc.run (
+
+        | prepare_multiqc_input.run(
             fromState: [
               "multiqc_custom_config": "multiqc_custom_config", 
               "multiqc_title": "multiqc_title", 
@@ -296,6 +330,20 @@ workflow run_wf {
               "tin_multiqc": "tin_output_summary", 
               "deseq2_pca_multiqc": "deseq2_pca_multiqc", 
               "deseq2_dists_multiqc": "deseq2_pca_multiqc"
+            ], 
+            toState: [
+              "multiqc_input": "output"
+            ]
+        )
+        
+        | multiqc.run (
+            fromState: [
+              "multiqc_custom_config": "multiqc_custom_config", 
+              "multiqc_title": "multiqc_title", 
+              "multiqc_logo": "multiqc_logo",
+              "multiqc_methods_description": "multiqc_methods_description",
+            //   "workflow_summary": "workflow_summary", 
+              "input": "multiqc_input"
             ], 
             toState: [
               "multiqc_report": "report", 
@@ -352,4 +400,28 @@ workflow run_wf {
 
     emit:
         output_ch
+}
+
+//
+// Function to check whether biotype field exists in GTF file
+//
+def biotypeInGtf(gtf_file, biotype) {
+    def hits = 0
+    gtf_file.eachLine { line ->
+        def attributes = line.split('\t')[-1].split()
+        if (attributes.contains(biotype)) {
+            hits += 1
+        }
+    }
+    if (hits) {
+        return true
+    } else {
+        log.warn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+            "  Biotype attribute '${biotype}' not found in the last column of the GTF file!\n\n" +
+            "  Biotype QC will be skipped to circumvent the issue below:\n" +
+            "  https://github.com/nf-core/rnaseq/issues/460\n\n" +
+            "  Amend '--featurecounts_group_type' to change this behaviour.\n" +
+            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        return false
+    }
 }

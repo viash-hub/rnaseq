@@ -22,18 +22,22 @@ functionality:
     - name: "--fastq_1"
       type: file
       direction: output
-      default: $id.read1.merged.fq.gz
+      default: $id.read1.merged.fastq.gz
       description: Concatenated read 1 fastq
     - name: "--fastq_2"
       type: file
       direction: output
       must_exist: false
-      default: $id.read2.merged.fq.gz
+      default: $id.read2.merged.fastq.gz
       description: Concatenated read 2 fastq
   
   resources:
     - type: bash_script
       path: script.sh
+
+  test_resources:
+    - type: bash_script
+      path: test.sh
 
 platforms:
   - type: docker
