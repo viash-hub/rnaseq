@@ -88,40 +88,6 @@ workflow run_wf {
             ]
         )
 
-        // Feature biotype QC using featureCounts
-        | map { id, state -> 
-            def biotype_in_gtf = biotypeInGtf(state.gtf, state.biotype)
-            [ id, state + [biotype_in_gtf: biotype_in_gtf] ]
-        }
-
-        | subread_featurecounts.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf },
-            fromState: [
-                "paired": "paired", 
-                "strandedness": "strandedness", 
-                "gtf": "gtf", 
-                "bam": "genome_bam", 
-                "gencode": "gencode",
-                "extra_featurecounts_args": "extra_featurecounts_args",
-                "featurecounts_group_type": "featurecounts_group_type",
-                "featruecount_feature_type": "featruecount_feature_type",
-            ],
-            toState: [
-                "featurecounts": "counts",
-                "featurecounts_summary": "summary"
-            ]
-        )
-
-        | multiqc_custom_biotype.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts },
-            fromState: [
-                "id": "id",
-                "biocounts": "featurecounts", 
-                "biotypes_header": "biotypes_header"
-            ],
-            toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
-        )
-
         // Genome-wide coverage with BEDTools
 
         | bedtools_genomecov.run (
@@ -188,9 +154,9 @@ workflow run_wf {
             "stringtie_coverage_gtf": "stringtie_coverage_gtf",
             "stringtie_abundance": "stringtie_abundance",
             "stringtie_ballgown": "stringtie_ballgown", 
-            "featurecounts": "featurecounts",
-            "featurecounts_summary": "featurecounts_summary", 
-            "featurecounts_multiqc": "featurecounts_multiqc", 
+            // "featurecounts": "featurecounts",
+            // "featurecounts_summary": "featurecounts_summary", 
+            // "featurecounts_multiqc": "featurecounts_multiqc", 
             "bedgraph_forward": "bedgraph_forward",
             "bedgraph_reverse": "bedgraph_reverse",
             "bigwig_forward": "bigwig_forward",
@@ -199,28 +165,4 @@ workflow run_wf {
 
     emit:
         output_ch
-}
-
-//
-// Function to check whether biotype field exists in GTF file
-//
-def biotypeInGtf(gtf_file, biotype) {
-    def hits = 0
-    gtf_file.eachLine { line ->
-        def attributes = line.split('\t')[-1].split()
-        if (attributes.contains(biotype)) {
-            hits += 1
-        }
-    }
-    if (hits) {
-        return true
-    } else {
-        log.warn "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-            "  Biotype attribute '${biotype}' not found in the last column of the GTF file!\n\n" +
-            "  Biotype QC will be skipped to circumvent the issue below:\n" +
-            "  https://github.com/nf-core/rnaseq/issues/460\n\n" +
-            "  Amend '--featurecounts_group_type' to change this behaviour.\n" +
-            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        return false
-    }
 }
