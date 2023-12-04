@@ -47,15 +47,14 @@ workflow run_wf {
         ]
     )
 
-  
-
     // Perform QC on input fastq files
     | fastqc.run (
       runIf: { id, state -> !state.skip_qc && !state.skip_fastqc },
-      fromState: [ 
-        "paired": "paired",
-        "input": "input" 
-      ],
+      fromState: { id, state ->
+        def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        [ paired: state.paired,
+        input: input ]
+      },
       toState: [
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
