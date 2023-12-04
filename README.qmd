@@ -57,7 +57,7 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
 Alternatively, we can run the pipeline with a sample sheet using the built-in `--param_list` functionality: (Read file paths must be specified relative to the sample sheet's path)
 
 ``` bash
-cat > testDataminimal_testsample_sheet.csv << HERE
+cat > testData/minimal_testsample_sheet.csv << HERE
 id,fastq_1
 SRR6357070_1,SRR6357070_1.fastq.gz
 SRR6357071_1,SRR6357071_1.fastq.gz
