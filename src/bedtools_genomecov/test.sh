@@ -1,11 +1,12 @@
 #!/bin/bash
 
+id="SRR6357070"
 echo ">>> Testing $meta_functionality_name"
 
 "$meta_executable" \
     --id $id \
     --strandedness unstranded \
-    --bam $id.sorted.bam \
+    --bam $meta_resources_dir/$id.sorted.bam \
     --bedgraph_forward $id.forward.bedgraph \
     --bedgraph_reverse $id.reverse.bedgraph
 

@@ -1,22 +1,14 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
-
+echo "Testing $meta_functionality_name"
 "$meta_executable" \
-  --id mysample_id \
-  --paired true \
-  --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-  ... other params ... \
-  --bbsplit_index foo \
-  --filtered_output bar
+  --fasta "$meta_resources_dir/genome.fasta" \
+  --sizes genome.fasta.sizes \
+  --fai genome.fasta.fai
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[[ ! -f genome.fasta.sizes ]] && echo "Chromosome lengths file does not exist!" && exit 1
+[[ ! -f genome.fasta.fai ]] && echo "FASTA index file does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

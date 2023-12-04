@@ -1,22 +1,23 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
-
+echo ">>> Testing paired-end read samples with multiple replicates"
 "$meta_executable" \
-  --id mysample_id \
-  --paired true \
-  --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-  ... other params ... \
-  --bbsplit_index foo \
-  --filtered_output bar
+  --read_1 $meta_resources_dir/read1_replicate1 $meta_resources_dir/read1_replicate2 \
+  --read2 $meta_resources_dir/read2_replicate1 $meta_resources_dir/read2_replicate2 \
+  --fastq_1 read1.merged.fastq.gz \
+  --fastq_2 read2.merged.fastq.gz
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
+echo ">>> Checking whether output exists"
+[ ! -f read1.merged.fastq.gz ] && echo "Merged read 1 file does not exist!" && exit 1
+[ ! -f read2.merged.fastq.gz ] && echo "Merged read 2 file does not exist!" && exit 1
 
-# TODO: check contents of foo and bar
+echo ">>> Testing single-end read samples with multiple replicates"
+"$meta_executable" \
+  --read_1 $meta_resources_dir/read1_replicate1 $meta_resources_dir/read1_replicate2 \
+  --fastq_1 read1.merged.fastq.gz 
+
+echo ">>> Checking whether output exists"
+[ ! -f read1.merged.fastq.gz ] && echo "Merged read 1 file does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

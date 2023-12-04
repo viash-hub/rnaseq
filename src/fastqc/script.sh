@@ -3,7 +3,7 @@
 set -eo pipefail
 
 function clean_up {
-    rm -rf "$tmpdir"
+  rm -rf "$tmpdir"
 }
 trap clean_up EXIT
 
@@ -27,12 +27,17 @@ else
 fi
 
 fastqc -o $tmpdir ${input[*]} 
-html1=$(find $tmpdir/ -iname *read1*fastqc.html)
-html2=$(find $tmpdir/ -iname *read2*fastqc.html)
-zip1=$(find $tmpdir/ -iname *read1*fastqc.zip)
-zip2=$(find $tmpdir/ -iname *read2*fastqc.zip)
-cp $html1 $par_fastqc_html_1
-cp $html2 $par_fastqc_html_2
-cp $zip1 $par_fastqc_zip_1
-cp $zip2 $par_fastqc_zip_2
+
+file1=$(basename -- "${input[0]}")
+read1="${file1%.fastq*}"
+file2=$(basename -- "${input[1]}")
+read2="${file2%.fastq*}"
+html1=$(find $tmpdir/ -iname ${read1}_fastqc.html)
+html2=$(find $tmpdir/ -iname ${read2}_fastqc.html)
+zip1=$(find $tmpdir/ -iname ${read1}_fastqc.zip)
+zip2=$(find $tmpdir/ -iname ${read2}_fastqc.zip)
+[ -e "$html1" ] && cp $html1 $par_fastqc_html_1
+[ -e "$html2" ] && cp $html2 $par_fastqc_html_2
+[ -e "$zip1" ] && cp $zip1 $par_fastqc_zip_1
+[ -e "$zip2" ] && cp $zip2 $par_fastqc_zip_2
 

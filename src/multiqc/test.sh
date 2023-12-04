@@ -1,22 +1,16 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
-
+echo ">>> Testing $meta_functionality_name"
 "$meta_executable" \
-  --id mysample_id \
-  --paired true \
-  --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-  ... other params ... \
-  --bbsplit_index foo \
-  --filtered_output bar
+  --input "$meta_resources_dir/multiqc_test_data/" \
+  --report multiqc_report.html \
+  --data multiqc_data \
+  --plots multiqc_plots
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Check whether output exists"
+[ ! -f multiqc_report.html ] && echo "MultiQC report does not exist!" && exit 1
+[ ! -d multiqc_data ] && echo "MultiQC data directory does not exist!" && exit 1
+[ ! -d multiqc_plots ] && echo "MultiQC plots directory does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0
