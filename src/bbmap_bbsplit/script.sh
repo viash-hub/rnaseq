@@ -13,12 +13,12 @@ other_refs=()
 while IFS="," read -r name path 
 do
     other_refs+=("ref_$name=$path")
-done < $par_bbsplit_fasta_list
+done < "$par_bbsplit_fasta_list"
 
 
 if $par_only_build_index; then
     if [ -f "$par_primary_ref" ] && [ ${#other_refs[@]} -gt 0 ]; then
-        bbsplit.sh -Xmx${avail_mem}M ref_primary=$par_primary_ref ${other_refs[@]} path=$par_bbsplit_index threads=$meta_cpus
+        bbsplit.sh -Xmx${avail_mem}M ref_primary="$par_primary_ref" ${other_refs[@]} path=$par_bbsplit_index threads=$meta_cpus
     else
         echo "ERROR: Please specify as input a primary fasta file along with names and paths to non-primary fasta files."
     fi

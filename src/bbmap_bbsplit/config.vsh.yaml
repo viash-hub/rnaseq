@@ -68,6 +68,10 @@ functionality:
       path: test.sh
     - path: /testData/reference/genome.fasta
     - path: /testData/reference/bbsplit_fasta_list.txt
+    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: /testData/reference/bbsplit_fasta/sarscov2.fa
+    - path: /testData/reference/bbsplit_fasta/human.fa
 
 platforms:
   - type: docker
