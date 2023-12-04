@@ -87,7 +87,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/test/SRR6357070.bam
+    - path: /testData/minimal_test/SRR6357070.bam
     - path: /testData/reference/genes.gtf.gz
    
 platforms:

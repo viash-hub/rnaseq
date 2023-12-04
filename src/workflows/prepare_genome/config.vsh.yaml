@@ -117,7 +117,7 @@ functionality:
     - name: preprocess_transcripts_fasta
     - name: gtf_gene_filter
     - name: rsem/rsem_prepare_reference
-    - name: getchromsize
+    - name: getchromsizes
     - name: untar
     - name: star/star_genomegenerate
     - name: bbmap_bbsplit

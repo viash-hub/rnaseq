@@ -89,8 +89,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/test/SRR6357070.bam
-    - path: /testData/test/genome_gfp.bed
+    - path: /testData/minimal_test/SRR6357070.bam
+    - path: /testData/minimal_test/genome_gfp.bed
    
 platforms:
   - type: docker

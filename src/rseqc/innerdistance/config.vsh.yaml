@@ -102,10 +102,10 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/test/SRR6357070.bam
-    - path: /testData/test/genome_gfp.bed
-    - path: /testData/test/Pairend_nonStrandSpecific_36mer_Human_hg19.bam
-    - path: /testData/test/hg19_rRna.bed
+    - path: /testData/minimal_test/SRR6357070.bam
+    - path: /testData/minimal_test/genome_gfp.bed
+    - path: /testData/minimal_test/Pairend_nonStrandSpecific_36mer_Human_hg19.bam
+    - path: /testData/minimal_test/hg19_rRna.bed
    
 platforms:
   - type: docker
