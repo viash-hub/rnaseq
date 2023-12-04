@@ -3,6 +3,7 @@ functionality:
   namespace: workflows
   description: |
     A subworkflow for the final quality control stage of the nf-core/rnaseq pipeline.
+  
   argument_groups:
     - name: Input
       arguments:
@@ -46,6 +47,8 @@ functionality:
         - name: "--skip_qc"
           type: boolean
           default: false
+        - name: "--skip_biotype_qc"
+          type: boolean
 
         # Component specific options
         # preseq
@@ -55,6 +58,28 @@ functionality:
         - name: "--extra_preseq_args"
           type: string
           default: '-verbose -bam -seed 1'
+
+        # featureCounts
+        - name: "--featurecounts_group_type"
+          type: string
+          description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
+          default: gene_biotype
+        - name: "--featurecounts_feature_type"
+          type: string
+          description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
+          default: exon
+        - name: "--gencode"
+          type: boolean
+          description: Specify if the GTF annotation is in GENCODE format.
+        - name: "--biotypes_header"
+          type: file
+          default: assets/multiqc/biotypes_header.txt
+        - name: "--biotype"
+          type: string
+          description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
+        - name: "--extra_featurecounts_args"
+          type: string
+          description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
         
         # RSeQC
         - name: "--sample_size"
@@ -261,9 +286,9 @@ functionality:
         - name: "--markduplicates_multiqc"
           type: file
           must_exist: false
-        - name: "--featurecounts_multiqc"
-          type: file
-          must_exist: false
+        # - name: "--featurecounts_multiqc"
+        #   type: file
+        #   must_exist: false
 
     - name: Output
       arguments:
@@ -566,6 +591,29 @@ functionality:
           type: file
           direction: output
 
+        # Biotype QC
+        - name: "--featurecounts"
+          type: file
+          direction: output
+          must_exist: false
+          multiple: true
+          multiple_sep: ","
+          default: $id.featureCounts.txt
+        - name: "--featurecounts_summary"
+          type: file
+          direction: output
+          must_exist: false
+          multiple: true
+          multiple_sep: ","
+          default: $id.featureCounts.txt.summary
+        - name: "--featurecounts_multiqc"
+          type: file
+          direction: output
+          must_exist: false
+          multiple: true
+          multiple_sep: ","
+          default: $id.featureCounts_mqc.tsv
+
   resources:
     - type: nextflow_script
       path: main.nf
@@ -583,7 +631,10 @@ functionality:
     - name: dupradar
     - name: qualimap
     - name: preseq_lcextrap
+    - name: subread_featurecounts
+    - name: multiqc_custom_biotype
     - name: deseq2_qc
+    - name: prepare_multiqc_input
     - name: multiqc
     - name: workflows/salmon_quant_merge_counts
 

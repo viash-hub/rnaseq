@@ -190,20 +190,20 @@ workflow run_wf {
           "extra_stringtie_args": "extra_stringtie_args", 
           "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
           "extra_bedtools_args": "extra_bedtools_args", 
-          "extra_featurecounts_args": "extra_featurecounts_args", 
+          // "extra_featurecounts_args": "extra_featurecounts_args", 
           "bam_csi_index": "bam_csi_index", 
           "min_mapped_reads": "min_mapped_reads", 
           "with_umi": "with_umi",
-          "biotype": "biotype", 
-          "biotypes_header": "biotypes_header",
+          // "biotype": "biotype", 
+          // "biotypes_header": "biotypes_header",
           "skip_qc": "skip_qc",
           "skip_markdupkicates": "skip_markdupkicates", 
           "skip_stringtie": "skip_stringtie", 
-          "skip_biotype_qc": "skip_biotype_qc", 
-          "skip_bigwig": "skip_bigwig", 
-          "featurecounts_group_type": "featurecounts_group_type", 
-          "featurecounts_feature_type": "featurecounts_feature_type", 
-          "gencode": "gencode"
+          // "skip_biotype_qc": "skip_biotype_qc", 
+          "skip_bigwig": "skip_bigwig"
+          // "featurecounts_group_type": "featurecounts_group_type", 
+          // "featurecounts_feature_type": "featurecounts_feature_type", 
+          // "gencode": "gencode"
         ], 
         toState: [
           "genome_bam_sorted": "processed_genome_bam", 
@@ -216,9 +216,9 @@ workflow run_wf {
           "stringtie_coverage_gtf": "stringtie_coverage_gtf",
           "stringtie_abundance": "stringtie_abundance",
           "stringtie_ballgown": "stringtie_ballgown", 
-          "featurecounts": "featurecounts",
-          "featurecounts_summary": "featurecounts_summary", 
-          "featurecounts_multiqc": "featurecounts_multiqc", 
+          // "featurecounts": "featurecounts",
+          // "featurecounts_summary": "featurecounts_summary", 
+          // "featurecounts_multiqc": "featurecounts_multiqc", 
           "bedgraph_forward": "bedgraph_forward",
           "bedgraph_reverse": "bedgraph_reverse",
           "bigwig_forward": "bigwig_forward",
@@ -239,6 +239,13 @@ workflow run_wf {
           "salmon_quant_results": "salmon_quant_results", 
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
+          "extra_featurecounts_args": "extra_featurecounts_args", 
+          "biotype": "biotype", 
+          "biotypes_header": "biotypes_header",
+          "skip_biotype_qc": "skip_biotype_qc", 
+          "featurecounts_group_type": "featurecounts_group_type", 
+          "featurecounts_feature_type": "featurecounts_feature_type", 
+          "gencode": "gencode",
           "skip_deseq2_qc": "skip_deseq2_qc",  
           "extra_deseq2_args": "extra_deseq2_args",
           "extra_deseq2_args2": "extra_deseq2_args2",
@@ -302,7 +309,9 @@ workflow run_wf {
           "qualimap_output_pdf": "qualimap_output_pdf",
           "deseq2_output": "deseq2_output", 
           "deseq2_pca_multiqc": "deseq2_pca_multiqc", 
-          "deseq2_dists_multiqc": "deseq2_dists_multiqc"
+          "deseq2_dists_multiqc": "deseq2_dists_multiqc",
+          "featurecounts": "featurecounts",
+          "featurecounts_summary": "featurecounts_summary"
         ] 
     )
 
