@@ -1,22 +1,30 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+gunzip "$meta_resources_dir/genes.gtf"
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
+echo ">>> Prepare RSEM reference"
+"$meta_executable" \
+  --fasta "$meta_resources_dir/genome.fasta" \
+  --gtf "$meta_resources_dir/genes.gtf" \
+  --star true \
+  --rsem RSEM_index \
+  --transcript_fasta transcripts.fasta 
 
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[ ! -d RSEM_index ] && echo "RSEM index does not exist!" && exit 1
+[ ! -f transcripts.fasta ] && echo "Transcripts FASTA file does not exist!" && exit 1
+
+echo ">>> Make transcripts FASTA file"
+"$meta_executable" \
+  --fasta "$meta_resources_dir/genome.fasta" \
+  --gtf "$meta_resources_dir/genes.gtf" \
+  --star false \
+  --transcript_fasta transcripts.fasta 
+
+echo ">>> Checking whether output exists"
+[ ! -f transcripts.fasta ] && echo "Transcripts FASTA file does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

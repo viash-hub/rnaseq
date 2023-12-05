@@ -5,7 +5,7 @@ functionality:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/nf-core/preseq/lcextrap/main.nf, modules/nf-core/preseq/lcextrap/meta.yml]
       last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  description: Predicting library complexity and genome coverage in high-throughput sequencing
+  description: Computing the expected future yield of distinct reads and bounds on the number of total distinct reads in the library and the associated confidence intervals.
 
   arguments: 
     - name: "--bam"
@@ -25,6 +25,11 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
+
+  test_resources:
+    - type: bash_script
+      path: test.sh
+    # - path: /path/to/genome/bam/
 
 platforms:
   - type: docker

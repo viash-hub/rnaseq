@@ -38,6 +38,7 @@ functionality:
       path: script.sh
     # copied from https://github.com/nf-core/rnaseq/blob/master/bin/fasta2gtf.py
     - path: fasta2gtf.py
+  
   test_resources:
     - type: bash_script
       path: test.sh

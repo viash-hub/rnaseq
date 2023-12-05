@@ -1,22 +1,14 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Teatinf $meta_functionality_name"
 
 "$meta_executable" \
-  --id mysample_id \
-  --paired true \
-  --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-  ... other params ... \
-  --bbsplit_index foo \
-  --filtered_output bar
+  --id test \
+  --biocounts "$meta_resources_dir/test.featureCounts.txt" \
+  --featurecounts_multiqc "test.biotype_counts_rrna_mqc.tsv"
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Check whether output exists"
+[ ! -f test.biotype_counts_rrna_mqc.tsv ] && echo "MultiQC input file for biotype QC does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

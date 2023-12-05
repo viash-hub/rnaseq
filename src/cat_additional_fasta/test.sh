@@ -1,9 +1,6 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
 gunzip "$meta_resources_dir/genes.gtf"
 gunzip "$meta_resources_dir/gfp.fa"
@@ -19,7 +16,7 @@ gunzip "$meta_resources_dir/gfp.fa"
 exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
 
-# check whether output exists
+echo ">>> Checking whether output exists"
 [ ! -f genome_gfp.fasta ] && echo "File 'genome_gfp.fasta' does not exist!" && exit 1
 [ ! -f genome_gfp.gtf ] && echo "File 'genome_gfp.gtf' does not exist!" && exit 1
 

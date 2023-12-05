@@ -32,41 +32,44 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/reference/genome.fasta
+    - path: /testData/reference/genes.gtf.gz
    
 platforms:
-  # - type: docker
-  #   image: ubuntu:22.04
-  #   setup:
-  #     - type: docker
-  #       run: |
-  #         apt-get update && \
-  #         apt-get install -y --no-install-recommends build-essential gcc g++ make wget zlib1g-dev unzip && \
-  #         apt-get clean && \
-  #         wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
-  #         unzip 2.7.11a.zip && \
-  #         cp STAR-2.7.11a/bin/Linux_x86_64_static/STAR /usr/local/bin  && \
-  #         cd && \
-  #         wget --no-check-certificate https://github.com/deweylab/RSEM/archive/refs/tags/v1.3.3.zip && \
-  #         unzip v1.3.3.zip && \
-  #         cd RSEM-1.3.3 && \
-  #         cd samtools-1.3/htslib-1.3 && \
-  #         autoheader && \
-  #         autoconf && \
-  #         ./configure && \
-  #         make && \
-  #         make install && \
-  #         cd .. && \
-  #         autoheader && \
-  #         autoconf && \
-  #         ./configure && \
-  #         make && \
-  #         make install && \
-  #         cd .. && \
-  #         autoheader && \
-  #         autoconf && \
-  #         make && \
-  #         make install
+  - type: docker
+    image: ubuntu:22.04
+    setup:
+      - type: docker
+        run: |
+          apt-get update && \
+          apt-get install -y --no-install-recommends build-essential gcc g++ make wget zlib1g-dev unzip && \
+          apt-get clean && \
+          wget --no-check-certificate https://github.com/alexdobin/STAR/archive/refs/tags/2.7.11a.zip && \
+          unzip 2.7.11a.zip && \
+          cp STAR-2.7.11a/bin/Linux_x86_64_static/STAR /usr/local/bin  && \
+          cd && \
+          wget --no-check-certificate https://github.com/deweylab/RSEM/archive/refs/tags/v1.3.3.zip && \
+          unzip v1.3.3.zip && \
+          cd RSEM-1.3.3 && \
+          cd samtools-1.3/htslib-1.3 && \
+          autoheader && \
+          autoconf && \
+          ./configure && \
+          make && \
+          make install && \
+          cd .. && \
+          autoheader && \
+          autoconf && \
+          ./configure && \
+          make && \
+          make install && \
+          cd .. && \
+          autoheader && \
+          autoconf && \
+          make && \
+          make install
   - type: nextflow

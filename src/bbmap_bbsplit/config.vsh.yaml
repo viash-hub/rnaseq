@@ -38,11 +38,6 @@ functionality:
     - name: "--built_bbsplit_index"
       type: file
       description: Directory with index files
-      
-    - name: "--bbsplit_index"
-      type: file
-      description: Directory with index files
-      direction: output
     
     # Outputs
     - name: "--fastq_1"
@@ -50,6 +45,7 @@ functionality:
       required: false
       description: Output file for read 1.
       direction: output
+      must_exist: false
       default: $id.$key.read1.fq.gz
     - name: "--fastq_2"
       type: file
@@ -58,6 +54,11 @@ functionality:
       description: Output file for read 2.
       direction: output
       default: $id.$key.read2.fq.gz
+    - name: "--bbsplit_index"
+      type: file
+      description: Directory with index files
+      direction: output
+      must_exist: false
 
   resources:
     - type: bash_script
@@ -67,7 +68,7 @@ functionality:
     - type: bash_script
       path: test.sh
     - path: /testData/reference/genome.fasta
-    - path: /testData/reference/bbsplit_fasta_list.txt
+    # - path: /testData/reference/bbsplit_fasta_list.txt
     - path: /testData/minimal_test/SRR6357070_1.fastq.gz
     - path: /testData/minimal_test/SRR6357070_2.fastq.gz
     - path: /testData/reference/bbsplit_fasta/sarscov2.fa

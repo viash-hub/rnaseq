@@ -264,7 +264,7 @@ functionality:
     - name: "--extra_preseq_args"
       type: string
       description: Extra arguments to pass to preseq lc_extrap command in addition to defaults defined by the pipeline
-      default: '-verbose -bam -seed 1 -seg_len 100000000'
+      default: '-verbose -seed 1 -seg_len 100000000'
     - name: "--pca_header_multiqc"
       type: file
       default: assets/multiqc/deseq2_pca_header.txt

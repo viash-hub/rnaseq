@@ -1,22 +1,17 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
 "$meta_executable" \
-  --id mysample_id \
-  --paired true \
-  --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-  ... other params ... \
-  --bbsplit_index foo \
-  --filtered_output bar
+  --bam "$meta_resources_dir/sample.genome.bam" \
+  --fasta "$meta_resources_dir/genome.fasta" \
+  --extra_picard_args "--REMOVE_DUPLICATES false" \
+  --output_bam "sample.MarkDuplicates.genome.bam" \
+  --metrics "sample.MarkDuplicates.metrics.txt"
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Check whether output exists"
+[ ! -f sample.MarkDuplicates.genome.bam ] && echo "MarkDuplicates output BAM file does not exist!" && exit 1
+[ ! -f sample.MarkDuplicates.metrics.txt ] && echo "MarkDuplicates output metrics file does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0
