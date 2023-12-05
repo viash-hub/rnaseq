@@ -14,4 +14,7 @@ fi
 sed -i.bak -e 's/>//g' decoys.txt
 cat $par_transcriptome_fasta $par_genome_fasta > $gentrome
 
-salmon index --threads $meta_cpus -t $gentrome -i $par_salmon_index
+salmon index \
+    ${meta_cpus:+--threads $meta_cpus} \
+    -t $gentrome \
+    -i $par_salmon_index

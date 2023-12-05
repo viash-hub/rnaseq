@@ -55,21 +55,6 @@ platforms:
           wget --no-check-certificate https://github.com/deweylab/RSEM/archive/refs/tags/v1.3.3.zip && \
           unzip v1.3.3.zip && \
           cd RSEM-1.3.3 && \
-          cd samtools-1.3/htslib-1.3 && \
-          autoheader && \
-          autoconf && \
-          ./configure && \
-          make && \
-          make install && \
-          cd .. && \
-          autoheader && \
-          autoconf && \
-          ./configure && \
-          make && \
-          make install && \
-          cd .. && \
-          autoheader && \
-          autoconf && \
           make && \
           make install
   - type: nextflow
