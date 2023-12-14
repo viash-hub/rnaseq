@@ -11,12 +11,12 @@ functionality:
     - name: "--read_1"
       type: file
       multiple: true
-      multiple_sep: " "
+      multiple_sep: ";"
       description: Read 1 fastq files to be concatenated
     - name: "--read_2"
       type: file
       multiple: true
-      multiple_sep: " "
+      multiple_sep: ";"
       description: Read 2 fastq files to be concatenated
     
     - name: "--fastq_1"
