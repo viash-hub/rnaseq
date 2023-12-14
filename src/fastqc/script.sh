@@ -36,8 +36,19 @@ html1=$(find $tmpdir/ -iname ${read1}_fastqc.html)
 html2=$(find $tmpdir/ -iname ${read2}_fastqc.html)
 zip1=$(find $tmpdir/ -iname ${read1}_fastqc.zip)
 zip2=$(find $tmpdir/ -iname ${read2}_fastqc.zip)
-[ -e "$html1" ] && cp $html1 $par_fastqc_html_1
-[ -e "$html2" ] && cp $html2 $par_fastqc_html_2
-[ -e "$zip1" ] && cp $zip1 $par_fastqc_zip_1
-[ -e "$zip2" ] && cp $zip2 $par_fastqc_zip_2
 
+if [ -e "$html1" ]; then 
+  cp $html1 $par_fastqc_html_1
+fi
+
+if [ -e "$html2" ]; then 
+  cp $html2 $par_fastqc_html_2
+fi
+
+if [ -e "$zip1" ]; then
+  cp $zip1 $par_fastqc_zip_1
+fi
+
+if [ -e "$zip2" ]; then
+  cp $zip2 $par_fastqc_zip_2
+fi
