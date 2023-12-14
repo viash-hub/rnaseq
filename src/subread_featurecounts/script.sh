@@ -16,11 +16,15 @@ else
     par_extra_featurecounts_args+=" -g $par_featurecounts_group_type"
 fi
 
+if $par_paired; then
+    paired='-p'
+fi
+
 par_extra_featurecounts_args+=" -t $par_featurecounts_feature_type"
 
 featureCounts \
     $par_extra_featurecounts_args \
-    ${par_paired:+-p} \
+    $paired \
     -T $meta_cpus \
     -a $par_gtf \
     -s $strandedness \
