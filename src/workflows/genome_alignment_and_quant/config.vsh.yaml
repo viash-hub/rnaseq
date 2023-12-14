@@ -145,9 +145,6 @@ functionality:
     - name: umitools/umitools_dedup
     - name: umitools_prepareforquant
     - name: salmon/salmon_quant
-    - name: salmon/salmon_tx2gene
-    - name: salmon/salmon_tximport
-    - name: salmon/salmon_summarizedexperiment
 
 platforms:
   - type: nextflow
