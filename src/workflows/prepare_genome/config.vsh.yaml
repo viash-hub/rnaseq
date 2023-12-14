@@ -4,105 +4,113 @@ functionality:
   description: |
     A subworkflow for preparing all the required genome references
   
-  arguments:
-    - name: "--fasta"
-      type: file
-      description: Path to FASTA genome file.
-      required: true
-    - name: "--gtf"
-      type: file
-      description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
-      required: false
-    - name: "--gff"
-      type: file
-      description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
-      required: false
-    - name: "--additional_fasta"
-      type: file
-      description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
-    - name: "--transcript_fasta"
-      type: file
-      description: Path to FASTA transcriptome file.
-    - name: "--gene_bed"
-      type: file
-      description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
-    - name: "--splicesites"
-      type: file
-      description: Splice sites file required for HISAT2.
-    - name: "--bbsplit_fasta_list"
-      type: file
-      description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
-    - name: "--star_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built STAR index.
-    - name: "--rsem_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built RSEM index.
-    - name: "--salmon_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built Salmon index.
-    - name: "--hisat2_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built HISAT2 index.
-    - name: "--bbsplit_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built BBSplit index.
-    - name: "--gencode"
-      type: boolean
-      description: Specify if the GTF annotation is in GENCODE format.
-    - name: "--biotype"
-      type: string
-      description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
+  argument_groups:
+    - name: "Input"
+      arguments:
+        - name: "--fasta"
+          type: file
+          description: Path to FASTA genome file.
+          required: true
+        - name: "--gtf"
+          type: file
+          description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
+          required: false
+        - name: "--gff"
+          type: file
+          description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
+          required: false
+        - name: "--additional_fasta"
+          type: file
+          description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+        - name: "--transcript_fasta"
+          type: file
+          description: Path to FASTA transcriptome file.
+        - name: "--gene_bed"
+          type: file
+          description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
+        - name: "--splicesites"
+          type: file
+          description: Splice sites file required for HISAT2.
+        - name: "--skip_bbsplit"
+          type: boolean
+          description: Skip BBSplit for removal of non-reference genome reads.
+          default: true
+        - name: "--bbsplit_fasta_list"
+          type: file
+          description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+        - name: "--star_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built STAR index.
+        - name: "--rsem_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built RSEM index.
+        - name: "--salmon_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built Salmon index.
+        - name: "--hisat2_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built HISAT2 index.
+        - name: "--bbsplit_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built BBSplit index.
+        - name: "--gencode"
+          type: boolean
+          description: Specify if the GTF annotation is in GENCODE format.
+        - name: "--biotype"
+          type: string
+          description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
 
-    - name: "--fasta_uncompressed"
-      type: file
-      direction: output
-      default: reference_genome.fasta
-    - name: "--gtf_uncompressed"
-      type: file
-      direction: output
-      default: gene_annotation.gtf
-    - name: "--transcript_fasta_uncompressed"
-      type: file
-      direction: output
-      default: transcriptome.fasta
-    - name: "--gene_bed_uncompressed"
-      type: file
-      direction: output
-      default: gene_annotation.bed
-    - name: "--star_index_uncompressed"
-      type: file
-      direction: output
-      description: Path to STAR index.
-      default: star_index
-    # - name: "--rsem_index_uncompressed"
-    #   type: file
-    #   direction: output
-    #   description: Path to directory or tar.gz archive for pre-built RSEM index.
-    - name: "--salmon_index_uncompressed"
-      type: file
-      direction: output
-      description: Path to Salmon index.
-      default: salmon_index
-    # - name: "--hisat2_index_uncompressed"
-    #   type: file
-    #   direction: output
-    #   description: Path to directory or tar.gz archive for pre-built HISAT2 index.
-    - name: "--bbsplit_index_uncompressed"
-      type: file
-      direction: output
-      description: Path to BBSplit index.
-      default: bbsplit_index
-    - name: "--chrom_sizes"
-      type: file
-      direction: output
-      description: File containing chromosome lengths
-      default: reference_genome.fasta.sizes
-    - name: "--fai"
-      type: file
-      description: FASTA index file
-      direction: output
-      default: reference_genome.fasta.fai
+    - name: "Output"
+      arguments:
+        - name: "--fasta_uncompressed"
+          type: file
+          direction: output
+          default: reference_genome.fasta
+        - name: "--gtf_uncompressed"
+          type: file
+          direction: output
+          default: gene_annotation.gtf
+        - name: "--transcript_fasta_uncompressed"
+          type: file
+          direction: output
+          default: transcriptome.fasta
+        - name: "--gene_bed_uncompressed"
+          type: file
+          direction: output
+          default: gene_annotation.bed
+        - name: "--star_index_uncompressed"
+          type: file
+          direction: output
+          description: Path to STAR index.
+          default: star_index
+        # - name: "--rsem_index_uncompressed"
+        #   type: file
+        #   direction: output
+        #   description: Path to directory or tar.gz archive for pre-built RSEM index.
+        - name: "--salmon_index_uncompressed"
+          type: file
+          direction: output
+          description: Path to Salmon index.
+          default: salmon_index
+        # - name: "--hisat2_index_uncompressed"
+        #   type: file
+        #   direction: output
+        #   description: Path to directory or tar.gz archive for pre-built HISAT2 index.
+        - name: "--bbsplit_index_uncompressed"
+          type: file
+          direction: output
+          description: Path to BBSplit index.
+          default: bbsplit_index
+        - name: "--chrom_sizes"
+          type: file
+          direction: output
+          description: File containing chromosome lengths
+          default: reference_genome.fasta.sizes
+        - name: "--fai"
+          type: file
+          description: FASTA index file
+          direction: output
+          default: reference_genome.fasta.fai
 
   resources:
     - type: nextflow_script

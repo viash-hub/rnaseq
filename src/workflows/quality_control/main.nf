@@ -5,17 +5,7 @@ workflow run_wf {
 
     main: 
 
-        output_ch = input_ch
-                
-        | preseq_lcextrap.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_preseq },
-            fromState: [
-                "paired": "paired",
-                "bam": "genome_bam",
-                "extra_preseq_args": "extra_preseq_args"
-            ],
-            toState: [ "preseq_output": "output" ],
-        )
+        qc_ch = input_ch
 
         // Feature biotype QC using featureCounts
         | map { id, state -> 
@@ -50,8 +40,19 @@ workflow run_wf {
             ],
             toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
         )
+              
+        | preseq_lcextrap.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_preseq },
+            fromState: [
+                "paired": "paired",
+                "bam": "genome_bam",
+                "extra_preseq_args": "extra_preseq_args"
+            ],
+            toState: [ "preseq_output": "output" ],
+        )
    
         | rseqc_bamstat.run (
+            runIf: { id, state -> "bam_stat" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "map_qual": "map_qual"
@@ -59,6 +60,7 @@ workflow run_wf {
             toState: [ "bamstat_output": "output" ]
         )
         | rseqc_inferexperiment.run(
+            runIf: { id, state -> "infer_experiment" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -69,7 +71,7 @@ workflow run_wf {
         )
         // TODO: Get predicted strandedness from the RSeQC infer_experiment.py output
         | rseqc_innerdistance.run(
-            runIf: { id, state -> state.paired },
+            runIf: { id, state -> state.paired && "inner_distance" in state.rseqc_modules },
             key: "inner_distance",
             fromState: [
                 "input": "genome_bam",
@@ -90,6 +92,7 @@ workflow run_wf {
             ]
         )
         | rseqc_junctionannotation.run(
+            runIf: { id, state -> "junction_annotation" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -107,6 +110,7 @@ workflow run_wf {
             ]
         )
         | rseqc_junctionsaturation.run(
+            runIf: { id, state -> "junction_saturation" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -123,6 +127,7 @@ workflow run_wf {
             ]
         )
         | rseqc_readdistribution.run(
+            runIf: { id, state -> "read_distribution" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed"
@@ -130,6 +135,7 @@ workflow run_wf {
             toState: [ "read_distribution_output": "output" ]
         )                               
         | rseqc_readduplication.run(
+            runIf: { id, state -> "read_duplication" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "read_count_upper_limit": "read_count_upper_limit",
@@ -143,6 +149,7 @@ workflow run_wf {
             ]
         )
         | rseqc_tin.run(
+            runIf: { id, state -> "tin" in state.rseqc_modules },
             fromState: [
                 "bam_input": "genome_bam",
                 "bai_input": "genome_bam_index",
@@ -192,6 +199,8 @@ workflow run_wf {
                 "qualimap_output_dir": "output_dir"
             ]
         ) 
+
+        merged_ch = qc_ch
         
         // TODO:
         // def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
@@ -224,6 +233,15 @@ workflow run_wf {
             def read_distribution_output = list.collect{id, state -> state.read_distribution_output}
             def read_duplication_output_duplication_rate_mapping = list.collect{id, state -> state.read_duplication_output_duplication_rate_mapping}
             def tin_output_summary = list.collect{id, state -> state.tin_output_summary}
+            def gtf = list.collect{id, state -> state.gtf}.unique()[0]
+            def gtf_extra_attributes = list.collect{id, state -> state.gtf_extra_attributes}.unique()[0]
+            def gtf_group_features = list.collect{id, state -> state.gtf_group_features}.unique()[0]
+            def pca_header_multiqc = list.collect{id, state -> state.pca_header_multiqc}.unique()[0]
+            def clustering_header_multiqc = list.collect{id, state -> state.clustering_header_multiqc}.unique()[0]
+            def deseq2_vst = list.collect{id, state -> state}.deseq2_vst.unique()[0]
+            def extra_deseq2_args = list.collect{id, state -> state.extra_deseq2_args}.unique()[0]
+            def extra_deseq2_args2 = list.collect{id, state -> state.extra_deseq2_args2}.unique()[0]
+            def skip_deseq2_qc = list.collect{id, state -> state.skip_deseq2_qc}.unique()[0] 
             ["merged", [
                 fastqc_zip: fastqc_zip_1 + fastqc_zip_2,
                 trim_zip: trim_zip_1 + trim_zip_2, 
@@ -247,15 +265,15 @@ workflow run_wf {
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
                 salmon_quant_results: salmon_quant_results, 
-                gtf: list[1][-1].gtf, 
-                gtf_extra_attributes: list[1][-1].gtf_extra_attributes, 
-                gtf_group_features: list[1][-1].gtf_group_features,
-                pca_header_multiqc: list[1][-1].pca_header_multiqc, 
-                clustering_header_multiqc: list[1][-1].clustering_header_multiqc,
-                deseq2_vst: list[1][-1].deseq2_vst, 
-                extra_deseq2_args: list[1][-1].extra_deseq2_args,
-                extra_deseq2_args2: list[1][-1].extra_deseq2_args2,
-                skip_deseq2_qc: list[1][-1].skip_deseq2_qc 
+                gtf: gtf, 
+                gtf_extra_attributes: gtf_extra_attributes, 
+                gtf_group_features: gtf_group_features,
+                pca_header_multiqc: pca_header_multiqc, 
+                clustering_header_multiqc: clustering_header_multiqc,
+                deseq2_vst: deseq2_vst, 
+                extra_deseq2_args: extra_deseq2_args,
+                extra_deseq2_args2: extra_deseq2_args2,
+                skip_deseq2_qc: skip_deseq2_qc 
             ] ]
         } 
 
@@ -274,7 +292,8 @@ workflow run_wf {
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
                 "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment"
-            ]
+            ], 
+            auto: [publish: true]
         )
 
         | deseq2_qc.run (
@@ -291,7 +310,8 @@ workflow run_wf {
                 "deseq2_output": "deseq2_output", 
                 "deseq2_pca_multiqc": "pca_multiqc", 
                 "deseq2_dists_multiqc": "dists_multiqc"
-            ]
+            ], 
+            auto: [publish: true]
         )
 
         | prepare_multiqc_input.run(
@@ -350,15 +370,13 @@ workflow run_wf {
               "multiqc_data": "data",
               "multiqc_plots": "plots", 
               "multiqc_versions": "versions"
-            ]
+            ], 
+            auto: [publish: true]
         )
         
+        output_ch = qc_ch
         | setState (
             [
-                "multiqc_report": "multiqc_report", 
-                "multiqc_data": "multiqc_data",
-                "multiqc_plots": "multiqc_plots",
-                "multiqc_versions": "multiqc_versions",
                 "preseq_output": "preseq_output",
                 "bamstat_output": "bamstat_output",
                 "strandedness_output": "strandedness_output",
@@ -392,9 +410,8 @@ workflow run_wf {
                 "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
                 "qualimap_output_dir": "qualimap_output_dir",
                 "qualimap_output_pdf": "qualimap_output_pdf", 
-                "deseq2_output": "deseq2_output", 
-                "deseq2_pca_multiqc": "deseq2_pca_multiqc", 
-                "deseq2_dists_multiqc": "deseq2_dists_multiqc"
+                "featurecounts": "featurecounts",
+                "featurecounts_summary": "featurecounts_summary" 
             ]
         )
 

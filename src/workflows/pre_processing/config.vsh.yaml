@@ -49,14 +49,12 @@ functionality:
           type: integer
           description: Number of reads after trimming
         
-    # use --skip_qc or remove
     - name: "Extra pipeline options"
       arguments:
         - name: "--skip_qc"
           type: boolean
           description: Skip QC steps of the workflow.
 
-    # use --skip_fastqc or remove
     - name: "FastQC options"
       arguments:
       - name: "--skip_fastqc"
@@ -157,7 +155,7 @@ functionality:
           default: '--record-count 1000000 --seed 1'
           description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
 
-    - name: Output
+    - name: "Output"
       arguments:
         - name: "--qc_output1"
           type: file

@@ -20,15 +20,15 @@ workflow run_wf {
         "extra_args": "extra_fq_subsample_args" 
       ],
       toState: [
-        "fastq_1": "output_1",
-        "fastq_2": "output_2"
+        "subsampled_fastq_1": "output_1",
+        "subsampled_fastq_2": "output_2"
       ]
     )
 
     | salmon_quant.run (
       runIf: { id, state -> state.strandedness == 'auto' }, 
       fromState: { id, state ->
-        def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        def input = state.paired ? [ state.subsampled_fastq_1, state.subsampled_fastq_2 ] : [ state.subsampled_fastq_1 ]
         [ paired: state.paired, 
           strandedness: state.strandedness, 
           input: input, 
@@ -84,7 +84,7 @@ workflow run_wf {
     | map { id, state -> 
       def paired = state.paired
       def fastq_2 = state.fastq_2
-      if (state.with_umi && !state.skip_umi_extract && state.umi_discard_read != 0) {
+      if (paired && state.with_umi && !state.skip_umi_extract && state.umi_discard_read != 0) {
         fastq_2 = state.remove(state.fastq_2) 
         paired = false
       }
@@ -113,7 +113,7 @@ workflow run_wf {
       ]
     )
 
-    // Filter out rRNA reads
+    // Filter out contaminant RNA
     | bbmap_bbsplit.run (
       runIf: { id, state -> !state.skip_bbsplit },
       fromState: { id, state ->
@@ -130,7 +130,7 @@ workflow run_wf {
       ]
     )
 
-    // Sort reads by rRNA and non-rRNA?
+    // Sort reads by rRNA and non-rRNA
     | sortmerna.run (
       runIf: { id, state -> state.remove_ribo_rna },
       fromState: { id, state ->
@@ -152,8 +152,6 @@ workflow run_wf {
       [ id, state + mod_state ]
     }
 
-    // Clean up state such that the state only contains arguments
-    // with `direction: output` in the viash config
     | setState ( 
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
@@ -174,35 +172,3 @@ workflow run_wf {
   emit:
     output_ch
 }
-
-// ===============================
-// === start of test workflows ===
-// ===============================
-
-// workflow test_wf {
-
-//   // allow changing the resources_test dir
-//   params.resources_test = params.rootDir + "/resources_test"
-
-//   // or when running from s3: params.resources_test = "s3://openpipelines-data/"
-//   testParams = [
-//     param_list: [
-//     ]
-//   ]
-
-//   output_ch =
-//     channelFromParams(testParams, config)
-//       | view { "Input: $it" }
-//       | run_wf
-//       | view { output ->
-//         assert output.size() == 2 : "outputs should contain two elements; [id, file]"
-//         // ...
-//         "Output: $output"
-//       }
-//       | toSortedList()
-//       | map { output_list ->
-//         assert output_list.size() == 1 : "output channel should contain one event"
-//         // ...
-//       }
-  
-// }

@@ -7,10 +7,28 @@ workflow run_wf {
 
     | map { id, state ->
       def biotype = state.gencode ? "gene_type" : state.featurecounts_group_type 
-      def bc_pattern = state.umitools_bc_pattern2 ? [ state.umitools_bc_pattern, state.umitools_bc_pattern2 ] : [ state.umitools_bc_pattern ] 
-      [ id, state + [ biotype: biotype, bc_pattern: bc_pattern ] ]
+      [ id, state + [ biotype: biotype ] ]
     } 
-
+    // | toSortedList
+    // | map { list -> 
+    //     [ list.collect{it[0]}.unique(),  
+    //       [ fasta: list[1][-1].fasta,
+    //       gtf: list[1][-1].gtf, 
+    //       gff: list[1][-1].gff, 
+    //       additional_fasta: list[1][-1].additional_fasta,
+    //       transcript_fasta: list[1][-1].transcript_fasta, 
+    //       gene_bed: list[1][-1].gene_bed,
+    //       splicesites: list[1][-1].splicesites,
+    //       bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
+    //       star_index: list[1][-1].star_index,
+    //       rsem_index: list[1][-1].rsem_index,
+    //       salmon_index: list[1][-1].salmon_index,
+    //       hisat2_index: list[1][-1].hisat2_index,
+    //       bbsplit_index: list[1][-1].bbsplit_index,
+    //       gencode: list[1][-1].gencode,
+    //       biotype: list[1][-1].biotype ]
+    //     ]
+    // } 
     // prepare all the necessary files for reference genome
     | prepare_genome.run ( 
         fromState: [
@@ -20,12 +38,12 @@ workflow run_wf {
           "additional_fasta": "additional_fasta", 
           "transcript_fasta": "transcript_fasta", 
           "gene_bed": "gene_bed",
-          "splicesites": "splicesites",
+          // "splicesites": "splicesites",
           "bbsplit_fasta_list": "bbsplit_fasta_list", 
           "star_index": "star_index", 
-          "rsem_index": "rsem_index",
+          // "rsem_index": "rsem_index",
           "salmon_index": "salmon_index",
-          "hisat2_index": "hisat2_index",
+          // "hisat2_index": "hisat2_index",
           "bbsplit_index": "bbsplit_index",
           "gencode": "gencode", 
           "biotype": "biotype" 
@@ -47,6 +65,10 @@ workflow run_wf {
     | map { id, state -> 
       (isBelowMaxContigSize(state.fai)) ? [id, state] : [id, state + [bam_csi_index: true]]
     }
+    // | view
+
+    // analysis_ch = input_ch
+    // | combine(reference_ch)
 
     // Concatenate FastQ files from same sample if required
     | cat_fastq.run (
@@ -124,6 +146,7 @@ workflow run_wf {
 
     // Genome alignment and quantification
     | genome_alignment_and_quant.run (
+        runIf: { id, state -> state.passed_trimmed_reads },
         fromState: [
           "id": "id", 
           "fastq_1": "fastq_1",
@@ -176,6 +199,7 @@ workflow run_wf {
     }
     // Post-processing
     | post_processing.run (
+        runIf: { id, state -> state.passed_trimmed_reads && state.passed_mapping },
         fromState: [
           "id": "id", 
           "paired": "paired", 
@@ -190,20 +214,13 @@ workflow run_wf {
           "extra_stringtie_args": "extra_stringtie_args", 
           "stringtie_ignore_gtf": "stringtie_ignore_gtf", 
           "extra_bedtools_args": "extra_bedtools_args", 
-          // "extra_featurecounts_args": "extra_featurecounts_args", 
           "bam_csi_index": "bam_csi_index", 
           "min_mapped_reads": "min_mapped_reads", 
           "with_umi": "with_umi",
-          // "biotype": "biotype", 
-          // "biotypes_header": "biotypes_header",
           "skip_qc": "skip_qc",
           "skip_markdupkicates": "skip_markdupkicates", 
           "skip_stringtie": "skip_stringtie", 
-          // "skip_biotype_qc": "skip_biotype_qc", 
-          "skip_bigwig": "skip_bigwig"
-          // "featurecounts_group_type": "featurecounts_group_type", 
-          // "featurecounts_feature_type": "featurecounts_feature_type", 
-          // "gencode": "gencode"
+          "skip_bigwig":"gencode"
         ], 
         toState: [
           "genome_bam_sorted": "processed_genome_bam", 
@@ -216,17 +233,13 @@ workflow run_wf {
           "stringtie_coverage_gtf": "stringtie_coverage_gtf",
           "stringtie_abundance": "stringtie_abundance",
           "stringtie_ballgown": "stringtie_ballgown", 
-          // "featurecounts": "featurecounts",
-          // "featurecounts_summary": "featurecounts_summary", 
-          // "featurecounts_multiqc": "featurecounts_multiqc", 
           "bedgraph_forward": "bedgraph_forward",
           "bedgraph_reverse": "bedgraph_reverse",
           "bigwig_forward": "bigwig_forward",
           "bigwig_reverse": "bigwig_reverse"
-        ], 
+        ]
     )
 
-    final_qc_ch = analysis_ch
     // Final QC
     | quality_control.run (
         fromState: [
@@ -253,8 +266,8 @@ workflow run_wf {
           "multiqc_title": "multiqc_title", 
           "multiqc_logo": "multiqc_logo",
           "multiqc_methods_description": "multiqc_methods_description",
-          "fail_trimming_multiqc": "fail_trimming_multiqc", 
-          "fail_mapping_multiqc": "fail_mapping_multiqc", 
+          // "fail_trimming_multiqc": "fail_trimming_multiqc", 
+          // "fail_mapping_multiqc": "fail_mapping_multiqc", 
           "fastqc_zip_1": "fastqc_zip_1",
           "fastqc_zip_2": "fastqc_zip_2",  
           "trim_log_1": "trim_log_1", 
@@ -267,13 +280,13 @@ workflow run_wf {
           "genome_bam_flagstat": "genome_bam_flagstat", 
           "genome_bam_idxstats": "genome_bam_idxstats", 
           "markduplicates_multiqc": "markduplicates_metrics", 
-          "featurecounts_multiqc": "featurecounts_multiqc"        
+          "rseqc_modules": "rseqc_modules",
+          "num_trimmed_reads": "num_trimmed_reads",
+          "passed_trimmed_reads": "passed_trimmed_reads",
+          "passed_mapping": "passed_mapping",
+          "percent_mapped": "percent_mapped"
         ], 
         toState: [
-          "multiqc_report": "multiqc_report", 
-          "multiqc_data": "multiqc_data",
-          "multiqc_plots": "multiqc_plots",
-          "multiqc_versions": "multiqc_versions",
           "preseq_output": "preseq_output",
           "bamstat_output": "bamstat_output",
           "strandedness_output": "strandedness_output",
@@ -307,19 +320,14 @@ workflow run_wf {
           "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
           "qualimap_output_dir": "qualimap_output_dir",
           "qualimap_output_pdf": "qualimap_output_pdf",
-          "deseq2_output": "deseq2_output", 
-          "deseq2_pca_multiqc": "deseq2_pca_multiqc", 
-          "deseq2_dists_multiqc": "deseq2_dists_multiqc",
           "featurecounts": "featurecounts",
           "featurecounts_summary": "featurecounts_summary"
         ] 
     )
 
-    | concat(analysis_ch)
-
     | map { id, state -> 
       def paired_state = (!state.paired) ? 
-        [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
+        [fastqc_html_2: state.remove(state.fastqc_html_2), fastqc_zip_2: state.remove(state.fastqc_zip_1), trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
         []
       def qc_state = (state.skip_qc || state.skip_fastqc) ? 
         [fastqc_html_1: state.remove(state.fastqc_html_1), fastqc_html_2: state.remove(state.fastqc_html_2), fastqc_zip_1: state.remove(state.fastqc_zip_1), fastqc_zip_2: state.remove(state.fastqc_zip_2)] : 
@@ -375,14 +383,45 @@ workflow run_wf {
         "bedgraph_reverse": "bedgraph_reverse",
         "bigwig_forward": "bigwig_forward",
         "bigwig_reverse": "bigwig_reverse",
-        "multiqc_report": "multiqc_report", 
-        "multiqc_data": "multiqc_data"
+        "preseq_output": "preseq_output",
+        "bamstat_output": "bamstat_output",
+        "strandedness_output": "strandedness_output",
+        "inner_dist_output_stats": "inner_dist_output_stats",
+        "inner_dist_output_dist": "inner_dist_output_dist",
+        "inner_dist_output_freq": "inner_dist_output_freq",
+        "inner_dist_output_plot": "inner_dist_output_plot",
+        "inner_dist_output_plot_r": "inner_dist_output_plot_r",
+        "junction_annotation_output_log": "junction_annotation_output_log",
+        "junction_annotation_output_plot_r": "junction_annotation_output_plot_r",
+        "junction_annotation_output_junction_bed": "junction_annotation_output_junction_bed",
+        "junction_annotation_output_junction_interact": "junction_annotation_output_junction_interact",
+        "junction_annotation_output_junction_sheet": "junction_annotation_output_junction_sheet",
+        "junction_annotation_output_splice_events_plot": "junction_annotation_output_splice_events_plot",
+        "junction_annotation_output_splice_junctions_plot": "junction_annotation_output_splice_junctions_plot",
+        "junction_saturation_output_plot_r": "junction_saturation_output_plot_r",
+        "junction_saturation_output_plot": "junction_saturation_output_plot",
+        "read_distribution_output": "read_distribution_output",
+        "read_duplication_output_duplication_rate_plot_r": "read_duplication_output_duplication_rate_plot_r",
+        "read_duplication_output_duplication_rate_plot": "read_duplication_output_duplication_rate_plot",
+        "read_duplication_output_duplication_rate_mapping": "read_duplication_output_duplication_rate_mapping",
+        "read_duplication_output_duplication_rate_sequence": "read_duplication_output_duplication_rate_sequence",
+        "tin_output_summary": "tin_output_summary",
+        "tin_output_metrics": "tin_output_metrics",
+        "dupradar_output_dupmatrix": "dupradar_output_dupmatrix",
+        "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc",
+        "dupradar_output_duprate_exp_boxplot": "dupradar_output_duprate_exp_boxplot",
+        "dupradar_output_duprate_exp_densplot": "dupradar_output_duprate_exp_densplot",
+        "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
+        "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
+        "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
+        "qualimap_output_dir": "qualimap_output_dir",
+        // "qualimap_output_pdf": "qualimap_output_pdf" 
       ]
     )
 
-    | niceView()
+    // | niceView()
 
-    output_ch = final_qc_ch
+    output_ch = analysis_ch
 
 
   emit:

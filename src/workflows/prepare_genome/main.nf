@@ -106,7 +106,10 @@ workflow run_wf {
         // filter gtf for genes in genome
         | gtf_gene_filter.run (
             runIf: {id, state -> !state.transcript_fasta}, 
-            fromState: ["fasta": "fasta", "gtf": "gtf"], 
+            fromState: [
+                "fasta": "fasta", 
+                "gtf": "gtf"
+            ], 
             toState: ["filtered_gtf": "filtered_gtf"],
             args: [filtered_gtf: "genome_additional_genes.gtf"] 
         )
@@ -147,7 +150,7 @@ workflow run_wf {
         
         // create bbsplit index, if not already availble
         | bbmap_bbsplit.run (
-            runIf: {id, state -> !state.bbsplit_index}, 
+            runIf: {id, state -> !state.skip_bbsplit && !state.bbsplit_index}, 
             fromState: [ 
                 "primary_ref": "fasta", 
                 "bbsplit_fasta_list": "bbsplit_fasta_list" 

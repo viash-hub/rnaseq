@@ -15,14 +15,14 @@ functionality:
       must_exist: true
       required: true
       multiple: true
-      multiple_sep: " "
+      multiple_sep: ";"
       description: Path to the sample (or read 1 of paired end sample). 
     - name: "--fastq_2"
       type: file
       required: false
       must_exist: false
       multiple: true
-      multiple_sep: " "
+      multiple_sep: ";"
       description: Path to read 2 of the sample.
     - name: "--strandedness"
       type: string 
@@ -281,6 +281,14 @@ functionality:
     - name: "--extra_deseq2_args2"
       type: string
       default: star_salmon
+
+    - name: "--rseqc_modules"
+      type: string
+      multiple: true
+      multiple_sep: ","
+      description: Specify the RSeQC modules to run_wf
+      default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
+      choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
 
     # Multiqc paramenters
     - name: "--multiqc_custom_config"
@@ -578,192 +586,192 @@ functionality:
     - name: "--preseq_output"
       type: file
       direction: output
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: preseq/$id.lc_extrap.txt
     # RSeQC
     - name: "--bamstat_output"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       description: Path to output file (txt) of mapping quality statistics
       default: RSeQC/bamstat/$id.mapping_quality.txt
     - name: "--strandedness_output"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/inferexperiment/$id.strandedness.txt
       description: Path to output report (txt) of inferred strandedness
     - name: "--inner_dist_output_stats"
       type: file
       direction: output
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/innerdistance/$id.inner_distance.stats
       description: output file (txt) with summary statistics of inner distances of paired reads
     - name: "--inner_dist_output_dist"
       type: file
       direction: output
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/innerdistance/$id.inner_distance.txt
       description: output file (txt) with inner distances of all paired reads
     - name: "--inner_dist_output_freq"
       type: file
       direction: output
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/innerdistance/$id.inner_distance_freq.txt
       description: output file (txt) with frequencies of inner distances of all paired reads
     - name: "--inner_dist_output_plot"
       type: file
       direction: output
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/innerdistance/$id.inner_distance_plot.pdf
       description: output file (pdf) with histogram plot of of inner distances of all paired reads
     - name: "--inner_dist_output_plot_r"
       type: file
       direction: output
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/innerdistance/$id.inner_distance_plot.r
       description: output file (R) with script of histogram plot of of inner distances of all paired reads
     - name: "--junction_annotation_output_log"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.junction_annotation.log
       description: output log of junction annotation script
     - name: "--junction_annotation_output_plot_r"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.junction_annotation_plot.r
       description: R script to generate splice_junction and splice_events plot
     - name: "--junction_annotation_output_junction_bed"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.junction_annotation.bed
       description: junction annotation file (bed format)
     - name: "--junction_annotation_output_junction_interact"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.junction_annotation.Interact.bed
       description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
     - name: "--junction_annotation_output_junction_sheet"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.junction_annotation.xls
       description: junction annotation file (xls format)
     - name: "--junction_annotation_output_splice_events_plot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.splice_events.pdf
       description: plot of splice events (pdf)
     - name: "--junction_annotation_output_splice_junctions_plot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionannotation/$id.splice_junctions_plot.pdf
       description: plot of junctions (pdf)
     - name: "--junction_saturation_output_plot_r"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionsaturation/$id.junction_saturation_plot.r
       description: r script to generate junction_saturation_plot plot
     - name: "--junction_saturation_output_plot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/junctionsaturation/$id.junction_saturation_plot.pdf
       description: plot of junction saturation (pdf
     - name: "--read_distribution_output"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/readdistribution/$id.read_distribution.txt
       description: output file (txt) of read distribution analysis.    
     - name: "--read_duplication_output_duplication_rate_plot_r"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/readduplication/$id.duplication_rate_plot.r
       description: R script for generating duplication rate plot
     - name: "--read_duplication_output_duplication_rate_plot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/readduplication/$id.duplication_rate_plot.pdf
       description: duplication rate plot (pdf)
     - name: "--read_duplication_output_duplication_rate_mapping"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/readduplication/$id.duplication_rate_mapping.xls
       description: Summary of mapping-based read duplication
     - name: "--read_duplication_output_duplication_rate_sequence"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/readduplication/$id.duplication_rate_sequencing.xls
       description: Summary of sequencing-based read duplication
     - name: "--tin_output_summary"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/tin/$id.tin_summary.txt
       description: summary statistics (txt) of calculated TIN metrics
     - name: "--tin_output_metrics"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: RSeQC/tin/$id.tin.xls
       description: file with TIN metrics (xls)
 
@@ -772,56 +780,56 @@ functionality:
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.dup_matrix.txt
       description: path to output file (txt) of duplicate tag counts
     - name: "--dupradar_output_dup_intercept_mqc"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.dup_intercept_mqc.txt
       description: path to output file (txt) of multiqc intercept value DupRadar
     - name: "--dupradar_output_duprate_exp_boxplot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.duprate_exp_boxplot.pdf
       description: path to output file (pdf) of distribution of expression box plot    
     - name: "--dupradar_output_duprate_exp_densplot"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.duprate_exp_densityplot.pdf
       description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
     - name: "--dupradar_output_duprate_exp_denscurve_mqc"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.duprate_exp_density_curve_mqc.pdf
       description: path to output file (pdf) of density curve of gene duplication multiqc
     - name: "--dupradar_output_expression_histogram"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.expression_hist.pdf
       description: path to output file (pdf) of distribution of RPK values per gene histogram
     - name: "--dupradar_output_intercept_slope"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: dupradar/$id.intercept_slope.txt
 
     # Qualimap
@@ -830,15 +838,15 @@ functionality:
       direction: output
       required: false
       must_exist: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: qualimap/$id.qualimap_output.pdf
     - name: "--qualimap_output_dir"
       type: file
       direction: output
       required: false
-      multiple: true
-      multiple_sep: ","
+      # multiple: true
+      # multiple_sep: ","
       default: qualimap/$id.qualimap_output
 
     # DESeq2
@@ -884,11 +892,9 @@ functionality:
     - name: workflows/genome_alignment_and_quant
     - name: workflows/post_processing
     - name: workflows/quality_control
-    - name: deseq2_qc
-    - name: multiqc
     - name: workflows/salmon_quant_merge_counts
 
 platforms:
   - type: nextflow
-    directives: 
-      label: [ "lowtime", "lowmem", "lowcpu" ]
+    # directives: 
+    #   label: [ "lowtime", "lowmem", "lowcpu" ]
