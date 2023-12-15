@@ -1,0 +1,2050 @@
+functionality:
+  name: "rnaseq"
+  namespace: "workflows"
+  version: "dev"
+  arguments:
+  - type: "string"
+    name: "--id"
+    description: "ID of the sample."
+    info: null
+    example:
+    - "foo"
+    required: true
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fastq_1"
+    description: "Path to the sample (or read 1 of paired end sample)."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "input"
+    multiple: true
+    multiple_sep: ";"
+    dest: "par"
+  - type: "file"
+    name: "--fastq_2"
+    description: "Path to read 2 of the sample."
+    info: null
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: true
+    multiple_sep: ";"
+    dest: "par"
+  - type: "string"
+    name: "--strandedness"
+    description: "Sample strand-specificity. Must be one of unstranded, forward, reverse\
+      \ or auto"
+    info: null
+    default:
+    - "auto"
+    required: false
+    choices:
+    - "unstranded"
+    - "forward"
+    - "reverse"
+    - "auto"
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fasta"
+    description: "Path to FASTA genome file."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--gtf"
+    description: "Path to GTF annotation file. This parameter is *mandatory* if --genome\
+      \ is not specified."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--gff"
+    description: "Path to GFF3 annotation file. Required if \"--gtf\" is not specified."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--additional_fasta"
+    description: "FASTA file to concatenate to genome FASTA file e.g. containing spike-in\
+      \ sequences."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcript_fasta"
+    description: "Path to FASTA transcriptome file."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--gene_bed"
+    description: "Path to BED file containing gene intervals. This will be created\
+      \ from the GTF file if not specified."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--splicesites"
+    description: "Splice sites file required for HISAT2."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--star_index"
+    description: "Path to directory or tar.gz archive for pre-built STAR index."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--rsem_index"
+    description: "Path to directory or tar.gz archive for pre-built RSEM index."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--salmon_index"
+    description: "Path to directory or tar.gz archive for pre-built Salmon index."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--gencode"
+    description: "Specify if the GTF annotation is in GENCODE format."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--gtf_extra_attributes"
+    description: "Additional gene identifiers from the input GTF file when running\
+      \ Salmon. More than one value can be specified separated by comma."
+    info: null
+    default:
+    - "gene_name"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--gtf_group_features"
+    description: "Define the attribute type used to group features in the GTF file\
+      \ when running Salmon."
+    info: null
+    default:
+    - "gene_id"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--featurecounts_group_type"
+    description: "The attribute type used to group feature types in the GTF file when\
+      \ generating the biotype plot with featureCounts."
+    info: null
+    default:
+    - "gene_biotype"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--featurecounts_feature_type"
+    description: "By default, the pipeline assigns reads based on the 'exon' attribute\
+      \ within the GTF file."
+    info: null
+    default:
+    - "exon"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--save_reference"
+    description: "If generated by the pipeline, save the STAR index in the results\
+      \ directory."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--skip_fastqc"
+    description: "Skip FatQC step."
+    info: null
+    default:
+    - false
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--with_umi"
+    description: "Enable UMI-based read deduplication."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean"
+    name: "--skip_umi_extract"
+    description: "Skip umi_tools extract step."
+    info: null
+    default:
+    - false
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--umitools_extract_method"
+    description: "UMI pattern to use."
+    info: null
+    default:
+    - "string"
+    required: false
+    choices:
+    - "string"
+    - "regex"
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--umitools_bc_pattern"
+    description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the\
+      \ first 6 nucleotides of the read are from the UMI."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--umitools_bc_pattern2"
+    description: "The UMI barcode pattern to use if the UMI is located in read 2."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "integer"
+    name: "--umi_discard_read"
+    description: "After UMI barcode extraction discard either R1 or R2 by setting\
+      \ this parameter to 1 or 2, respectively."
+    info: null
+    default:
+    - 0
+    required: false
+    choices:
+    - 0
+    - 1
+    - 2
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--umitools_umi_separator"
+    description: "The character that separates the UMI in the read name. Most likely\
+      \ a colon if you skipped the extraction with UMI-tools and used other software."
+    info: null
+    default:
+    - "_"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--umitools_grouping_method"
+    description: "Method to use to determine read groups by subsuming those with similar\
+      \ UMIs. All methods start by identifying the reads with the same mapping position,\
+      \ but treat similar yet nonidentical UMIs differently."
+    info: null
+    default:
+    - "directional"
+    required: false
+    choices:
+    - "unique"
+    - "percentile"
+    - "cluster"
+    - "adjacency"
+    - "directional"
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--save_umi_intermeds"
+    description: "If this option is specified, intermediate FastQ and BAM files produced\
+      \ by UMI-tools are also saved in the results directory."
+    info: null
+    default:
+    - false
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--umi_dedup_stats"
+    description: "Generate output stats when running \"umi_tools dedup\"."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--trimmer"
+    description: "Specify the trimming tool to use."
+    info: null
+    default:
+    - "trimgalore"
+    required: false
+    choices:
+    - "trimgalore"
+    - "fastp"
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_trimgalore_args"
+    description: "Extra arguments to pass to Trim Galore! command in addition to defaults\
+      \ defined by the pipeline."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_fastp_args"
+    description: "Extra arguments to pass to fastp command in addition to defaults\
+      \ defined by the pipeline."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "integer"
+    name: "--min_trimmed_reads"
+    description: "Minimum number of trimmed reads below which samples are removed\
+      \ from further processing. Some downstream steps in the pipeline will fail if\
+      \ this threshold is too low."
+    info: null
+    default:
+    - 10000
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--skip_trimming"
+    description: "Skip the adapter trimming step."
+    info: null
+    default:
+    - false
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--save_trimmed"
+    description: "Save the trimmed FastQ files in the results directory."
+    info: null
+    default:
+    - false
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bbsplit_fasta_list"
+    description: "Path to comma-separated file containing a list of reference genomes\
+      \ to filter reads against with BBSplit. To use BBSplit, \"--skip_bbsplit\" must\
+      \ be explicitly set to \"false\". The file should contain 2 (comma separated)\
+      \ columns - short name and full path to reference genome(s)"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bbsplit_index"
+    description: "Path to directory or tar.gz archive for pre-built BBSplit index."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--save_bbsplit_reads"
+    description: "If this option is specified, FastQ files split by reference will\
+      \ be saved in the results directory."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--skip_bbsplit"
+    description: "Skip BBSplit for removal of non-reference genome reads."
+    info: null
+    default:
+    - true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--remove_ribo_rna"
+    description: "Enable the removal of reads derived from ribosomal RNA using SortMeRNA."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--ribo_database_manifest"
+    description: "Text file containing paths to fasta files (one per line) that will\
+      \ be used to create the database for SortMeRNA."
+    info: null
+    default:
+    - "assets/rrna-db-defaults.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--save_non_ribo_reads"
+    description: "If this option is specified, intermediate FastQ files containing\
+      \ non-rRNA reads will be saved in the results directory."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "integer"
+    name: "--min_mapped_reads"
+    description: "Minimum percentage of uniquely mapped reads below which samples\
+      \ are removed from further processing."
+    info: null
+    default:
+    - 5
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--bam_csi_index"
+    description: "Create a CSI index for BAM files instead of the traditional BAI\
+      \ index. This will be required for genomes with larger chromosome sizes."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--extra_star_align_args"
+    description: "Extra arguments to pass to STAR alignment command in addition to\
+      \ defaults defined by the pipeline."
+    info: null
+    default:
+    - "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic\
+      \ --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin\
+      \ 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField\
+      \ intronMotif"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--star_ignore_sjdbgtf"
+    description: "When using pre-built STAR indices, do not re-extract and use splice\
+      \ junctions from the GTF file."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--seq_platform"
+    description: "Sequencing platform."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--seq_center"
+    description: "Sequencing center."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--salmon_quant_libtype"
+    description: "Override Salmon library type inferred based on strandedness defined\
+      \ in meta object."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_salmon_quant_args"
+    description: "Extra arguments to pass to salmon quant command in addition to defaults\
+      \ defined by the pipeline."
+    info: null
+    default:
+    - "-v"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--stringtie_ignore_gtf"
+    description: "Perform reference-guided de novo assembly of transcripts using StringTie,\
+      \ i.e. don't restrict to those in GTF file."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--extra_stringtie_args"
+    description: "Extra arguments to pass to stringtie command in addition to defaults\
+      \ defined by the pipeline."
+    info: null
+    default:
+    - "-v"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_qc"
+    description: "Skip QC steps of the workflow."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_markdupkicates"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_stringtie"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_biotype_qc"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_bigwig"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_preseq"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--skip_deseq2_qc"
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--extra_fq_subsample_args"
+    description: "Extra arguments to pass to fq subsample command in addition to defaults\
+      \ defined by the pipeline."
+    info: null
+    default:
+    - "--record-count 1000000 --seed 1"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_picard_args"
+    description: "Extra arguments to pass to picard MarkDuplicates command in addition\
+      \ to defaults defined by the pipeline."
+    info: null
+    default:
+    - "--ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT\
+      \ --TMP_DIR tmp"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_bedtools_args"
+    description: "Extra arguments to pass to bedtools genomecov command in addition\
+      \ to defaults defined by the pipeline."
+    info: null
+    default:
+    - "-split -du"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_featurecounts_args"
+    description: "Extra arguments to pass to featureCounts command in addition to\
+      \ defaults defined by the pipeline"
+    info: null
+    default:
+    - "-B -C"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_preseq_args"
+    description: "Extra arguments to pass to preseq lc_extrap command in addition\
+      \ to defaults defined by the pipeline"
+    info: null
+    default:
+    - "-verbose -seed 1 -seg_len 100000000"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--pca_header_multiqc"
+    info: null
+    default:
+    - "assets/multiqc/deseq2_pca_header.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--clustering_header_multiqc"
+    info: null
+    default:
+    - "assets/multiqc/deseq2_clustering_header.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean"
+    name: "--deseq2_vst"
+    description: "Use vst transformation instead of rlog with DESeq2"
+    info: null
+    default:
+    - true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_deseq2_args"
+    info: null
+    default:
+    - "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--extra_deseq2_args2"
+    info: null
+    default:
+    - "star_salmon"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--rseqc_modules"
+    description: "Specify the RSeQC modules to run_wf"
+    info: null
+    default:
+    - "bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication"
+    required: false
+    choices:
+    - "bam_stat"
+    - "inner_distance"
+    - "infer_experiment"
+    - "junction_annotation"
+    - "junction_saturation"
+    - "read_distribution"
+    - "read_duplication"
+    - "tin"
+    direction: "input"
+    multiple: true
+    multiple_sep: ","
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_custom_config"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--multiqc_title"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_logo"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_methods_description"
+    info: null
+    default:
+    - "assets/methods_description_template.yml"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_fasta"
+    info: null
+    default:
+    - "genome/reference_genome.fasta"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_gtf"
+    info: null
+    default:
+    - "genome/gene_annotation.gtf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_transcript_fasta"
+    info: null
+    default:
+    - "genome/transcriptome.fasta"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_gene_bed"
+    info: null
+    default:
+    - "genome/gene_annotation.bed"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_star_index"
+    description: "Path to STAR index."
+    info: null
+    default:
+    - "genome/index/STAR"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_salmon_index"
+    description: "Path to Salmon index."
+    info: null
+    default:
+    - "genome/index/salmon"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_bbsplit_index"
+    description: "Path to BBSplit index."
+    info: null
+    default:
+    - "genome/index/bbsplit"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_fastq_1"
+    description: "Path to output directory"
+    info: null
+    default:
+    - "fastq/$id.read1.fastq.gz"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_fastq_2"
+    description: "Path to output directory"
+    info: null
+    default:
+    - "fastq/$id.read2.fastq.gz"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fastqc_html_1"
+    description: "FastQC HTML report for read 1."
+    info: null
+    default:
+    - "fastqc/$id.read1.fastqc.html"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fastqc_html_2"
+    description: "FastQC HTML report for read 2."
+    info: null
+    default:
+    - "fastqc/$id.read2.fastqc.html"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fastqc_zip_1"
+    description: "FastQC report archive for read 1."
+    info: null
+    default:
+    - "fastqc/$id.read1.fastqc.zip"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--fastqc_zip_2"
+    description: "FastQC report archive for read 2."
+    info: null
+    default:
+    - "fastqc/$id.read2.fastqc.zip"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_log_1"
+    info: null
+    default:
+    - "trimgalore/$id.read1.trimming_report.txt"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_log_2"
+    info: null
+    default:
+    - "trimgalore/$id.read2.trimming_report.txt"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_html_1"
+    info: null
+    default:
+    - "trimgalore/$id.read1.trimmed_fastqc.html"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_html_2"
+    info: null
+    default:
+    - "trimgalore/$id.read2.trimmed_fastqc.html"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_zip_1"
+    info: null
+    default:
+    - "trimgalore/$id.read1.trimmed_fastqc.zip"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--trim_zip_2"
+    info: null
+    default:
+    - "trimgalore/$id.read2.trimmed_fastqc.zip"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--sortmerna_log"
+    description: "Sortmerna log file."
+    info: null
+    default:
+    - "sortmerna/$id.log"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--star_alignment"
+    info: null
+    default:
+    - "STAR_alignment/$id.STAR"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--genome_bam_sorted"
+    info: null
+    default:
+    - "$id.genome.bam"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--genome_bam_index"
+    info: null
+    default:
+    - "$id.genome.bam.bai"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--genome_bam_stats"
+    info: null
+    default:
+    - "samtools_stats/$id.genome.stats"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--genome_bam_flagstat"
+    info: null
+    default:
+    - "samtools_stats/$id.genome.flagstat"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--genome_bam_idxstats"
+    info: null
+    default:
+    - "samtools_stats/$id.genome.idxstats"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcriptome_bam_sorted"
+    info: null
+    default:
+    - "$id.transcriptome.bam"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcriptome_bam_index"
+    info: null
+    default:
+    - "$id.transcriptome.bam.bai"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcriptome_bam_stats"
+    info: null
+    default:
+    - "samtools_stats/$id.transcriptome.stats"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcriptome_bam_flagstat"
+    info: null
+    default:
+    - "samtools_stats/$id.transcriptome.flagstat"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--transcriptome_bam_idxstats"
+    info: null
+    default:
+    - "samtools_stats/$id.transcriptome.idxstats"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--salmon_quant_results"
+    info: null
+    default:
+    - "align_quantified/$id.salmon_quant"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--markduplicates_metrics"
+    info: null
+    default:
+    - "picard_metrics/$id.markdup.sorted.MarkDuplicates.metrics.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--stringtie_transcript_gtf"
+    info: null
+    default:
+    - "stringtie/$id.transcripts.gtf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--stringtie_coverage_gtf"
+    info: null
+    default:
+    - "stringtie/$id.coverage.gtf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--stringtie_abundance"
+    info: null
+    default:
+    - "stringtie/$id.gene_abundance.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--stringtie_ballgown"
+    info: null
+    default:
+    - "stringtie/$id.ballgown"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--featurecounts"
+    info: null
+    default:
+    - "featurecounts/$id.featureCounts.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--featurecounts_summary"
+    info: null
+    default:
+    - "featurecounts/$id.featureCounts.txt.summary"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bedgraph_forward"
+    info: null
+    default:
+    - "bedgraph/$id.forward.bedgraph"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bedgraph_reverse"
+    info: null
+    default:
+    - "bedgraph/$id.reverse.bedgraph"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bigwig_forward"
+    info: null
+    default:
+    - "bigwig/$id.forward.bigwig"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bigwig_reverse"
+    info: null
+    default:
+    - "bigwig/$id.reverse.bigwig"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--preseq_output"
+    info: null
+    default:
+    - "preseq/$id.lc_extrap.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--bamstat_output"
+    description: "Path to output file (txt) of mapping quality statistics"
+    info: null
+    default:
+    - "RSeQC/bamstat/$id.mapping_quality.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--strandedness_output"
+    description: "Path to output report (txt) of inferred strandedness"
+    info: null
+    default:
+    - "RSeQC/inferexperiment/$id.strandedness.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--inner_dist_output_stats"
+    description: "output file (txt) with summary statistics of inner distances of\
+      \ paired reads"
+    info: null
+    default:
+    - "RSeQC/innerdistance/$id.inner_distance.stats"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--inner_dist_output_dist"
+    description: "output file (txt) with inner distances of all paired reads"
+    info: null
+    default:
+    - "RSeQC/innerdistance/$id.inner_distance.txt"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--inner_dist_output_freq"
+    description: "output file (txt) with frequencies of inner distances of all paired\
+      \ reads"
+    info: null
+    default:
+    - "RSeQC/innerdistance/$id.inner_distance_freq.txt"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--inner_dist_output_plot"
+    description: "output file (pdf) with histogram plot of of inner distances of all\
+      \ paired reads"
+    info: null
+    default:
+    - "RSeQC/innerdistance/$id.inner_distance_plot.pdf"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--inner_dist_output_plot_r"
+    description: "output file (R) with script of histogram plot of of inner distances\
+      \ of all paired reads"
+    info: null
+    default:
+    - "RSeQC/innerdistance/$id.inner_distance_plot.r"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_log"
+    description: "output log of junction annotation script"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.junction_annotation.log"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_plot_r"
+    description: "R script to generate splice_junction and splice_events plot"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.junction_annotation_plot.r"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_junction_bed"
+    description: "junction annotation file (bed format)"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.junction_annotation.bed"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_junction_interact"
+    description: "interact file (bed format) of junctions. Can be uploaded to UCSC\
+      \ genome browser or converted to bigInteract (using bedToBigBed program) for\
+      \ visualization."
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.junction_annotation.Interact.bed"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_junction_sheet"
+    description: "junction annotation file (xls format)"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.junction_annotation.xls"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_splice_events_plot"
+    description: "plot of splice events (pdf)"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.splice_events.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_annotation_output_splice_junctions_plot"
+    description: "plot of junctions (pdf)"
+    info: null
+    default:
+    - "RSeQC/junctionannotation/$id.splice_junctions_plot.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_saturation_output_plot_r"
+    description: "r script to generate junction_saturation_plot plot"
+    info: null
+    default:
+    - "RSeQC/junctionsaturation/$id.junction_saturation_plot.r"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--junction_saturation_output_plot"
+    description: "plot of junction saturation (pdf"
+    info: null
+    default:
+    - "RSeQC/junctionsaturation/$id.junction_saturation_plot.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--read_distribution_output"
+    description: "output file (txt) of read distribution analysis."
+    info: null
+    default:
+    - "RSeQC/readdistribution/$id.read_distribution.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--read_duplication_output_duplication_rate_plot_r"
+    description: "R script for generating duplication rate plot"
+    info: null
+    default:
+    - "RSeQC/readduplication/$id.duplication_rate_plot.r"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--read_duplication_output_duplication_rate_plot"
+    description: "duplication rate plot (pdf)"
+    info: null
+    default:
+    - "RSeQC/readduplication/$id.duplication_rate_plot.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--read_duplication_output_duplication_rate_mapping"
+    description: "Summary of mapping-based read duplication"
+    info: null
+    default:
+    - "RSeQC/readduplication/$id.duplication_rate_mapping.xls"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--read_duplication_output_duplication_rate_sequence"
+    description: "Summary of sequencing-based read duplication"
+    info: null
+    default:
+    - "RSeQC/readduplication/$id.duplication_rate_sequencing.xls"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--tin_output_summary"
+    description: "summary statistics (txt) of calculated TIN metrics"
+    info: null
+    default:
+    - "RSeQC/tin/$id.tin_summary.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--tin_output_metrics"
+    description: "file with TIN metrics (xls)"
+    info: null
+    default:
+    - "RSeQC/tin/$id.tin.xls"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_dupmatrix"
+    description: "path to output file (txt) of duplicate tag counts"
+    info: null
+    default:
+    - "dupradar/$id.dup_matrix.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_dup_intercept_mqc"
+    description: "path to output file (txt) of multiqc intercept value DupRadar"
+    info: null
+    default:
+    - "dupradar/$id.dup_intercept_mqc.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_duprate_exp_boxplot"
+    description: "path to output file (pdf) of distribution of expression box plot"
+    info: null
+    default:
+    - "dupradar/$id.duprate_exp_boxplot.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_duprate_exp_densplot"
+    description: "path to output file (pdf) of 2D density scatter plot of duplicate\
+      \ tag counts"
+    info: null
+    default:
+    - "dupradar/$id.duprate_exp_densityplot.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_duprate_exp_denscurve_mqc"
+    description: "path to output file (pdf) of density curve of gene duplication multiqc"
+    info: null
+    default:
+    - "dupradar/$id.duprate_exp_density_curve_mqc.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_expression_histogram"
+    description: "path to output file (pdf) of distribution of RPK values per gene\
+      \ histogram"
+    info: null
+    default:
+    - "dupradar/$id.expression_hist.pdf"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dupradar_output_intercept_slope"
+    info: null
+    default:
+    - "dupradar/$id.intercept_slope.txt"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--qualimap_output_pdf"
+    info: null
+    default:
+    - "qualimap/$id.qualimap_output.pdf"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--qualimap_output_dir"
+    info: null
+    default:
+    - "qualimap/$id.qualimap_output"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--deseq2_output"
+    info: null
+    default:
+    - "deseq2"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--pca_multiqc"
+    info: null
+    default:
+    - "deseq2.pca.vals_mqc.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--dists_multiqc"
+    info: null
+    default:
+    - "deseq2.sample.dists_mqc.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_report"
+    info: null
+    default:
+    - "multiqc/multiqc_report.html"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_data"
+    info: null
+    default:
+    - "multiqc/multiqc_data"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_plots"
+    info: null
+    default:
+    - "multiqc/multiqc_plots"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--multiqc_versions"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  resources:
+  - type: "nextflow_script"
+    path: "main.nf"
+    is_executable: true
+    entrypoint: "run_wf"
+  description: "A viash workflow for the nf-core/rnaseq pipeline.\n"
+  info: null
+  status: "enabled"
+  requirements:
+    commands:
+    - "ps"
+  dependencies:
+  - name: "workflows/prepare_genome"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/prepare_genome/config.vsh.yaml"
+    configInfo:
+      functionalityName: "prepare_genome"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/prepare_genome/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/prepare_genome/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/prepare_genome"
+  - name: "cat_fastq"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/cat_fastq/config.vsh.yaml"
+    configInfo:
+      functionalityName: "cat_fastq"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/cat_fastq/config.vsh.yaml"
+      functionalityNamespace: ""
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/cat_fastq/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/cat_fastq"
+  - name: "workflows/pre_processing"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/pre_processing/config.vsh.yaml"
+    configInfo:
+      functionalityName: "pre_processing"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/pre_processing/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/pre_processing/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/pre_processing"
+  - name: "workflows/genome_alignment_and_quant"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/genome_alignment_and_quant/config.vsh.yaml"
+    configInfo:
+      functionalityName: "genome_alignment_and_quant"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/genome_alignment_and_quant/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/genome_alignment_and_quant/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/genome_alignment_and_quant"
+  - name: "workflows/post_processing"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/post_processing/config.vsh.yaml"
+    configInfo:
+      functionalityName: "post_processing"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/post_processing/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/post_processing/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/post_processing"
+  - name: "workflows/quality_control"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/quality_control/config.vsh.yaml"
+    configInfo:
+      functionalityName: "quality_control"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/quality_control/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/quality_control/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/quality_control"
+  - name: "workflows/salmon_quant_merge_counts"
+    repository:
+      type: "local"
+      name: ""
+      localPath: ""
+    foundConfigPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/salmon_quant_merge_counts/config.vsh.yaml"
+    configInfo:
+      functionalityName: "salmon_quant_merge_counts"
+      git_tag: ""
+      git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
+      viash_version: "0.8.0-RC5"
+      config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/salmon_quant_merge_counts/config.vsh.yaml"
+      functionalityNamespace: "workflows"
+      output: ""
+      platform: ""
+      git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+      executable: "/nextflow/workflows/salmon_quant_merge_counts/main.nf"
+    writtenPath: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/salmon_quant_merge_counts"
+  set_wd_to_resources_dir: false
+platforms:
+- type: "nextflow"
+  id: "nextflow"
+  directives:
+    tag: "$id"
+  auto:
+    simplifyInput: true
+    simplifyOutput: false
+    transcript: false
+    publish: false
+  config:
+    labels:
+      mem1gb: "memory = 1.GB"
+      mem2gb: "memory = 2.GB"
+      mem4gb: "memory = 4.GB"
+      mem8gb: "memory = 8.GB"
+      mem16gb: "memory = 16.GB"
+      mem32gb: "memory = 32.GB"
+      mem64gb: "memory = 64.GB"
+      mem128gb: "memory = 128.GB"
+      mem256gb: "memory = 256.GB"
+      mem512gb: "memory = 512.GB"
+      mem1tb: "memory = 1.TB"
+      mem2tb: "memory = 2.TB"
+      mem4tb: "memory = 4.TB"
+      mem8tb: "memory = 8.TB"
+      mem16tb: "memory = 16.TB"
+      mem32tb: "memory = 32.TB"
+      mem64tb: "memory = 64.TB"
+      mem128tb: "memory = 128.TB"
+      mem256tb: "memory = 256.TB"
+      mem512tb: "memory = 512.TB"
+      cpu1: "cpus = 1"
+      cpu2: "cpus = 2"
+      cpu5: "cpus = 5"
+      cpu10: "cpus = 10"
+      cpu20: "cpus = 20"
+      cpu50: "cpus = 50"
+      cpu100: "cpus = 100"
+      cpu200: "cpus = 200"
+      cpu500: "cpus = 500"
+      cpu1000: "cpus = 1000"
+  debug: false
+  container: "docker"
+info:
+  config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/workflows/rnaseq/config.vsh.yaml"
+  platform: "nextflow"
+  output: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/rnaseq"
+  executable: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/workflows/rnaseq/main.nf"
+  viash_version: "0.8.0-RC5"
+  git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+  git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"
