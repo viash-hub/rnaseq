@@ -60,6 +60,7 @@ platforms:
       - type: apt
         packages: [  r-base , libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
       - type: r
-        cran: [ optparse, ggplot2, RColorBrewer, pheatmap ]
+        cran: [ optparse, ggplot2, RColorBrewer, pheatmap, matrixStats=1.1.0 ]
         bioc: [ DESeq2 ]
+        url: https://cran.r-project.org/src/contrib/Archive/matrixStats/matrixStats_1.1.0.tar.gz
   - type: nextflow

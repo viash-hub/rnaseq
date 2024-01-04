@@ -1,22 +1,18 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+"$meta_executable" \
+  --paired false \
+  --bam $meta_resources_dir/test.bam \
+  --bai $meta_resources_dir/test.bam.bai \
+  --get_output_stats true \
+  --output_bam test.deduped.bam \
+  --output_stats test.umi_dedup.stats
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[ ! -f test.deduped.bam ] && echo "File 'test.deduped.bam' does not exist!" && exit 1
+[ ! -f test.umi_dedup.stats ] && echo "File 'test.umi_dedup.stats' does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

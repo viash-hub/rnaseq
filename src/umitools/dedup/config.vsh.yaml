@@ -39,9 +39,13 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: testData/minimal_test/test.bam
+    - path: testData/minimal_test/test.bam.bai
+
 platforms:
   - type: docker
     image: ubuntu:22.04

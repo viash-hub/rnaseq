@@ -1,22 +1,19 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+"$meta_executable" \
+  --tpm_gene "$meta_resources_dir/gene_tpm.tsv" \
+  --counts_gene "$meta_resources_dir/gene_counts.tsv" \
+  --counts_gene_length_scaled "$meta_resources_dir/gene_counts_length_scaled.tsv" \
+  --counts_gene_scaled "$meta_resources_dir/gene_counts_scaled.tsv" \
+  --tpm_transcript "$meta_resources_dir/transcript_tpm.tsv" \
+  --counts_transcript "$meta_resources_dir/transcript_counts.tsv" \
+  --tx2gene_tsv "$meta_resources_dir/salmon_tx2gene.tsv" \
+  --output "salmon_merged_summarizedexperiment" 
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[ ! -d salmon_merged_summarizedexperiment ] && echo "Directory 'salmon_merged_summarizedexperiment' does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

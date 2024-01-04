@@ -72,18 +72,18 @@ functionality:
     - name: "--extra_trimgalore_args"
       type: string
       description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
-      default: ""
-    - name: "--min_trimmed_reads"
-      type: integer 
-      description: "Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low."
-      default: 10000   
+      default: "" 
     
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+
 platforms:
   - type: docker
     image: ubuntu:22.04

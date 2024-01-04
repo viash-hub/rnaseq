@@ -33,21 +33,26 @@ functionality:
     required: true
     description: Output file for read 1.
     direction: output
-    default: $id.$key.read1.fq.gz
+    default: $id.$key.read1.fastq.gz
   - name: "--fastq_2"
     type: file
     required: false
     must_exist: false
     description: Output file for read 2.
     direction: output
-    default: $id.$key.read2.fq.gz
+    default: $id.$key.read2.fastq.gz
 
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: testData/minimal_test/SRR6357070_1.fastq.gz
+    - path: testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: testData/reference/rrna-db-defaults.txt
+
    
 platforms:      
   - type: nextflow

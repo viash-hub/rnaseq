@@ -47,9 +47,12 @@ functionality:
   resources: 
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: testData/reference/genes.gtf.gz
+    - path: testData/minimal_test/test.bam  # add test BAM file
 
 platforms:
   - type: docker

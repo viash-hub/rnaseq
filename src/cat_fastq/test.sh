@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ">>> Testing $meta_functionality_name"
+
 echo ">>> Testing paired-end read samples with multiple replicates"
 "$meta_executable" \
   --read_1 $meta_resources_dir/read1_replicate1 $meta_resources_dir/read1_replicate2 \

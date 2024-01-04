@@ -1,22 +1,16 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+gunzip $meta_resources_dir/genes.gtf.gz
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
+"$meta_executable" \
+    --input $meta_resources_dir/genome.fasta \
+    --gtf $meta_resources_dir/genes.gtf \
+    --star_index  STAR_index \
 
-# TODO: check contents of foo and bar
+echo ">> Checking if the correct files are present"
+[ ! -d STAR_index ] && echo "Directory 'STAR_index' does not exist!" && exit 1
 
-echo "All tests succeeded!"
+echo ">>> Test finished successfully"
+exit 0

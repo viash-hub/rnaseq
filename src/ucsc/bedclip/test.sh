@@ -1,22 +1,14 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+"$meta_executable" \
+    --input_bedgraph $meta_resources_dir/test.bedgraph \
+    --sizes $meta_resources_dir/chrom_sizes \
+    --output_bedgraph test.clipped.bedgraph  
+    
+echo ">> Checking if the correct files are present"
+[ ! -f test.clipped.bedgraph ] && echo "File 'test.clipped.bedgraph' does not exist!" && exit 1
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
-
-echo "All tests succeeded!"
+echo ">>> Test finished successfully"
+exit 0

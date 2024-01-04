@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo ">>> Testing for paired-end reads"
+echo ">>> Testing $meta_functionality_name"
 
+echo ">>> Testing for paired-end reads"
 "$meta_executable" \
     --input $meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz \
     --extra_args  '--record-count 1000000 --seed 1' \

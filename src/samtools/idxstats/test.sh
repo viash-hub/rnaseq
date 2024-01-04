@@ -1,22 +1,14 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+"$meta_executable" \
+  --bam $meta_resources_dir/mapt.NA12156.altex.bam \
+  --bai $meta_resources_dir/mapt.NA12156.altex.bam.bai \
+  --output mapt.NA12156.altex.idxstats
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
-
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[ ! -f mapt.NA12156.altex.idxstats ] && echo "File 'mapt.NA12156.altex.idxstats' does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

@@ -17,7 +17,7 @@ else
 fi
 
 if $par_paired; then
-    paired='-p'
+    paired=' -p'
 fi
 
 par_extra_featurecounts_args+=" -t $par_featurecounts_feature_type"

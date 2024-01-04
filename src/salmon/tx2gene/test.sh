@@ -1,22 +1,18 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+gunzip "$meta_resources_dir/genes.gtf.gz"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+echo ">>> Testing $meta_functionality_name"
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
+"$meta_executable" \
+  --salmon_quant_results $meta_resources_dir/WT_REP1.salmon_quant,$meta_resources_dir/WT_REP1.salmon_quant \
+  --gtf $meta_resources_dir/genes.gtf \
+  --gtf_extra_attributes gene_name \
+  --gtf_group_features gene_id \
+  --tsv "salmon_tx2gene.tsv" 
 
-# TODO: check contents of foo and bar
+echo ">>> Checking whether output exists"
+[ ! -f salmon_tx2gene.tsv ] && echo "File 'salmon_tx2gene.tsv' does not exist!" && exit 1
 
 echo "All tests succeeded!"
+exit 0

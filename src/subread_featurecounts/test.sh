@@ -1,22 +1,24 @@
 #!/bin/bash
 
-## VIASH START
-meta_resources_dir="..."
-meta_executable="..."
-## VIASH END
+echo ">>> Testing $meta_functionality_name"
 
-# "$meta_executable" \
-#   --id mysample_id \
-#   --paired true \
-#   --input "$meta_resources_dir/some_fastq/input_r1.fastq,$meta_resources_dir/some_fastq/input_r2.fastq" \
-#   ... other params ... \
-#   --bbsplit_index foo \
-#   --filtered_output bar
+gunzip $meta_resources_dir/genes.gtf.gz
 
-# check whether output exists
-[ ! -d foo ] && "Directory 'foo' does not exist!" && exit 1
-[ ! -d bar ] && "Directory 'bar' does not exist!" && exit 1
+"$meta_executable" \
+    --paired false \
+    --strandedness reverse \
+    --bam $meta_resources_dir/test.bam \
+    --gtf $meta_resources_dir/genes.gtf \
+    --extra_featurecounts_args " -B -C" \
+    --featurecounts_group_type gene_biotype \
+    --featurecounts_feature_type  exon \
+    --gencode false \
+    --counts featureCounts.txt \
+    --summary featureCounts.txt.summary
+    
+echo ">> Checking if the correct files are present"
+[ ! -f featureCounts.txt ] && echo "File 'featureCounts.txt' does not exist!" && exit 1
+[ ! -f featureCounts.txt.summary ] && echo "File 'featureCounts.txt.summary' does not exist!" && exit 1
 
-# TODO: check contents of foo and bar
-
-echo "All tests succeeded!"
+echo ">>> Test finished successfully"
+exit 0
