@@ -1,13 +1,6 @@
 #!/bin/bash
 
-## VIASH START
-# meta_resources_dir="src/dupradar"
-# meta_cpus=10
-## VIASH END
-
 set -exo pipefail 
-
-# prefix=$(openssl rand -hex 8)
 
 function num_strandness {
     if [ $par_strandedness == 'unstranded' ]; then echo 0
@@ -33,3 +26,16 @@ mv "$par_id"_duprateExpDens.pdf $par_output_duprate_exp_densplot
 mv "$par_id"_duprateExpDensCurve_mqc.txt $par_output_duprate_exp_denscurve_mqc
 mv "$par_id"_expressionHist.pdf $par_output_expression_histogram
 mv "$par_id"_intercept_slope.txt $par_output_intercept_slope
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
+    bioconductor-dupradar: \$(Rscript -e "library(dupRadar); cat(as.character(packageVersion('dupRadar')))")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

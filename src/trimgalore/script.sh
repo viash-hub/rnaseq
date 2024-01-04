@@ -56,3 +56,15 @@ else
     fi
 fi
 
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    trimgalore: \$(echo \$(trim_galore --version 2>&1) | sed 's/^.*version //; s/Last.*\$//')
+    cutadapt: \$(cutadapt --version)
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

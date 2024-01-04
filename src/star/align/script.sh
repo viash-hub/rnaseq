@@ -60,3 +60,17 @@ if [ -f "$par_output/Unmapped.out.mate2" ]; then
     mv $par_output/Unmapped.out.mate2 $par_output/unmapped_2.fastq
     gzip $par_output/unmapped_2.fastq
 fi
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    star: \$(STAR --version | sed -e "s/STAR_//g")
+    samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+    gawk: \$(echo \$(gawk --version 2>&1) | sed 's/^.*GNU Awk //; s/, .*\$//')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

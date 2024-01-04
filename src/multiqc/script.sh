@@ -8,7 +8,14 @@ multiqc \
     --config $par_multiqc_custom_config \
     $par_input
 
-# cat <<-END_VERSIONS > versions.yml
-# "$key":
-#     multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
-# END_VERSIONS
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

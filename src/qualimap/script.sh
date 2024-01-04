@@ -16,3 +16,15 @@ qualimap rnaseq \
     ${par_sorted:+-s} \
     -outdir $par_output_dir \
     -outformat $par_output_format 
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    qualimap: \$(echo \$(qualimap 2>&1) | sed 's/^.*QualiMap v.//; s/Built.*\$//')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

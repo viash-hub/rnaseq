@@ -13,3 +13,15 @@ python3 "$meta_resources_dir/fasta2gtf.py" \
 
 cat $par_fasta $par_additional_fasta > $par_fasta_output
 cat $par_gtf ${add_name%%.*}.gtf > $par_gtf_output
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+  python: \$(python --version | sed 's/Python //g')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

@@ -18,3 +18,15 @@ salmon index \
     ${meta_cpus:+--threads $meta_cpus} \
     -t $gentrome \
     -i $par_salmon_index
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    salmon: \$(echo \$(salmon --version) | sed -e "s/salmon //g")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

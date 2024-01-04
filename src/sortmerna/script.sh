@@ -29,3 +29,15 @@ else
 fi
 
 mv rRNA_reads.log $par_sortmerna_log
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    sortmerna: \$(echo \$(sortmerna --version 2>&1) | sed 's/^.*SortMeRNA version //; s/ Build Date.*\$//')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

@@ -58,3 +58,14 @@ else
     fi
 fi
 
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    umitools: \$(umi_tools --version 2>&1 | sed 's/^.*UMI-tools version://; s/ *\$//')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

@@ -57,3 +57,15 @@ salmon quant \
 if [ -f "$par_output/aux_info/meta_info.json" ]; then
     cp "$par_output/aux_info/meta_info.json" $par_json_info
 fi
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    salmon: \$(echo \$(salmon --version) | sed -e "s/salmon //g")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

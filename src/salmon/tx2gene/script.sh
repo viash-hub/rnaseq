@@ -21,3 +21,15 @@ python3 "$meta_resources_dir/salmon_tx2gene.py" \
     --id $par_gtf_group_features \
     --extra $par_gtf_extra_attributes \
     -o $par_tsv
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    python: \$(python --version | sed 's/Python //g')
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

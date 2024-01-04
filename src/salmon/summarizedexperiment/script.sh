@@ -16,3 +16,16 @@ mv ${par_counts_gene%.*}.rds $par_output/
 mv ${par_counts_gene_length_scaled%.*}.rds $par_output/
 mv ${par_counts_gene_scaled%.*}.rds $par_output/
 mv ${par_counts_transcript%.*}.rds $par_output/
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
+    bioconductor-summarizedexperiment: \$(Rscript -e "library(SummarizedExperiment); cat(as.character(packageVersion('SummarizedExperiment')))")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

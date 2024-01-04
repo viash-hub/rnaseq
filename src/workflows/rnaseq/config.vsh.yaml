@@ -733,6 +733,9 @@ functionality:
     - name: "--multiqc_versions"
       type: file
       direction: output
+    - name: "--versions"
+      type: file
+      direction: output
 
   resources:
     - type: nextflow_script

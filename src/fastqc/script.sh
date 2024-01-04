@@ -52,3 +52,15 @@ fi
 if [ -e "$zip2" ]; then
   cp $zip2 $par_fastqc_zip_2
 fi
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+  fastqc: \$( fastqc --version | sed -e "s/FastQC v//g" )
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

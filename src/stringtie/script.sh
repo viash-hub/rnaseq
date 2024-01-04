@@ -23,3 +23,15 @@ stringtie \
 mv coverage.gtf $par_coverage_gtf
 mv ballgown $par_ballgown
 mv abundance.txt $par_abundance
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    stringtie: \$(stringtie --version 2>&1)
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

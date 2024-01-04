@@ -27,3 +27,15 @@ mv ${bam_file%.*}.summary.txt $par_output_tin_summary
 mv ${bam_file%.*}.tin.xls $par_output_tin
 
 clean_up
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    rseqc: \$(tin.py --version | sed -e "s/tin.py //g")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

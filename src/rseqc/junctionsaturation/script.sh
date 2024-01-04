@@ -17,3 +17,15 @@ junction_saturation.py \
 
 mv $prefix.junctionSaturation_plot.pdf $par_output_plot
 mv $prefix.junctionSaturation_plot.r $par_output_plot_r
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    rseqc: \$(junction_saturation.py --version | sed -e "s/junction_saturation.py //g")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

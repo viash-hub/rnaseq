@@ -24,3 +24,15 @@ if $par_paired; then
     mv $prefix.inner_distance_freq.txt $par_output_freq
 
 fi
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    rseqc: \$(inner_distance.py --version | sed -e "s/inner_distance.py //g")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi

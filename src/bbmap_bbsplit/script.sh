@@ -45,3 +45,15 @@ else
         cp $read1 $par_fastq_1
     fi
 fi
+
+# Version
+read -r -d '' text <<- END_VERSIONS
+"${meta_functionality_name}":
+    bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
+END_VERSIONS
+
+if [ -e "$par_versions" ]; then
+    echo "$text" >> "$par_versions"
+else
+    echo "$text" > "$par_versions"
+fi
