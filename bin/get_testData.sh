@@ -27,6 +27,9 @@ wget https://data.cyverse.org/dav-anon/iplant/home/liguow/RSeQC/Pairend_StrandSp
 wget http://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg19_rRNA.bed.gz
 gunzip hg19rRNA.bed.gz
 
+wget https://ftp.ncbi.nlm.nih.gov/toolbox/gbench/tutorial/Tutorial6/BAM_Test_Files/scenario1_with_index/mapt.NA12156.altex.bam
+wget https://ftp.ncbi.nlm.nih.gov/toolbox/gbench/tutorial/Tutorial6/BAM_Test_Files/scenario1_with_index/mapt.NA12156.altex.bam.bai
+
 cd $CURR/testData
 
 wget https://multiqc.info/examples/rna-seq/data.zip
