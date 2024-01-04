@@ -71,6 +71,22 @@ jobs:
         config_mod: .functionality.version := '${{ github.ref_name }}_build'
         parallel: true
         query: ^workflows
+  
+    - name: Build nextflow schemas
+      uses: viash-io/viash-actions/pro/build-nextflow-schemas@v4
+      with:
+        components: src
+        workflows: src
+        viash_pro_token: ${{ secrets.GTHB_PAT }}
+        tools_version: 'main_build'
+   
+    - name: Build parameter files
+      uses: viash-io/viash-actions/pro/build-nextflow-params@v4
+      with:
+        workflows: src
+        components: src
+        viash_pro_token: ${{ secrets.GTHB_PAT }}
+        tools_version: 'main_build'
 
     - name: Deploy to target branch
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -126,7 +142,14 @@ jobs:
           .platforms[.type == 'docker'].target_tag := '${{ github.event_name == 'push' && 'main_build' || github.event.inputs.target_tag }}'
         platform: docker
         src: ${{ matrix.component.dir }}
-        setup: build  
+        setup: build
+        
+    - name: Login to container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.GTHB_USER }}
+        password: ${{ secrets.GTHB_PAT }}    
 
     - name: Push container
       uses: viash-io/viash-actions/ns-build@v4
