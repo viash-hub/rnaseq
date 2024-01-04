@@ -1,0 +1,251 @@
+functionality:
+  name: "qualimap"
+  version: "dev"
+  arguments:
+  - type: "file"
+    name: "--input"
+    description: "path to input mapping file in BAM format."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--gtf"
+    description: "path to annotations file in Ensembl GTF format."
+    info: null
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_dir"
+    description: "path to output directory for raw data and report."
+    info: null
+    default:
+    - "$id.qualimap_output"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "file"
+    name: "--output_pdf"
+    description: "path to output file for pdf report."
+    info: null
+    default:
+    - "$id.report.pdf"
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--output_format"
+    description: "Format of the output report (PDF or HTML, default is HTML)"
+    info: null
+    default:
+    - "html"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "integer"
+    name: "--pr_bases"
+    description: "Number of upstream/downstream nucleotide bases to compute 5'-3'\
+      \ bias (default = 100)."
+    info: null
+    default:
+    - 100
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "integer"
+    name: "--tr_bias"
+    description: "Number of top highly expressed transcripts to compute 5'-3' bias\
+      \ (default = 1000)."
+    info: null
+    default:
+    - 1000
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--algorithm"
+    description: "Counting algorithm (uniquely-mapped-reads (default) or proportional)."
+    info: null
+    default:
+    - "uniquely-mapped-reads"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "string"
+    name: "--sequencing_protocol"
+    description: "Sequencing library protocol (strand-specific-forward, strand-specific-reverse\
+      \ or non-strand-specific (default))."
+    info: null
+    default:
+    - "non-strand-specific"
+    required: false
+    choices:
+    - "non-strand-specific"
+    - "strand-specific-reverse"
+    - "strand-specific-forward"
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--paired"
+    description: "Setting this flag for paired-end experiments will result in counting\
+      \ fragments instead of reads."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "boolean_true"
+    name: "--sorted"
+    description: "Setting this flag indicates that the input file is already sorted\
+      \ by name. If flag is not set, additional sorting by name will be performed.\
+      \ Only requiredfor paired-end analysis."
+    info: null
+    direction: "input"
+    dest: "par"
+  - type: "string"
+    name: "--java_memory_size"
+    description: "maximum Java heap memory size, default = 4G."
+    info: null
+    default:
+    - "4G"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ":"
+    dest: "par"
+  resources:
+  - type: "bash_script"
+    path: "script.sh"
+    is_executable: true
+  description: "RNA-seq QC analysis using the qualimap \n"
+  test_resources:
+  - type: "bash_script"
+    path: "test.sh"
+    is_executable: true
+  - type: "file"
+    path: "testData/minimal_test/SRR6357070.bam"
+  - type: "file"
+    path: "testData/reference/genes.gtf.gz"
+  info:
+    migration_info:
+      git_repo: "https://github.com/nf-core/rnaseq.git"
+      paths:
+      - "modules/nf-core/qualimap/rnaseq/main.nf"
+      last_sha: "54721c6946daf6d602d7069dc127deef9cbe6b33"
+  status: "enabled"
+  requirements:
+    commands:
+    - "ps"
+  set_wd_to_resources_dir: false
+platforms:
+- type: "docker"
+  id: "docker"
+  image: "ubuntu:22.04"
+  target_organization: "data-intuitive"
+  target_registry: "ghcr.io"
+  namespace_separator: "/"
+  resolve_volume: "Automatic"
+  chown: true
+  setup_strategy: "ifneedbepullelsecachedbuild"
+  target_image_source: "https://github.com/data-intuitive/rnaseq.vsh"
+  setup:
+  - type: "apt"
+    packages:
+    - "r-base"
+    - "unzip"
+    - "wget"
+    - "openjdk-8-jdk"
+    - "libxml2-dev"
+    - "libcurl4-openssl-dev"
+    interactive: false
+  - type: "docker"
+    run:
+    - "wget https://bitbucket.org/kokonech/qualimap/downloads/qualimap_v2.3.zip &&\
+      \ \\\nunzip qualimap_v2.3.zip && \\\ncp -a qualimap_v2.3/. usr/bin && \\\nunset\
+      \ DISPLAY && \\\nmkdir -p tmp && \\\nexport _JAVA_OPTIONS=-Djava.io.tmpdir=./tmp\n"
+  - type: "r"
+    cran:
+    - "optparse"
+    bioc:
+    - "NOISeqr"
+    bioc_force_install: false
+  entrypoint: []
+  cmd: null
+- type: "nextflow"
+  id: "nextflow"
+  directives:
+    tag: "$id"
+  auto:
+    simplifyInput: true
+    simplifyOutput: false
+    transcript: false
+    publish: false
+  config:
+    labels:
+      mem1gb: "memory = 1.GB"
+      mem2gb: "memory = 2.GB"
+      mem4gb: "memory = 4.GB"
+      mem8gb: "memory = 8.GB"
+      mem16gb: "memory = 16.GB"
+      mem32gb: "memory = 32.GB"
+      mem64gb: "memory = 64.GB"
+      mem128gb: "memory = 128.GB"
+      mem256gb: "memory = 256.GB"
+      mem512gb: "memory = 512.GB"
+      mem1tb: "memory = 1.TB"
+      mem2tb: "memory = 2.TB"
+      mem4tb: "memory = 4.TB"
+      mem8tb: "memory = 8.TB"
+      mem16tb: "memory = 16.TB"
+      mem32tb: "memory = 32.TB"
+      mem64tb: "memory = 64.TB"
+      mem128tb: "memory = 128.TB"
+      mem256tb: "memory = 256.TB"
+      mem512tb: "memory = 512.TB"
+      cpu1: "cpus = 1"
+      cpu2: "cpus = 2"
+      cpu5: "cpus = 5"
+      cpu10: "cpus = 10"
+      cpu20: "cpus = 20"
+      cpu50: "cpus = 50"
+      cpu100: "cpus = 100"
+      cpu200: "cpus = 200"
+      cpu500: "cpus = 500"
+      cpu1000: "cpus = 1000"
+  debug: false
+  container: "docker"
+info:
+  config: "/home/nirmayi/data_intuitive/rnaseq.vsh/src/qualimap/config.vsh.yaml"
+  platform: "nextflow"
+  output: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/qualimap"
+  executable: "/home/nirmayi/data_intuitive/rnaseq.vsh/target/nextflow/qualimap/qualimap"
+  viash_version: "0.8.0-RC5"
+  git_commit: "efa0ffd2fbdce950e208caa1570584b258689789"
+  git_remote: "https://github.com/data-intuitive/rnaseq.vsh.git"

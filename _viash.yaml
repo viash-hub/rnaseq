@@ -4,7 +4,7 @@ source: src
 target: target
 
 config_mods: |
-  .functionality.version := 'dev'
+  .functionality.version := 'main_build'
   .functionality.requirements.commands := ['ps']
   .platforms[.type == 'docker'].target_registry := 'ghcr.io'
   .platforms[.type == 'docker'].target_organization := 'data-intuitive'
