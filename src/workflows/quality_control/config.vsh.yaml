@@ -99,22 +99,22 @@ functionality:
           type: integer
           required: false
           default: -250 
-          description: Lower bound of inner distance (bp). This option is used for ploting histograme, default=-250.
+          description: Lower bound of inner distance (bp). This option is used for ploting histograme, default = -250.
         - name: "--upper_bound_size"
           type: integer
           required: false
           default: 250 
-          description: Upper bound of inner distance (bp). This option is used for ploting histograme, default=250.
+          description: Upper bound of inner distance (bp). This option is used for ploting histograme, default = 250.
         - name: "--step_size"
           type: integer
           required: false
           default: 5 
-          description: Step size (bp) of histograme of inner distance. This option is used for plotting histogram, default=5.        
+          description: Step size (bp) of histograme of inner distance. This option is used for plotting histogram, default = 5.        
         - name: "--map_qual"
           type: integer
           required: false
           default: 30 
-          description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
+          description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default = 30.
           min: 0
         - name: "--min_intron"
           type: integer
@@ -132,14 +132,14 @@ functionality:
           type: integer
           required: false
           default: 5 
-          description: Read sampling for junction saturation starts from this percentile, must be an integer between 0 and 100, default =5.
+          description: Read sampling for junction saturation starts from this percentile, must be an integer between 0 and 100, default = 5.
           min: 0
           max: 100
         - name: "--sampling_percentile_upper_bound"
           type: integer
           required: false
           default: 100
-          description: Read sampling for junction saturation ends at this percentile, must be an integer between 0 and 100, default =5.
+          description: Read sampling for junction saturation ends at this percentile, must be an integer between 0 and 100, default = 5.
           min: 0
           max: 100  
         - name: "--sampling_percentile_step"
@@ -176,6 +176,7 @@ functionality:
           type: string
           required: false
           default: html
+          choices: [ html, pdf ]
           description: Format of the qualimap output report (PDF or HTML, default is HTML)
         - name: "--pr_bases"
           type: integer
@@ -197,7 +198,7 @@ functionality:
         - name: "--sequencing_protocol"
           type: string
           required: false
-          choices: ["non-strand-specific", "strand-specific-reverse", "strand-specific-forward"]
+          choices: [ "non-strand-specific", "strand-specific-reverse", "strand-specific-forward" ]
           default: non-strand-specific
           description: Sequencing library protocol for qualimap (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
         - name: "--sorted"
@@ -244,12 +245,6 @@ functionality:
           description: Software versions
         - name: "--workflow_summary"
           type: file
-        # - name: "--fail_trimming_multiqc"
-        #   type: file
-        #   must_exist: false
-        # - name: "--fail_mappingg_multiqc"
-        #   type: file
-          must_exist: false
         - name: "--passed_trimmed_reads"
           type: boolean
         - name: "--num_trimmed_reads"
@@ -298,9 +293,6 @@ functionality:
         - name: "--markduplicates_multiqc"
           type: file
           must_exist: false
-        # - name: "--featurecounts_multiqc"
-        #   type: file
-        #   must_exist: false
 
     - name: Output
       arguments:
@@ -308,8 +300,6 @@ functionality:
         - name: "--preseq_output"
           type: file
           direction: output
-          # multiple: true
-          # multiple_sep: ","
           default: $id.lc_extrap.txt
 
         # RSeQC
@@ -317,184 +307,138 @@ functionality:
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           description: Path to output file (txt) of mapping quality statistics
           default: $id.mapping_quality.txt
         - name: "--strandedness_output"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.strandedness.txt
           description: Path to output report (txt) of inferred strandedness
         - name: "--inner_dist_output_stats"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.inner_distance.stats
           description: output file (txt) with summary statistics of inner distances of paired reads
         - name: "--inner_dist_output_dist"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.inner_distance.txt
           description: output file (txt) with inner distances of all paired reads
         - name: "--inner_dist_output_freq"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.inner_distance_freq.txt
           description: output file (txt) with frequencies of inner distances of all paired reads
         - name: "--inner_dist_output_plot"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.inner_distance_plot.pdf
           description: output file (pdf) with histogram plot of of inner distances of all paired reads
         - name: "--inner_dist_output_plot_r"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.inner_distance_plot.r
           description: output file (R) with script of histogram plot of of inner distances of all paired reads
         - name: "--junction_annotation_output_log"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_annotation.log
           description: output log of junction annotation script
         - name: "--junction_annotation_output_plot_r"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_annotation_plot.r
           description: R script to generate splice_junction and splice_events plot
         - name: "--junction_annotation_output_junction_bed"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_annotation.bed
           description: junction annotation file (bed format)
         - name: "--junction_annotation_output_junction_interact"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_annotation.Interact.bed
           description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
         - name: "--junction_annotation_output_junction_sheet"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_annotation.xls
           description: junction annotation file (xls format)
         - name: "--junction_annotation_output_splice_events_plot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.splice_events.pdf
           description: plot of splice events (pdf)
         - name: "--junction_annotation_output_splice_junctions_plot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.splice_junctions_plot.pdf
           description: plot of junctions (pdf)
         - name: "--junction_saturation_output_plot_r"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_saturation_plot.r
           description: r script to generate junction_saturation_plot plot
         - name: "--junction_saturation_output_plot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.junction_saturation_plot.pdf
           description: plot of junction saturation (pdf
         - name: "--read_distribution_output"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.read_distribution.txt
           description: output file (txt) of read distribution analysis.    
         - name: "--read_duplication_output_duplication_rate_plot_r"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duplication_rate_plot.r
           description: R script for generating duplication rate plot
         - name: "--read_duplication_output_duplication_rate_plot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duplication_rate_plot.pdf
           description: duplication rate plot (pdf)
         - name: "--read_duplication_output_duplication_rate_mapping"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duplication_rate_mapping.xls
           description: Summary of mapping-based read duplication
         - name: "--read_duplication_output_duplication_rate_sequence"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duplication_rate_sequencing.xls
           description: Summary of sequencing-based read duplication
         - name: "--tin_output_summary"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.tin_summary.txt
           description: summary statistics (txt) of calculated TIN metrics
         - name: "--tin_output_metrics"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.tin.xls
           description: file with TIN metrics (xls)
 
@@ -503,56 +447,42 @@ functionality:
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.dup_matrix.txt
           description: path to output file (txt) of duplicate tag counts
         - name: "--dupradar_output_dup_intercept_mqc"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.dup_intercept_mqc.txt
           description: path to output file (txt) of multiqc intercept value DupRadar
         - name: "--dupradar_output_duprate_exp_boxplot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duprate_exp_boxplot.pdf
           description: path to output file (pdf) of distribution of expression box plot    
         - name: "--dupradar_output_duprate_exp_densplot"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duprate_exp_densityplot.pdf
           description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
         - name: "--dupradar_output_duprate_exp_denscurve_mqc"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.duprate_exp_density_curve_mqc.pdf
           description: path to output file (pdf) of density curve of gene duplication multiqc
         - name: "--dupradar_output_expression_histogram"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.expression_hist.pdf
           description: path to output file (pdf) of distribution of RPK values per gene histogram
         - name: "--dupradar_output_intercept_slope"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.intercept_slope.txt
 
         # Qualimap
@@ -561,15 +491,11 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.qualimap_output.pdf
         - name: "--qualimap_output_dir"
           type: file
           direction: output
           required: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.qualimap_output
 
         # DESeq2
@@ -577,14 +503,6 @@ functionality:
           type: file
           direction: output
           default: deseq2
-        - name: "--deseq2_pca_multiqc"
-          type: file
-          direction: output
-          default: deseq2.pca.vals_mqc.tsv
-        - name: "--deseq2_dists_multiqc"
-          type: file
-          direction: output
-          default: deseq2.sample.dists_mqc.tsv
 
         # MultiQC
         - name: "--multiqc_report"
@@ -608,23 +526,47 @@ functionality:
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.featureCounts.txt
         - name: "--featurecounts_summary"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.featureCounts.txt.summary
         - name: "--featurecounts_multiqc"
           type: file
           direction: output
           must_exist: false
-          # multiple: true
-          # multiple_sep: ","
           default: $id.featureCounts_mqc.tsv
+
+        # Counts
+        - name: "--tpm_gene"
+          type: file
+          direction: output
+          default: salmon.merged.gene_tpm.tsv
+        - name: "--counts_gene"
+          type: file
+          direction: output
+          default: salmon.merged.gene_counts.tsv
+        - name: "--counts_gene_length_scaled"
+          type: file
+          direction: output
+          default: salmon.merged.gene_counts_length_scaled.tsv
+        - name: "--counts_gene_scaled"
+          type: file
+          direction: output
+          default: salmon.merged.gene_counts_scaled.tsv
+        - name: "--tpm_transcript"
+          type: file
+          direction: output
+          default: salmon.merged.transcript_tpm.tsv
+        - name: "--counts_transcript"
+          type: file
+          direction: output
+          default: salmon.merged.transcript_counts.tsv
+        - name: "--salmon_merged_summarizedexperiment"
+          type: file
+          direction: output
+          default: salmon_merged_summarizedexperiment
 
   resources:
     - type: nextflow_script

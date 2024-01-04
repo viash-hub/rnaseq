@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bin/viash ns build --setup cb --parallel
+# viash ns build --setup cb --parallel
 
 # Test single-end data
 # cat > testData/minimal_test/sample_sheet.csv << HERE
@@ -24,7 +24,6 @@
 #   --gtf testData/reference/genes.gtf.gz \
 #   --additional_fasta testData/reference/gfp.fa.gz \
 #   --transcript_fasta testData/reference/transcriptome.fasta \
-#   --additional_fasta testData/reference/gfp.fa.gz \
 #   --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
 #   -profile docker \
 #   -resume
@@ -43,9 +42,9 @@ cat > testData/minimal_test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
 WT_REP1,SRR6357070_1.fastq.gz;SRR6357071_1.fastq.gz,SRR6357070_2.fastq.gz;SRR6357071_2.fastq.gz,reverse
 WT_REP2,SRR6357072_1.fastq.gz,SRR6357072_2.fastq.gz,reverse
+RAP1_IAA_30M_REP1,SRR6357076_1.fastq.gz,SRR6357076_2.fastq.gz,reverse
 RAP1_UNINDUCED_REP1,SRR6357073_1.fastq.gz,,reverse
 RAP1_UNINDUCED_REP2,SRR6357074_1.fastq.gz;SRR6357075_1.fastq.gz,,reverse
-RAP1_IAA_30M_REP1,SRR6357076_1.fastq.gz,SRR6357076_2.fastq.gz,reverse
 HERE
 
 nextflow run target/nextflow/workflows/rnaseq/main.nf \
@@ -53,4 +52,8 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --publish_dir "testData/full_pipeline_test" \
   --fasta testData/reference/genome.fasta \
   --gtf testData/reference/genes.gtf.gz \
-  -profile docker 
+  --additional_fasta testData/reference/gfp.fa.gz \
+  --transcript_fasta testData/reference/transcriptome.fasta \
+  --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
+  --salmon_index testData/reference/salmon.tar.gz \
+  -profile docker

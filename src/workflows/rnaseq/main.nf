@@ -3,32 +3,32 @@ workflow run_wf {
     input_ch
 
   main:
-    analysis_ch = input_ch
+    reference_ch = input_ch
 
     | map { id, state ->
       def biotype = state.gencode ? "gene_type" : state.featurecounts_group_type 
       [ id, state + [ biotype: biotype ] ]
     } 
-    // | toSortedList
-    // | map { list -> 
-    //     [ list.collect{it[0]}.unique(),  
-    //       [ fasta: list[1][-1].fasta,
-    //       gtf: list[1][-1].gtf, 
-    //       gff: list[1][-1].gff, 
-    //       additional_fasta: list[1][-1].additional_fasta,
-    //       transcript_fasta: list[1][-1].transcript_fasta, 
-    //       gene_bed: list[1][-1].gene_bed,
-    //       splicesites: list[1][-1].splicesites,
-    //       bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
-    //       star_index: list[1][-1].star_index,
-    //       rsem_index: list[1][-1].rsem_index,
-    //       salmon_index: list[1][-1].salmon_index,
-    //       hisat2_index: list[1][-1].hisat2_index,
-    //       bbsplit_index: list[1][-1].bbsplit_index,
-    //       gencode: list[1][-1].gencode,
-    //       biotype: list[1][-1].biotype ]
-    //     ]
-    // } 
+    | toSortedList
+    | map { list -> 
+        [ "ref",  
+          [ fasta: list[1][-1].fasta,
+          gtf: list[1][-1].gtf, 
+          gff: list[1][-1].gff, 
+          additional_fasta: list[1][-1].additional_fasta,
+          transcript_fasta: list[1][-1].transcript_fasta, 
+          gene_bed: list[1][-1].gene_bed,
+          splicesites: list[1][-1].splicesites,
+          bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
+          star_index: list[1][-1].star_index,
+          rsem_index: list[1][-1].rsem_index,
+          salmon_index: list[1][-1].salmon_index,
+          hisat2_index: list[1][-1].hisat2_index,
+          bbsplit_index: list[1][-1].bbsplit_index,
+          gencode: list[1][-1].gencode,
+          biotype: list[1][-1].biotype ]
+        ]
+    } 
     // prepare all the necessary files for reference genome
     | prepare_genome.run ( 
         fromState: [
@@ -65,10 +65,14 @@ workflow run_wf {
     | map { id, state -> 
       (isBelowMaxContigSize(state.fai)) ? [id, state] : [id, state + [bam_csi_index: true]]
     }
-    // | view
 
-    // analysis_ch = input_ch
-    // | combine(reference_ch)
+    | map { list -> list[1]}
+
+    analysis_ch = input_ch
+
+    | combine(reference_ch)
+
+    | map { list -> [list[0], list[1] + list[2]] }
 
     // Concatenate FastQ files from same sample if required
     | cat_fastq.run (
@@ -98,7 +102,14 @@ workflow run_wf {
           "bbsplit_fasta_list": "bbsplit_fasta_list", 
           "bc_pattern": "bc_pattern", 
           "ribo_database_manifest": "ribo_database_manifest", 
-          "salmon_index": "salmon_index"
+          "salmon_index": "salmon_index",
+          "skip_qc": "skip_qc",
+          "skip_fastqc": "skip_fastqc",
+          "skip_skip_umi_extract": "skip_umi_extract",
+          "umi_discard_read": "umi_discard_read",
+          "skip_trimming": "skip_trimming",
+          "skip_bbsplit": "skip_bbsplit",
+          "remove_ribo_rna": "remove_ribo_rna"
         ], 
         toState: [ 
           "fastqc_html_1": "fastqc_html_1",
@@ -130,19 +141,19 @@ workflow run_wf {
     // Filter FastQ files based on minimum trimmed read count after adapter trimming
     | map { id, state -> 
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      def num_reads = state.min_trimmed_reads + 1
-      num_reads = 
-        (!state.skip_trimming && input.size() == 2) ?
+      def num_reads = (state.skip_trimming) ? 
+        state.min_trimmed_reads + 1 : 
+        (
+          (!state.skip_trimming && input.size() == 2) ?
           getTrimGaloreReadsAfterFiltering(state.trim_log_2) : 
           getTrimGaloreReadsAfterFiltering(state.trim_log_1)
+        )
       def passed_trimmed_reads = 
         (state.skip_trimming || (num_reads >= state.min_trimmed_reads)) ? 
           true : 
           false 
       [ id, state + [num_trimmed_reads: num_reads, passed_trimmed_reads: passed_trimmed_reads] ] 
     }
-    // | filter { id, state -> state.skip_trimming || state.passed_trimmed_reads }
-    // TODO: Get list of samples that failed trimming threshold for MultiQC report
 
     // Genome alignment and quantification
     | genome_alignment_and_quant.run (
@@ -189,8 +200,6 @@ workflow run_wf {
       def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
-    // | filter { id, state -> state.passed_mapping) }
-    // TODO: Get list of samples that failed mapping for MultiQC report
 
     | map { id, state ->
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
@@ -266,8 +275,6 @@ workflow run_wf {
           "multiqc_title": "multiqc_title", 
           "multiqc_logo": "multiqc_logo",
           "multiqc_methods_description": "multiqc_methods_description",
-          // "fail_trimming_multiqc": "fail_trimming_multiqc", 
-          // "fail_mapping_multiqc": "fail_mapping_multiqc", 
           "fastqc_zip_1": "fastqc_zip_1",
           "fastqc_zip_2": "fastqc_zip_2",  
           "trim_log_1": "trim_log_1", 
@@ -321,24 +328,27 @@ workflow run_wf {
           "qualimap_output_dir": "qualimap_output_dir",
           "qualimap_output_pdf": "qualimap_output_pdf",
           "featurecounts": "featurecounts",
-          "featurecounts_summary": "featurecounts_summary"
+          "featurecounts_summary": "featurecounts_summary",
+          "tpm_gene": "tpm_gene",
+          "counts_gene": "counts_gene",
+          "counts_gene_length_scaled": "counts_gene_length_scaled",
+          "counts_gene_scaled": "counts_gene_scaled", 
+          "tpm_transcript": "tpm_transcript", 
+          "counts_transcript": "counts_transcript", 
+          "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+          "deseq2_output": "deseq2_output", 
+          "multiqc_report": "multiqc_report", 
+          "multiqc_data": "multiqc_data", 
+          "multiqc_plots": "multiqc_plots",
+          "multiqc_versions": "multiqc_versions" 
         ] 
     )
 
     | map { id, state -> 
-      def paired_state = (!state.paired) ? 
-        [fastqc_html_2: state.remove(state.fastqc_html_2), fastqc_zip_2: state.remove(state.fastqc_zip_1), trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2)] : 
-        []
-      def qc_state = (state.skip_qc || state.skip_fastqc) ? 
-        [fastqc_html_1: state.remove(state.fastqc_html_1), fastqc_html_2: state.remove(state.fastqc_html_2), fastqc_zip_1: state.remove(state.fastqc_zip_1), fastqc_zip_2: state.remove(state.fastqc_zip_2)] : 
-        []
-      def trimming_state = (state.skip_trimming) ? 
-        [trim_html_1: state.remove(state.trim_html_1), trim_html_2: state.remove(state.trim_html_2), trim_zip_1: state.remove(state.trim_zip_1), trim_zip_2: state.remove(state.trim_zip_2), trim_log_1: state.remove(state.trim_log_1), trim_log_2: state.remove(state.trim_log_2)] : 
-        []
-      def sortmerna_state = (!state.remove_ribo_rna) ? [sortmerna_log: state.remove(state.sortmerna_log)] : []
-      [ id, state + paired_state + qc_state + trimming_state + sortmerna_state ]
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
     }
-    
+
     | setState (
       [
         "output_fasta": "fasta", 
@@ -347,7 +357,7 @@ workflow run_wf {
         "output_gene_bed": "gene_bed", 
         "output_bbsplit_index": "bbsplit_index", 
         "output_star_index": "star_index", 
-        "output_salmon_index": "salmon_index", 
+        "output_salmon_index": "salmon_index",
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
         "fastqc_zip_1": "fastqc_zip_1",
@@ -372,7 +382,7 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_merged",
+        "salmon_quant_results": "salmon_quant_results",
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
@@ -415,50 +425,28 @@ workflow run_wf {
         "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
         "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
         "qualimap_output_dir": "qualimap_output_dir",
-        // "qualimap_output_pdf": "qualimap_output_pdf" 
+        "qualimap_output_pdf": "qualimap_output_pdf", 
+        "tpm_gene": "tpm_gene",
+        "counts_gene": "counts_gene",
+        "counts_gene_length_scaled": "counts_gene_length_scaled",
+        "counts_gene_scaled": "counts_gene_scaled", 
+        "tpm_transcript": "tpm_transcript", 
+        "counts_transcript": "counts_transcript", 
+        "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+        "deseq2_output": "deseq2_output", 
+        "multiqc_report": "multiqc_report", 
+        "multiqc_data": "multiqc_data", 
+        "multiqc_plots": "multiqc_plots",
+        "multiqc_versions": "multiqc_versions"
       ]
     )
-
-    // | niceView()
+    | niceView()
 
     output_ch = analysis_ch
-
 
   emit:
     output_ch
 }
-
-// ===============================
-// === start of test workflows ===
-// ===============================
-
-// workflow test_wf {
-
-//   // allow changing the resources_test dir
-//   params.resources_test = params.rootDir + "/resources_test"
-
-//   // or when running from s3: params.resources_test = "s3://openpipelines-data/"
-//   testParams = [
-//     param_list: [
-//     ]
-//   ]
-
-//   output_ch =
-//     channelFromParams(testParams, config)
-//       | view { "Input: $it" }
-//       | run_wf
-//       | view { output ->
-//         assert output.size() == 2 : "outputs should contain two elements; [id, file]"
-//         // ...
-//         "Output: $output"
-//       }
-//       | toSortedList()
-//       | map { output_list ->
-//         assert output_list.size() == 1 : "output channel should contain one event"
-//         // ...
-//       }
-  
-// }
 
 import nextflow.Nextflow
 //
@@ -534,16 +522,4 @@ def getStarPercentMapped(align_log) {
     }
   }
   return percent_aligned
-}
-
-//
-// Create MultiQC tsv custom content from a list of values
-//
-def multiqcTsvFromList(tsv_data, header) {
-  def tsv_string = ""
-  if (tsv_data.size() > 0) {
-    tsv_string += "${header.join('\t')}\n"
-    tsv_string += tsv_data.join('\n')
-  }
-  return tsv_string
 }
