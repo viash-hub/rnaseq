@@ -735,6 +735,7 @@ functionality:
       direction: output
     - name: "--versions"
       type: file
+      default: versions.yml
       direction: output
 
   resources:

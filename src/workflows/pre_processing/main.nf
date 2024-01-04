@@ -121,12 +121,14 @@ workflow run_wf {
         [ paired: state.paired,
         input: input,
         built_bbsplit_index: state.bbsplit_index,
-        bbsplit_fasta_list: state.bbsplit_fasta_list ]
+        bbsplit_fasta_list: state.bbsplit_fasta_list,
+        versions: state.versions ]
       },
       args: ["only_build_index": false], 
       toState: [
         "fastq_1": "fastq_1", 
-        "fastq_2": "fastq_2"
+        "fastq_2": "fastq_2",
+        "versions": "updated_versions"
       ]
     )
 

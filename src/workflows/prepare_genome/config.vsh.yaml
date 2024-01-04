@@ -59,6 +59,9 @@ functionality:
         - name: "--biotype"
           type: string
           description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
+        - name: "--versions"
+          type: file
+          default: versions.yml
 
     - name: "Output"
       arguments:

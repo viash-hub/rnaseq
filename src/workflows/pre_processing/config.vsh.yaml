@@ -154,6 +154,9 @@ functionality:
           type: string
           default: '--record-count 1000000 --seed 1'
           description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
+        - name: "--versions"
+          type: file
+          default: versions.yml
 
     - name: "Output"
       arguments:

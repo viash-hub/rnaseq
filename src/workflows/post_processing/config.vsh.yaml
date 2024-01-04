@@ -74,8 +74,11 @@ functionality:
           type: boolean
         - name: "--skip_bigwig"
           type: boolean
+        - name: "--versions"
+          type: file
+          default: versions.yml
 
-    - name: "Input"
+    - name: "Output"
       arguments:
         - name: "--processed_genome_bam"
           type: file

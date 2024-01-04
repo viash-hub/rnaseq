@@ -18,6 +18,9 @@ functionality:
         - name: "--gtf_group_features"
           type: string
           default: 'gene_id'
+        - name: "--versions"
+          type: file
+          default: versions.yml
 
     - name: "Output"
       arguments: 
