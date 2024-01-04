@@ -77,7 +77,7 @@ jobs:
       with:
         components: src
         workflows: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
+        viash_pro_token: ${{ secrets.GITHUB_TOKEN }}
         tools_version: 'main_build'
    
     - name: Build parameter files
@@ -85,7 +85,7 @@ jobs:
       with:
         workflows: src
         components: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
+        viash_pro_token: ${{ secrets.GITHUB_TOKEN }}
         tools_version: 'main_build'
 
     - name: Deploy to target branch
