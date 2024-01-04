@@ -13,6 +13,7 @@ functionality:
       arguments:
         - name: "--multiqc_custom_config"
           type: file
+          default: assets/multiqc_config.yml
         - name: "--multiqc_title"
           type: string
         - name: "--multiqc_logo"
