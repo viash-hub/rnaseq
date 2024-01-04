@@ -72,21 +72,21 @@ jobs:
         parallel: true
         query: ^workflows
   
-    - name: Build nextflow schemas
-      uses: viash-io/viash-actions/pro/build-nextflow-schemas@v4
-      with:
-        components: src
-        workflows: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
-        tools_version: 'main_build'
+    # - name: Build nextflow schemas
+    #   uses: viash-io/viash-actions/pro/build-nextflow-schemas@v4
+    #   with:
+    #     components: src
+    #     workflows: src
+    #     viash_pro_token: ${{ secrets.GTHB_PAT }}
+    #     tools_version: 'main_build'
    
-    - name: Build parameter files
-      uses: viash-io/viash-actions/pro/build-nextflow-params@v4
-      with:
-        workflows: src
-        components: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
-        tools_version: 'main_build'
+    # - name: Build parameter files
+    #   uses: viash-io/viash-actions/pro/build-nextflow-params@v4
+    #   with:
+    #     workflows: src
+    #     components: src
+    #     viash_pro_token: ${{ secrets.GTHB_PAT }}
+    #     tools_version: 'main_build'
 
     - name: Deploy to target branch
       uses: stefanzweifel/git-auto-commit-action@v5
