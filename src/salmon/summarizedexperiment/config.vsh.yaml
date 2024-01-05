@@ -24,12 +24,20 @@ functionality:
       type: file
     - name: "--tx2gene_tsv"
       type: file
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     # Output
     - name: "--output"
       type: file
       direction: output
       default: salmon_merged_summarizedexperiment
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
   
   resources:
     - type: bash_script
@@ -40,13 +48,13 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/gene_counts_length_scaled.tsv 
-    - path: testData/minimal_test/gene_counts_scaled.tsv 
-    - path: testData/minimal_test/gene_counts.tsv 
-    - path: testData/minimal_test/gene_tpm.tsv 
-    - path: testData/minimal_test/transcript_counts.tsv 
-    - path: testData/minimal_test/transcript_tpm.tsv
-    - path: testData/minimal_test/salmon_tx2gene.tsv
+    - path: /testData/minimal_test/gene_counts_length_scaled.tsv 
+    - path: /testData/minimal_test/gene_counts_scaled.tsv 
+    - path: /testData/minimal_test/gene_counts.tsv 
+    - path: /testData/minimal_test/gene_tpm.tsv 
+    - path: /testData/minimal_test/transcript_counts.tsv 
+    - path: /testData/minimal_test/transcript_tpm.tsv
+    - path: /testData/minimal_test/salmon_tx2gene.tsv
    
 platforms:
   - type: docker

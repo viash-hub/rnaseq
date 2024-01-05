@@ -17,13 +17,12 @@ java -Xmx${avail_mem}M -jar $PICARD MarkDuplicates \
     --METRICS_FILE $par_metrics
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    picard: \$(echo \$(picard MarkDuplicates --version 2>&1) | grep -o 'Version:.*' | cut -f2- -d:)
-END_VERSIONS
+text="${meta_functionality_name}:
+    picard: $(echo $(picard MarkDuplicates --version 2>&1) | grep -o 'Version:.*' | cut -f2- -d:)"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

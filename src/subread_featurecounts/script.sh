@@ -32,13 +32,12 @@ featureCounts \
     $par_bam
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    subread: \$( echo \$(featureCounts -v 2>&1) | sed -e "s/featureCounts v//g")
-END_VERSIONS
+text="${meta_functionality_name}:
+    subread: $( echo $(featureCounts -v 2>&1) | sed -e 's/featureCounts v//g')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

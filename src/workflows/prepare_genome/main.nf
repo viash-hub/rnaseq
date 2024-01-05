@@ -8,17 +8,29 @@ workflow run_wf {
 
         // decompress fasta
         | gunzip.run (
-            fromState: ["input": "fasta"], 
-            toState: ["fasta": "output"], 
+            fromState: [
+                "input": "fasta", 
+                "versions": "versions" 
+            ], 
+            toState: [ 
+                "fasta": "output", 
+                "versions": "updated_versions" 
+            ], 
             key: "gunzip_fasta",
-            args: [output: "reference_genome.fasta"] 
+            args: [ output: "reference_genome.fasta" ] 
         )
 
         // decompress gtf
         | gunzip.run ( 
             runIf: {id, state -> state.gtf},
-            fromState: ["input": "gtf"], 
-            toState: ["gtf": "output"], 
+            fromState: [
+                "input": "gtf", 
+                "versions": "versions" 
+            ], 
+            toState: [
+                "gtf": "output", 
+                "versions": "updated_versions" 
+            ], 
             key: "gunzip_gtf",
             args: [output: "gene_annotation.gtf"]
         )
@@ -26,8 +38,14 @@ workflow run_wf {
         // decompress gff
         | gunzip.run ( 
             runIf: {id, state -> !state.gtf && state.gff},
-            fromState: ["input": "gff"], 
-            toState: ["gff": "output"], 
+            fromState: [
+                "input": "gff", 
+                "versions": "versions" 
+            ], 
+            toState: [
+                "gff": "output", 
+                "versions": "updated_versions" 
+            ], 
             key: "gunzip_gff",
             args: [output: "gene_annotation.gff"] 
         )
@@ -35,16 +53,28 @@ workflow run_wf {
         // gff to gtf
         | gffread.run (
             runIf: {id, state -> state.gff}, 
-            fromState: ["input": "annotation"], 
-            toState: ["gtf": "output"],
+            fromState: [
+                "input": "annotation", 
+                "versions": "versions" 
+            ], 
+            toState: [
+                "gtf": "output", 
+                "versions": "updated_versions" 
+            ],
             args: [output: "gene_annotation.gtf"] 
         )
 
         // decompress additional fasta
         | gunzip.run (
             runIf: {id, state -> state.additional_fasta}, 
-            fromState: ["input": "additional_fasta"], 
-            toState: ["additional_fasta": "output"], 
+            fromState: [
+                "input": "additional_fasta", 
+                "versions": "versions" 
+            ], 
+            toState: [
+                "additional_fasta": "output", 
+                "versions": "updated_versions" 
+            ], 
             key: "gunzip_additional_fasta",
             args: [output: "additional.fasta"]  
         )
@@ -56,11 +86,13 @@ workflow run_wf {
                 "fasta": "fasta", 
                 "gtf": "gtf", 
                 "additional_fasta": "additional_fasta", 
-                "biotype": "biotype" 
+                "biotype": "biotype", 
+                "versions": "versions"  
             ], 
             toState: [
                 "fasta": "fasta_output", 
-                "gtf": "gtf_output" 
+                "gtf": "gtf_output", 
+                "versions": "updated_versions" 
             ], 
             key: "cat_additional",
             args: [
@@ -71,8 +103,14 @@ workflow run_wf {
         // decompress bed file
         | gunzip.run (
             runIf: {id, state -> state.gene_bed}, 
-            fromState: ["input": "gene_bed"], 
-            toState: ["gene_bed": "output"], 
+            fromState: [
+                "input": "gene_bed", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "gene_bed": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "gunzip_gene_bed",
             args: [output: "genome_additional.bed"]
         )
@@ -80,16 +118,28 @@ workflow run_wf {
         // gtf to bed 
         | gtf2bed.run (
             runIf: { id, state -> !state.gene_bed}, 
-            fromState: ["gtf": "gtf"], 
-            toState: ["gene_bed": "bed_output"], 
+            fromState: [
+                "gtf": "gtf", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "gene_bed": "bed_output", 
+                "versions": "updated_versions"
+            ], 
             args: [bed_output: "genome_additional.bed"]
         ) 
 
         // decompress transcript fasta
         | gunzip.run (
             runIf: {id, state -> state.transcript_fasta}, 
-            fromState: ["input": "transcript_fasta"], 
-            toState: ["transcript_fasta": "output"], 
+            fromState: [
+                "input": "transcript_fasta", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "transcript_fasta": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "transcript_fasta", 
             args: [output: "transcriptome.fasta"]
         )
@@ -97,8 +147,14 @@ workflow run_wf {
         // preprocess transcripts fasta if gtf is in gencode format
         | preprocess_transcripts_fasta.run (
             runIf: {id, state -> state.transcript_fastaa && state.gencode}, 
-            fromState: ["transcript_fasta": "transcript_fasta"], 
-            toState: ["transcript_fasta": "output"], 
+            fromState: [
+                "transcript_fasta": "transcript_fasta", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "transcript_fasta": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "transcript_fixed", 
             args: [output: "transcriptome.fasta"] 
         )
@@ -108,9 +164,13 @@ workflow run_wf {
             runIf: {id, state -> !state.transcript_fasta}, 
             fromState: [
                 "fasta": "fasta", 
-                "gtf": "gtf"
+                "gtf": "gtf", 
+                "versions": "versions"
             ], 
-            toState: ["filtered_gtf": "filtered_gtf"],
+            toState: [
+                "filtered_gtf": "filtered_gtf", 
+                "versions": "updated_versions"
+            ],
             args: [filtered_gtf: "genome_additional_genes.gtf"] 
         )
 
@@ -119,19 +179,28 @@ workflow run_wf {
             runIf: {id, state -> !state.transcript_fasta}, 
             fromState: [
                 "fasta": "fasta", 
-                "gtf": "filtered_gtf" 
+                "gtf": "filtered_gtf", 
+                "versions": "versions" 
             ], 
-            toState: ["transcript_fasta": "transcript_fasta"], 
+            toState: [
+                "transcript_fasta": "transcript_fasta", 
+                "versions": "updated_versions"
+            ], 
             key: "rsem_ref",
             args: [transcript_fasta: "transcriptome.fasta"]
         )
 
         // chromosome size and fai index
         | getchromsizes.run (
-            fromState: ["fasta": "fasta"], 
+            fromState: [
+                "fasta": "fasta", 
+                "versions": "versions"
+            ], 
             toState: [
                 "fai": "fai", 
-                "sizes": "sizes" ], 
+                "sizes": "sizes", 
+                "versions": "updated_versions" 
+            ], 
             key: "chromsizes", 
             args: [ 
                 fai: "genome_additional.fasta.fai", 
@@ -142,8 +211,14 @@ workflow run_wf {
         // untar bbsplit index, if available
         | untar.run (
             runIf: {id, state -> state.bbsplit_index}, 
-            fromState: ["input": "bbsplit_index"], 
-            toState: ["bbsplit_index": "output"], 
+            fromState: [
+                "input": "bbsplit_index", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "bbsplit_index": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "bbsplit_uncompressed",
             args: [output: "BBSplit_index"] 
         )
@@ -153,9 +228,13 @@ workflow run_wf {
             runIf: {id, state -> !state.skip_bbsplit && !state.bbsplit_index}, 
             fromState: [ 
                 "primary_ref": "fasta", 
-                "bbsplit_fasta_list": "bbsplit_fasta_list" 
+                "bbsplit_fasta_list": "bbsplit_fasta_list", 
+                "versions": "versions"
             ], 
-            toState: ["bbsplit_index": "bbsplit_index"], 
+            toState: [
+                "bbsplit_index": "bbsplit_index", 
+                "versions": "updated_versions"
+            ], 
             args: [
                 "only_build_index": true, 
                 bbsplit_index: "BBSplit_index"
@@ -166,8 +245,14 @@ workflow run_wf {
         // Uncompress STAR index or generate from scratch if required
         | untar.run (
             runIf: {id, state -> state.star_index}, 
-            fromState: ["input": "star_index"], 
-            toState: ["star_index": "output"], 
+            fromState: [
+                "input": "star_index", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "star_index": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "star_index_uncompressed",
             args: [output: "STAR_index"]
         )
@@ -176,9 +261,13 @@ workflow run_wf {
             runIf: {id, state -> !state.star_index}, 
             fromState: [ 
                 "fasta": "fasta", 
-                "gtf": "gtf" 
+                "gtf": "gtf", 
+                "versions": "versions" 
             ], 
-            toState: ["star_index": "star_index"], 
+            toState: [
+                "star_index": "star_index", 
+                "versions": "updated_versions"
+            ], 
             key: "star_index_uncompressed",
             args: [star_index: "STAR_index"]
         )
@@ -190,8 +279,14 @@ workflow run_wf {
         // Uncompress Salmon index or generate from scratch if required
         | untar.run (
             runIf: {id, state -> state.salmon_index}, 
-            fromState: ["input": "salmon_index"], 
-            toState: ["salmon_index": "output"], 
+            fromState: [
+                "input": "salmon_index", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "salmon_index": "output", 
+                "versions": "updated_versions"
+            ], 
             key: "salmon_index_uncompressed",
             args: [output: "Salmon_index"]
         )
@@ -200,9 +295,13 @@ workflow run_wf {
             runIf: {id, state -> !state.salmon_index}, 
             fromState: [ 
                 "genome_fasta": "fasta", 
-                "transcriptome_fasta": "transcript_fasta" 
+                "transcriptome_fasta": "transcript_fasta", 
+                "versions": "versions" 
             ], 
-            toState: ["salmon_index": "salmon_index"], 
+            toState: [
+                "salmon_index": "salmon_index", 
+                "versions": "updated_versions"
+            ], 
             key: "salmon_index_uncompressed",
             args: [salmon_index: "Salmon_index"] 
         )
@@ -216,7 +315,8 @@ workflow run_wf {
             "salmon_index_uncompressed": "salmon_index", 
             "bbsplit_index_uncompressed": "bbsplit_index", 
             "chrom_sizes": "sizes", 
-            "fai": "fai"
+            "fai": "fai", 
+            "updated_versions": "versions"
         )      
 
     emit: 

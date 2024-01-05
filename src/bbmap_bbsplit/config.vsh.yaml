@@ -40,7 +40,7 @@ functionality:
       description: Directory with index files
     - name: "--versions"
       type: file
-      default: versions.yml
+      must_exist: false
     
     # Outputs
     - name: "--fastq_1"

@@ -20,6 +20,10 @@ functionality:
   - name: "--ribo_database_manifest"
     type: file
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
   
   - name: "--sortmerna_log"
     type: file
@@ -41,6 +45,10 @@ functionality:
     description: Output file for read 2.
     direction: output
     default: $id.$key.read2.fastq.gz
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
   resources:
     - type: bash_script
@@ -49,9 +57,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: testData/minimal_test/SRR6357070_2.fastq.gz
-    - path: testData/reference/rrna-db-defaults.txt
+    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: /testData/reference/rrna-db-defaults.txt
 
    
 platforms:      

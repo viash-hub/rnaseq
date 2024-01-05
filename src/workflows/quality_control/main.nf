@@ -23,11 +23,13 @@ workflow run_wf {
                 "gencode": "gencode",
                 "extra_featurecounts_args": "extra_featurecounts_args",
                 "featurecounts_group_type": "featurecounts_group_type",
-                "featurecounts_feature_type": "featurecounts_feature_type",
+                "featurecounts_feature_type": "featurecounts_feature_type", 
+                "versions": "versions"
             ],
             toState: [
                 "featurecounts": "counts",
-                "featurecounts_summary": "summary"
+                "featurecounts_summary": "summary", 
+                "versions": "updated_versions"
             ]
         )
 
@@ -36,9 +38,13 @@ workflow run_wf {
             fromState: [
                 "id": "id",
                 "biocounts": "featurecounts", 
-                "biotypes_header": "biotypes_header"
+                "biotypes_header": "biotypes_header", 
+                "versions": "versions"
             ],
-            toState: [ "featurecounts_multiqc": "featurecounts_multiqc" ]
+            toState: [ 
+                "featurecounts_multiqc": "featurecounts_multiqc", 
+                "versions": "updated_versions" 
+            ]
         )
               
         | preseq_lcextrap.run (
@@ -46,18 +52,26 @@ workflow run_wf {
             fromState: [
                 "paired": "paired",
                 "bam": "genome_bam",
-                "extra_preseq_args": "extra_preseq_args"
+                "extra_preseq_args": "extra_preseq_args", 
+                "versions": "versions"
             ],
-            toState: [ "preseq_output": "output" ],
+            toState: [ 
+                "preseq_output": "output", 
+                "versions": "updated_versions" 
+            ],
         )
    
         | rseqc_bamstat.run (
             runIf: { id, state -> "bam_stat" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
-                "map_qual": "map_qual"
+                "map_qual": "map_qual", 
+                "versions": "versions"
             ],
-            toState: [ "bamstat_output": "output" ]
+            toState: [ 
+                "bamstat_output": "output", 
+                "versions": "updated_versions" 
+                ]
         )
         | rseqc_inferexperiment.run(
             runIf: { id, state -> "infer_experiment" in state.rseqc_modules },
@@ -65,9 +79,13 @@ workflow run_wf {
                 "input": "genome_bam",
                 "refgene": "gene_bed",
                 "sample_size": "sample_size",
-                "map_qual": "map_qual"
+                "map_qual": "map_qual", 
+                "versions": "versions"
             ],
-            toState: [ "strandedness_output": "output" ]
+            toState: [ 
+                "strandedness_output": "output", 
+                "versions": "updated_versions" 
+            ]
         )
         // Get predicted strandedness from the RSeQC infer_experiment.py output
         | map { id, state -> 
@@ -86,14 +104,16 @@ workflow run_wf {
                 "map_qual": "map_qual",
                 "lower_bound_size": "lower_bound_size",
                 "upper_bound_size": "upper_bound_size",
-                "step_size": "step_size"
+                "step_size": "step_size", 
+                "versions": "versions"
             ],
             toState: [ 
                 "inner_dist_output_stats": "output_stats",
                 "inner_dist_output_dist": "output_dist",
                 "inner_dist_output_freq": "output_freq",
                 "inner_dist_output_plot": "output_plot",
-                "inner_dist_output_plot_r": "output_plot_r"
+                "inner_dist_output_plot_r": "output_plot_r", 
+                "versions": "updated_versions"
             ]
         )
         | rseqc_junctionannotation.run(
@@ -102,7 +122,8 @@ workflow run_wf {
                 "input": "genome_bam",
                 "refgene": "gene_bed",
                 "map_qual": "map_qual",
-                "min_intron": "min_intron"
+                "min_intron": "min_intron", 
+                "versions": "versions"
             ],
             toState: [
                 "junction_annotation_output_log": "output_log",
@@ -111,7 +132,8 @@ workflow run_wf {
                 "junction_annotation_output_junction_interact": "output_junction_interact",
                 "junction_annotation_output_junction_sheet": "output_junction_sheet",
                 "junction_annotation_output_splice_events_plot": "output_splice_events_plot",
-                "junction_annotation_output_splice_junctions_plot": "output_splice_junctions_plot"
+                "junction_annotation_output_splice_junctions_plot": "output_splice_junctions_plot", 
+                "versions": "updated_versions"
             ]
         )
         | rseqc_junctionsaturation.run(
@@ -124,33 +146,41 @@ workflow run_wf {
                 "sampling_percentile_step": "sampling_percentile_step",
                 "min_intron": "min_intron",
                 "min_splice_read": "min_splice_read",
-                "map_qual": "map_qual"
+                "map_qual": "map_qual", 
+                "versions": "versions"
             ],
             toState: [
                 "junction_saturation_output_plot_r": "output_plot_r",
-                "junction_saturation_output_plot": "output_plot"
+                "junction_saturation_output_plot": "output_plot", 
+                "versions": "updated_versions"
             ]
         )
         | rseqc_readdistribution.run(
             runIf: { id, state -> "read_distribution" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
-                "refgene": "gene_bed"
+                "refgene": "gene_bed", 
+                "versions": "versions"
             ],
-            toState: [ "read_distribution_output": "output" ]
+            toState: [ 
+                "read_distribution_output": "output", 
+                "versions": "updated_versions" 
+            ]
         )                               
         | rseqc_readduplication.run(
             runIf: { id, state -> "read_duplication" in state.rseqc_modules },
             fromState: [
                 "input": "genome_bam",
                 "read_count_upper_limit": "read_count_upper_limit",
-                "map_qual": "map_qual"
+                "map_qual": "map_qual", 
+                "versions": "versions"
             ],
             toState: [
-                    "read_duplication_output_duplication_rate_plot_r": "output_duplication_rate_plot_r",
-                    "read_duplication_output_duplication_rate_plot": "output_duplication_rate_plot",
-                    "read_duplication_output_duplication_rate_mapping": "output_duplication_rate_mapping",
-                    "read_duplication_output_duplication_rate_sequence": "output_duplication_rate_sequence"     
+                "read_duplication_output_duplication_rate_plot_r": "output_duplication_rate_plot_r",
+                "read_duplication_output_duplication_rate_plot": "output_duplication_rate_plot",
+                "read_duplication_output_duplication_rate_mapping": "output_duplication_rate_mapping",
+                "read_duplication_output_duplication_rate_sequence": "output_duplication_rate_sequence", 
+                "versions": "updated_versions"     
             ]
         )
         | rseqc_tin.run(
@@ -161,11 +191,13 @@ workflow run_wf {
                 "refgene": "gene_bed",
                 "minimum_coverage": "minimum_coverage",
                 "sample_size": "tin_sample_size",
-                "subtract_background": "subtract_background"
+                "subtract_background": "subtract_background", 
+                "versions": "versions"
             ],
             toState: [
                 "tin_output_summary": "output_tin_summary",
-                "tin_output_metrics": "output_tin"
+                "tin_output_metrics": "output_tin", 
+                "versions": "updated_versions"
             ]
         )
 
@@ -175,7 +207,8 @@ workflow run_wf {
                 "input": "genome_bam",
                 "gtf_annotation": "gtf",
                 "paired": "paired",
-                "strandedness": "strandedness"
+                "strandedness": "strandedness", 
+                "versions": "versions"
             ],
             toState: [ 
                 "dupradar_output_dupmatrix": "output_dupmatrix",
@@ -184,7 +217,8 @@ workflow run_wf {
                 "dupradar_output_duprate_exp_densplot": "output_duprate_exp_densplot",
                 "dupradar_output_duprate_exp_denscurve_mqc": "output_duprate_exp_denscurve_mqc",
                 "dupradar_output_expression_histogram": "output_expression_histogram",
-                "dupradar_output_intercept_slope": "output_intercept_slope"
+                "dupradar_output_intercept_slope": "output_intercept_slope", 
+                "versions": "updated_versions"
             ]
         )
 
@@ -197,11 +231,13 @@ workflow run_wf {
                 "algorithm": "algorithm",
                 "sequencing_protocol": "sequencing_protocol",
                 "sorted": "sorted",
-                "java_memory_size": "java_memory_size"
+                "java_memory_size": "java_memory_size", 
+                "versions": "versions"
             ],
             toState: [
                 "qualimap_output_pdf": "output_pdf",
-                "qualimap_output_dir": "output_dir"
+                "qualimap_output_dir": "output_dir", 
+                "versions": "updated_versions"
             ]
         ) 
 
@@ -327,6 +363,7 @@ workflow run_wf {
             def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
             def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
             def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
+            def versions = list.collect { id, state -> state.versions }.unique()[0]
             ["merged", [
                 ids: ids, 
                 strandedness: strandedness, 
@@ -366,7 +403,8 @@ workflow run_wf {
                 passed_mapping: passed_mapping,
                 percent_mapped: percent_mapped,
                 inferred_strand: inferred_strand, 
-                passed_strand_check: passed_strand_check
+                passed_strand_check: passed_strand_check, 
+                versions: versions
             ] ]
         } 
 
@@ -375,7 +413,8 @@ workflow run_wf {
                 "salmon_quant_results": "salmon_quant_results", 
                 "gtf": "gtf", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
-                "gtf_group_features": "gtf_group_features"
+                "gtf_group_features": "gtf_group_features", 
+                "versions": "versions"
             ],
             toState: [
                 "tpm_gene": "tpm_gene",
@@ -384,7 +423,8 @@ workflow run_wf {
                 "counts_gene_scaled": "counts_gene_scaled", 
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
-                "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment"
+                "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment", 
+                "versions": "versions"
             ], 
         )
 
@@ -396,12 +436,14 @@ workflow run_wf {
                 "clustering_header_multiqc": "clustering_header_multiqc",
                 "deseq2_vst": "deseq2_vst", 
                 "extra_deseq2_args": "extra_deseq2_args",
-                "extra_deseq2_args2": "extra_deseq2_args2"
+                "extra_deseq2_args2": "extra_deseq2_args2", 
+                "versions": "versions"
             ], 
             toState: [
                 "deseq2_output": "deseq2_output", 
                 "deseq2_pca_multiqc": "pca_multiqc", 
-                "deseq2_dists_multiqc": "dists_multiqc"
+                "deseq2_dists_multiqc": "dists_multiqc", 
+                "versions": "updated_versions"
             ], 
         )
 
@@ -451,38 +493,38 @@ workflow run_wf {
 
         | prepare_multiqc_input.run(
             fromState: [
-              "multiqc_custom_config": "multiqc_custom_config", 
-              "multiqc_title": "multiqc_title", 
-              "multiqc_logo": "multiqc_logo",
-              "multiqc_methods_description": "multiqc_methods_description",
-              "workflow_summary": "workflow_summary", 
-              "fail_trimming_multiqc": "fail_trimming_multiqc", 
-              "fail_mapping_multiqc": "fail_mapping_multiqc", 
-              "fail_strand_multiqc": "fail_strand_multiqc", 
-              "fastqc_raw_multiqc": "fastqc_zip",
-              "fastqc_trim_multiqc": "trim_zip",
-              "trim_log_multiqc": "trim_log",
-              "sortmerna_multiqc": "sortmerna_log", 
-              "star_multiqc": "star_multiqc", 
-              "salmon_multiqc": "salmon_multiqc", 
-              "samtools_stats": "genome_bam_stats", 
-              "samtools_flagstat": "genome_bam_flagstat", 
-              "samtools_idxstats": "genome_bam_idxstats", 
-              "markduplicates_multiqc": "markduplicates_multiqc", 
-              "featurecounts_multiqc": "featurecounts_multiqc", 
-              "aligner_pca_multiqc": "deseq2_pca_multiqc", 
-              "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
-              "preseq_multiqc": "preseq_output", 
-              "qualimap_multiqc": "qualimap_output_dir", 
-              "dupradar_multiqc": "dupradar_output_dup_intercept_mqc", 
-              "bamstat_multiqc": "bamstat_output", 
-              "inferexperiment_multiqc": "inferexperiment_multiqc", 
-              "innerdistance_multiqc": "inner_dist_output_freq", 
-              "junctionannotation_multiqc": "junction_annotation_output_log", 
-              "junctionsaturation_multiqc": "junctionsaturation_multiqc",
-              "readdistribution_multiqc": "read_distribution_output",
-              "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
-              "tin_multiqc": "tin_output_summary", 
+                "multiqc_custom_config": "multiqc_custom_config", 
+                "multiqc_title": "multiqc_title", 
+                "multiqc_logo": "multiqc_logo",
+                "multiqc_methods_description": "multiqc_methods_description",
+                "workflow_summary": "workflow_summary", 
+                "fail_trimming_multiqc": "fail_trimming_multiqc", 
+                "fail_mapping_multiqc": "fail_mapping_multiqc", 
+                "fail_strand_multiqc": "fail_strand_multiqc", 
+                "fastqc_raw_multiqc": "fastqc_zip",
+                "fastqc_trim_multiqc": "trim_zip",
+                "trim_log_multiqc": "trim_log",
+                "sortmerna_multiqc": "sortmerna_log", 
+                "star_multiqc": "star_multiqc", 
+                "salmon_multiqc": "salmon_multiqc", 
+                "samtools_stats": "genome_bam_stats", 
+                "samtools_flagstat": "genome_bam_flagstat", 
+                "samtools_idxstats": "genome_bam_idxstats", 
+                "markduplicates_multiqc": "markduplicates_multiqc", 
+                "featurecounts_multiqc": "featurecounts_multiqc", 
+                "aligner_pca_multiqc": "deseq2_pca_multiqc", 
+                "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
+                "preseq_multiqc": "preseq_output", 
+                "qualimap_multiqc": "qualimap_output_dir", 
+                "dupradar_multiqc": "dupradar_output_dup_intercept_mqc", 
+                "bamstat_multiqc": "bamstat_output", 
+                "inferexperiment_multiqc": "inferexperiment_multiqc", 
+                "innerdistance_multiqc": "inner_dist_output_freq", 
+                "junctionannotation_multiqc": "junction_annotation_output_log", 
+                "junctionsaturation_multiqc": "junctionsaturation_multiqc",
+                "readdistribution_multiqc": "read_distribution_output",
+                "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
+                "tin_multiqc": "tin_output_summary", 
             ], 
             toState: [
               "multiqc_input": "output"
@@ -492,16 +534,18 @@ workflow run_wf {
         | multiqc.run (
             fromState: [
             //   "multiqc_custom_config": "multiqc_custom_config", 
-              "multiqc_title": "multiqc_title", 
-              "multiqc_logo": "multiqc_logo",
-              "multiqc_methods_description": "multiqc_methods_description",
-              "input": "multiqc_input"
+                "multiqc_title": "multiqc_title", 
+                "multiqc_logo": "multiqc_logo",
+                "multiqc_methods_description": "multiqc_methods_description",
+                "input": "multiqc_input", 
+                "versions": "versions"
             ], 
             toState: [
-              "multiqc_report": "report", 
-              "multiqc_data": "data",
-              "multiqc_plots": "plots", 
-              "multiqc_versions": "versions"
+                "multiqc_report": "report", 
+                "multiqc_data": "data",
+                "multiqc_plots": "plots", 
+                "multiqc_versions": "versions", 
+                "versions": "updated_versions"
             ]
         )
 
@@ -518,7 +562,8 @@ workflow run_wf {
                 multiqc_report: state.multiqc_report, 
                 multiqc_data: state.multiqc_data, 
                 multiqc_plots: state.multiqc_plots,
-                multiqc_versions: state.multiqc_versions 
+                multiqc_versions: state.multiqc_versions, 
+                versions: state.versions
             ] ] 
         }
 
@@ -578,7 +623,8 @@ workflow run_wf {
                 "multiqc_report": "multiqc_report", 
                 "multiqc_data": "multiqc_data", 
                 "multiqc_plots": "multiqc_plots",
-                "multiqc_versions": "multiqc_versions" 
+                "multiqc_versions": "multiqc_versions", 
+                "updated_versions": "versions" 
             ]
         )
 

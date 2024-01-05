@@ -17,11 +17,13 @@ workflow run_wf {
       runIf: { id, state -> state.strandedness == 'auto' }, 
       fromState: [ 
         "input": "input", 
-        "extra_args": "extra_fq_subsample_args" 
+        "extra_args": "extra_fq_subsample_args", 
+        "versions": "versions" 
       ],
       toState: [
         "subsampled_fastq_1": "output_1",
-        "subsampled_fastq_2": "output_2"
+        "subsampled_fastq_2": "output_2", 
+        "versions": "updated_versions" 
       ]
     )
 
@@ -34,17 +36,19 @@ workflow run_wf {
           input: input, 
           transcript_fasta: state.transcript_fasta, 
           gtf: state.gtf, 
-          salmon_index: state.salmon_index ]
+          salmon_index: state.salmon_index, 
+          versions: state.versions ]
       },
-        args: [
-          "alignment_mode": false, 
-          "lib_type": "A", 
-          "extra_salmon_quant_args": "--skipQuant"
-        ],
-        toState: [
-          "salmon_quant_output": "output",
-          "salmon_json_info": "json_info"
-        ]
+      args: [
+        "alignment_mode": false, 
+        "lib_type": "A", 
+        "extra_salmon_quant_args": "--skipQuant"
+      ],
+      toState: [
+        "salmon_quant_output": "output",
+        "salmon_json_info": "json_info", 
+        "versions": "updated_versions" 
+      ]
     )
 
     // Perform QC on input fastq files
@@ -53,13 +57,15 @@ workflow run_wf {
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
-        input: input ]
+        input: input, 
+        versions: state.versions ]
       },
       toState: [
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
         "fastqc_zip_1": "fastqc_zip_1",
-        "fastqc_zip_2": "fastqc_zip_2"
+        "fastqc_zip_2": "fastqc_zip_2", 
+        "versions": "updated_versions" 
       ]
     )
 
@@ -72,11 +78,13 @@ workflow run_wf {
         [ paired: state.paired,
         input: input, 
         bc_pattern: bc_pattern, 
-        umi_discard_read: state.umi_discard_read ]
+        umi_discard_read: state.umi_discard_read, 
+        versions: state.versions ]
       },
       toState: [ 
         "fastq_1": "fastq_1", 
-        "fastq_2": "fastq_2" 
+        "fastq_2": "fastq_2", 
+        "versions": "updated_versions" 
       ]
     )
     
@@ -99,7 +107,8 @@ workflow run_wf {
         [ paired: state.paired,
         input: input, 
         extra_trimgalore_args: state.extra_trimgalore_args, 
-        min_trimmed_reads: state.min_trimmed_reads ]
+        min_trimmed_reads: state.min_trimmed_reads, 
+        versions: state.versions ]
       },
       toState: [
         "fastq_1": "fastq_1", 
@@ -109,7 +118,8 @@ workflow run_wf {
         "trim_zip_1": "trim_zip_1",
         "trim_zip_2": "trim_zip_2",
         "trim_html_1": "trim_html_1",
-        "trim_html_2": "trim_html_2"
+        "trim_html_2": "trim_html_2", 
+        "versions": "updated_versions" 
       ]
     )
 
@@ -139,12 +149,15 @@ workflow run_wf {
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
           input: input,
-          ribo_database_manifest: state.ribo_database_manifest ] 
+          ribo_database_manifest: state.ribo_database_manifest, 
+          versions: state.versions ] 
       },
       toState: [
         "fastq_1": "fastq_1", 
         "fastq_2": "fastq_2",
-        "sortmerna_log": "sortmerna_log" ] 
+        "sortmerna_log": "sortmerna_log", 
+        "versions": "updated_versions" 
+      ] 
     )
 
     | map { id, state -> 
@@ -168,7 +181,8 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
-        "salmon_json_info": "salmon_json_info"
+        "salmon_json_info": "salmon_json_info", 
+        "updated_versions": "versions" 
     )
 
   emit:

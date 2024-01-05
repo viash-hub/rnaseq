@@ -16,13 +16,13 @@ preseq lc_extrap \
     -o $par_output
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    preseq: \$(echo \$(preseq 2>&1) | sed 's/^.*Version: //; s/Usage:.*\$//')
-END_VERSIONS
+
+text="${meta_functionality_name}:
+    preseq: $(echo $(preseq 2>&1) | sed 's/^.*Version: //; s/Usage:.*\$//')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

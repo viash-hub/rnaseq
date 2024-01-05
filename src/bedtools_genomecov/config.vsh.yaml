@@ -18,6 +18,9 @@ functionality:
     - name: "--extra_bedtools_args"
       type: string
       default: ''
+    - name: "--versions"
+      type: file
+      must_exist: false
 
     - name: "--bedgraph_forward"
       type: file
@@ -26,6 +29,10 @@ functionality:
     - name: "--bedgraph_reverse"
       type: file
       default: $id.reverse.bedgraph
+      direction: output
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
       direction: output
 
   resources:

@@ -156,7 +156,8 @@ functionality:
           description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
         - name: "--versions"
           type: file
-          default: versions.yml
+          must_exist: false
+          
 
     - name: "Output"
       arguments:
@@ -250,7 +251,10 @@ functionality:
           direction: output
           description: File containing meta information from Salmon quant
           default: $id.salmon_meta_info.json
-  
+        - name: "--updated_versions"
+          type: file
+          default: versions.yml
+          direction: output
 
   resources:
     - type: nextflow_script

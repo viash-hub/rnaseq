@@ -22,6 +22,10 @@ functionality:
       example: sample.fastq
       multiple: true
       multiple_sep: ","
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     # Outputs
     - name: "--fastq_1"
@@ -67,6 +71,10 @@ functionality:
       required: false
       must_exist: false
       default: $id.$key.read2.fastqc.zip
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
     # Optional arguments
     - name: "--extra_trimgalore_args"

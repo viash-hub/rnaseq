@@ -47,13 +47,13 @@ else
 fi
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
-END_VERSIONS
+
+text="${meta_functionality_name}:
+    bbmap: $(bbversion.sh | grep -v "Duplicate cpuset")"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

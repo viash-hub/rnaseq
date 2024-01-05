@@ -12,6 +12,10 @@ functionality:
   - name: "--fasta"
     type: file
     description: Genome fasta files
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
   
   # output
   - name: "--sizes"
@@ -25,6 +29,10 @@ functionality:
   - name: "--gzi" # optional
     type: file
     description: Optional gzip index file for compressed inputs
+    direction: output
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
     direction: output
 
   resources:

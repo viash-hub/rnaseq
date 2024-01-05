@@ -15,6 +15,10 @@ functionality:
       multiple_sep: ","
     - name: "--tx2gene_tsv"
       type: file
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     # Output
     - name: "--tpm_gene"
@@ -41,6 +45,10 @@ functionality:
       type: file
       direction: output
       default: salmon.merged.transcript_counts.tsv
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
   
   resources:
     - type: bash_script
@@ -51,9 +59,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/salmon_tx2gene.tsv
-    - path: testData/minimal_test/WT_REP1.salmon_quant
-    - path: testData/minimal_test/WT_REP2.salmon_quant
+    - path: /testData/minimal_test/salmon_tx2gene.tsv
+    - path: /testData/minimal_test/WT_REP1.salmon_quant
+    - path: /testData/minimal_test/WT_REP2.salmon_quant
    
 platforms:
   - type: docker

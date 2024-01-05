@@ -61,8 +61,8 @@ functionality:
           description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
         - name: "--versions"
           type: file
-          default: versions.yml
-
+          must_exist: false
+          
     - name: "Output"
       arguments:
         - name: "--fasta_uncompressed"
@@ -114,6 +114,10 @@ functionality:
           description: FASTA index file
           direction: output
           default: reference_genome.fasta.fai
+        - name: "--updated_versions"
+          type: file
+          default: versions.yml
+          direction: output
 
   resources:
     - type: nextflow_script

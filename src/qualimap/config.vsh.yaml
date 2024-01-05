@@ -19,6 +19,11 @@ functionality:
       required: true
       description: path to annotations file in Ensembl GTF format.
 
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
+
     - name: "--output_dir"
       direction: output
       type: file
@@ -39,6 +44,11 @@ functionality:
       required: false
       default: html
       description: Format of the output report (PDF or HTML, default is HTML)
+
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
     - name: "--pr_bases"
       type: integer

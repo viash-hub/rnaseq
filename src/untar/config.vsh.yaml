@@ -12,11 +12,19 @@ functionality:
     - name: "--input"
       type: file 
       description: Path of file to be decompressed
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--output"
       type: file
       direction: output
       description: Directory containing contents of decompressed file.
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script

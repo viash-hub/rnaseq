@@ -18,6 +18,10 @@ functionality:
       type: string
       default: ""
       description: Extra arguments to pass to fq subsample
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     - name: "--output_1"
       type: file
@@ -30,6 +34,10 @@ functionality:
       direction: output
       default: $id.read2.subsampled.fastq.gz
       description: Sampled read 2 fastq files
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script

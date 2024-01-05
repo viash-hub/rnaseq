@@ -13,12 +13,20 @@ functionality:
       type: file 
       required: true
       description: Path of transcripts FASTA file
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--output"
       type: file
       direction: output
       required: true
       description: Path of processed output FASTA file.
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script

@@ -18,6 +18,9 @@ functionality:
       multiple: true
       multiple_sep: ";"
       description: Read 2 fastq files to be concatenated
+    - name: "--versions"
+      type: file
+      must_exist: false
     
     - name: "--fastq_1"
       type: file
@@ -30,6 +33,10 @@ functionality:
       must_exist: false
       default: $id.read2.merged.fastq.gz
       description: Concatenated read 2 fastq
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
   
   resources:
     - type: bash_script

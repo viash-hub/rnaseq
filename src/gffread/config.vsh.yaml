@@ -13,16 +13,25 @@ functionality:
       type: file 
       required: true
       description: A reference file in either the GFF3, GFF2 or GTF format.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--output"
       type: file
       direction: output
       required: true
       description: GTF file resulting from the conversion of the GFF input file.
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh

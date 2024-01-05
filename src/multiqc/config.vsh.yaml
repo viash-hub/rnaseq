@@ -28,6 +28,10 @@ functionality:
         - name: "--input"
           type: file
           must_exist: false
+        - name: "--versions"
+          type: file
+          must_exist: false
+          
         
     - name: "Ouput"
       arguments:
@@ -43,9 +47,10 @@ functionality:
           type: file
           direction: output
           default: multiqc_plots
-        # - name: "--versions"
-        #   type: file
-        #   direction: output
+        - name: "--updated_versions"
+          type: file
+          default: versions.yml
+          direction: output
       
   resources:
     - type: bash_script

@@ -24,6 +24,10 @@ functionality:
     - name: "--stringtie_ignore_gtf"
       type: boolean
       description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     # Output
     - name: "--transcript_gtf"
@@ -43,6 +47,10 @@ functionality:
       description: for running ballgown
       default: $id.$key.ballgown
       direction: output
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources: 
     - type: bash_script
@@ -51,8 +59,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/reference/genes.gtf.gz
-    - path: testData/minimal_test/test.bam  # add test BAM file
+    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/minimal_test/test.bam  # add test BAM file
 
 platforms:
   - type: docker

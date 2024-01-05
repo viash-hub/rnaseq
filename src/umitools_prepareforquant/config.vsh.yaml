@@ -10,6 +10,11 @@ functionality:
   arguments: 
     - name: "--bam"
       type: file
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
+      
     - name: "--output"
       type: file
       direction: output
@@ -18,6 +23,10 @@ functionality:
       type: file
       direction: output
       default: $id.$key.log
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -28,7 +37,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/test.bam
+    - path: /testData/minimal_test/test.bam
    
 platforms:
   - type: docker

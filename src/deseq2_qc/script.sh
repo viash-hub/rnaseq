@@ -44,13 +44,13 @@ if [ -f "$par_deseq2_output/R_sessionInfo.log" ]; then
 fi
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-    bioconductor-deseq2: \$(Rscript -e "library(DESeq2); cat(as.character(packageVersion('DESeq2')))")
-END_VERSIONS
+
+text="${meta_functionality_name}:
+    r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
+    bioconductor-deseq2: $(Rscript -e 'library(DESeq2); cat(as.character(packageVersion('DESeq2')))')"
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

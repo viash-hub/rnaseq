@@ -9,13 +9,13 @@ multiqc \
     $par_input
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    multiqc: \$( multiqc --version | sed -e "s/multiqc, version //g" )
-END_VERSIONS
 
-if [ -e "$par_versions" ]; then
+text="${meta_functionality_name}:
+    multiqc: $( multiqc --version | sed -e 's/multiqc, version //g' )"
+
+if [ $par_versions ] && [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

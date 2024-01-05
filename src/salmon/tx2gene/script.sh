@@ -23,13 +23,12 @@ python3 "$meta_resources_dir/salmon_tx2gene.py" \
     -o $par_tsv
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    python: \$(python --version | sed 's/Python //g')
-END_VERSIONS
+text="${meta_functionality_name}:
+    python: $(python3 --version | sed 's/Python //g')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

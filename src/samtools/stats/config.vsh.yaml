@@ -6,9 +6,9 @@ functionality:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/nf-core/samtools/stats/main.nf, modules/nf-core/samtools/stats/meta.yml]
       last_sha: 55398de6ab7577acfe9b1180016a93d7af7eb859
-
   description: |
     Produces comprehensive statistics from BAM file.
+  
   arguments:
     - name: "--bam"
       type: file
@@ -19,12 +19,20 @@ functionality:
     - name: "--fasta"
       type: file
       description: Reference file the CRAM was created with (optional).
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--output"
       type: file 
       description: File containing samtools stats output.
       direction: output
       default: $id.$key.stats
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -33,8 +41,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/mapt.NA12156.altex.bam
-    - path: testData/minimal_test/mapt.NA12156.altex.bam.bai
+    - path: /testData/minimal_test/mapt.NA12156.altex.bam
+    - path: /testData/minimal_test/mapt.NA12156.altex.bam.bai
 
 platforms:
   - type: nextflow

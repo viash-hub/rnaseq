@@ -20,8 +20,8 @@ functionality:
           default: 'gene_id'
         - name: "--versions"
           type: file
-          default: versions.yml
-
+          must_exist: false
+          
     - name: "Output"
       arguments: 
         - name: "--tpm_gene"
@@ -52,6 +52,10 @@ functionality:
           type: file
           direction: output
           default: salmon_merged_summarizedexperiment
+        - name: "--updated_versions"
+          type: file
+          default: versions.yml
+          direction: output
 
   resources:
     - type: nextflow_script

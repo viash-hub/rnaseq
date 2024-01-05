@@ -43,6 +43,11 @@ functionality:
       type: boolean_true
       description: Set flag to subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads.
 
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
+
     - name: "--output_tin_summary"
       type: file
       direction: output
@@ -57,9 +62,15 @@ functionality:
       default: $id.tin.xls
       description: file with TIN metrics (xls)
 
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
+
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh

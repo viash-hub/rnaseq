@@ -33,6 +33,11 @@ functionality:
       default: 50
       min: 1 
       description: Minimum intron length (bp), default = 50.
+
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
    
     - name: "--output_log"
       type: file
@@ -82,6 +87,11 @@ functionality:
       required: false
       default: $id.splice_junctions_plot.pdf
       description: plot of junctions (pdf)
+
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script

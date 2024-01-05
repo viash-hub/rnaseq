@@ -26,7 +26,8 @@ workflow run_wf {
           hisat2_index: list[1][-1].hisat2_index,
           bbsplit_index: list[1][-1].bbsplit_index,
           gencode: list[1][-1].gencode,
-          biotype: list[1][-1].biotype ]
+          biotype: list[1][-1].biotype]
+          // versions: list[1][-1].versions ]
         ]
     } 
     // prepare all the necessary files for reference genome
@@ -46,7 +47,8 @@ workflow run_wf {
           // "hisat2_index": "hisat2_index",
           "bbsplit_index": "bbsplit_index",
           "gencode": "gencode", 
-          "biotype": "biotype" 
+          "biotype": "biotype",
+          "versions": "versions" 
         ],
         toState: [
           "fasta": "uncompressed_fasta", 
@@ -57,7 +59,8 @@ workflow run_wf {
           "bbsplit_index": "bbsplit_index_uncompressed", 
           "star_index": "star_index_uncompressed", 
           "salmon_index": "salmon_index_uncompressed", 
-          "gene_bed": "gene_bed_uncompressed" 
+          "gene_bed": "gene_bed_uncompressed",
+          "versions": "updated_versions" 
         ]
     )
 
@@ -78,11 +81,13 @@ workflow run_wf {
     | cat_fastq.run (
         fromState: [
           "read_1": "fastq_1", 
-          "read_2": "fastq_2"
+          "read_2": "fastq_2",
+          "versions": "versions"
         ], 
         toState: [ 
           "fastq_1": "fastq_1",
-          "fastq_2": "fastq_2"
+          "fastq_2": "fastq_2", 
+          "versions": "updated_versions"
         ]
     )
     
@@ -109,7 +114,8 @@ workflow run_wf {
           "umi_discard_read": "umi_discard_read",
           "skip_trimming": "skip_trimming",
           "skip_bbsplit": "skip_bbsplit",
-          "remove_ribo_rna": "remove_ribo_rna"
+          "remove_ribo_rna": "remove_ribo_rna", 
+          "versions": "versions"
         ], 
         toState: [ 
           "fastqc_html_1": "fastqc_html_1",
@@ -127,7 +133,8 @@ workflow run_wf {
           "passed_trimmed_reads": "passed_trimmed_reads",
           "num_trimmed_reads": "num_trimmed_reads",
           "sortmerna_log": "sortmerna_log",
-          "salmon_json_info": "salmon_json_info"
+          "salmon_json_info": "salmon_json_info", 
+          "versions": "updated_versions"
         ]
     )
 
@@ -175,7 +182,8 @@ workflow run_wf {
           "umi_dedup_stats": "umi_dedup_stats",
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
-          "salmon_quant_libtype": "salmon_quant_libtype" 
+          "salmon_quant_libtype": "salmon_quant_libtype", 
+          "versions": "versions" 
         ],
         toState: [
           "star_alignment": "star_alignment", 
@@ -190,7 +198,8 @@ workflow run_wf {
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-          "salmon_quant_results": "salmon_quant_results"
+          "salmon_quant_results": "salmon_quant_results", 
+          "versions": "updated_versions"
         ]
     )
 
@@ -229,7 +238,8 @@ workflow run_wf {
           "skip_qc": "skip_qc",
           "skip_markdupkicates": "skip_markdupkicates", 
           "skip_stringtie": "skip_stringtie", 
-          "skip_bigwig":"gencode"
+          "skip_bigwig":"gencode", 
+          "versions": "versions"
         ], 
         toState: [
           "genome_bam_sorted": "processed_genome_bam", 
@@ -245,7 +255,8 @@ workflow run_wf {
           "bedgraph_forward": "bedgraph_forward",
           "bedgraph_reverse": "bedgraph_reverse",
           "bigwig_forward": "bigwig_forward",
-          "bigwig_reverse": "bigwig_reverse"
+          "bigwig_reverse": "bigwig_reverse", 
+          "versions": "updated_versions"
         ]
     )
 
@@ -291,7 +302,8 @@ workflow run_wf {
           "num_trimmed_reads": "num_trimmed_reads",
           "passed_trimmed_reads": "passed_trimmed_reads",
           "passed_mapping": "passed_mapping",
-          "percent_mapped": "percent_mapped"
+          "percent_mapped": "percent_mapped", 
+          "versions": "versions"
         ], 
         toState: [
           "preseq_output": "preseq_output",
@@ -340,7 +352,8 @@ workflow run_wf {
           "multiqc_report": "multiqc_report", 
           "multiqc_data": "multiqc_data", 
           "multiqc_plots": "multiqc_plots",
-          "multiqc_versions": "multiqc_versions" 
+          "multiqc_versions": "multiqc_versions", 
+          "versions": "updated_versions" 
         ] 
     )
 
@@ -437,7 +450,8 @@ workflow run_wf {
         "multiqc_report": "multiqc_report", 
         "multiqc_data": "multiqc_data", 
         "multiqc_plots": "multiqc_plots",
-        "multiqc_versions": "multiqc_versions"
+        "multiqc_versions": "multiqc_versions", 
+        "versions": "versions"
       ]
     )
     | niceView()

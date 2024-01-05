@@ -15,12 +15,19 @@ functionality:
   - name: "--biotypes_header"
     type: file
     default: assets/multiqc/biotypes_header.txt
-
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
 
   - name: '--featurecounts_multiqc'
     type: file
     direction: output
     default: $id.biotype_counts_rrna_mqc.tsv
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
   
   resources:
     - type: bash_script

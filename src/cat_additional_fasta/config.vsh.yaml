@@ -22,6 +22,9 @@ functionality:
     - name: "--biotype"
       type: string
       description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
+    - name: "--versions"
+      type: file
+      must_exist: false
 
     # Output
     - name: "--fasta_output"
@@ -32,6 +35,10 @@ functionality:
       type: file
       direction: output
       description: Concatenated GTF file.
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
   
   resources:
     - type: bash_script

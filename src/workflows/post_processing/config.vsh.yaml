@@ -76,7 +76,7 @@ functionality:
           type: boolean
         - name: "--versions"
           type: file
-          default: versions.yml
+          must_exist: false
 
     - name: "Output"
       arguments:
@@ -136,6 +136,10 @@ functionality:
           type: file
           direction: output
           default: $id.reverse.bigwig
+        - name: "--updated_versions"
+          type: file
+          default: versions.yml
+          direction: output
 
   resources:
     - type: nextflow_script

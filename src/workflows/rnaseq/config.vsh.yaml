@@ -735,7 +735,8 @@ functionality:
       direction: output
     - name: "--versions"
       type: file
-      default: versions.yml
+      
+      must_exist: false
       direction: output
 
   resources:
@@ -754,5 +755,5 @@ functionality:
 
 platforms:
   - type: nextflow
-    # directives: 
-    #   label: [ "lowtime", "lowmem", "lowcpu" ]
+    directives: 
+      label: [ "lowtime", "lowmem", "lowcpu" ]

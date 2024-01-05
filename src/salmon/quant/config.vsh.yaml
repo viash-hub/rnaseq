@@ -41,6 +41,10 @@ functionality:
       type: string
       description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
       default: ''
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     - name: "--output"
       type: file
@@ -52,6 +56,10 @@ functionality:
       direction: output
       description: File containing meta information from Salmon quant
       default: $id.$key.meta_info.json
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
 
   resources:
@@ -61,10 +69,10 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/SRR6357073_1.fastq.gz
-    - path: testData/reference/salmon.tar.gz
-    - path: testData/reference/genes.gtf.gz
-    - path: testData/reference/transcriptome.fasta
+    - path: /testData/minimal_test/SRR6357073_1.fastq.gz
+    - path: /testData/reference/salmon.tar.gz
+    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/reference/transcriptome.fasta
 
 platforms:
   - type: docker

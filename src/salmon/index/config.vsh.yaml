@@ -14,9 +14,17 @@ functionality:
       type: file
     - name: "--transcriptome_fasta"
       type: file
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     - name: "--salmon_index"
       type: file
+      direction: output
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
       direction: output
 
   resources:

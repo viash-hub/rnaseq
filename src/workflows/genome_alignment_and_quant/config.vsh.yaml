@@ -77,8 +77,8 @@ functionality:
       description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
     - name: "--versions"
       type: file
-      default: versions.yml
-
+      must_exist: false
+      
     # Output
     - name: "--star_alignment"
       type: file
@@ -132,6 +132,10 @@ functionality:
       type: file
       direction: output
       default: $id.salmon_quant
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: nextflow_script

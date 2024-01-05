@@ -57,14 +57,13 @@ else
 fi
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    trimgalore: \$(echo \$(trim_galore --version 2>&1) | sed 's/^.*version //; s/Last.*\$//')
-    cutadapt: \$(cutadapt --version)
-END_VERSIONS
+text="${meta_functionality_name}:
+    trimgalore: $(echo $(trim_galore --version 2>&1) | sed 's/^.*version //; s/Last.*\$//')
+    cutadapt: $(cutadapt --version)"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

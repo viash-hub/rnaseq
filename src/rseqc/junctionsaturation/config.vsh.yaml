@@ -64,6 +64,11 @@ functionality:
       default: 30 
       description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
       min: 0
+    
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
       
     - name: "--output_plot_r"
       type: file
@@ -78,10 +83,16 @@ functionality:
       required: false
       default: $id.junction_saturation_plot.pdf
       description: plot of junction saturation (pdf)
+    
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh

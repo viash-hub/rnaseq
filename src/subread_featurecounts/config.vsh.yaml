@@ -34,6 +34,10 @@ functionality:
     - name: "--gencode"
       type: boolean
       description: Specify if the GTF annotation is in GENCODE format.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     - name: "--counts"
       type: file
@@ -45,6 +49,10 @@ functionality:
       direction: output
       description: Summary log file
       default: $id.featureCounts.txt.summary
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -53,8 +61,8 @@ functionality:
   test_resources: 
     - type: bash_script
       path: test.sh
-    - path: testData/reference/genes.gtf.gz
-    - path: testData/minimal_test/test.bam  # add test BAM file
+    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/minimal_test/test.bam  # add test BAM file
     
 platforms:
   - type: docker

@@ -59,13 +59,12 @@ if [ -f "$par_output/aux_info/meta_info.json" ]; then
 fi
 
 # Version
-read -r -d '' text <<- END_VERSIONS
-"${meta_functionality_name}":
-    salmon: \$(echo \$(salmon --version) | sed -e "s/salmon //g")
-END_VERSIONS
+text="${meta_functionality_name}:
+    salmon: $(echo $(salmon --version) | sed -e "s/salmon\ //g")"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
+    mv "$par_versions" "$par_updated_versions"
 else
-    echo "$text" > "$par_versions"
+    echo "$text" > "$par_updated_versions"
 fi

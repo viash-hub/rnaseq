@@ -15,11 +15,19 @@ functionality:
   - name: "--gtf"
     type: file
     description: GTF file
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
 
   - name: "--filtered_gtf"
     type: file
     direction: output
     description: Filtered GTF file containing only genes in the genome
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
   resources:
     - type: bash_script

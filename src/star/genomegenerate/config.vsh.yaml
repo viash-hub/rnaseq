@@ -17,11 +17,19 @@ functionality:
   - name: "--gtf"
     type: file
     description: GTF file
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
 
   - name: "--star_index"
     type: file
     direction: output
     description: STAR index directory.
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
   resources:
     - type: bash_script
@@ -30,8 +38,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/reference/genes.gtf.gz
-    - path: testData/reference/genome.fasta
+    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/reference/genome.fasta
    
 platforms:
   - type: docker

@@ -24,6 +24,10 @@ functionality:
     - name: "--get_output_stats"
       type: boolean
       description: Whether or not to generate output stats.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     # Outputs
     - name: "--output_bam"
@@ -35,6 +39,10 @@ functionality:
       type: file
       description: Directory containing UMI based dedupllication statistics files
       default: $id.umi_dedup.stats
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -43,8 +51,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/test.bam
-    - path: testData/minimal_test/test.bam.bai
+    - path: /testData/minimal_test/test.bam
+    - path: /testData/minimal_test/test.bam.bai
 
 platforms:
   - type: docker

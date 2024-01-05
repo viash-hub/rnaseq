@@ -42,6 +42,10 @@ functionality:
       type: string
       default: ''
       description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--output"
       type: file
@@ -59,6 +63,10 @@ functionality:
       type: file
       direction: output 
       default: $id.star_aligned.log.final.out
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -67,9 +75,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: testData/minimal_test/SRR6357070_2.fastq.gz
-    - path: testData/reference/genes.gtf.gz
+    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: /testData/reference/genes.gtf.gz
    
 platforms:
   - type: docker

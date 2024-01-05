@@ -30,6 +30,10 @@ functionality:
       description: "The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI."
       multiple: true
       multiple_sep: ","
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     # Outputs
     - name: "--fastq_1"
@@ -45,6 +49,10 @@ functionality:
       description: Output file for read 2.
       direction: output
       default: $id.$key.read2.fastq.gz
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
     # Optional arguments
     - name: "--umitools_extract_method"

@@ -16,11 +16,19 @@ functionality:
     - name: "--paired"
       type: boolean
       description: Paired-end reads?
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     - name: "--output"
       type: file
       direction: output
       default: $id.lc_extrap.txt
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script

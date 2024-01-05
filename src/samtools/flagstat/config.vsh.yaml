@@ -16,12 +16,20 @@ functionality:
     - name: "--bai"
       type: file
       description: BAM index file.
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
    
     - name: "--output"
       type: file 
       description: File containing samtools stats output.
       direction: output
       default: $id.$key.flagstat
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
@@ -30,8 +38,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: testData/minimal_test/mapt.NA12156.altex.bam
-    - path: testData/minimal_test/mapt.NA12156.altex.bam.bai
+    - path: /testData/minimal_test/mapt.NA12156.altex.bam
+    - path: /testData/minimal_test/mapt.NA12156.altex.bam.bai
 
 platforms:
   - type: nextflow

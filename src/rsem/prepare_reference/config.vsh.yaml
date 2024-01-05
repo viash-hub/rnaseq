@@ -19,6 +19,10 @@ functionality:
     description: GTF file
   - name: "--star"
     type: boolean
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
 
   - name: "--rsem"
     type: file
@@ -28,6 +32,10 @@ functionality:
     type: file
     direction: output
     description: Fasta file of transcripts
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
   resources:
     - type: bash_script

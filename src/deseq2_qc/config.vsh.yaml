@@ -29,6 +29,10 @@ functionality:
     - name: "--extra_args2"
       type: string
       default: star_salmon
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
 
     # OUTPUT
     - name: "--deseq2_output"
@@ -43,6 +47,10 @@ functionality:
       type: file
       direction: output
       default: deseq2.sample.dists_mqc.tsv
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
   
   resources:
     - type: bash_script

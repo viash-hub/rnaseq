@@ -21,6 +21,10 @@ functionality:
       multiple_sep: ","
       description: Input fastq files, either one or two (paired)
       example: sample.fastq
+    - name: "--versions"
+      type: file
+      must_exist: false
+      
     
     - name: "--fastqc_html_1"
       type: file
@@ -46,10 +50,15 @@ functionality:
       required: false
       must_exist: false
       default: $id.$key.read2.zip
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
 
   resources:
     - type: bash_script
       path: script.sh
+  
   test_resources:
     - type: bash_script
       path: test.sh
