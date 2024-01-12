@@ -56,7 +56,7 @@ jobs:
     - name: Remove target folder from .gitignore
       run: |
         # allow publishing the target folder
-        sed -i '/^\/target\/$/d' .gitignore
+        sed -i '/^target$/d' .gitignore
 
     - uses: viash-io/viash-actions/ns-build@v4
       with:
