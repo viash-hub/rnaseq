@@ -215,7 +215,7 @@ functionality:
     - name: "--skip_qc"
       type: boolean_true
       description: Skip QC steps of the workflow.
-    - name: "--skip_markdupkicates"
+    - name: "--skip_markduplicates"
       type: boolean_true
     - name: "--skip_stringtie"
       type: boolean_true

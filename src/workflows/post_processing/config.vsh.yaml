@@ -68,7 +68,7 @@ functionality:
           default: false
         - name: "--skip_qc"
           type: boolean
-        - name: "--skip_markdupkicates"
+        - name: "--skip_markduplicates"
           type: boolean
         - name: "--skip_stringtie"
           type: boolean

@@ -236,7 +236,7 @@ workflow run_wf {
           "min_mapped_reads": "min_mapped_reads", 
           "with_umi": "with_umi",
           "skip_qc": "skip_qc",
-          "skip_markdupkicates": "skip_markdupkicates", 
+          "skip_markduplicates": "skip_markduplicates", 
           "skip_stringtie": "skip_stringtie", 
           "skip_bigwig":"gencode", 
           "versions": "versions"
