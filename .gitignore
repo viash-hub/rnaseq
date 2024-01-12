@@ -1,4 +1,5 @@
 .nextflow*
 work
 testData
+test_results
 target
