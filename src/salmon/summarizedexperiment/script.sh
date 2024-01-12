@@ -18,9 +18,10 @@ mv ${par_counts_gene_scaled%.*}.rds $par_output/
 mv ${par_counts_transcript%.*}.rds $par_output/
 
 # Version
+summarizedExperiment_ver=$(Rscript -e "library(SummarizedExperiment); cat(as.character(packageVersion('SummarizedExperiment')))")
 text="${meta_functionality_name}:
     r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-    bioconductor-summarizedexperiment: $(Rscript -e 'library(SummarizedExperiment); cat(as.character(packageVersion('SummarizedExperiment')))')"
+    bioconductor-summarizedexperiment: ${summarizedExperiment_ver}"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

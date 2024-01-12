@@ -18,9 +18,14 @@ done
 Rscript "$meta_resources_dir/salmon_tximport.r" NULL $salmon_tmpdir salmon.merged $par_tx2gene_tsv
 
 # Version
+tximeta_ver=$(Rscript -e "library(tximeta); cat(as.character(packageVersion('tximeta')))")
+summarizedExperiment_ver=$(Rscript -e "library(SummarizedExperiment); cat(as.character(packageVersion('SummarizedExperiment')))")
+tximport_ver=$(Rscript -e "library(tximport); cat(as.character(packageVersion('tximport')))")
 text="${meta_functionality_name}:
     r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-    bioconductor-tximeta: $(Rscript -e 'library(tximeta); cat(as.character(packageVersion('tximeta')))')"
+    bioconductor-tximeta: ${tximeta_ver}
+    bioconductor-SummarizedExperiment: ${summarizedExperiment_ver}
+    bioconductor-tximport: ${tximport_ver}"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
