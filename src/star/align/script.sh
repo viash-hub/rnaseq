@@ -27,7 +27,7 @@ mkdir -p $par_output
 STAR \
     --genomeDir $par_star_index \
     --readFilesIn ${input[*]} \
-    --runThreadN $meta_cpus \
+    --runThreadN ${meta_cpus:-1} \
     --outFileNamePrefix $par_output/ \
     $out_sam_type \
     $ignore_gtf \

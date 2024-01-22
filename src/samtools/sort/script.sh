@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-samtools sort -@ $meta_cpus -o $par_output $par_input
+samtools sort -@ ${meta_cpus:-1} -o $par_output $par_input
 
 # Version
 text="${meta_functionality_name}:

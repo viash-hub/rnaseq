@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# define input and output for script
-input_bam_1_unpaired="SRR6357070.bam"
-input_bed_1="genome_gfp.bed"
+gunzip "$meta_resources_dir/hg19_RefSeq.bed.gz"
 
-input_bam_2_paired="Pairend_nonStrandSpecific_36mer_Human_hg19.bam"
-input_bed_2="hg19_rRna.bed"
+# define input and output for script
+input_bam="$meta_resources_dir/Pairend_StrandSpecific_51mer_Human_hg19.bam"
+input_bed="$meta_resources_dir/hg19_RefSeq.bed"
 
 output_stats="inner_distance_stats.txt"
 output_dist="inner_distance.txt"
@@ -13,58 +12,32 @@ output_plot="inner_distance_plot.pdf"
 output_plot_r="inner_distance_plot.r"
 output_freq="inner_distance_freq.txt"
 
-# create temporary directory
-tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
-function clean_up {
-    rm -rf "$tmpdir"
-}
-trap clean_up EXIT
-
 # Run executable
-
-echo "> Running $meta_functionality_name for unpaired reads, writing to tmpdir $tmpdir."
-
-"$meta_executable" \
-    --input "$meta_resources_dir/$input_bam_1_upaired" \
-    --refgene "$meta_resources_dir/$input_bed_1" \
-    --output_stats $tmpdir/$output_stats \
-    --output_dist $tmpdir/$output_dist \
-    --output_plot $tmpdir/$output_plot \
-    --output_plot_r $tmpdir/$output_plot_r \
-    --output_freq $tmpdir/$output_freq
-
-exit_code=$?
-[[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
-
-echo ">> asserting no output has been created for unpaired read input"
-
-[[ -f $tmpdir/"$output_stats" ]] && echo "$output_stats has been created" && exit 1
-[[ -f $tmpdir/"$output_dist" ]] && echo "$output_dist has been created" && exit 1
-[[ -f $tmpdir/"$$output_plot" ]] && echo "$output_plot has been created" && exit 1
-[[ -f $tmpdir/"$$output_plot_r" ]] && echo "$output_plot_r has been created" && exit 1
-[[ -f $tmpdir/"$$soutput_freq" ]] && echo "$output_freq has been created" && exit 1
-
-echo "> Running $meta_functionality_name for paired reads, writing to tmpdir $tmpdir."
+echo "> Running $meta_functionality_name"
 
 "$meta_executable" \
-    --input "$meta_resources_dir/$input_bam_2_paired" \
-    --refgene "$meta_resources_dir/$input_bed_2" \
-    --paired \
-    --output_stats $tmpdir/$output_stats \
-    --output_dist $tmpdir/$output_dist \
-    --output_plot $tmpdir/$output_plot \
-    --output_plot_r $tmpdir/$output_plot_r \
-    --output_freq $tmpdir/$output_freq
+    --input $input_bam \
+    --refgene $input_bed \
+    --output_stats $output_stats \
+    --output_dist $output_dist \
+    --output_plot $output_plot \
+    --output_plot_r $output_plot_r \
+    --output_freq $output_freq
 
 exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
 
 echo ">> asserting output has been created for paired read input"
 
-[[ ! -f "$tmpdir/$output_stats" ]] && echo "$output_stats was not created" && exit 1
-[[ ! -f "$tmpdir/$output_dist" ]] && echo "$output_dist was not created" && exit 1
-[[ ! -f "$tmpdir/$output_plot" ]] && echo "$output_plot was not created" && exit 1
-[[ ! -f "$tmpdir/$output_plot_r" ]] && echo "$output_plot_r was not created" && exit 1
-[[ ! -f "$tmpdir/$output_freq" ]] && echo "$output_freq was not created" && exit 1
+[ ! -f "$output_stats" ] && echo "$output_stats was not created" && exit 1
+[ ! -s "$output_stats" ] && echo "$output_stats is empty" && exit 1
+[ ! -f "$output_dist" ] && echo "$output_dist was not created" && exit 1
+[ ! -s "$output_dist" ] && echo "$output_dist is empty" && exit 1
+[ ! -f "$output_plot" ] && echo "$output_plot was not created" && exit 1
+[ ! -s "$output_plot" ] && echo "$output_plot is empty" && exit 1
+[ ! -f "$output_plot_r" ] && echo "$output_plot_r was not created" && exit 1
+[ ! -s "$output_plot_r" ] && echo "$output_plot_r is empty" && exit 1
+[ ! -f "$output_freq" ] && echo "$output_freq was not created" && exit 1
+[ ! -s "$output_freq" ] && echo "$output_freq is empty" && exit 1
 
 exit 0

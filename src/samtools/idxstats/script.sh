@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-samtools idxstats --threads $meta_cpus $par_bam > $par_output
+samtools idxstats --threads ${meta_cpus:-1} $par_bam > $par_output
 
 # Version
 text="${meta_functionality_name}:

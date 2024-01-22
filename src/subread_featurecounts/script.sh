@@ -17,15 +17,15 @@ else
 fi
 
 if $par_paired; then
-    paired=' -p'
+    paired='-p'
 fi
 
 par_extra_featurecounts_args+=" -t $par_featurecounts_feature_type"
-
+echo "featureCounts $par_extra_featurecounts_args $paired -T ${meta_cpus:-1} -a $par_gtf -s $strandedness -o $par_counts $par_bam"
 featureCounts \
     $par_extra_featurecounts_args \
     $paired \
-    -T $meta_cpus \
+    -T ${meta_cpus:-1} \
     -a $par_gtf \
     -s $strandedness \
     -o $par_counts \

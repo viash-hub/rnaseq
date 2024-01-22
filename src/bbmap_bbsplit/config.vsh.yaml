@@ -31,10 +31,6 @@ functionality:
     - name: "--only_build_index"
       type: boolean
       description: true = only build index; false = mapping
-    - name: "--build"
-      type: integer
-      description: Designate index to use.  Corresponds to the number specified when building the index. If multiple references are indexed in the same directory, each needs a unique build ID.
-      default: 1
     - name: "--built_bbsplit_index"
       type: file
       description: Directory with index files
@@ -49,14 +45,14 @@ functionality:
       description: Output file for read 1.
       direction: output
       must_exist: false
-      default: $id.$key.read1.fq.gz
+      default: $id.$key.read_1.fq.gz
     - name: "--fastq_2"
       type: file
       required: false
       must_exist: false
       description: Output file for read 2.
       direction: output
-      default: $id.$key.read2.fq.gz
+      default: $id.$key.read_2.fq.gz
     - name: "--bbsplit_index"
       type: file
       description: Directory with index files
@@ -74,12 +70,11 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/genome.fasta
-    # - path: /testData/reference/bbsplit_fasta_list.txt
-    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
-    - path: /testData/reference/bbsplit_fasta/sarscov2.fa
-    - path: /testData/reference/bbsplit_fasta/human.fa
+    - path: /testData/minimal_test/reference/genome.fasta
+    - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
+    - path: /testData/minimal_test/reference/bbsplit_fasta/sarscov2.fa
+    - path: /testData/minimal_test/reference/bbsplit_fasta/human.fa
 
 platforms:
   - type: docker

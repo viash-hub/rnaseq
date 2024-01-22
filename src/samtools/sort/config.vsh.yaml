@@ -35,11 +35,10 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/mapt.NA12156.altex.bam
+    - path: /testData/unit_test_resources/chr19.bam
 
 
 platforms:
-  - type: nextflow
   - type: docker
     image: ubuntu:22.04
     setup:

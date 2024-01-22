@@ -96,9 +96,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070.bam
-    - path: /testData/minimal_test/genome_gfp.bed
-   
+    - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
+    - path: /testData/unit_test_resources/hg19_RefSeq.bed.gz   
 platforms:
   - type: docker
     image: ubuntu:22.04

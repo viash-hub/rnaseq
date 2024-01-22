@@ -246,7 +246,7 @@ def main(argv=None):
                     skipped_stats["pairs_output"] += 1
 
             else:
-                skipped_stats["skipped_not_read12"] += 1
+                skipped_stats["skipped_not_read_12"] += 1
                 U.warn(
                     "Alignment {} is neither read1 nor read2 -- skipped".format(
                         "\t".join(map(str, [read.query_name, read.flag, read.reference_name, int(read.pos)]))

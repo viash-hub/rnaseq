@@ -57,9 +57,13 @@ functionality:
       path: script.sh
     # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/deseq2_qc.r
     - path: deseq2_qc.r
+  
   test_resources:
     - type: bash_script
       path: test.sh
+    - path: /testData/unit_test_resources/counts.tsv
+    - path: /assets/multiqc/deseq2_pca_header.txt
+    - path: /assets/multiqc/deseq2_clustering_header.txt
 
 platforms: 
   - type: docker

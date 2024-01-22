@@ -31,7 +31,11 @@ toupper() {
 label_lower=$(tolower "$par_extra_args2")
 label_upper=$(toupper "$par_extra_args2")
 
-Rscript "$meta_resources_dir/deseq2_qc.r" --count_file $par_counts --outdir $par_deseq2_output --cores $meta_cpus $par_extra_args
+Rscript "$meta_resources_dir/deseq2_qc.r" \
+    --count_file $par_counts \
+    --outdir $par_deseq2_output \
+    --cores ${meta_cpus:-1} \
+    $par_extra_args
 
 if [ -f "$par_deseq2_output/R_sessionInfo.log" ]; then
     sed "s/deseq2_pca/${label_lower}_deseq2_pca/g" < $par_pca_header_multiqc > tmp.txt

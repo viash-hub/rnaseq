@@ -8,7 +8,8 @@ echo ">>> Testing $meta_functionality_name"
   --salmon_index Salmon 
 
 echo ">>> Checking whether output exists"
-[ ! -d Salmon ] && echo "Salmon index does not exist!" && exit 1
+[ ! -d "Salmon" ] && echo "Salmon index does not exist!" && exit 1
+[ -z "$(ls -A 'Salmon')" ] && echo "Salmon index is empty!" && exit 1
 
 echo "All tests succeeded!"
 exit 0

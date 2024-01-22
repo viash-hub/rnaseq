@@ -44,17 +44,6 @@ functionality:
       path: script.sh
     # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_summarizedexperiment.r
     - path: salmon_summarizedexperiment.r
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/gene_counts_length_scaled.tsv 
-    - path: /testData/minimal_test/gene_counts_scaled.tsv 
-    - path: /testData/minimal_test/gene_counts.tsv 
-    - path: /testData/minimal_test/gene_tpm.tsv 
-    - path: /testData/minimal_test/transcript_counts.tsv 
-    - path: /testData/minimal_test/transcript_tpm.tsv
-    - path: /testData/minimal_test/salmon_tx2gene.tsv
    
 platforms:
   - type: docker

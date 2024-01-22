@@ -32,9 +32,9 @@ file1=$(basename -- "${input[0]}")
 read1="${file1%.fastq*}"
 file2=$(basename -- "${input[1]}")
 read2="${file2%.fastq*}"
-html1=$(find $tmpdir/ -iname ${read1}_fastqc.html)
+html1=$(find $tmpdir/ -iname ${read_1}_fastqc.html)
 html2=$(find $tmpdir/ -iname ${read2}_fastqc.html)
-zip1=$(find $tmpdir/ -iname ${read1}_fastqc.zip)
+zip1=$(find $tmpdir/ -iname ${read_1}_fastqc.zip)
 zip2=$(find $tmpdir/ -iname ${read2}_fastqc.zip)
 
 if [ -e "$html1" ]; then 

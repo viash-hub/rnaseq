@@ -34,8 +34,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/genome.fasta
-    - path: /testData/reference/transcriptome.fasta
+    - path: /testData/minimal_test/reference/genome.fasta
+    - path: /testData/minimal_test/reference/transcriptome.fasta
 
 platforms:
   - type: docker

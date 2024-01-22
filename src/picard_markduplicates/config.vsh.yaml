@@ -55,8 +55,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/genome.fasta
-    # - path: /genome_bam/
+    - path: /testData/unit_test_resources/a.bam
+    - path: /testData/unit_test_resources/genome.fasta
 
 platforms: 
   - type: docker
@@ -66,7 +66,7 @@ platforms:
         run: | 
           apt-get update && \
           apt-get install -y build-essential openjdk-17-jdk wget && \
-          wget --no-check-certificate https://github.com/broadinstitute/picard/releases/download/3.1.0/picard.jar && \
+          wget --no-check-certificate https://github.com/broadinstitute/picard/releases/download/3.1.1/picard.jar && \
           mv picard.jar /usr/local/bin 
         env: [ PICARD=/usr/local/bin/picard.jar ]
   - type: nextflow

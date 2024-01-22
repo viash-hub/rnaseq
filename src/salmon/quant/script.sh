@@ -47,7 +47,7 @@ fi
 
 salmon quant \
     --geneMap $par_gtf \
-    --threads $meta_cpus \
+    --threads ${meta_cpus:-1} \
     --libType=$strandedness \
     $reference \
     $input_reads \

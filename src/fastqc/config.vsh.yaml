@@ -30,26 +30,26 @@ functionality:
       type: file
       direction: output
       description: FastQC HTML report for read 1.
-      default: $id.$key.read1.html
+      default: $id.$key.read_1.html
     - name: "--fastqc_html_2"
       type: file
       direction: output
       description: FastQC HTML report for read 2.
       required: false
       must_exist: false
-      default: $id.$key.read2.html
+      default: $id.$key.read_2.html
     - name: "--fastqc_zip_1"
       type: file
       direction: output
       description: FastQC report archive for read 1.
-      default: $id.$key.read1.zip
+      default: $id.$key.read_1.zip
     - name: "--fastqc_zip_2"
       type: file
       direction: output
       description: FastQC report archive for read 2.
       required: false
       must_exist: false
-      default: $id.$key.read2.zip
+      default: $id.$key.read_2.zip
     - name: "--updated_versions"
       type: file
       default: versions.yml
@@ -62,8 +62,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
 
 platforms:
   - type: docker

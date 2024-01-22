@@ -13,7 +13,6 @@ functionality:
       arguments:
         - name: "--multiqc_custom_config"
           type: file
-          default: assets/multiqc_config.yml
         - name: "--multiqc_title"
           type: string
         - name: "--multiqc_logo"
@@ -59,14 +58,15 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/multiqc_test_data
+    - path: /testData/unit_test_resources/data.zip
+    - path: /assets/multiqc_config.yml
 
 platforms:
   - type: docker
     image: ubuntu:22.04
     setup:
       - type: apt
-        packages: [ pip ]
+        packages: [ pip, unzip ]
       - type: python
         pip: multiqc
   - type: nextflow

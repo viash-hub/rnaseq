@@ -16,10 +16,13 @@ echo ">>> Testing for paired-end reads"
     --trim_log_2 SRR6357070_2.trimming_report.txt
 
 echo ">> Checking if the correct files are present"
-[[ ! -f SRR6357070_1.trimmed.html ]] || [[ ! -f SRR6357070_2.trimmed.html ]] && echo "Report file missing" && exit 1
-[[ ! -f SRR6357070_1.trimmed.zip ]] || [[ ! -f SRR6357070_2.trimmed.zip ]] && echo "Zip file missing" && exit 1
-[[ ! -f SRR6357070_1.trimmed.fastq.gz ]] || [[ ! -f SRR6357070_2.trimmed.fastq.gz ]] && echo "Trimmed reads file missing" && exit 1
-[[ ! -f SRR6357070_2.trimming_report.txt ]] || [[ ! -f SRR6357070_2.trimming_report.txt ]] && echo "Trimming report log file missing" && exit 1
+[[ ! -f "SRR6357070_1.trimmed.html" ]] || [[ ! -f "SRR6357070_2.trimmed.html" ]] && echo "Report file missing!" && exit 1
+[[ ! -s "SRR6357070_1.trimmed.html" ]] || [[ ! -s "SRR6357070_2.trimmed.html" ]] && echo "Report file empty!" && exit 1
+[[ ! -f "SRR6357070_1.trimmed.zip" ]] || [[ ! -f "SRR6357070_2.trimmed.zip" ]] && echo "Zip file missing!" && exit 1
+[[ ! -f "SRR6357070_1.trimmed.fastq.gz" ]] || [[ ! -f "SRR6357070_2.trimmed.fastq.gz" ]] && echo "Trimmed reads file missing!" && exit 1
+[[ ! -s "SRR6357070_1.trimmed.fastq.gz" ]] || [[ ! -s "SRR6357070_2.trimmed.fastq.gz" ]] && echo "Trimmed reads file empty!" && exit 1
+[[ ! -f "SRR6357070_1.trimming_report.txt" ]] || [[ ! -f "SRR6357070_2.trimming_report.txt" ]] && echo "Trimming report log file missing!" && exit 1
+[[ ! -s "SRR6357070_2.trimming_report.txt" ]] || [[ ! -s "SRR6357070_2.trimming_report.txt" ]] && echo "Trimming report log file empty!" && exit 1
 
 
 echo ">>> Testing for single-end reads"
@@ -32,10 +35,13 @@ echo ">>> Testing for single-end reads"
     --trim_log_1 SRR6357070_1.trimming_report.txt 
 
 echo ">> Checking if the correct files are present"
-[ ! -f SRR6357070_1.trimmed.html ] && echo "Report file missing" && exit 1
-[ ! -f SRR6357070_1.trimmed.zip ] && echo "Zip file missing" && exit 1
-[ ! -f SRR6357070_1.trimmed.fastq.gz ] && echo "Trimmed reads file missing" && exit 1
-[ ! -f SRR6357070_2.trimming_report.txt ] && echo "Trimming report log file missing" && exit 1
+[ ! -f 'SRR6357070_1.trimmed.html' ] && echo "Report file missing" && exit 1
+[ ! -s "SRR6357070_1.trimmed.html" ] && echo "Report file empty" && exit 1
+[ ! -f "SRR6357070_1.trimmed.zip" ] && echo "Zip file missing" && exit 1
+[ ! -f "SRR6357070_1.trimmed.fastq.gz" ] && echo "Trimmed reads file missing" && exit 1
+[ ! -s "SRR6357070_1.trimmed.fastq.gz" ] && echo "Trimmed reads file empty" && exit 1
+[ ! -f "SRR6357070_2.trimming_report.txt" ] && echo "Trimming report log file missing" && exit 1
+[ ! -s "SRR6357070_2.trimming_report.txt" ] && echo "Trimming report log file empty" && exit 1
 
 echo ">>> Test finished successfully"
 exit 0

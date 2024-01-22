@@ -17,8 +17,10 @@ exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
 
 echo ">>> Checking whether output exists"
-[ ! -f genome_gfp.fasta ] && echo "File 'genome_gfp.fasta' does not exist!" && exit 1
-[ ! -f genome_gfp.gtf ] && echo "File 'genome_gfp.gtf' does not exist!" && exit 1
+[ ! -f "genome_gfp.fasta" ] && echo "File 'genome_gfp.fasta' does not exist!" && exit 1
+[ ! -s "genome_gfp.fasta" ] && echo "File 'genome_gfp.fasta' is empty!" && exit 1
+[ ! -f "genome_gfp.gtf" ] && echo "File 'genome_gfp.gtf' does not exist!" && exit 1
+[ ! -s "genome_gfp.gtf" ] && echo "File 'genome_gfp.gtf' is empty!" && exit 1
 
 echo "All tests succeeded!"
 exit 0

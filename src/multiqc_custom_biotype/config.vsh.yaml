@@ -35,11 +35,6 @@ functionality:
     # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
     - path: mqc_features_stat.py
 
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    # - path: /feature_counts_output/
-
 platforms:
   - type: docker
     image: ubuntu:22.04

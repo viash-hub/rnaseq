@@ -8,9 +8,9 @@ functionality:
   description: Computing the expected future yield of distinct reads and bounds on the number of total distinct reads in the library and the associated confidence intervals.
 
   arguments: 
-    - name: "--bam"
+    - name: "--input"
       type: file
-      description: Input genome BAM file
+      description: Input genome BAM/BED file
     - name: "--extra_preseq_args"
       type: string
     - name: "--paired"
@@ -37,7 +37,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    # - path: /path/to/genome/bam/
+    - path: /testData/unit_test_resources/a.sorted.bed
+    - path: /testData/unit_test_resources/SRR1106616_5M_subset.bam
 
 platforms:
   - type: docker

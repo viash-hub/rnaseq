@@ -13,20 +13,12 @@ functionality:
       type: file 
       required: true
       description: Path of transcripts FASTA file
-    - name: "--versions"
-      type: file
-      must_exist: false
       
-    
     - name: "--output"
       type: file
       direction: output
       required: true
       description: Path of processed output FASTA file.
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
 
   resources:
     - type: bash_script
@@ -35,7 +27,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/transcriptome.fasta
+    - path: /testData/minimal_test/reference/transcriptome.fasta
    
 platforms:
   - type: docker

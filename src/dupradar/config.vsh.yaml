@@ -109,8 +109,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070.bam
-    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/unit_test_resources/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam
+    - path: /testData/unit_test_resources/genes.gtf
     
 platforms:
   - type: docker

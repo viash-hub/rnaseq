@@ -20,10 +20,6 @@ functionality:
       required: true
       description: Reference gene model in bed format
 
-    - name: "--paired"
-      type: boolean_true
-      description: Setting this flag indicates a paired-end experiment.
-
     - name: "--sample_size"
       type: integer
       required: false
@@ -112,10 +108,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070.bam
-    - path: /testData/minimal_test/genome_gfp.bed
-    - path: /testData/minimal_test/Pairend_nonStrandSpecific_36mer_Human_hg19.bam
-    - path: /testData/minimal_test/hg19_rRna.bed
+    - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
+    - path: /testData/unit_test_resources/hg19_RefSeq.bed.gz
    
 platforms:
   - type: docker

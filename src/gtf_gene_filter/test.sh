@@ -9,7 +9,8 @@ echo ">>>Testing $metat_functionality_name"
   --filtered_gtf filtered_genes.gtf
 
 echo ">>> Check whether output exists"
-[ ! -f filtered_genes.gtf ] && echo "Filtered GTF file does not exist!" && exit 1
+[ ! -f "filtered_genes.gtf" ] && echo "Filtered GTF file does not exist!" && exit 1
+[ ! -s "filtered_genes.gtf" ] && echo "Filtered GTF file is empty!" && exit 1
 
 echo "All tests succeeded!"
 exit 0

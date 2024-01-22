@@ -8,7 +8,7 @@ else
     reference=""
 fi
 
-samtools stats --threads $meta_cpus $reference $par_bam > $par_output
+samtools stats --threads ${meta_cpus:-1} $reference $par_bam > $par_output
 
 # Version
 text="${meta_functionality_name}:

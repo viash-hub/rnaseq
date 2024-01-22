@@ -18,7 +18,7 @@ java -Xmx${avail_mem}M -jar $PICARD MarkDuplicates \
 
 # Version
 text="${meta_functionality_name}:
-    picard: $(echo $(picard MarkDuplicates --version 2>&1) | grep -o 'Version:.*' | cut -f2- -d:)"
+    picard: $(echo $(java -jar $PICARD MarkDuplicates --version 2>&1) | grep -o 'Version:.*' | cut -f2- -d:)"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

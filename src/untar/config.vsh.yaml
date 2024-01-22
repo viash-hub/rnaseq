@@ -33,7 +33,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/hisat2.tar.gz
+    - path: /testData/minimal_test/reference/hisat2.tar.gz
    
 platforms:
   - type: docker

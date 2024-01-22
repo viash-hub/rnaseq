@@ -3,7 +3,7 @@
 # Command line argument processing
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 5) {
-    stop("Usage: dupRadar.r <input.bam> <annotation.gtf> <strandDirection:0=unstranded/1=forward/2=reverse> <paired/single> <nbThreads> <R-package-location (optional)>", call.=FALSE)
+    stop("Usage: dupRadar.r <input.bam> <sample_id> <annotation.gtf> <strandDirection:0=unstranded/1=forward/2=reverse> <paired/single> <nbThreads> <R-package-location (optional)>", call.=FALSE)
 }
 
 message("paired_end is", args[5])

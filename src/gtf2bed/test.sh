@@ -8,7 +8,8 @@ echo ">>> Testing $meta_functionality_name"
   --bed_output genes.bed
 
 echo ">>> Check whether output exists"
-[ ! -f genes.bed ] && echo "BED output file does not exist!" && exit 1
+[ ! -f "genes.bed" ] && echo "BED output file does not exist!" && exit 1
+[ ! -s "genes.bed" ] && echo "BED output file is empty!" && exit 1
 
 echo "All tests succeeded!"
 exit 0

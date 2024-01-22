@@ -97,8 +97,9 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070.bam
-    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/unit_test_resources/qualimap_test.bam
+    - path: /testData/unit_test_resources/qualimap_test.bam.bai
+    - path: /testData/unit_test_resources/qualimap_test_annot.gtf
    
 platforms:
   - type: docker

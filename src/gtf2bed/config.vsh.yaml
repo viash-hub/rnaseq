@@ -37,7 +37,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/minimal_test/reference/genes.gtf.gz
    
 platforms:
   - type: docker

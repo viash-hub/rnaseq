@@ -16,7 +16,7 @@ stringtie \
     -A "abundance.txt" \
     ${par_annotation_gtf:+-C "coverage.gtf"} \
     ${par_annotation_gtf:+-b "ballgown"} \
-    -p $meta_cpus \
+    -p ${meta_cpus:-1} \
     $par_extra_stringtie_args \
     ${par_stringtie_ignore_gtf:+-e}
 

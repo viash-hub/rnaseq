@@ -11,6 +11,7 @@ functionality:
     Align reads to a reference genome using STAR
  
   arguments:
+    # Input
     - name: "--paired"
       type: boolean 
       required: false
@@ -46,7 +47,7 @@ functionality:
       type: file
       must_exist: false
       
-    
+    # Output
     - name: "--output"
       type: file
       direction: output 
@@ -75,9 +76,10 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
-    - path: /testData/reference/genes.gtf.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
+    - path: /testData/minimal_test/reference/genes.gtf.gz
+    - path: /testData/minimal_test/reference/genome.fasta
    
 platforms:
   - type: docker

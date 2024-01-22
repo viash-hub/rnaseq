@@ -26,13 +26,13 @@ functionality:
     - name: "--output_1"
       type: file
       direction: output
-      default: $id.read1.subsampled.fastq.gz
+      default: $id.read_1.subsampled.fastq.gz
       description: Sampled read 1 fastq files
     - name: "--output_2"
       type: file
       must_exist: false
       direction: output
-      default: $id.read2.subsampled.fastq.gz
+      default: $id.read_2.subsampled.fastq.gz
       description: Sampled read 2 fastq files
     - name: "--updated_versions"
       type: file
@@ -46,8 +46,8 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/minimal_test/SRR6357070_1.fastq.gz
-    - path: /testData/minimal_test/SRR6357070_2.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+    - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
 
 platforms:
   - type: docker

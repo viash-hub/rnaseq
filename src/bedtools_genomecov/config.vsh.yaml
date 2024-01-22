@@ -42,7 +42,7 @@ functionality:
   test_resources:
     - type: bash_script
       path: test.sh
-    - path: /testData/
+    - path: /testData/unit_test_resources/a.sorted.bam
 
 platforms:
   - type: docker

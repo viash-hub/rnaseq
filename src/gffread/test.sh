@@ -8,7 +8,8 @@ echo ">>> Testing $meta_functioniality_name"
   --output genes.gtf
 
 echo ">>> Check whether output exists"
-[ ! -f genes.gtf ] && echo "GTF file does not exist!" && exit 1
+[ ! -f "genes.gtf" ] && echo "GTF file does not exist!" && exit 1
+[ ! -s "genes.gtf" ] && echo "GTF file is empty!" && exit 1
 
 echo "All tests succeeded!"
 exit 0

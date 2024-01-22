@@ -2,22 +2,25 @@
 
 echo ">>> Testing $meta_functionality_name"
 
-gunzip $meta_resources_dir/genes.gtf.gz
-
 "$meta_executable" \
     --strandedness reverse \
-    --bam $meta_resources_dir/test.bam \
+    --bam $meta_resources_dir/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam \
     --annotation_gtf $meta_resources_dir/genes.gtf \
-    --transcript_gtf transcripts.gtf \
-    --coverage_gtf coverage.gtf \
-    --abundance  abundance.txt \
-    --ballgown ballgown 
+    --extra_stringtie_args "-v" \
+    --transcript_gtf test.transcripts.gtf \
+    --coverage_gtf test.coverage.gtf \
+    --abundance  test.abundance.txt \
+    --ballgown test.ballgown 
     
 echo ">> Checking if the correct files are present"
-[ ! -d ballgown ] && echo "Directory 'ballgown' does not exist!" && exit 1
-[ ! -f transcripts.gtf ] && echo "File 'transcripts.gtf' does not exist!" && exit 1
-[ ! -f coverage.gtf ] && echo "File 'coverage.gtf' does not exist!" && exit 1
-[ ! -f abundance.txt ] && echo "File 'abundance.txt' does not exist!" && exit 1
+[ ! -d "test.ballgown" ] && echo "Directory 'test.ballgown' does not exist!" && exit 1
+[ -z "$(ls -A 'test.ballgown')" ] && echo "Directory 'test.ballgown' is empty!" && exit 1
+[ ! -f "test.transcripts.gtf" ] && echo "File 'test.transcripts.gtf' does not exist!" && exit 1
+[ ! -s "test.transcripts.gtf" ] && echo "File 'test.transcripts.gtf' is empty!" && exit 1
+[ ! -f "test.coverage.gtf" ] && echo "File 'test.coverage.gtf' does not exist!" && exit 1
+[ ! -s "test.coverage.gtf" ] && echo "File 'test.coverage.gtf' is empty!" && exit 1
+[ ! -f "test.abundance.txt" ] && echo "File 'test.abundance.txt' does not exist!" && exit 1
+[ ! -s "test.abundance.txt" ] && echo "File 'test.abundance.txt' is empty!" && exit 1
 
 echo ">>> Test finished successfully"
 exit 0

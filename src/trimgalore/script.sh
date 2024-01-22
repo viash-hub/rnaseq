@@ -19,15 +19,14 @@ if [ "$par_paired" == "true" ]; then
         exit 1
     else
         trim_galore $par_extra_trimgalore_args --paired --gzip --fastqc ${input[0]} ${input[1]} -o $tmpdir 
-        read1=$(find $tmpdir/ -iname *_1*.fq.gz*)
-        read2=$(find $tmpdir/ -iname *_2*.fq.gz*)
-        log1=$(find $tmpdir/ -iname *read1*report.txt)
-        log2=$(find $tmpdir/ -iname *read2*report.txt)
-        html1=$(find $tmpdir/ -iname *_1*.html)
-        html2=$(find $tmpdir/ -iname *_2*.html)
-        zip1=$(find $tmpdir/ -iname *_1*.zip)
-        zip2=$(find $tmpdir/ -iname *_2*.zip)
-        echo "$log1 - $log2"
+        read1=$(find $tmpdir/ -iname "*_1*.fq.gz*")
+        read2=$(find $tmpdir/ -iname "*_2*.fq.gz*")
+        log1=$(find $tmpdir/ -iname "*_1.*trimming_report.txt")
+        log2=$(find $tmpdir/ -iname "*_2.*trimming_report.txt")
+        html1=$(find $tmpdir/ -iname "*_1*.html")
+        html2=$(find $tmpdir/ -iname "*_2*.html")
+        zip1=$(find $tmpdir/ -iname "*_1*.zip")
+        zip2=$(find $tmpdir/ -iname "*_2*.zip")
         cp $read1 $par_fastq_1
         cp $read2 $par_fastq_2
         cp $log1 $par_trim_log_1
@@ -45,10 +44,10 @@ else
     else
         read1="$(basename -- ${input[0]})"
         trim_galore $par_extra_trimgalore_args --gzip --fastqc ${input[0]} -o $tmpdir
-        read=$(find $tmpdir/ -iname *trimmed.fq.gz*)
-        log=$(find $tmpdir/ -iname *report.txt)
-        html=$(find $tmpdir/ -iname *.html)
-        zip=$(find $tmpdir/ -iname *.zip)
+        read=$(find $tmpdir/ -iname "*trimmed.fq.gz*")
+        log=$(find $tmpdir/ -iname "*report.txt")
+        html=$(find $tmpdir/ -iname "*.html")
+        zip=$(find $tmpdir/ -iname "*.zip")
         cp $read $par_fastq_1
         cp $log $par_trim_log_1
         cp $html $par_trim_html_1

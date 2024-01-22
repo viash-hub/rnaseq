@@ -1,38 +1,28 @@
 #!/bin/bash
 
-# define input and output for script
-
-counts="$meta_resources_dir/salmon.merged.gene_counts_length_scaled.tsv"
-
-deseq2_output="deseq2"
-pca_multiqc="star_salmon.pca.vals_mqc.tsv"
-dists_multiqc="star_salmon.sample.dists_mqc.tsv"
-extra_args="--id_col 1 --sample_suffix '' -outprefix deseq2 --count_col 3"
-extra_args2="star_salmon"
-
-# create temporary directory
-tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
-function clean_up {
-    rm -rf "$tmpdir"
-}
-trap clean_up EXIT
-
 # Run executable
-echo "> Running $meta_functionality_name, writing to tmpdir $tmpdir."
+echo "> Running $meta_functionality_name"
 
 "$meta_executable" \
-    --count_file $counts \
-    $extra_args \
-    --cores 1 \
-    --outdir $deseq2_output
+    --counts $meta_resources_dir/counts.tsv \
+    --pca_header_multiqc $meta_resources_dir/deseq2_pca_header.txt \
+    --clustering_header_multiqc $meta_resources_dir/deseq2_clustering_header.txt \
+    --extra_args "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 2" \
+    --extra_args2 "test" \
+    --deseq2_output "deseq2/" \
+    --pca_multiqc pca.vals_mqc.tsv \
+    --dists_multiqc sample.dists_mqc.tsv
 
 exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
 
-echo ">> asserting output has been created for paired read input"
+echo ">> Check whether output exists"
 
-[[ ! -d "$tmpdir/$deseq2_output" ]] && echo "$deseq2_output was not created" && exit 1
-[[ ! -f "$tmpdir/$pca_multiqc" ]] && echo "$pca_multiqc was not created" && exit 1
-[[ ! -f "$tmpdir/$dists_multiqc" ]] && echo "$dists_multiqc was not created" && exit 1
+[ ! -d "deseq2" ] && echo "deseq2 was not created" && exit 1
+[ -z "$(ls -A 'deseq2')" ] && echo "deseq2 is empty" && exit 1
+[ ! -f "pca.vals_mqc.tsv" ] && echo "pca.vals_mqc.tsv was not created" && exit 1
+[ ! -s "pca.vals_mqc.tsv" ] && echo "pca.vals_mqc.tsv is empty" && exit 1
+[ ! -f "sample.dists_mqc.tsv" ] && echo "sample.dists_mqc.tsv was not created" && exit 1
+[ ! -s "sample.dists_mqc.tsv" ] && echo "sample.dists_mqc.tsv is empty" && exit 1
 
 exit 0

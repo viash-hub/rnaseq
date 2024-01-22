@@ -35,10 +35,10 @@ functionality:
       path: script.sh
 
   test_resources:
-  - type: bash_script
-    path: test.sh
-  - path: /testData/minimal_test/test.bedgraph
-  - path: /testData/minimal_test/chrom_sizes
+    - type: bash_script
+      path: test.sh
+    - path: /testData/unit_test_resources/test.bedgraph
+    - path: /testData/unit_test_resources/genome.sizes    
 
 platforms:
   - type: docker
