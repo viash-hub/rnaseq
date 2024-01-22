@@ -16,11 +16,11 @@ run_modules:
   - custom_content
   - fastqc
   - cutadapt
-  - fastp
+  # - fastp
   - sortmerna
   - star
-  - hisat2
-  - rsem
+  # - hisat2
+  # - rsem
   - salmon
   - samtools
   - picard
@@ -47,14 +47,14 @@ module_order:
       name: "FastQC (raw)"
       info: "This section of the report shows FastQC results before adapter trimming."
       path_filters:
-        - "./fastqc/*.zip"
+        - "*fastqc.*.zip"
   - cutadapt
   - fastp
   - fastqc:
       name: "FastQC (trimmed)"
       info: "This section of the report shows FastQC results after adapter trimming."
       path_filters:
-        - "./trimgalore/*.zip"
+        - "*trimgalore.*fastqc.zip"
 
 # Don't show % Dups in the General Stats table (we have this from Picard)
 table_columns_visible:
@@ -67,8 +67,11 @@ extra_fn_clean_exts:
   # - ".markdup"
   - ".salmon_quant"
   - ".mapping_quality"
-  - ".genome_sorted*"
-  - ".MarkDuplicates*"
+  - ".genome_sorted"
+  - ".MarkDuplicates"
+  - ".MarkDuplicates_flagstat"
+  - ".MarkDuplicates_stats"
+  - ".genome_sorted_MarkDuplicates"
 
 # Customise the module search patterns to speed up execution time
 #  - Skip module sub-tools that we are not interested in
@@ -77,19 +80,19 @@ extra_fn_clean_exts:
 # See https://multiqc.info/docs/#optimise-file-search-patterns for details
 sp:
   cutadapt:
-    fn: "*trimming_report.txt"
+    fn: "./trimgalore/*.trimming_report.txt"
 
   fastp:
     fn: "*.fastp.json"
 
   sortmerna:
-    fn: "*.sortmerna.log"
+    fn: "./sortmerna/*.log"
 
   hisat2:
     fn: "*.hisat2.summary.log"
 
   salmon/meta:
-    fn: "meta_info.json"
+    fn: "*meta_info.json"
 
   preseq:
     fn: "*.lc_extrap.txt"
