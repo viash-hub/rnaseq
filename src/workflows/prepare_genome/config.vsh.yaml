@@ -34,7 +34,6 @@ functionality:
         - name: "--skip_bbsplit"
           type: boolean
           description: Skip BBSplit for removal of non-reference genome reads.
-          default: true
         - name: "--bbsplit_fasta_list"
           type: file
           description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)

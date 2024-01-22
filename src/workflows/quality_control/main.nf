@@ -51,7 +51,7 @@ workflow run_wf {
             runIf: { id, state -> !state.skip_qc && !state.skip_preseq },
             fromState: [
                 "paired": "paired",
-                "bam": "genome_bam",
+                "input": "genome_bam",
                 "extra_preseq_args": "extra_preseq_args", 
                 "versions": "versions"
             ],
@@ -99,7 +99,6 @@ workflow run_wf {
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
-                "paired": "paired",
                 "sample_size": "sample_size",
                 "map_qual": "map_qual",
                 "lower_bound_size": "lower_bound_size",
@@ -363,6 +362,7 @@ workflow run_wf {
             def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
             def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
             def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
+            def multiqc_custom_config = list.collect { id, state -> state.multiqc_custom_config }.unique()[0] 
             def versions = list.collect { id, state -> state.versions }.unique()[0]
             ["merged", [
                 ids: ids, 
@@ -404,6 +404,7 @@ workflow run_wf {
                 percent_mapped: percent_mapped,
                 inferred_strand: inferred_strand, 
                 passed_strand_check: passed_strand_check, 
+                multiqc_custom_config: multiqc_custom_config,
                 versions: versions
             ] ]
         } 
@@ -488,16 +489,13 @@ workflow run_wf {
             [ id, mod_state ]
         }
 
-        // TODO:
-        // methods_description = WorkflowRnaseq.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
-
         | prepare_multiqc_input.run(
             fromState: [
                 "multiqc_custom_config": "multiqc_custom_config", 
-                "multiqc_title": "multiqc_title", 
-                "multiqc_logo": "multiqc_logo",
-                "multiqc_methods_description": "multiqc_methods_description",
-                "workflow_summary": "workflow_summary", 
+                // "multiqc_title": "multiqc_title", 
+                // "multiqc_logo": "multiqc_logo",
+                // "multiqc_methods_description": "multiqc_methods_description",
+                // "workflow_summary": "workflow_summary", 
                 "fail_trimming_multiqc": "fail_trimming_multiqc", 
                 "fail_mapping_multiqc": "fail_mapping_multiqc", 
                 "fail_strand_multiqc": "fail_strand_multiqc", 
@@ -525,6 +523,7 @@ workflow run_wf {
                 "readdistribution_multiqc": "read_distribution_output",
                 "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
                 "tin_multiqc": "tin_output_summary", 
+                "versions": "versions"
             ], 
             toState: [
               "multiqc_input": "output"
@@ -533,11 +532,11 @@ workflow run_wf {
         
         | multiqc.run (
             fromState: [
-            //   "multiqc_custom_config": "multiqc_custom_config", 
                 "multiqc_title": "multiqc_title", 
                 "multiqc_logo": "multiqc_logo",
                 "multiqc_methods_description": "multiqc_methods_description",
                 "input": "multiqc_input", 
+                "multiqc_custom_config": "multiqc_custom_config",
                 "versions": "versions"
             ], 
             toState: [

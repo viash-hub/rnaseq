@@ -27,8 +27,8 @@ CURR=`pwd`
 # Test paired-end data
 cat > testData/minimal_test/sample_sheet.csv << HERE
 id,fastq_1,fastq_2
-SRR6357070,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read2.fq.gz
-SRR6357071,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read1.fq.gz,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read2.fq.gz
+SRR6357070,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read_1.fq.gz,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read_2.fq.gz
+SRR6357071,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read_1.fq.gz,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read_2.fq.gz
 HERE
 
 nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \

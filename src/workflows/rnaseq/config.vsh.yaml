@@ -164,11 +164,10 @@ functionality:
       type: file
       description: Path to directory or tar.gz archive for pre-built BBSplit index.
     - name: "--skip_bbsplit"
-      type: boolean
+      type: boolean_true
       description: Skip BBSplit for removal of non-reference genome reads.
-      default: true
     - name: "--remove_ribo_rna"
-      type: boolean
+      type: boolean_true
       description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
     - name: "--ribo_database_manifest"
       type: file
@@ -275,6 +274,7 @@ functionality:
     # Multiqc paramenters
     - name: "--multiqc_custom_config"
       type: file
+      default: assets/multiqc_config.yml
     - name: "--multiqc_title"
       type: string
     - name: "--multiqc_logo"
@@ -321,78 +321,78 @@ functionality:
       required: false
       must_exist: false
       description: Path to output directory
-      default: fastq/$id.read1.fastq.gz
+      default: fastq/$id.read_1.fastq.gz
     - name: "--output_fastq_2"
       type: file
       direction: output
       required: false
       must_exist: false
       description: Path to output directory
-      default: fastq/$id.read2.fastq.gz
+      default: fastq/$id.read_2.fastq.gz
     - name: "--fastqc_html_1"
       type: file
       direction: output
       description: FastQC HTML report for read 1.
       required: false
       must_exist: false
-      default: fastqc/$id.read1.fastqc.html
+      default: fastqc/$id.read_1.fastqc.html
     - name: "--fastqc_html_2"
       type: file
       direction: output
       description: FastQC HTML report for read 2.
       required: false
       must_exist: false
-      default: fastqc/$id.read2.fastqc.html
+      default: fastqc/$id.read_2.fastqc.html
     - name: "--fastqc_zip_1"
       type: file
       direction: output
       description: FastQC report archive for read 1.
       required: false
       must_exist: false
-      default: fastqc/$id.read1.fastqc.zip
+      default: fastqc/$id.read_1.fastqc.zip
     - name: "--fastqc_zip_2"
       type: file
       direction: output
       description: FastQC report archive for read 2.
       required: false
       must_exist: false
-      default: fastqc/$id.read2.fastqc.zip
+      default: fastqc/$id.read_2.fastqc.zip
     - name: "--trim_log_1"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read1.trimming_report.txt
+      default: trimgalore/$id.read_1.trimming_report.txt
     - name: "--trim_log_2"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read2.trimming_report.txt
+      default: trimgalore/$id.read_2.trimming_report.txt
     - name: "--trim_html_1"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read1.trimmed_fastqc.html
+      default: trimgalore/$id.read_1.trimmed_fastqc.html
     - name: "--trim_html_2"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read2.trimmed_fastqc.html
+      default: trimgalore/$id.read_2.trimmed_fastqc.html
     - name: "--trim_zip_1"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read1.trimmed_fastqc.zip
+      default: trimgalore/$id.read_1.trimmed_fastqc.zip
     - name: "--trim_zip_2"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read2.trimmed_fastqc.zip
+      default: trimgalore/$id.read_2.trimmed_fastqc.zip
     - name: "--sortmerna_log"
       type: file
       direction: output

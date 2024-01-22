@@ -25,11 +25,13 @@ workflow run_wf {
           salmon_index: list[1][-1].salmon_index,
           hisat2_index: list[1][-1].hisat2_index,
           bbsplit_index: list[1][-1].bbsplit_index,
+          skip_bbsplit: list[1][-1].skip_bbsplit,
           gencode: list[1][-1].gencode,
           biotype: list[1][-1].biotype]
           // versions: list[1][-1].versions ]
         ]
     } 
+
     // prepare all the necessary files for reference genome
     | prepare_genome.run ( 
         fromState: [
@@ -46,6 +48,7 @@ workflow run_wf {
           "salmon_index": "salmon_index",
           // "hisat2_index": "hisat2_index",
           "bbsplit_index": "bbsplit_index",
+          "skip_bbsplit": "skip_bbsplit", 
           "gencode": "gencode", 
           "biotype": "biotype",
           "versions": "versions" 
@@ -90,7 +93,7 @@ workflow run_wf {
           "versions": "updated_versions"
         ]
     )
-    
+
     // Pre-process fastq files
     | pre_processing.run ( 
         fromState: [
@@ -384,6 +387,7 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
+        "salmon_json_info": "salmon_json_info", 
         "star_alignment": "star_alignment", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
