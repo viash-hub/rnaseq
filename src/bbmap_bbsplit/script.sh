@@ -9,12 +9,13 @@ trap clean_up EXIT
 
 avail_mem=3072
 
-other_refs=()
-while IFS="," read -r name path 
-do
-    other_refs+=("ref_$name=$path")
-done < "$par_bbsplit_fasta_list"
-
+if [ ! -d "$par_built_bbsplit_index" ]; then
+    other_refs=()
+    while IFS="," read -r name path 
+    do
+        other_refs+=("ref_$name=$path")
+    done < "$par_bbsplit_fasta_list"
+fi
 
 if $par_only_build_index; then
     if [ -f "$par_primary_ref" ] && [ ${#other_refs[@]} -gt 0 ]; then
@@ -31,7 +32,7 @@ else
     tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
     index_files=''
     if [ -d "$par_built_bbsplit_index" ]; then
-    index_files="path=$par_built_bbsplit_index"
+        index_files="path=$par_built_bbsplit_index"
     elif [ -f "$par_primary_ref" ] && [ ${#other_refs[@]} -gt 0 ]; then
         index_files="ref_primary=$par_primary_ref ${other_refs[@]}"
     else
