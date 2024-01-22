@@ -59,7 +59,6 @@ echo ">>> Testing with single-end reads and BBSplit index"
   --input "$meta_resources_dir/SRR6357070_1.fastq.gz" \
   --only_build_index false \
   --built_bbsplit_index "BBSplit_index" \
-  --bbsplit_fasta_list "bbsplit_fasta_list.txt" \
   --fastq_1 "filtered_SRR6357070_1.fastq.gz"
 
 echo ">>> Check whether output exists"
@@ -72,7 +71,6 @@ echo ">>> Testing with paired-end reads and BBSplit index"
   --input "$meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz" \
   --only_build_index false \
   --built_bbsplit_index "BBSplit_index" \
-  --bbsplit_fasta_list "bbsplit_fasta_list.txt" \
   --fastq_1 "filtered_SRR6357070_1.fastq.gz" \
   --fastq_2 "filtered_SRR6357070_2.fastq.gz"
 
