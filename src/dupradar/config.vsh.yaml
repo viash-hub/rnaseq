@@ -76,7 +76,7 @@ functionality:
       direction: output
       required: false
       must_exist: true
-      default: $id.duprate_exp_density_curve_mqc.pdf
+      default: $id.duprate_exp_density_curve_mqc.txt
       description: path to output file (pdf) of density curve of gene duplication multiqc
    
     - name: "--output_expression_histogram"
