@@ -83,7 +83,7 @@ functionality:
     - name: "--star_alignment"
       type: file
       direction: output
-      default: $id.STAR
+      default: $id_STAR
     - name: "--star_multiqc"
       type: file
       direction: output

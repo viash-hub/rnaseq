@@ -315,6 +315,10 @@ workflow run_wf {
                 (state.dupradar_output_dup_intercept_mqc instanceof java.nio.file.Path && state.dupradar_output_dup_intercept_mqc.exists()) ? 
                     state.dupradar_output_dup_intercept_mqc : 
                         null }
+            def dupradar_output_duprate_exp_denscurve_mqc = list.collect { id, state -> 
+                (state.dupradar_output_duprate_exp_denscurve_mqc instanceof java.nio.file.Path && state.dupradar_output_duprate_exp_denscurve_mqc.exists()) ? 
+                    state.dupradar_output_duprate_exp_denscurve_mqc : 
+                        null }
             def bamstat_output = list.collect { id, state -> 
                 (state.bamstat_output instanceof java.nio.file.Path && state.bamstat_output.exists()) ? 
                     state.bamstat_output : 
@@ -381,6 +385,7 @@ workflow run_wf {
                 preseq_output: preseq_output,
                 qualimap_output_dir: qualimap_output_dir,
                 dupradar_output_dup_intercept_mqc: dupradar_output_dup_intercept_mqc,
+                dupradar_output_duprate_exp_denscurve_mqc: dupradar_output_duprate_exp_denscurve_mqc,
                 bamstat_output: bamstat_output,
                 inner_dist_output_freq: inner_dist_output_freq,
                 junction_annotation_output_log: junction_annotation_output_log,
@@ -491,11 +496,6 @@ workflow run_wf {
 
         | prepare_multiqc_input.run(
             fromState: [
-                "multiqc_custom_config": "multiqc_custom_config", 
-                // "multiqc_title": "multiqc_title", 
-                // "multiqc_logo": "multiqc_logo",
-                // "multiqc_methods_description": "multiqc_methods_description",
-                // "workflow_summary": "workflow_summary", 
                 "fail_trimming_multiqc": "fail_trimming_multiqc", 
                 "fail_mapping_multiqc": "fail_mapping_multiqc", 
                 "fail_strand_multiqc": "fail_strand_multiqc", 
@@ -514,12 +514,13 @@ workflow run_wf {
                 "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
                 "preseq_multiqc": "preseq_output", 
                 "qualimap_multiqc": "qualimap_output_dir", 
-                "dupradar_multiqc": "dupradar_output_dup_intercept_mqc", 
+                "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc", 
+                "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
                 "bamstat_multiqc": "bamstat_output", 
                 "inferexperiment_multiqc": "inferexperiment_multiqc", 
                 "innerdistance_multiqc": "inner_dist_output_freq", 
                 "junctionannotation_multiqc": "junction_annotation_output_log", 
-                "junctionsaturation_multiqc": "junctionsaturation_multiqc",
+                "junctionsaturation_multiqc": "junction_saturation_output_plot_r",
                 "readdistribution_multiqc": "read_distribution_output",
                 "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
                 "tin_multiqc": "tin_output_summary", 
@@ -611,6 +612,7 @@ workflow run_wf {
                 "qualimap_output_pdf": "qualimap_output_pdf", 
                 "featurecounts": "featurecounts",
                 "featurecounts_summary": "featurecounts_summary",
+                "featurecounts_multiqc": "featurecounts_multiqc",
                 "tpm_gene": "tpm_gene",
                 "counts_gene": "counts_gene",
                 "counts_gene_length_scaled": "counts_gene_length_scaled",

@@ -76,7 +76,11 @@ functionality:
           type: file
           multiple: true
           multiple_sep: ","
-        - name: "--dupradar_multiqc"
+        - name: "--dupradar_output_dup_intercept_mqc"
+          type: file
+          multiple: true
+          multiple_sep: ","
+        - name: "--dupradar_output_duprate_exp_denscurve_mqc"
           type: file
           multiple: true
           multiple_sep: ","

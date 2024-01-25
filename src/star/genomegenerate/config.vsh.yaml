@@ -26,6 +26,7 @@ functionality:
     type: file
     direction: output
     description: STAR index directory.
+    default: STAR_index
   - name: "--updated_versions"
     type: file
     default: versions.yml

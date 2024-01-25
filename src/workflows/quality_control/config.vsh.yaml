@@ -221,7 +221,6 @@ functionality:
           default: assets/multiqc/deseq2_clustering_header.txt
         - name: "--deseq2_vst"
           type: boolean
-          default: true
           description: Use vst transformation instead of rlog with DESeq2
         - name: "--extra_deseq2_args"
           type: string
@@ -235,11 +234,8 @@ functionality:
           type: file
         - name: "--multiqc_title"
           type: string
-        - name: "--multiqc_logo"
-          type: file
         - name: "--multiqc_methods_description"
           type: file
-          default: assets/methods_description_template.yml
         - name: "--mqc_yml"
           type: file
           description: Software versions

@@ -274,11 +274,8 @@ functionality:
     # Multiqc paramenters
     - name: "--multiqc_custom_config"
       type: file
-      default: assets/multiqc_config.yml
     - name: "--multiqc_title"
       type: string
-    - name: "--multiqc_logo"
-      type: file
     - name: "--multiqc_methods_description"
       type: file
       default: assets/methods_description_template.yml
@@ -374,25 +371,25 @@ functionality:
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read_1.trimmed_fastqc.html
+      default: trimgalore/fastqc/$id.read_1.trimmed_fastqc.html
     - name: "--trim_html_2"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read_2.trimmed_fastqc.html
+      default: trimgalore/fastqc/$id.read_2.trimmed_fastqc.html
     - name: "--trim_zip_1"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read_1.trimmed_fastqc.zip
+      default: trimgalore/fastqc/$id.read_1.trimmed_fastqc.zip
     - name: "--trim_zip_2"
       type: file
       direction: output
       required: false
       must_exist: false
-      default: trimgalore/$id.read_2.trimmed_fastqc.zip
+      default: trimgalore/fastqc/$id.read_2.trimmed_fastqc.zip
     - name: "--sortmerna_log"
       type: file
       direction: output
@@ -403,7 +400,7 @@ functionality:
     - name: "--star_alignment"
       type: file
       direction: output
-      default: STAR_alignment/$id.STAR
+      default: STAR_alignment/$id
     - name: "--genome_bam_sorted"
       type: file
       direction: output
@@ -447,39 +444,39 @@ functionality:
     - name: "--salmon_quant_results"
       type: file
       direction: output
-      default: salmon_quantified/$id.salmon_quant
+      default: salmon/$id
     - name: "--tpm_gene"
       type: file
       direction: output
-      default: salmon_quantified/salmon/gene_tpm.tsv
+      default: salmon/gene_tpm.tsv
     - name: "--counts_gene"
       type: file
       direction: output
-      default: salmon_quantified/salmon/gene_counts.tsv
+      default: salmon/gene_counts.tsv
     - name: "--counts_gene_length_scaled"
       type: file
       direction: output
-      default: salmon_quantified/salmon/gene_counts_length_scaled.tsv
+      default: salmon/gene_counts_length_scaled.tsv
     - name: "--counts_gene_scaled"
       type: file
       direction: output
-      default: salmon_quantified/salmon/gene_counts_scaled.tsv
+      default: salmon/gene_counts_scaled.tsv
     - name: "--tpm_transcript"
       type: file
       direction: output
-      default: salmon_quantified/salmon/transcript_tpm.tsv
+      default: salmon/transcript_tpm.tsv
     - name: "--counts_transcript"
       type: file
       direction: output
-      default: salmon_quantified/salmon/transcript_counts.tsv
+      default: salmon/transcript_counts.tsv
     - name: "--salmon_merged_summarizedexperiment"
       type: file
       direction: output
-      default: salmon_quantified/salmon/summarizedexperiment
+      default: salmon/summarizedexperiment
     - name: "--markduplicates_metrics"
       type: file
       direction: output
-      default: picard_metrics/$id.markdup.sorted.MarkDuplicates.metrics.txt
+      default: picard/$id.sorted.MarkDuplicates.metrics.txt
     - name: "--stringtie_transcript_gtf"
       type: file
       direction: output
@@ -504,6 +501,11 @@ functionality:
       type: file
       direction: output
       default: featurecounts/$id.featureCounts.txt.summary
+    - name: "--featurecounts_multiqc"
+      type: file
+      direction: output
+      must_exist: false
+      default: featurecounts/$id.featureCounts_mqc.tsv
     - name: "--bedgraph_forward"
       type: file
       direction: output
@@ -546,79 +548,79 @@ functionality:
       type: file
       direction: output
       must_exist: false
-      default: RSeQC/innerdistance/$id.inner_distance.txt
+      default: RSeQC/innerdistance/txt/$id.inner_distance.txt
       description: output file (txt) with inner distances of all paired reads
     - name: "--inner_dist_output_freq"
       type: file
       direction: output
       must_exist: false
-      default: RSeQC/innerdistance/$id.inner_distance_freq.txt
+      default: RSeQC/innerdistance/txt/$id.inner_distance_freq.txt
       description: output file (txt) with frequencies of inner distances of all paired reads
     - name: "--inner_dist_output_plot"
       type: file
       direction: output
       must_exist: false
-      default: RSeQC/innerdistance/$id.inner_distance_plot.pdf
+      default: RSeQC/innerdistance/pdf/$id.inner_distance_plot.pdf
       description: output file (pdf) with histogram plot of of inner distances of all paired reads
     - name: "--inner_dist_output_plot_r"
       type: file
       direction: output
       must_exist: false
-      default: RSeQC/innerdistance/$id.inner_distance_plot.r
+      default: RSeQC/innerdistance/rscript/$id.inner_distance_plot.r
       description: output file (R) with script of histogram plot of of inner distances of all paired reads
     - name: "--junction_annotation_output_log"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.junction_annotation.log
+      default: RSeQC/junctionannotation/log/$id.junction_annotation.log
       description: output log of junction annotation script
     - name: "--junction_annotation_output_plot_r"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.junction_annotation_plot.r
+      default: RSeQC/junctionannotation/rscript/$id.junction_annotation_plot.r
       description: R script to generate splice_junction and splice_events plot
     - name: "--junction_annotation_output_junction_bed"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.junction_annotation.bed
+      default: RSeQC/junctionannotation/bed/$id.junction_annotation.bed
       description: junction annotation file (bed format)
     - name: "--junction_annotation_output_junction_interact"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.junction_annotation.Interact.bed
+      default: RSeQC/junctionannotation/bed/$id.junction_annotation.Interact.bed
       description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
     - name: "--junction_annotation_output_junction_sheet"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.junction_annotation.xls
+      default: RSeQC/junctionannotation/xls/$id.junction_annotation.xls
       description: junction annotation file (xls format)
     - name: "--junction_annotation_output_splice_events_plot"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.splice_events.pdf
+      default: RSeQC/junctionannotation/pdf/$id.splice_events.pdf
       description: plot of splice events (pdf)
     - name: "--junction_annotation_output_splice_junctions_plot"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionannotation/$id.splice_junctions_plot.pdf
+      default: RSeQC/junctionannotation/pdf/$id.splice_junctions_plot.pdf
       description: plot of junctions (pdf)
     - name: "--junction_saturation_output_plot_r"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionsaturation/$id.junction_saturation_plot.r
+      default: RSeQC/junctionsaturation/rscript/$id.junction_saturation_plot.r
       description: r script to generate junction_saturation_plot plot
     - name: "--junction_saturation_output_plot"
       type: file
       direction: output
       required: false
-      default: RSeQC/junctionsaturation/$id.junction_saturation_plot.pdf
+      default: RSeQC/junctionsaturation/pdf/$id.junction_saturation_plot.pdf
       description: plot of junction saturation (pdf
     - name: "--read_distribution_output"
       type: file
@@ -630,79 +632,79 @@ functionality:
       type: file
       direction: output
       required: false
-      default: RSeQC/readduplication/$id.duplication_rate_plot.r
+      default: RSeQC/readduplication/rscrpt/$id.duplication_rate_plot.r
       description: R script for generating duplication rate plot
     - name: "--read_duplication_output_duplication_rate_plot"
       type: file
       direction: output
       required: false
-      default: RSeQC/readduplication/$id.duplication_rate_plot.pdf
+      default: RSeQC/readduplication/pdf/$id.duplication_rate_plot.pdf
       description: duplication rate plot (pdf)
     - name: "--read_duplication_output_duplication_rate_mapping"
       type: file
       direction: output
       required: false
-      default: RSeQC/readduplication/$id.duplication_rate_mapping.xls
+      default: RSeQC/readduplication/xls/$id.duplication_rate_mapping.xls
       description: Summary of mapping-based read duplication
     - name: "--read_duplication_output_duplication_rate_sequence"
       type: file
       direction: output
       required: false
-      default: RSeQC/readduplication/$id.duplication_rate_sequencing.xls
+      default: RSeQC/readduplication/xls/$id.duplication_rate_sequencing.xls
       description: Summary of sequencing-based read duplication
     - name: "--tin_output_summary"
       type: file
       direction: output
       required: false
-      default: RSeQC/tin/$id.tin_summary.txt
+      default: RSeQC/tin/txt/$id.tin_summary.txt
       description: summary statistics (txt) of calculated TIN metrics
     - name: "--tin_output_metrics"
       type: file
       direction: output
       required: false
-      default: RSeQC/tin/$id.tin.xls
+      default: RSeQC/tin/xls/$id.tin.xls
       description: file with TIN metrics (xls)
     - name: "--dupradar_output_dupmatrix"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.dup_matrix.txt
+      default: dupradar/gene_data/$id.dup_matrix.txt
       description: path to output file (txt) of duplicate tag counts
     - name: "--dupradar_output_dup_intercept_mqc"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.dup_intercept_mqc.txt
+      default: dupradar/mqc_intercept/$id.dup_intercept_mqc.txt
       description: path to output file (txt) of multiqc intercept value DupRadar
     - name: "--dupradar_output_duprate_exp_boxplot"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.duprate_exp_boxplot.pdf
+      default: dupradar/box_plot/$id.duprate_exp_boxplot.pdf
       description: path to output file (pdf) of distribution of expression box plot    
     - name: "--dupradar_output_duprate_exp_densplot"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.duprate_exp_densityplot.pdf
+      default: dupradar/scatter_plot/$id.duprate_exp_densityplot.pdf
       description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
     - name: "--dupradar_output_duprate_exp_denscurve_mqc"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.duprate_exp_density_curve_mqc.pdf
+      default: dupradar/density_curve/$id.duprate_exp_density_curve_mqc.pdf
       description: path to output file (pdf) of density curve of gene duplication multiqc
     - name: "--dupradar_output_expression_histogram"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.expression_hist.pdf
+      default: dupradar/histogram/$id.expression_hist.pdf
       description: path to output file (pdf) of distribution of RPK values per gene histogram
     - name: "--dupradar_output_intercept_slope"
       type: file
       direction: output
       required: false
-      default: dupradar/$id.intercept_slope.txt
+      default: dupradar/intercept_slope/$id.intercept_slope.txt
     - name: "--qualimap_output_pdf"
       type: file
       direction: output
@@ -713,11 +715,11 @@ functionality:
       type: file
       direction: output
       required: false
-      default: qualimap/$id.qualimap_output
+      default: qualimap/$id
     - name: "--deseq2_output"
       type: file
       direction: output
-      default: deseq2
+      default: deseq2_qc
     - name: "--multiqc_report"
       type: file
       direction: output
