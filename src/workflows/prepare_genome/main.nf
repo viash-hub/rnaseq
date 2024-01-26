@@ -146,7 +146,7 @@ workflow run_wf {
 
         // preprocess transcripts fasta if gtf is in gencode format
         | preprocess_transcripts_fasta.run (
-            runIf: {id, state -> state.transcript_fastaa && state.gencode}, 
+            runIf: {id, state -> state.transcript_fasta && state.gencode}, 
             fromState: [
                 "transcript_fasta": "transcript_fasta", 
                 "versions": "versions"
