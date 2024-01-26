@@ -5,7 +5,7 @@ echo ">>> Testing $meta_functionality_name"
 gunzip $meta_resources_dir/genes.gtf.gz
 
 samtools faidx $meta_resources_dir/genome.fasta
-NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", (log(sum)/log(2))/2 - 1}}' $meta_resources_dir/genome.fasta.fai`
+NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", int((log(sum)/log(2))/2 - 1)}}' $meta_resources_dir/genome.fasta.fai`
 
 STAR \
     --runMode genomeGenerate \
@@ -18,7 +18,7 @@ echo ">>> Testing for paired-end reads"
 
 "$meta_executable" \
     --paired true \
-    --input $meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz \
+    --input "$meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz" \
     --star_index STAR_index \
     --gtf $meta_resources_dir/genes.gtf \
     --star_ignore_sjdbgtf false \

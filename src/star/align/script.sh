@@ -28,11 +28,13 @@ STAR \
     --genomeDir $par_star_index \
     --readFilesIn ${input[*]} \
     --runThreadN ${meta_cpus:-1} \
-    --outFileNamePrefix $par_output/ \
+    --outFileNamePrefix output/ \
     $out_sam_type \
     $ignore_gtf \
     $attrRG \
     $par_extra_star_align_args
+
+find "output/" -type f -exec cp {} "$par_output" \;
 
 if [[ $par_extra_star_align_args == *"--outSAMtype BAM Unsorted SortedByCoordinate"* ]]; then
     mv ${par_output}/Aligned.out.bam ${par_output}/Aligned.unsort.out.bam 
