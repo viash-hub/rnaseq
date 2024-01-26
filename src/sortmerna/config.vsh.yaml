@@ -38,14 +38,14 @@ functionality:
       required: true
       description: Output file for read 1.
       direction: output
-      default: $id.$key.read_1.fastq.gz
+      default: $id.$key.read_1.fastq
     - name: "--fastq_2"
       type: file
       required: false
       must_exist: false
       description: Output file for read 2.
       direction: output
-      default: $id.$key.read_2.fastq.gz
+      default: $id.$key.read_2.fastq
     - name: "--updated_versions"
       type: file
       default: versions.yml

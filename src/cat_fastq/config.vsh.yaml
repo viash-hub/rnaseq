@@ -25,13 +25,13 @@ functionality:
     - name: "--fastq_1"
       type: file
       direction: output
-      default: $id.read_1.merged.fastq.gz
+      default: $id.read_1.merged.fastq
       description: Concatenated read 1 fastq
     - name: "--fastq_2"
       type: file
       direction: output
       must_exist: false
-      default: $id.read_2.merged.fastq.gz
+      default: $id.read_2.merged.fastq
       description: Concatenated read 2 fastq
     - name: "--updated_versions"
       type: file

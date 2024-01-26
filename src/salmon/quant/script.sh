@@ -17,20 +17,20 @@ fi
 
 strandedness_opts=('A' 'U' 'SF' 'SR' 'IS' 'IU' 'ISF' 'ISR' 'OS' 'OU' 'OSF' 'OSR' 'MS' 'MU' 'MSF' 'MSR')
 strandedness='A'
-if [ $par_lib_type != '' ]; then
+if [ "$par_lib_type" != "" ]; then
     if [[ ${strandedness_opts[@]} =~ $par_lib_type ]]; then
         strandedness=$par_lib_type
     else 
         echo "[Salmon Quant] Invalid library type specified '--libType=$lib_type', defaulting to auto-detection with '--libType=A'."
     fi
 else
-    if [ $par_strandedness == 'forward' ]; then
+    if [ "$par_strandedness" == "forward" ]; then
         if $par_paired; then
             strandedness='ISF'
         else 
             strandedness='SF'
         fi
-    elif [ $par_strandedness == 'reverse' ]; then 
+    elif [ "$par_strandedness" == "reverse" ]; then 
         if $par_paired; then
             strandedness='ISR'
         else 

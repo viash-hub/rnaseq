@@ -167,14 +167,14 @@ functionality:
           required: false
           must_exist: false
           description: Path to output directory
-          default: $id.$key.read_1.fastq.gz
+          default: $id.$key.read_1.fastq
         - name: "--qc_output2"
           type: file
           direction: output
           required: false
           must_exist: false
           description: Path to output directory
-          default: $id.$key.read_2.fastq.gz
+          default: $id.$key.read_2.fastq
         - name: "--fastqc_html_1"
           type: file
           direction: output

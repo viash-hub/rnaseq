@@ -26,13 +26,13 @@ functionality:
     - name: "--output_1"
       type: file
       direction: output
-      default: $id.read_1.subsampled.fastq.gz
+      default: $id.read_1.subsampled.fastq
       description: Sampled read 1 fastq files
     - name: "--output_2"
       type: file
       must_exist: false
       direction: output
-      default: $id.read_2.subsampled.fastq.gz
+      default: $id.read_2.subsampled.fastq
       description: Sampled read 2 fastq files
     - name: "--updated_versions"
       type: file

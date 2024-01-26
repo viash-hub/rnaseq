@@ -33,14 +33,14 @@ functionality:
       required: true
       description: Output file for read 1.
       direction: output
-      default: $id.$key.read_1.fq.gz
+      default: $id.$key.read_1.fastq
     - name: "--fastq_2"
       type: file
       required: false
       must_exist: false
       description: Output file for read 2.
       direction: output
-      default: $id.$key.read_2.fq.gz
+      default: $id.$key.read_2.fastq
     - name: "--trim_log_1"
       type: file
       direction: output

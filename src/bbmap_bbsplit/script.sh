@@ -45,7 +45,7 @@ else
             threads=${meta_cpus:-1} \
             in=${input[0]} \
             in2=${input[1]} \
-            basename=${tmpdir}/%_#.fastq.gz \
+            basename=${tmpdir}/%_#.fastq \
             refstats=bbsplit_stats.txt
         read1=$(find $tmpdir/ -iname primary_1*)
         read2=$(find $tmpdir/ -iname primary_2*)
@@ -57,7 +57,7 @@ else
             $index_files \
             threads=${meta_cpus:-1} \
             in=${input[0]} \
-            basename=${tmpdir}/%.fastq.gz \
+            basename=${tmpdir}/%.fastq \
             refstats=bbsplit_stats.txt
         read1=$(find $tmpdir/ -iname primary*)
         cp $read1 $par_fastq_1

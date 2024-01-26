@@ -45,14 +45,14 @@ functionality:
       description: Output file for read 1.
       direction: output
       must_exist: false
-      default: $id.$key.read_1.fastq.gz
+      default: $id.$key.read_1.fastq
     - name: "--fastq_2"
       type: file
       required: false
       must_exist: false
       description: Output file for read 2.
       direction: output
-      default: $id.$key.read_2.fastq.gz
+      default: $id.$key.read_2.fastq
     - name: "--bbsplit_index"
       type: file
       description: Directory with index files
