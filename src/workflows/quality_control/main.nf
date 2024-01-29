@@ -43,6 +43,7 @@ workflow run_wf {
             ],
             toState: [ 
                 "featurecounts_multiqc": "featurecounts_multiqc", 
+                "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
                 "versions": "updated_versions" 
             ]
         )
@@ -303,6 +304,10 @@ workflow run_wf {
                 (state.featurecounts_multiqc instanceof java.nio.file.Path && state.featurecounts_multiqc.exists()) ? 
                     state.featurecounts_multiqc : 
                     null }
+            def featurecounts_rrna_multiqc = list.collect { id, state -> 
+                (state.featurecounts_rrna_multiqc instanceof java.nio.file.Path && state.featurecounts_rrna_multiqc.exists()) ? 
+                    state.featurecounts_rrna_multiqc : 
+                    null }
             def preseq_output = list.collect { id, state -> 
                 (state.preseq_output instanceof java.nio.file.Path && state.preseq_output.exists()) ? 
                     state.preseq_output : 
@@ -324,8 +329,8 @@ workflow run_wf {
                     state.bamstat_output : 
                     null }
             def inferexperiment_multiqc = list.collect { id, state -> 
-                (state.inferexperiment_multiqc instanceof java.nio.file.Path && state.inferexperiment_multiqc.exists()) ? 
-                    state.inferexperiment_multiqc : 
+                (state.strandedness_output instanceof java.nio.file.Path && state.strandedness_output.exists()) ? 
+                    state.strandedness_output : 
                     null }
             def inner_dist_output_freq = list.collect { id, state -> 
                 (state.inner_dist_output_freq instanceof java.nio.file.Path && state.inner_dist_output_freq.exists()) ? 
@@ -382,14 +387,16 @@ workflow run_wf {
                 genome_bam_idxstats: genome_bam_idxstats,
                 markduplicates_multiqc: markduplicates_multiqc,
                 featurecounts_multiqc: featurecounts_multiqc,
+                featurecounts_rrna_multiqc: featurecounts_rrna_multiqc,
                 preseq_output: preseq_output,
                 qualimap_output_dir: qualimap_output_dir,
                 dupradar_output_dup_intercept_mqc: dupradar_output_dup_intercept_mqc,
                 dupradar_output_duprate_exp_denscurve_mqc: dupradar_output_duprate_exp_denscurve_mqc,
                 bamstat_output: bamstat_output,
                 inner_dist_output_freq: inner_dist_output_freq,
+                inferexperiment_multiqc: inferexperiment_multiqc,
                 junction_annotation_output_log: junction_annotation_output_log,
-                junctionsaturation_multiqc: junction_saturation_output_plot_r,
+                junction_saturation_output_plot_r: junction_saturation_output_plot_r,
                 read_distribution_output: read_distribution_output,
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
@@ -509,7 +516,8 @@ workflow run_wf {
                 "samtools_flagstat": "genome_bam_flagstat", 
                 "samtools_idxstats": "genome_bam_idxstats", 
                 "markduplicates_multiqc": "markduplicates_multiqc", 
-                "featurecounts_multiqc": "featurecounts_multiqc", 
+                "featurecounts_multiqc": "featurecounts_multiqc",
+                "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
                 "aligner_pca_multiqc": "deseq2_pca_multiqc", 
                 "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
                 "preseq_multiqc": "preseq_output", 
@@ -613,6 +621,7 @@ workflow run_wf {
                 "featurecounts": "featurecounts",
                 "featurecounts_summary": "featurecounts_summary",
                 "featurecounts_multiqc": "featurecounts_multiqc",
+                "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc",
                 "tpm_gene": "tpm_gene",
                 "counts_gene": "counts_gene",
                 "counts_gene_length_scaled": "counts_gene_length_scaled",

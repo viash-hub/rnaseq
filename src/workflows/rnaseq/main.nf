@@ -196,7 +196,7 @@ workflow run_wf {
           "genome_bam_stats": "genome_bam_stats", 
           "genome_bam_flagstat": "genome_bam_flagstat", 
           "genome_bam_idxstats": "genome_bam_idxstats", 
-          "transcriptome_bam_sorted": "transcriptome_bam_sorted", 
+          "transcriptome_bam": "transcriptome_bam", 
           "transcriptome_bam_index": "transcriptome_bam_index", 
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
@@ -344,6 +344,7 @@ workflow run_wf {
           "featurecounts": "featurecounts",
           "featurecounts_summary": "featurecounts_summary",
           "featurecounts_multiqc": "featurecounts_multiqc", 
+          "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc",
           "tpm_gene": "tpm_gene",
           "counts_gene": "counts_gene",
           "counts_gene_length_scaled": "counts_gene_length_scaled",
@@ -394,7 +395,7 @@ workflow run_wf {
         "genome_bam_stats": "samtools_stats", 
         "genome_bam_flagstat": "samtools_flagstat", 
         "genome_bam_idxstats": "samtools_idxstats", 
-        "transcriptome_bam_sorted": "transcriptome_bam_sorted", 
+        "transcriptome_bam": "transcriptome_bam", 
         "transcriptome_bam_index": "transcriptome_bam_index", 
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
@@ -407,6 +408,7 @@ workflow run_wf {
         "featurecounts": "featurecounts",
         "featurecounts_summary": "featurecounts_summary", 
         "featurecounts_multiqc": "featurecounts_multiqc", 
+        "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
         "bedgraph_forward": "bedgraph_forward",
         "bedgraph_reverse": "bedgraph_reverse",
         "bigwig_forward": "bigwig_forward",
@@ -459,7 +461,6 @@ workflow run_wf {
         "versions": "versions"
       ]
     )
-    | niceView()
 
     output_ch = analysis_ch
 

@@ -274,6 +274,7 @@ functionality:
     # Multiqc paramenters
     - name: "--multiqc_custom_config"
       type: file
+      default: assets/multiqc_config.yml
     - name: "--multiqc_title"
       type: string
     - name: "--multiqc_methods_description"
@@ -421,7 +422,7 @@ functionality:
       type: file
       direction: output
       default: samtools_stats/$id.genome.idxstats
-    - name: "--transcriptome_bam_sorted"
+    - name: "--transcriptome_bam"
       type: file
       direction: output
       default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam
@@ -506,6 +507,11 @@ functionality:
       direction: output
       must_exist: false
       default: featurecounts/$id.featureCounts_mqc.tsv
+    - name: "--featurecounts_rrna_multiqc"
+      type: file
+      direction: output
+      must_exist: false
+      default: $id.featureCounts_rrna_mqc.tsv
     - name: "--bedgraph_forward"
       type: file
       direction: output

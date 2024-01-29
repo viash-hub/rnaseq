@@ -538,6 +538,11 @@ functionality:
           direction: output
           must_exist: false
           default: $id.featureCounts_mqc.tsv
+        - name: "--featurecounts_rrna_multiqc"
+          type: file
+          direction: output
+          must_exist: false
+          default: $id.featureCounts_rrna_mqc.tsv
 
         # Counts
         - name: "--tpm_gene"
