@@ -108,7 +108,7 @@ functionality:
       type: file
       direction: output
       default: $id.genome.idxstats
-    - name: "--transcriptome_bam_sorted"
+    - name: "--transcriptome_bam"
       type: file
       direction: output
       default: $id.transcriptome.bam
