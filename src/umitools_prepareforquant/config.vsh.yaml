@@ -14,7 +14,6 @@ functionality:
       type: file
       must_exist: false
       
-      
     - name: "--output"
       type: file
       direction: output
@@ -33,11 +32,6 @@ functionality:
       path: script.sh
     # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/prepare-for-rsem.py
     - path: prepare-for-rsem.py
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/test.bam
    
 platforms:
   - type: docker
@@ -46,4 +40,5 @@ platforms:
       - type: apt
         packages: [pip]
       - type: python
+        packages: [umi_tools, pysam]
   - type: nextflow
