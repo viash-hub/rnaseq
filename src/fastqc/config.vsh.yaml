@@ -30,26 +30,26 @@ functionality:
       type: file
       direction: output
       description: FastQC HTML report for read 1.
-      default: $id.$key.read_1.html
+      default: $id.read_1.fastqc.html
     - name: "--fastqc_html_2"
       type: file
       direction: output
       description: FastQC HTML report for read 2.
       required: false
       must_exist: false
-      default: $id.$key.read_2.html
+      default: $id.read_2.fastqc.html
     - name: "--fastqc_zip_1"
       type: file
       direction: output
       description: FastQC report archive for read 1.
-      default: $id.$key.read_1.zip
+      default: $id.read_1.fastqc.zip
     - name: "--fastqc_zip_2"
       type: file
       direction: output
       description: FastQC report archive for read 2.
       required: false
       must_exist: false
-      default: $id.$key.read_2.zip
+      default: $id.read_2.fastqc.zip
     - name: "--updated_versions"
       type: file
       default: versions.yml
