@@ -511,7 +511,7 @@ functionality:
       type: file
       direction: output
       must_exist: false
-      default: $id.featureCounts_rrna_mqc.tsv
+      default: featurecounts/$id.featureCounts_rrna_mqc.tsv
     - name: "--bedgraph_forward"
       type: file
       direction: output
