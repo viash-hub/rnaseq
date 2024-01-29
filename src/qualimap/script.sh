@@ -20,7 +20,7 @@ qualimap rnaseq \
 # Version
 
 text="${meta_functionality_name}:
-    qualimap: $(echo $(qualimap 2>&1) | sed 's/^.*QualiMap v.//; s/Built.*\$//')"
+    qualimap: $(echo $(qualimap --help 2>&1) | sed 's/^.*QualiMap v.//; s/Built.*\$//')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

@@ -33,7 +33,7 @@ featureCounts \
 
 # Version
 text="${meta_functionality_name}:
-    subread: $( echo $(featureCounts -v 2>&1) | sed -e 's/featureCounts v//g')"
+    featureCounts: $( echo $(featureCounts -v 2>&1) | sed -e 's/featureCounts v//g')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
