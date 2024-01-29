@@ -12,7 +12,7 @@ IFS="," read -ra fastqc_raw_multiqc <<< $par_fastqc_raw_multiqc && for file in "
 
 IFS="," read -ra fastqc_trim_multiqc <<< $par_fastqc_trim_multiqc && for file in "${fastqc_trim_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
-IFS="," read -ra fastqc_trim_multiqc <<< $par_fastqc_trim_multiqc && for file in "${trim_log_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+IFS="," read -ra trim_log_multiqc <<< $par_trim_log_multiqc && for file in "${trim_log_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra sortmerna_multiqc <<< $par_sortmerna_multiqc && for file in "${sortmerna_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
@@ -33,6 +33,8 @@ IFS="," read -ra samtools_idxstats <<< $par_samtools_idxstats && for file in "${
 IFS="," read -ra markduplicates_multiqc <<< $par_markduplicates_multiqc && for file in "${markduplicates_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra featurecounts_multiqc <<< $par_featurecounts_multiqc && for file in "${featurecounts_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+
+IFS="," read -ra featurecounts_rrna_multiqc <<< $par_featurecounts_rrna_multiqc&& for file in "${featurecounts_rrna_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 [ -e "$par_aligner_pca_multiqc" ] && cp -r "$par_aligner_pca_multiqc" "$par_output/"
 

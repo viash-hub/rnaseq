@@ -60,6 +60,10 @@ functionality:
           type: file
           multiple: true
           multiple_sep: ","
+        - name: "--featurecounts_rrna_multiqc"
+          type: file
+          multiple: true
+          multiple_sep: ","
         - name: "--aligner_pca_multiqc"
           type: file
         - name: "--aligner_clustering_multiqc"

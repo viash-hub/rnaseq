@@ -24,6 +24,10 @@ functionality:
     type: file
     direction: output
     default: $id.biotype_counts_mqc.tsv
+  - name: '--featurecounts_rrna_multiqc'
+    type: file
+    direction: output
+    default: $id.biotype_counts_rrna_mqc.tsv
   - name: "--updated_versions"
     type: file
     default: versions.yml
