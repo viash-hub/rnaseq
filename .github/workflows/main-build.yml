@@ -70,12 +70,12 @@ on:
     secrets:
       VIASHHUB_USER:
         required: true
-      VIASHHUB_PAT:
+      VIASH_HUB_RNASEQ:
         required: true
-      GTHB_USER:
-        required: true 
-      GTHB_PAT:
-        required: true
+      # GTHB_USER:
+      #   required: true 
+      # GTHB_PAT:
+      #   required: true
   push:
     branches: [ 'main' ]
 
@@ -106,7 +106,7 @@ jobs:
     - name: Push ref to Viash-hub
       if: ${{ inputs.deploy_to_viash_hub == 'true' }}
       run: |
-        git remote add viash-hub https://x-access-token:${{ secrets.VIASHHUB_PAT }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote add viash-hub https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         git push -f -u viash-hub ${{ github.ref_name }}
   
     - name: Branch to checkout (use existing target branch if it exists)
@@ -151,21 +151,21 @@ jobs:
         parallel: true
         query: ^workflows
   
-    - name: Build nextflow schemas
-      uses: viash-io/viash-actions/pro/build-nextflow-schemas@v4
-      with:
-        components: src
-        workflows: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
-        tools_version: 'main_build'
+    # - name: Build nextflow schemas
+    #   uses: viash-io/viash-actions/pro/build-nextflow-schemas@v4
+    #   with:
+    #     components: src
+    #     workflows: src
+    #     viash_pro_token: ${{ secrets.GTHB_PAT }}
+    #     tools_version: 'main_build'
    
-    - name: Build parameter files
-      uses: viash-io/viash-actions/pro/build-nextflow-params@v4
-      with:
-        workflows: src
-        components: src
-        viash_pro_token: ${{ secrets.GTHB_PAT }}
-        tools_version: 'main_build'
+    # - name: Build parameter files
+    #   uses: viash-io/viash-actions/pro/build-nextflow-params@v4
+    #   with:
+    #     workflows: src
+    #     components: src
+    #     viash_pro_token: ${{ secrets.GTHB_PAT }}
+    #     tools_version: 'main_build'
 
     - name: Deploy to target branch
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -223,13 +223,13 @@ jobs:
       if: ${{ github.event_name == 'push' || inputs.deploy_to_viash_hub }}
       # This is needed because git-auto-commit-action uses origin by default
       run: |
-        git remote add viash-hub https://x-access-token:${{ secrets.VIASHHUB_PAT }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote add viash-hub https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         if git ls-remote --heads --exit-code https://viash-hub.com/data-intuitive/rnaseq.vsh.git ${{ github.ref_name }}_build > /dev/null; then
           git fetch viash-hub  ${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
           git reset --hard viash-hub/${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
         fi
         git checkout -f --no-overlay origin/${{github.ref_name}} -- '.'
-        git remote set-url origin https://x-access-token:${{ secrets.VIASHHUB_PAT }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote set-url origin https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         git remote rm viash-hub
 
     - name: Remove target folder from .gitignore
@@ -308,7 +308,7 @@ jobs:
       with:
         registry: viash-hub.com:5050
         username: ${{ secrets.VIASHHUB_USER }}
-        password: ${{ secrets.VIASHHUB_PAT }}
+        password: ${{ secrets.VIASH_HUB_RNASEQ }}
 
     - name: Update Docker settings
       if: ${{ github.event_name == 'push' || inputs.deploy_to_viash_hub }}
