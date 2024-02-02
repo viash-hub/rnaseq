@@ -22,7 +22,7 @@ tximeta_ver=$(Rscript -e "library(tximeta); cat(as.character(packageVersion('txi
 summarizedExperiment_ver=$(Rscript -e "library(SummarizedExperiment); cat(as.character(packageVersion('SummarizedExperiment')))")
 tximport_ver=$(Rscript -e "library(tximport); cat(as.character(packageVersion('tximport')))")
 text="${meta_functionality_name}:
-    r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
+    r-base: $(echo $(R --version 2>&1) | grep -oP 'R version \K\d+\.\d+\.\d+')
     bioconductor-tximeta: ${tximeta_ver}
     bioconductor-SummarizedExperiment: ${summarizedExperiment_ver}
     bioconductor-tximport: ${tximport_ver}"

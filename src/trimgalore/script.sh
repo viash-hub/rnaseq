@@ -57,7 +57,7 @@ fi
 
 # Version
 text="${meta_functionality_name}:
-    trimgalore: $(echo $(trim_galore --version 2>&1) | sed 's/^.*version //; s/Last.*\$//')
+    trimgalore: $(echo $(trim_galore --version 2>&1) | grep -oP 'version \K\d+\.\d+\.\d+')
     cutadapt: $(cutadapt --version)"
 
 if [ -e "$par_versions" ]; then

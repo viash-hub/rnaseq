@@ -30,7 +30,7 @@ mv "$par_id"_intercept_slope.txt $par_output_intercept_slope
 # Version
 dupradar_ver=$(Rscript -e "library(dupRadar); cat(as.character(packageVersion('dupRadar')))")
 text="${meta_functionality_name}:
-    r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
+    r-base: $(echo $(R --version 2>&1) | grep -oP 'R version \K\d+\.\d+\.\d+')
     bioconductor-dupradar: ${dupradar_ver}"
 
 if [ -e "$par_versions" ]; then
