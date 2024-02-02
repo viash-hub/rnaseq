@@ -18,7 +18,7 @@ fi
 
 # Version
 text="${meta_functionality_name}:
-    untar: $(echo $(tar --version 2>&1) | sed 's/^.*(GNU tar) //; s/ Copyright.*\$//')"
+    untar: $(echo $(tar --version 2>&1) | grep -oP 'tar \(GNU tar\) \K\d+\.\d+')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

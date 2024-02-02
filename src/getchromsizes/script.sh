@@ -11,7 +11,7 @@ mv "$par_fasta.fai" $par_fai
 # Version
 
 text="${meta_functionality_name}:
-    getchromsizes: $(echo $(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')"
+    samtools: $(echo $(samtools --version 2>&1) | grep -oP 'samtools \K\d+\.\d+')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

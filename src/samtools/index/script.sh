@@ -10,7 +10,7 @@ fi
 
 # Version
 text="${meta_functionality_name}:
-    samtools: $(echo $(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')"
+    samtools: $(echo $(samtools --version 2>&1) | grep -oP 'samtools \K\d+\.\d+')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"

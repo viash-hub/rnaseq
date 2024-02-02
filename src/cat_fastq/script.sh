@@ -21,7 +21,7 @@ fi
 
 # Version
 text="${meta_functionality_name}:
-    cat: $(echo $(cat --version 2>&1) | sed 's/^.*coreutils) //; s/ .*\$//')"
+    cat: $(echo $(cat --version 2>&1) | grep -oP 'cat \(GNU coreutils\) \K\d+\.\d+')"
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
     mv "$par_versions" "$par_updated_versions"

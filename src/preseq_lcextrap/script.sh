@@ -30,7 +30,7 @@ preseq lc_extrap \
 
 # Version
 text="${meta_functionality_name}:
-    preseq: $(echo $(preseq 2>&1) | sed 's/^.*Version: //; s/Usage:.*\$//')"
+    preseq: $(echo $(preseq 2>&1) | grep -oP 'Version: \K\d+\.\d+\.\d+')"
 
 if [ -e "$par_versions" ]; then
     echo "$text" >> "$par_versions"
