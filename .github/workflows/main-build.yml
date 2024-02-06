@@ -223,7 +223,7 @@ jobs:
       if: ${{ github.event_name == 'push' || inputs.deploy_to_viash_hub }}
       # This is needed because git-auto-commit-action uses origin by default
       run: |
-        git remote add viash-hub https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote add viash-hub https://${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         if git ls-remote --heads --exit-code https://viash-hub.com/data-intuitive/rnaseq.vsh.git ${{ github.ref_name }}_build > /dev/null; then
           git fetch viash-hub  ${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
           git reset --hard viash-hub/${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
