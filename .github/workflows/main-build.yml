@@ -106,7 +106,7 @@ jobs:
     - name: Push ref to Viash-hub
       if: ${{ inputs.deploy_to_viash_hub == 'true' }}
       run: |
-        git remote add viash-hub https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote add viash-hub https://${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         git push -f -u viash-hub ${{ github.ref_name }}
   
     - name: Branch to checkout (use existing target branch if it exists)
