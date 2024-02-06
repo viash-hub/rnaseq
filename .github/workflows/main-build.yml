@@ -229,7 +229,7 @@ jobs:
           git reset --hard viash-hub/${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
         fi
         git checkout -f --no-overlay origin/${{github.ref_name}} -- '.'
-        git remote set-url origin https://x-access-token:${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
+        git remote set-url origin https://${{ secrets.VIASH_HUB_RNASEQ }}@https://viash-hub.com/data-intuitive/rnaseq.vsh.git
         git remote rm viash-hub
 
     - name: Remove target folder from .gitignore
