@@ -67,7 +67,7 @@ on:
       workflow_matrix:
         description: "A JSON object that can be used to populate a github actions matrix for workflow jobs."
         value: ${{ jobs.build_and_deploy_target_folder.outputs.workflow_matrix}}
-    :
+    secrets:
       VIASHHUB_USER:
         required: true
       VIASH_HUB_RNASEQ:
