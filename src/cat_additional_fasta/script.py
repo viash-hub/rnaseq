@@ -2,9 +2,10 @@
 """
 Read a custom fasta file and create a custom GTF containing each entry
 """
-import argparse
 from itertools import groupby
 import logging
+import os
+import sys
 
 # Create a logger
 logging.basicConfig(format="%(name)s - %(asctime)s %(levelname)s: %(message)s")
@@ -60,26 +61,29 @@ def fasta2gtf(fasta, output, biotype):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="""Convert a custom fasta (e.g. transgene)
-        to a GTF annotation."""
-    )
-    parser.add_argument("fasta", type=str, help="Custom transgene sequence")
-    parser.add_argument(
-        "-o",
-        "--output",
-        dest="output",
-        default="transgenes.gtf",
-        type=str,
-        help="Gene annotation GTF output",
-    )
-    parser.add_argument(
-        "-b",
-        "--biotype",
-        dest="biotype",
-        default="",
-        type=str,
-        help="Name of gene biotype attribute to use in last column of GTF entry",
-    )
-    args = parser.parse_args()
-    fasta2gtf(args.fasta, args.output, args.biotype)
+    add_name = os.path.basename(par['additional_fasta'])
+    output = os.path.splitext(add_name)[0] + ".gtf"
+    fasta2gtf(par['additional_fasta'], output, par['biotype'])
+
+    with open(par['fasta'], 'r') as f1:
+        content1 = f1.read()
+    with open(par['additional_fasta'], 'r') as f2:
+        content2 = f2.read()
+    with open(par['fasta_output'], 'w') as f_out:
+        f_out.write(content1 + content2)
+    with open(par['gtf'], 'r') as g1:
+        g_content1 = g1.read()
+    with open(output, 'r') as g2:
+        g_content2 = g2.read()
+    with open(par['gtf_output'], 'w') as g_out:
+        g_out.write(g_content1 + g_content2)
+
+    text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
+
+    if par['versions'] and os.path.exists(par['versions']):
+        with open(par['versions'], 'a') as f:
+            f.write(text + '\n')
+        os.rename(par['versions'], par['updated_versions'])
+    else:
+        with open(par['updated_versions'], 'w') as f:
+            f.write(text + '\n')

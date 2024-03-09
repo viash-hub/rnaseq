@@ -41,10 +41,8 @@ functionality:
       direction: output
   
   resources:
-    - type: bash_script
-      path: script.sh
-    # copied from https://github.com/nf-core/rnaseq/blob/master/bin/fasta2gtf.py
-    - path: fasta2gtf.py
+    - type: python_script
+      path: script.py
   
   test_resources:
     - type: bash_script
@@ -55,9 +53,9 @@ functionality:
    
 platforms:
   - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [pip]
-      - type: python
+    image: python #ubuntu:22.04
+    # setup:
+    #   - type: apt
+    #     packages: [pip]
+    #   - type: python
   - type: nextflow
