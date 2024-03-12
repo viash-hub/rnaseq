@@ -27,7 +27,7 @@ on:
       deploy_to_viash_hub:
         type: boolean
         required: false
-        default: false
+        default: true
         description: Also build packages and docker images for viash-hub.com and push them.
 
   # when used as a subworkflow
