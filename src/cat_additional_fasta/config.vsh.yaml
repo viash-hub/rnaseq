@@ -53,9 +53,5 @@ functionality:
    
 platforms:
   - type: docker
-    image: python #ubuntu:22.04
-    # setup:
-    #   - type: apt
-    #     packages: [pip]
-    #   - type: python
+    image: python 
   - type: nextflow

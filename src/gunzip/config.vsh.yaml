@@ -6,13 +6,13 @@ functionality:
       paths: [modules/nf-core/gunzip/main.nf, modules/nf-core/gunzip/meta.yml]
       last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
   description: |
-    Compress or decompress a file or list of files.
+    Compress or uncompress a file or list of files.
 
   arguments:
     - name: "--input"
       type: file 
       required: true
-      description: Path of file to be decompressed
+      description: Path of file to be uncompressed
     - name: "--versions"
       type: file
       must_exist: false

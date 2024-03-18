@@ -7,11 +7,19 @@ import logging
 import os
 import sys
 
-# Create a logger
-logging.basicConfig(format="%(name)s - %(asctime)s %(levelname)s: %(message)s")
-logger = logging.getLogger(__file__)
-logger.setLevel(logging.INFO)
-
+## VIASH START
+par = {
+    "fasta": "testData/minimal_test/reference/genome.fasta",
+    "gtf": "testData/minimal_test/reference/genes.gtf",
+    "additional_fasta": "testData/minimal_test/reference/gfp.fa.gz",
+    "biotype": "gene_biotype", 
+    "fasta_output": "genome_gfp.fasta",
+    "gtf_output": "genome_gfp.gtf",
+}
+meta = {
+    "functionality_name": "cat_additonal_fasta"
+}
+## VIASH END
 
 def fasta_iter(fasta_name):
     """
@@ -28,12 +36,9 @@ def fasta_iter(fasta_name):
         for header in faiter:
             # drop the ">"
             headerStr = header.__next__()[1:].strip()
-
             # join all sequence lines to one.
             seq = "".join(s.strip() for s in faiter.__next__())
-
             yield (headerStr, seq)
-
 
 def fasta2gtf(fasta, output, biotype):
     fiter = fasta_iter(fasta)
@@ -41,7 +46,6 @@ def fasta2gtf(fasta, output, biotype):
     lines = []
     attributes = 'exon_id "{name}.1"; exon_number "1";{biotype} gene_id "{name}_gene"; gene_name "{name}_gene"; gene_source "custom"; transcript_id "{name}_gene"; transcript_name "{name}_gene";\n'
     line_template = "{name}\ttransgene\texon\t1\t{length}\t.\t+\t.\t" + attributes
-
     for ff in fiter:
         name, seq = ff
         # Use first ID as separated by spaces as the "sequence name"
@@ -55,35 +59,32 @@ def fasta2gtf(fasta, output, biotype):
             biotype_attr = f' {biotype} "transgene";'
         line = line_template.format(name=name, length=length, biotype=biotype_attr)
         lines.append(line)
-
     with open(output, "w") as f:
         f.write("".join(lines))
 
+add_name = os.path.basename(par['additional_fasta'])
+output = os.path.splitext(add_name)[0] + ".gtf"
+fasta2gtf(par['additional_fasta'], output, par['biotype'])
 
-if __name__ == "__main__":
-    add_name = os.path.basename(par['additional_fasta'])
-    output = os.path.splitext(add_name)[0] + ".gtf"
-    fasta2gtf(par['additional_fasta'], output, par['biotype'])
+with open(par['fasta'], 'r') as f1:
+    content1 = f1.read()
+with open(par['additional_fasta'], 'r') as f2:
+    content2 = f2.read()
+with open(par['fasta_output'], 'w') as f_out:
+    f_out.write(content1 + content2)
+with open(par['gtf'], 'r') as g1:
+    g_content1 = g1.read()
+with open(output, 'r') as g2:
+    g_content2 = g2.read()
+with open(par['gtf_output'], 'w') as g_out:
+    g_out.write(g_content1 + g_content2)
 
-    with open(par['fasta'], 'r') as f1:
-        content1 = f1.read()
-    with open(par['additional_fasta'], 'r') as f2:
-        content2 = f2.read()
-    with open(par['fasta_output'], 'w') as f_out:
-        f_out.write(content1 + content2)
-    with open(par['gtf'], 'r') as g1:
-        g_content1 = g1.read()
-    with open(output, 'r') as g2:
-        g_content2 = g2.read()
-    with open(par['gtf_output'], 'w') as g_out:
-        g_out.write(g_content1 + g_content2)
+text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
 
-    text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
-
-    if par['versions'] and os.path.exists(par['versions']):
-        with open(par['versions'], 'a') as f:
-            f.write(text + '\n')
-        os.rename(par['versions'], par['updated_versions'])
-    else:
-        with open(par['updated_versions'], 'w') as f:
-            f.write(text + '\n')
+if par['versions'] and os.path.exists(par['versions']):
+    with open(par['versions'], 'a') as f:
+        f.write(text + '\n')
+    os.rename(par['versions'], par['updated_versions'])
+else:
+    with open(par['updated_versions'], 'w') as f:
+        f.write(text + '\n')
