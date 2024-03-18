@@ -173,35 +173,20 @@ workflow run_wf {
             args: [output: "transcriptome.fasta"] 
         )
 
-        // filter gtf for genes in genome
-        | gtf_gene_filter.run (
-            runIf: {id, state -> !state.transcript_fasta}, 
-            fromState: [
-                "fasta": "fasta", 
-                "gtf": "gtf", 
-                "versions": "versions"
-            ], 
-            toState: [
-                "filtered_gtf": "filtered_gtf", 
-                "versions": "updated_versions"
-            ],
-            args: [filtered_gtf: "genome_additional_genes.gtf"] 
-        )
-
-        // prepare reference for RSEM
+        // make transcript FASTA if not provided
         | rsem_prepare_reference.run ( 
             runIf: {id, state -> !state.transcript_fasta}, 
             fromState: [
                 "fasta": "fasta", 
-                "gtf": "filtered_gtf", 
+                "gtf": "gtf", 
                 "versions": "versions" 
             ], 
             toState: [
                 "transcript_fasta": "transcript_fasta", 
                 "versions": "updated_versions"
             ], 
-            key: "rsem_ref",
-            args: [transcript_fasta: "transcriptome.fasta"]
+            key: "make_transcript_fasta",
+            args: [transcript_fasta: "transcriptome.fasta"],
         )
 
         // chromosome size and fai index
@@ -287,7 +272,34 @@ workflow run_wf {
         )
 
         // TODO: Uncompress RSEM index or generate from scratch if required
+        | untar.run (
+            runIf: {id, state -> state.rsem_index}, 
+            fromState: [
+                "input": "rsem_index", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "rsem_index": "output", 
+                "versions": "updated_versions"
+            ], 
+            key: "rsem_index_uncompressed",
+            args: [output: "STAR_index"]
+        )
 
+        | rsem_prepare_reference.run ( 
+            runIf: {id, state -> !state.rsem_index && state.aligner == 'star_rsem'}, 
+            fromState: [
+                "fasta": "fasta", 
+                "gtf": "gtf", 
+                "versions": "versions" 
+            ], 
+            toState: [
+                "rsem_index": "rsem", 
+                "versions": "updated_versions"
+            ], 
+            key: "prepare_rsem_index",
+        )
+        
         // TODO: Uncompress HISAT2 index or generate from scratch if required
 
         // Uncompress Salmon index or generate from scratch if required
@@ -320,6 +332,8 @@ workflow run_wf {
             args: [salmon_index: "Salmon_index"] 
         )
 
+        // Uncompress Kallisto index or generate from scratch if required
+
         | setState ( 
             "fasta_uncompressed": "fasta", 
             "gtf_uncompressed": "gtf", 
@@ -328,6 +342,7 @@ workflow run_wf {
             "star_index_uncompressed": "star_index", 
             "salmon_index_uncompressed": "salmon_index", 
             "bbsplit_index_uncompressed": "bbsplit_index", 
+            "rsem_index_uncompressed": "rsem_index"
             "chrom_sizes": "sizes", 
             "fai": "fai", 
             "updated_versions": "versions"

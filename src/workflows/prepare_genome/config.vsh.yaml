@@ -88,10 +88,10 @@ functionality:
           direction: output
           description: Path to STAR index.
           default: star_index
-        # - name: "--rsem_index_uncompressed"
-        #   type: file
-        #   direction: output
-        #   description: Path to directory or tar.gz archive for pre-built RSEM index.
+        - name: "--rsem_index_uncompressed"
+          type: file
+          direction: output
+          description: Path to directory or tar.gz archive for pre-built RSEM index.
         - name: "--salmon_index_uncompressed"
           type: file
           direction: output
@@ -132,7 +132,7 @@ functionality:
     - name: cat_additional_fasta
     - name: gtf2bed
     - name: preprocess_transcripts_fasta
-    - name: gtf_gene_filter
+    - name: gtf_filter
     - name: rsem/rsem_prepare_reference
     - name: getchromsizes
     - name: untar
