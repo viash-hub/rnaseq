@@ -58,6 +58,9 @@ functionality:
         - name: "--biotype"
           type: string
           description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
+        - name: "--filter_gtf"
+          type: boolean
+          description: Whether to filter the GTF or not?
         - name: "--versions"
           type: file
           must_exist: false

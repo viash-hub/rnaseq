@@ -7,8 +7,26 @@ workflow run_wf {
 
     | map { id, state ->
       def biotype = state.gencode ? "gene_type" : state.featurecounts_group_type 
-      [ id, state + [ biotype: biotype ] ]
+      def filter_gtf = 
+          ((
+              // Condition 1: Alignment is required and aligner is set
+              !params.skip_alignment && params.aligner
+          ) || 
+          (
+              // Condition 2: Pseudoalignment is required and pseudoaligner is set
+              !params.skip_pseudo_alignment && params.pseudo_aligner
+          ) || 
+          (
+              // Condition 3: Transcript FASTA file is not provided
+              !params.transcript_fasta
+          )) &&
+          (
+              // Condition 4: --skip_gtf_filter is not provided
+              !params.skip_gtf_filter
+          )
+      [ id, state + [ biotype: biotype, filter_gtf: filter_gtf ] ]
     } 
+    
     | toSortedList
     | map { list -> 
         [ "ref",  
@@ -27,8 +45,8 @@ workflow run_wf {
           bbsplit_index: list[1][-1].bbsplit_index,
           skip_bbsplit: list[1][-1].skip_bbsplit,
           gencode: list[1][-1].gencode,
-          biotype: list[1][-1].biotype]
-          // versions: list[1][-1].versions ]
+          biotype: list[1][-1].biotype, 
+          filter_gtf: list[1][-1].filter_gtf]
         ]
     } 
 
@@ -51,6 +69,7 @@ workflow run_wf {
           "skip_bbsplit": "skip_bbsplit", 
           "gencode": "gencode", 
           "biotype": "biotype",
+          "filter_gtf": "filter_gtf",
           "versions": "versions" 
         ],
         toState: [

@@ -6,7 +6,7 @@ workflow run_wf {
     main: 
         output_ch = input_ch 
 
-        // decompress fasta
+        // Uncompress fasta
         | gunzip.run (
             fromState: [
                 "input": "fasta", 
@@ -20,7 +20,7 @@ workflow run_wf {
             args: [ output: "reference_genome.fasta" ] 
         )
 
-        // decompress gtf
+        // uncompress gtf
         | gunzip.run ( 
             runIf: {id, state -> state.gtf},
             fromState: [
@@ -35,7 +35,7 @@ workflow run_wf {
             args: [output: "gene_annotation.gtf"]
         )
 
-        // decompress gff
+        // uncompress gff
         | gunzip.run ( 
             runIf: {id, state -> !state.gtf && state.gff},
             fromState: [
@@ -52,7 +52,7 @@ workflow run_wf {
 
         // gff to gtf
         | gffread.run (
-            runIf: {id, state -> state.gff}, 
+            runIf: {id, state -> !state.gtf && state.gff}, 
             fromState: [
                 "input": "annotation", 
                 "versions": "versions" 
@@ -64,7 +64,21 @@ workflow run_wf {
             args: [output: "gene_annotation.gtf"] 
         )
 
-        // decompress additional fasta
+        | gtf_filter.run(
+            runIf: {id, state -> state.gtf && state.filter_gtf}, 
+            fromState: [
+                "fasta": "fasta", 
+                "gtf": "gtf", 
+                "versions": "versions"
+            ], 
+            toState: [
+                "gtf": "filtered_gtf", 
+                "versions": "updated_versions"
+            ],
+            args: [filtered_gtf: "gene_annotation.gtf"]
+        )
+
+        // uncompress additional fasta
         | gunzip.run (
             runIf: {id, state -> state.additional_fasta}, 
             fromState: [
@@ -100,7 +114,7 @@ workflow run_wf {
                 gtf_output: "genome_additional.gtf"]  
         ) 
 
-        // decompress bed file
+        // uncompress bed file
         | gunzip.run (
             runIf: {id, state -> state.gene_bed}, 
             fromState: [
@@ -129,7 +143,7 @@ workflow run_wf {
             args: [bed_output: "genome_additional.bed"]
         ) 
 
-        // decompress transcript fasta
+        // uncompress transcript fasta
         | gunzip.run (
             runIf: {id, state -> state.transcript_fasta}, 
             fromState: [
