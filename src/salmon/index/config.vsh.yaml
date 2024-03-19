@@ -14,11 +14,16 @@ functionality:
       type: file
     - name: "--transcriptome_fasta"
       type: file
+    - name: "--pseudo_aligner_kmer_size"
+      type: integer
+      description: Kmer length passed to indexing step of pseudoaligners.
+    - name: "--gencode"
+      type: boolean
+      description: Specify if the GTF annotation is in GENCODE format.
     - name: "--versions"
       type: file
       must_exist: false
       
-
     - name: "--salmon_index"
       type: file
       direction: output
