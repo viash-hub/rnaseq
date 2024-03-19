@@ -271,7 +271,7 @@ workflow run_wf {
             args: [star_index: "STAR_index"]
         )
 
-        // TODO: Uncompress RSEM index or generate from scratch if required
+        // Uncompress RSEM index or generate from scratch if required
         | untar.run (
             runIf: {id, state -> state.rsem_index}, 
             fromState: [
@@ -283,7 +283,7 @@ workflow run_wf {
                 "versions": "updated_versions"
             ], 
             key: "rsem_index_uncompressed",
-            args: [output: "STAR_index"]
+            args: [output: "RSEM_index"]
         )
 
         | rsem_prepare_reference.run ( 
@@ -322,6 +322,8 @@ workflow run_wf {
             fromState: [ 
                 "genome_fasta": "fasta", 
                 "transcriptome_fasta": "transcript_fasta", 
+                "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size",
+                "gencode": "gencode", 
                 "versions": "versions" 
             ], 
             toState: [
@@ -333,6 +335,34 @@ workflow run_wf {
         )
 
         // Uncompress Kallisto index or generate from scratch if required
+        | untar.run (
+            runIf: {id, state -> state.kallisto_index}, 
+            fromState: [
+                "input": "kallisto_index", 
+                "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size",
+                "versions": "versions"
+            ], 
+            toState: [
+                "kallisto_index": "output", 
+                "versions": "updated_versions"
+            ], 
+            key: "kallisto_index_uncompressed",
+            args: [output: "Kallisto_index"]
+        )
+
+        | kallisto_index.run(
+            runIf: {id, state -> state.pseudo_aligner == "kallisto" && !state.kallisto_index}, 
+            fromState: [
+                "transcriptome_fasta": "transcriptome_fasta",
+                "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size",
+                "versions": "versions"
+            ],
+            toState: [
+                "kallisto_index": "kallisto_index",
+                "versions": "updated_versions"
+            ],
+            args: [kallisto_index: "Kallisto_index"]
+        )
 
         | setState ( 
             "fasta_uncompressed": "fasta", 
@@ -340,7 +370,8 @@ workflow run_wf {
             "transcript_fasta_uncompressed": "transcript_fasta", 
             "gene_bed_uncompressed": "gene_bed",
             "star_index_uncompressed": "star_index", 
-            "salmon_index_uncompressed": "salmon_index", 
+            "salmon_index_uncompressed": "salmon_index",
+            "kallisto_index_uncompressed": "kallisto_index" 
             "bbsplit_index_uncompressed": "bbsplit_index", 
             "rsem_index_uncompressed": "rsem_index"
             "chrom_sizes": "sizes", 

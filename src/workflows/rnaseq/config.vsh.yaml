@@ -68,6 +68,9 @@ functionality:
         - name: "--salmon_index"
           type: file
           description: Path to directory or tar.gz archive for pre-built Salmon index.
+        - name: "--kallisto_index"
+          type: file
+          description: Path to directory or tar.gz archive for pre-built Kallisto index.
         - name: "--hisat2_index"
           type: file
           description: Path to directory or tar.gz archive for pre-built HISAT2 index.
@@ -169,10 +172,16 @@ functionality:
           type: string
           description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
           choices: [star_salmon, star_rsem, hisat2]
+          default: star_salmon
         - name: "--pseudo_aligner"
           type: string
           description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
           choices: [salmon, kallisto]
+          default: salmon
+        - name: "--pseudo_aligner_kmer_size"
+          type: integer
+          description: Kmer length passed to indexing step of pseudoaligners.
+          default: 31
         - name: "--bam_csi_index"
           type: boolean_true
           description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
@@ -352,12 +361,17 @@ functionality:
           type: file
           direction: output
           description: Path to Salmon index.
-          default: genome/index/salmon
+          default: genome/index/Salmon
         - name: "--output_bbsplit_index"
           type: file
           direction: output
           description: Path to BBSplit index.
-          default: genome/index/bbsplit
+          default: genome/index/BBSplit
+        - name: "--output_kallisto_index"
+          type: file
+          direction: output
+          description: Path to Kallisto index.
+          default: genome/index/Kallisto
         - name: "--output_fastq_1"
           type: file
           direction: output

@@ -46,7 +46,8 @@ workflow run_wf {
           skip_bbsplit: list[1][-1].skip_bbsplit,
           gencode: list[1][-1].gencode,
           biotype: list[1][-1].biotype, 
-          filter_gtf: list[1][-1].filter_gtf]
+          filter_gtf: list[1][-1].filter_gtf,
+          pseudo_aligner_kmer_size: list[1][-1].pseudo_aligner_kmer_size]
         ]
     } 
 
@@ -59,11 +60,13 @@ workflow run_wf {
           "additional_fasta": "additional_fasta", 
           "transcript_fasta": "transcript_fasta", 
           "gene_bed": "gene_bed",
-          // "splicesites": "splicesites",
           "bbsplit_fasta_list": "bbsplit_fasta_list", 
           "star_index": "star_index", 
-          // "rsem_index": "rsem_index",
+          "rsem_index": "rsem_index",
           "salmon_index": "salmon_index",
+          "kallisto_index": "kallisto_index",
+          "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
+          // "splicesites": "splicesites",
           // "hisat2_index": "hisat2_index",
           "bbsplit_index": "bbsplit_index",
           "skip_bbsplit": "skip_bbsplit", 
@@ -81,6 +84,7 @@ workflow run_wf {
           "bbsplit_index": "bbsplit_index_uncompressed", 
           "star_index": "star_index_uncompressed", 
           "salmon_index": "salmon_index_uncompressed", 
+          "kallisto_index": "kallisto_index_uncompressed"
           "gene_bed": "gene_bed_uncompressed",
           "versions": "updated_versions" 
         ]
@@ -394,6 +398,7 @@ workflow run_wf {
         "output_bbsplit_index": "bbsplit_index", 
         "output_star_index": "star_index", 
         "output_salmon_index": "salmon_index",
+        "output_kallisto_index": "kallisto_index",
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
         "fastqc_zip_1": "fastqc_zip_1",
@@ -407,7 +412,6 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
-        // "salmon_json_info": "salmon_json_info", 
         "star_alignment": "star_alignment", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
@@ -501,9 +505,7 @@ def isBelowMaxContigSize(fai_file) {
       def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
         "  Contig longer than ${max_size}bp found in reference genome!\n\n" +
         "  ${chrom}: ${size}\n\n" +
-        "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n" +
-        "  Please see:\n" +
-        "  https://github.com/nf-core/rnaseq/issues/744\n" +
+        "  Provide the '--bam_csi_index' parameter to use a CSI instead of BAI index.\n\n"
         "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       Nextflow.error(error_string)
       return false
