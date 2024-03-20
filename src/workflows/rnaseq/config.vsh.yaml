@@ -392,28 +392,28 @@ functionality:
           description: FastQC HTML report for read 1.
           required: false
           must_exist: false
-          default: fastqc/$id.read_1.fastqc.html
+          default: fastqc_raw/$id.read_1.fastqc.html
         - name: "--fastqc_html_2"
           type: file
           direction: output
           description: FastQC HTML report for read 2.
           required: false
           must_exist: false
-          default: fastqc/$id.read_2.fastqc.html
+          default: fastqc_raw/$id.read_2.fastqc.html
         - name: "--fastqc_zip_1"
           type: file
           direction: output
           description: FastQC report archive for read 1.
           required: false
           must_exist: false
-          default: fastqc/$id.read_1.fastqc.zip
+          default: fastqc_raw/$id.read_1.fastqc.zip
         - name: "--fastqc_zip_2"
           type: file
           direction: output
           description: FastQC report archive for read 2.
           required: false
           must_exist: false
-          default: fastqc/$id.read_2.fastqc.zip
+          default: fastqc_raw/$id.read_2.fastqc.zip
         - name: "--trim_log_1"
           type: file
           direction: output
@@ -431,25 +431,25 @@ functionality:
           direction: output
           required: false
           must_exist: false
-          default: trimgalore/fastqc/$id.read_1.trimmed_fastqc.html
+          default: fastqc_trim/$id.read_1.trimmed_fastqc.html
         - name: "--trim_html_2"
           type: file
           direction: output
           required: false
           must_exist: false
-          default: trimgalore/fastqc/$id.read_2.trimmed_fastqc.html
+          default: fastqc_trim/$id.read_2.trimmed_fastqc.html
         - name: "--trim_zip_1"
           type: file
           direction: output
           required: false
           must_exist: false
-          default: trimgalore/fastqc/$id.read_1.trimmed_fastqc.zip
+          default: fastqc_trim/$id.read_1.trimmed_fastqc.zip
         - name: "--trim_zip_2"
           type: file
           direction: output
           required: false
           must_exist: false
-          default: trimgalore/fastqc/$id.read_2.trimmed_fastqc.zip
+          default: fastqc_trim/$id.read_2.trimmed_fastqc.zip
         - name: "--sortmerna_log"
           type: file
           direction: output

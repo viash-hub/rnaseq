@@ -118,6 +118,7 @@ workflow run_wf {
     )
 
     // Pre-process fastq files
+    // TODO: Add arguments for fastp
     | pre_processing.run ( 
         fromState: [
           "id": "id", 
@@ -139,6 +140,7 @@ workflow run_wf {
           "skip_skip_umi_extract": "skip_umi_extract",
           "umi_discard_read": "umi_discard_read",
           "skip_trimming": "skip_trimming",
+          "trimmer": "trimmer",
           "skip_bbsplit": "skip_bbsplit",
           "remove_ribo_rna": "remove_ribo_rna", 
           "versions": "versions"
@@ -160,6 +162,12 @@ workflow run_wf {
           "num_trimmed_reads": "num_trimmed_reads",
           "sortmerna_log": "sortmerna_log",
           "salmon_json_info": "salmon_json_info", 
+          "fastp_failed_trim": "failed_trim",
+          "fastp_failed_trim_unpaired1": "failed_trim_unpaired1",
+          "fastp_failed_trim_unpaired2": "failed_trim_unpaired2",
+          "fastp_trim_json": "trim_json",
+          "fastp_trim_html": "trim_html",
+          "fastp_trim_merged_out": "trim_merged_out"
           "versions": "updated_versions"
         ]
     )
@@ -177,9 +185,13 @@ workflow run_wf {
       def num_reads = (state.skip_trimming) ? 
         state.min_trimmed_reads + 1 : 
         (
-          (!state.skip_trimming && input.size() == 2) ?
-          getTrimGaloreReadsAfterFiltering(state.trim_log_2) : 
-          getTrimGaloreReadsAfterFiltering(state.trim_log_1)
+          (state.trimmer == "fastp") ? 
+            getFastpReadsAfterFiltering(state.fastp_trim_json) : 
+            (
+              (!state.skip_trimming && input.size() == 2) ?
+                getTrimGaloreReadsAfterFiltering(state.trim_log_2) : 
+                getTrimGaloreReadsAfterFiltering(state.trim_log_1)
+            )
         )
       def passed_trimmed_reads = 
         (state.skip_trimming || (num_reads >= state.min_trimmed_reads)) ? 
@@ -548,6 +560,14 @@ def getTrimGaloreReadsAfterFiltering(log_file) {
     if (filtered_reads_matcher) filtered_reads = filtered_reads_matcher[0][1].toFloat()
   }
   return total_reads - filtered_reads
+}
+
+//
+// Function that parses fastp json output file to get total number of reads after trimming
+//
+def getFastpReadsAfterFiltering(json_file) {
+    def Map json = (Map) new JsonSlurper().parseText(json_file.text).get('summary')
+    return json['after_filtering']['total_reads'].toLong()
 }
 
 //
