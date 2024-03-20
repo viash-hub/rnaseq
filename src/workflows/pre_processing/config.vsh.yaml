@@ -269,6 +269,7 @@ functionality:
     - name: trimgalore
     - name: bbmap_bbsplit
     - name: sortmerna
+    - name: fastp
 
 platforms:
   - type: nextflow
