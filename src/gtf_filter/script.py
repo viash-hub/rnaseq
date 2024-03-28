@@ -1,5 +1,6 @@
 # Adapted from https://github.com/nf-core/rnaseq/blob/3.14.0/bin/filter_gtf.py
 
+import os
 import sys
 import re
 import statistics
