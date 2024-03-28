@@ -8,26 +8,18 @@ workflow run_wf {
     | map { id, state ->
       def biotype = state.gencode ? "gene_type" : state.featurecounts_group_type 
       def filter_gtf = 
-          ((
-              // Condition 1: Alignment is required and aligner is set
-              !params.skip_alignment && params.aligner
-          ) || 
-          (
-              // Condition 2: Pseudoalignment is required and pseudoaligner is set
-              !params.skip_pseudo_alignment && params.pseudo_aligner
-          ) || 
-          (
-              // Condition 3: Transcript FASTA file is not provided
-              !params.transcript_fasta
-          )) &&
-          (
-              // Condition 4: --skip_gtf_filter is not provided
-              !params.skip_gtf_filter
-          )
+        (
+          ( !state.skip_alignment && state.aligner) // Condition 1: Alignment is required and aligner is set
+          || ( !state.skip_pseudo_alignment && state.pseudo_aligner ) // Condition 2: Pseudoalignment is required and pseudoaligner is set 
+          || ( !state.transcript_fasta )  // Condition 3: Transcript FASTA file is not provided
+        ) 
+        &&
+        ( !state.skip_gtf_filter )  // Condition 4: --skip_gtf_filter is not provided
       [ id, state + [ biotype: biotype, filter_gtf: filter_gtf ] ]
     } 
     
     | toSortedList
+    
     | map { list -> 
         [ "ref",  
           [ fasta: list[1][-1].fasta,
@@ -47,7 +39,7 @@ workflow run_wf {
           gencode: list[1][-1].gencode,
           biotype: list[1][-1].biotype, 
           filter_gtf: list[1][-1].filter_gtf,
-          pseudo_aligner_kmer_size: list[1][-1].pseudo_aligner_kmer_size]
+          pseudo_aligner_kmer_size: list[1][-1].pseudo_aligner_kmer_size ]
         ]
     } 
 
@@ -65,7 +57,7 @@ workflow run_wf {
           "rsem_index": "rsem_index",
           "salmon_index": "salmon_index",
           "kallisto_index": "kallisto_index",
-          "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
+          "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size",
           // "splicesites": "splicesites",
           // "hisat2_index": "hisat2_index",
           "bbsplit_index": "bbsplit_index",
@@ -84,7 +76,7 @@ workflow run_wf {
           "bbsplit_index": "bbsplit_index_uncompressed", 
           "star_index": "star_index_uncompressed", 
           "salmon_index": "salmon_index_uncompressed", 
-          "kallisto_index": "kallisto_index_uncompressed"
+          "kallisto_index": "kallisto_index_uncompressed",
           "gene_bed": "gene_bed_uncompressed",
           "versions": "updated_versions" 
         ]
@@ -167,7 +159,7 @@ workflow run_wf {
           "fastp_failed_trim_unpaired2": "failed_trim_unpaired2",
           "fastp_trim_json": "trim_json",
           "fastp_trim_html": "trim_html",
-          "fastp_trim_merged_out": "trim_merged_out"
+          "fastp_trim_merged_out": "trim_merged_out",
           "versions": "updated_versions"
         ]
     )
@@ -253,6 +245,7 @@ workflow run_wf {
       def paired = input.size() == 2
       [ id, state + [ paired: paired ] ]
     }
+
     // Post-processing
     | post_processing.run (
         runIf: { id, state -> state.passed_trimmed_reads && state.passed_mapping },

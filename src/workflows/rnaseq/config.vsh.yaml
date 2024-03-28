@@ -4,7 +4,7 @@ functionality:
   description: |
     A viash workflow for the nf-core/rnaseq pipeline.
   
-  arguments_groups:
+  argument_groups:
     - name: Input
       arguments:
         - name: "--id"
@@ -103,7 +103,7 @@ functionality:
         - name: "--trimmer"
           type: string
           description: Specify the trimming tool to use.
-          choices: [ "trimgalore", "fastp"]
+          choices: ["trimgalore", "fastp"]
           default: "trimgalore"
         - name: "--extra_trimgalore_args"
           type: string
@@ -140,7 +140,7 @@ functionality:
         - name: "--umitools_extract_method"
           type: string
           description: UMI pattern to use.
-          default: string
+          default: "string"
           choices: [string, regex]
         - name: "--umitools_bc_pattern"
           type: string
@@ -172,12 +172,12 @@ functionality:
           type: string
           description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
           choices: [star_salmon, star_rsem, hisat2]
-          default: star_salmon
+          default: "star_salmon"
         - name: "--pseudo_aligner"
           type: string
           description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
           choices: [salmon, kallisto]
-          default: salmon
+          default: "salmon"
         - name: "--pseudo_aligner_kmer_size"
           type: integer
           description: Kmer length passed to indexing step of pseudoaligners.
@@ -228,6 +228,14 @@ functionality:
         - name: "--skip_pseudo_alignment"
           type: boolean_true
           description: Skip all of the pseudo-alignment-based processes within the pipeline.  
+        - name: extra_rsem_prepare_reference_args
+          type: string
+          description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
+          default: '--star'
+        - name: extra_rsem_calculate_expression_args
+          type: string
+          description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
+          default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'
 
     - name: Process skipping options
       arguments:
@@ -284,7 +292,7 @@ functionality:
           default: ' --record-count 1000000 --seed 1'
           description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
         - name: "--extra_picard_args"
-          type: string
+          type: string   
           default: ' --ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp'
           description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
         - name: "--extra_bedtools_args"
@@ -802,7 +810,6 @@ functionality:
           direction: output
         - name: "--versions"
           type: file
-          
           must_exist: false
           direction: output
 

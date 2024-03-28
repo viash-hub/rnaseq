@@ -23,8 +23,8 @@ functionality:
     - name: "--strandedness"
       type: string 
       required: false
-      default: auto
-      description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+      description: Sample strand-specificity. Must be one of unstranded, forward, or reverse
+      choices: [forward, reverse, unstranded]
     - name: "--gtf"
       type: file
       description: GTF file
@@ -75,6 +75,9 @@ functionality:
       type: string
       default: 'gene_name'
       description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
+    - name: extra_rsem_calculate_expression_args
+      type: string
+      description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
     - name: "--versions"
       type: file
       must_exist: false
@@ -152,6 +155,7 @@ functionality:
     - name: umitools/umitools_dedup
     - name: umitools_prepareforquant
     - name: salmon/salmon_quant
+    - name: rsem/rsem_calculate_expression
 
 platforms:
   - type: nextflow

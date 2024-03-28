@@ -231,7 +231,7 @@ workflow run_wf {
         "failed_trim_unpaired2": "failed_trim_unpaired2",
         "trim_json": "trim_json",
         "trim_html": "trim_html",
-        "trim_merged_out": "trim_merged_out"
+        "trim_merged_out": "trim_merged_out",
         "updated_versions": "versions" 
     )
 

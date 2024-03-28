@@ -111,7 +111,8 @@ workflow run_wf {
             key: "cat_additional",
             args: [
                 fasta_output: "genome_additional.fasta", 
-                gtf_output: "genome_additional.gtf"]  
+                gtf_output: "genome_additional.gtf"
+            ]  
         ) 
 
         // uncompress bed file
@@ -186,7 +187,7 @@ workflow run_wf {
                 "versions": "updated_versions"
             ], 
             key: "make_transcript_fasta",
-            args: [transcript_fasta: "transcriptome.fasta"],
+            args: [transcript_fasta: "transcriptome.fasta"]
         )
 
         // chromosome size and fai index
@@ -235,7 +236,7 @@ workflow run_wf {
                 "versions": "updated_versions"
             ], 
             args: [
-                "only_build_index": true, 
+                only_build_index: true, 
                 bbsplit_index: "BBSplit_index"
             ], 
             key: "bbsplit_index_uncompressed" 
@@ -371,9 +372,9 @@ workflow run_wf {
             "gene_bed_uncompressed": "gene_bed",
             "star_index_uncompressed": "star_index", 
             "salmon_index_uncompressed": "salmon_index",
-            "kallisto_index_uncompressed": "kallisto_index" 
+            "kallisto_index_uncompressed": "kallisto_index", 
             "bbsplit_index_uncompressed": "bbsplit_index", 
-            "rsem_index_uncompressed": "rsem_index"
+            "rsem_index_uncompressed": "rsem_index",
             "chrom_sizes": "sizes", 
             "fai": "fai", 
             "updated_versions": "versions"
