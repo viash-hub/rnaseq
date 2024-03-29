@@ -63,9 +63,9 @@ functionality:
       entrypoint: run_wf
 
   dependencies: 
-    - name: salmon/salmon_tx2gene
-    - name: salmon/salmon_tximport
-    - name: salmon/salmon_summarizedexperiment
+    - name: tx2gene
+    - name: tximport
+    - name: summarizedexperiment
     
 platforms:
   - type: nextflow

@@ -1,5 +1,5 @@
 functionality:
-  name: "ucsc_bedclip"
+  name: "bedclip"
   namespace: "ucsc"
   info:
     migration_info:

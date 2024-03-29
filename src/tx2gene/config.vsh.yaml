@@ -1,10 +1,9 @@
 functionality:
-  name: "salmon_tx2gene"
-  namespace: "salmon"
+  name: "tx2gene"
   info:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/salmon_tx2gene.nf]
+      paths: [modules/local/tx2gene/main.nf]
       last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
   description: Get transcript id (tx) to gene names for tximport
 
@@ -39,7 +38,7 @@ functionality:
     - type: bash_script
       path: script.sh
     # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_tx2gene.py
-    - path: salmon_tx2gene.py
+    - path: tx2gene.py
    
 platforms:
   - type: docker

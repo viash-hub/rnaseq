@@ -155,8 +155,8 @@ functionality:
     - name: samtools/samtools_idxstats
     - name: stringtie
     - name: bedtools_genomecov
-    - name: ucsc/ucsc_bedclip
-    - name: ucsc/ucsc_bedgraphtobigwig
+    - name: ucsc/bedclip
+    - name: ucsc/bedgraphtobigwig
 
 platforms:
   - type: nextflow
