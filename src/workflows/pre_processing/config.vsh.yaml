@@ -260,7 +260,7 @@ functionality:
     - type: nextflow_script
       path: main.nf
       entrypoint: run_wf
-  
+
   dependencies:
     - name: fq_subsample
     - name: salmon/salmon_quant
@@ -270,6 +270,10 @@ functionality:
     - name: bbmap_bbsplit
     - name: sortmerna
     - name: fastp
+      # repository: 
+      #   type: vsh
+      #   repo: viash-hub/biobase
+      #   path: target/nextflow/
 
 platforms:
   - type: nextflow
