@@ -1,10 +1,10 @@
 functionality:
-  name: kallisto_index
+  name: kallisto_quant
   namespace: kallisto
   info:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/salmon/kallisto/main.nf, modules/nf-core/salmon/kallisto/meta.yml]
+      paths: [modules/nf-core/kallisto/index/main.nf, modules/nf-core/kallisto/index/meta.yml]
       last_sha: c0816976384d5e7ee6079c29c45958df1ffa0ee4
   description: | 
     Create Kallisto index.
