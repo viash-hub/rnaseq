@@ -270,10 +270,9 @@ functionality:
     - name: bbmap_bbsplit
     - name: sortmerna
     - name: fastp
-      # repository: 
-      #   type: vsh
-      #   repo: viash-hub/biobase
-      #   path: target/nextflow/
+      repository: 
+        type: vsh
+        repo: viash-hub/biobase
 
 platforms:
   - type: nextflow

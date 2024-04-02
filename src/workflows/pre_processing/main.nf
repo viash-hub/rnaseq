@@ -106,7 +106,7 @@ workflow run_wf {
         "trim_json": "json",
         "trim_html": "html",
         "trim_merged_out": "merged_out"
-      ],
+      ]
     )
 
     // Perform FASTQC on reads trimmed using fastp
