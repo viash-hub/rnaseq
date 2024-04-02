@@ -15,7 +15,7 @@ on:
         type: string
         required: false
         description: |
-          Version to tag the build components with (e.i functionality.version).
+          Version to tag the build components with (i.e., .version).
           Defaults to name of the branch that triggered the workflow, suffixed by "_build".
       target_tag:
         type: string
@@ -42,7 +42,7 @@ on:
         type: string
         required: false
         description: |
-          Version to tag the build components with (e.i functionality.version).
+          Version to tag the build components with (i.e., .version).
           Defaults to name of the branch that triggered the workflow, suffixed by "_build".
       target_tag:
         type: string
@@ -68,8 +68,8 @@ on:
         description: "A JSON object that can be used to populate a github actions matrix for workflow jobs."
         value: ${{ jobs.build_and_deploy_target_folder.outputs.workflow_matrix}}
     secrets:
-      # VIASHHUB_USER:
-      #   required: true
+      VIASH_HUB_USERNAME:
+        required: true
       VIASH_HUB_RNASEQ:
         required: true
       # GTHB_USER:
@@ -140,14 +140,14 @@ jobs:
     - uses: viash-io/viash-actions/ns-build@v4
       with:
         config_mod: |
-          .functionality.version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
-          .platforms[.type == 'docker'].target_tag := '${{ github.event_name == 'push' && 'main_build' || inputs.target_tag }}'
+          .version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
+          .engines[.type == 'docker'].target_tag := '${{ github.event_name == 'push' && 'main_build' || inputs.target_tag }}'
         parallel: true
         query: ^(?!workflows)
     
     - uses: viash-io/viash-actions/ns-build@v4
       with:
-        config_mod: .functionality.version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
+        config_mod: .version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
         parallel: true
         query: ^workflows
   
@@ -197,15 +197,15 @@ jobs:
       run: |
         echo "components=$(jq -c '[ .[] | 
           { 
-            "name": (.functionality.namespace + "/" + .functionality.name),
+            "name": (.namespace + "/" + .name),
             "config": .info.config,
             "dir": .info.config | capture("^(?<dir>.*\/)").dir
           }
         ]' ${{ steps.ns_list.outputs.output_file }} )" >> $GITHUB_OUTPUT
 
-        echo "workflows=$(jq -c '[ .[] | . as $config | (.functionality.test_resources // [])[] | select(.type == "nextflow_script", .entrypoint) |
+        echo "workflows=$(jq -c '[ .[] | . as $config | (.test_resources // [])[] | select(.type == "nextflow_script", .entrypoint) |
         { 
-          "name": ($config.functionality.namespace + "/" + $config.functionality.name),
+          "name": ($config.namespace + "/" + $config.name),
           "main_script": (($config.info.config | capture("^(?<dir>.*\/)").dir) + "/" + .path),
           "entry": .entrypoint,
           "config": $config.info.config
@@ -241,11 +241,11 @@ jobs:
       if: ${{ github.event_name == 'push' || inputs.deploy_to_viash_hub }}
       with:
         config_mod: |
-          .functionality.version := " ${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}"
-          .platforms[.type == 'docker'].target_tag := '${{ github.event_name == 'push' && 'main_build' || inputs.target_tag }}'
-          .platforms[.type == 'docker'].target_organization := 'data-intuitive'
-          .platforms[.type == 'docker'].target_registry := 'viash-hub.com:5050'
-          .platforms[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
+          .version := " ${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}"
+          .engines[.type == 'docker'].target_tag := '${{ github.event_name == 'push' && 'main_build' || inputs.target_tag }}'
+          .engines[.type == 'docker'].target_organization := 'data-intuitive'
+          .engines[.type == 'docker'].target_registry := 'viash-hub.com:5050'
+          .engines[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
         parallel: true
         query: ^(?!workflows)
       
@@ -253,7 +253,7 @@ jobs:
       if: ${{ github.event_name == 'push' || inputs.deploy_to_viash_hub }}
       with:
         config_mod: |
-          .functionality.version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
+          .version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
         parallel: true
         query: ^workflows
    
@@ -293,11 +293,11 @@ jobs:
       uses: viash-io/viash-actions/ns-build@v4
       with:
         config_mod: |
-          .functionality.version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
-          .platforms[.type == 'docker'].target_registry := 'viash-hub.com:5050'
-          .platforms[.type == 'docker'].target_organization := 'data-intuitive'
-          .platforms[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
-          .platforms[.type == 'docker'].target_tag := '${{ github.ref_name }}_build'
+          .version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
+          .engines[.type == 'docker'].target_registry := 'viash-hub.com:5050'
+          .engines[.type == 'docker'].target_organization := 'data-intuitive'
+          .engines[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
+          .engines[.type == 'docker'].target_tag := '${{ github.ref_name }}_build'
         platform: docker
         src: ${{ matrix.component.dir }}
         setup: build
@@ -321,10 +321,10 @@ jobs:
       uses: viash-io/viash-actions/ns-build@v4
       with:
         config_mod: |
-          .functionality.version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
-          .platforms[.type == 'docker'].target_registry := 'viash-hub.com:5050'
-          .platforms[.type == 'docker'].target_organization := 'data-intuitive'
-          .platforms[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
+          .version := "${{ inputs.version || format('{0}_build', github.ref_name) }}"
+          .engines[.type == 'docker'].target_registry := 'viash-hub.com:5050'
+          .engines[.type == 'docker'].target_organization := 'data-intuitive'
+          .engines[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
         platform: docker
         src: ${{ matrix.component.dir }}
         setup: push
