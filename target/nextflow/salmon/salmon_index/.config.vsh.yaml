@@ -1,0 +1,201 @@
+name: "salmon_index"
+namespace: "salmon"
+version: "main_build"
+argument_groups:
+- name: "Arguments"
+  arguments:
+  - type: "file"
+    name: "--genome_fasta"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--transcriptome_fasta"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--pseudo_aligner_kmer_size"
+    description: "Kmer length passed to indexing step of pseudoaligners."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "boolean"
+    name: "--gencode"
+    description: "Specify if the GTF annotation is in GENCODE format."
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--versions"
+    info: null
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--salmon_index"
+    info: null
+    default:
+    - "Salmon_index"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--updated_versions"
+    info: null
+    default:
+    - "versions.yml"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+resources:
+- type: "bash_script"
+  path: "script.sh"
+  is_executable: true
+description: "Create Salmon index.\n"
+test_resources:
+- type: "bash_script"
+  path: "test.sh"
+  is_executable: true
+- type: "file"
+  path: "testData/minimal_test/reference/genome.fasta"
+- type: "file"
+  path: "testData/minimal_test/reference/transcriptome.fasta"
+info:
+  migration_info:
+    git_repo: "https://github.com/nf-core/rnaseq.git"
+    paths:
+    - "modules/nf-core/salmon/index/main.nf"
+    - "modules/nf-core/salmon/index/meta.yml"
+    last_sha: "54721c6946daf6d602d7069dc127deef9cbe6b33"
+status: "enabled"
+requirements:
+  commands:
+  - "ps"
+runners:
+- type: "executable"
+  id: "docker"
+  docker_setup_strategy: "ifneedbepullelsecachedbuild"
+- type: "nextflow"
+  id: "nextflow"
+  directives:
+    tag: "$id"
+  auto:
+    simplifyInput: true
+    simplifyOutput: false
+    transcript: false
+    publish: false
+  config:
+    labels:
+      mem1gb: "memory = 1.GB"
+      mem2gb: "memory = 2.GB"
+      mem4gb: "memory = 4.GB"
+      mem8gb: "memory = 8.GB"
+      mem16gb: "memory = 16.GB"
+      mem32gb: "memory = 32.GB"
+      mem64gb: "memory = 64.GB"
+      mem128gb: "memory = 128.GB"
+      mem256gb: "memory = 256.GB"
+      mem512gb: "memory = 512.GB"
+      mem1tb: "memory = 1.TB"
+      mem2tb: "memory = 2.TB"
+      mem4tb: "memory = 4.TB"
+      mem8tb: "memory = 8.TB"
+      mem16tb: "memory = 16.TB"
+      mem32tb: "memory = 32.TB"
+      mem64tb: "memory = 64.TB"
+      mem128tb: "memory = 128.TB"
+      mem256tb: "memory = 256.TB"
+      mem512tb: "memory = 512.TB"
+      cpu1: "cpus = 1"
+      cpu2: "cpus = 2"
+      cpu5: "cpus = 5"
+      cpu10: "cpus = 10"
+      cpu20: "cpus = 20"
+      cpu50: "cpus = 50"
+      cpu100: "cpus = 100"
+      cpu200: "cpus = 200"
+      cpu500: "cpus = 500"
+      cpu1000: "cpus = 1000"
+  debug: false
+  container: "docker"
+engines:
+- type: "docker"
+  id: "docker"
+  image: "ubuntu:18.04"
+  target_organization: "data-intuitive"
+  target_registry: "ghcr.io"
+  target_tag: "main_build"
+  namespace_separator: "/"
+  target_image_source: "https://github.com/data-intuitive/rnaseq.vsh"
+  setup:
+  - type: "docker"
+    run:
+    - "ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone\
+      \ && \\\napt-get update && \\\napt remove -y libcurl4 && \\\napt-get install\
+      \ -y --no-install-recommends ${PACKAGES} && \\\napt-get clean && \\\nwget -O\
+      \ - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key\
+      \ add - && \\\napt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic\
+      \ main' && \\\napt-get update && \\\napt-key --keyring /etc/apt/trusted.gpg\
+      \ del C1F34CDD40CD72DA && \\\napt-get install kitware-archive-keyring && \\\n\
+      apt-get install -y cmake && \\\nwget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb\
+      \ && \\\ndpkg -i libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb && \\\ncurl -k\
+      \ -L https://github.com/COMBINE-lab/salmon/archive/v${SALMON_VERSION}.tar.gz\
+      \ -o salmon-v${SALMON_VERSION}.tar.gz && \\\ntar xzf salmon-v${SALMON_VERSION}.tar.gz\
+      \ && \\\ncd salmon-${SALMON_VERSION} && \\\nmkdir build && \\\ncd build && \\\
+      \ncmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon_tmp && make && make install\
+      \ && \\\ncd && apt-get update && \\\napt-get install -y --no-install-recommends\
+      \ libhwloc5 && \\\nrm -rf /var/lib/apt/lists/* && \\\ncp /usr/local/salmon_tmp/bin/salmon\
+      \ /usr/local/bin && \\\ncp -r /usr/local/salmon_tmp/lib/* /usr/local/lib &&\
+      \ \\\nrm -r /usr/local/salmon_tmp\n"
+    env:
+    - "SALMON_VERSION 1.10.1"
+    - "TZ Europe/Brussels"
+    - "PACKAGES git gcc make g++ libboost-all-dev liblzma-dev libbz2-dev ca-certificates\
+      \ zlib1g-dev libcurl4-openssl-dev curl unzip autoconf apt-transport-https ca-certificates\
+      \ gnupg software-properties-common wget tar"
+  entrypoint: null
+  cmd: null
+build_info:
+  config: "src/salmon/salmon_index/config.vsh.yaml"
+  runner: "nextflow"
+  engine: "docker"
+  output: "target/nextflow/salmon/salmon_index"
+  executable: "target/nextflow/salmon/salmon_index/salmon_index"
+  viash_version: "0.9.0-RC2"
+  git_commit: "f1bac79d3ebb4bff084f592da4371d1e3a1a6865"
+  git_remote: "https://github.com/data-intuitive/rnaseq.vsh"
+package_config:
+  info: null
+  viash_version: "0.9.0-RC2"
+  source: "src"
+  target: "target"
+  config_mods:
+  - ".version := 'dev'\n.requirements.commands := ['ps']\n.engines[.type == 'docker'].target_registry\
+    \ := 'ghcr.io'\n.engines[.type == 'docker'].target_organization := 'data-intuitive'\n\
+    .engines[.type == 'docker'].target_image_source := 'https://github.com/data-intuitive/rnaseq.vsh'\n\
+    .runners[.type == 'nextflow'].directives.tag := '$id'\n.runners[.type == 'nextflow'].auto.simplifyOutput\
+    \ := false"
+  - ".version := \"main_build\""
+  - ".engines[.type == 'docker'].target_tag := 'main_build'"

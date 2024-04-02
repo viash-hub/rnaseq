@@ -1,0 +1,1061 @@
+name: "fastp"
+version: "main"
+argument_groups:
+- name: "Inputs"
+  description: "`fastp` supports both single-end (SE) and paired-end (PE) input.\n\
+    \n- for SE data, you only have to specify read1 input by `-i` or `--in1`.\n- for\
+    \ PE data, you should also specify read2 input by `-I` or `--in2`.\n"
+  arguments:
+  - type: "file"
+    name: "--in1"
+    alternatives:
+    - "-i"
+    description: "Input FastQ file. Must be single-end or paired-end R1. Can be gzipped."
+    info: null
+    example:
+    - "in.R1.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--in2"
+    alternatives:
+    - "-I"
+    description: "Input FastQ file. Must be paired-end R2. Can be gzipped."
+    info: null
+    example:
+    - "in.R2.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Outputs"
+  description: "\n- for SE data, you only have to specify read1 output by `-o` or\
+    \ `--out1`.\n- for PE data, you should also specify read2 output by `-O` or `--out2`.\n\
+    - if you don't specify the output file names, no output files will be written,\
+    \ but the QC will still be done for both data before and after filtering.\n- the\
+    \ output will be gzip-compressed if its file name ends with `.gz`\n"
+  arguments:
+  - type: "file"
+    name: "--out1"
+    alternatives:
+    - "-o"
+    description: "The single-end or paired-end R1 reads that pass QC. Will be gzipped\
+      \ if its file name ends with `.gz`."
+    info: null
+    example:
+    - "out.R1.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: true
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--out2"
+    alternatives:
+    - "-O"
+    description: "The paired-end R2 reads that pass QC. Will be gzipped if its file\
+      \ name ends with `.gz`."
+    info: null
+    example:
+    - "out.R2.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--unpaired1"
+    description: "Store the reads that `read1` passes filters but its paired `read2`\
+      \ doesn't."
+    info: null
+    example:
+    - "unpaired.R1.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--unpaired2"
+    description: "Store the reads that `read2` passes filters but its paired `read1`\
+      \ doesn't."
+    info: null
+    example:
+    - "unpaired.R2.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--failed_out"
+    description: "Store the reads that fail filters.\n\nIf one read failed and is\
+      \ written to --failed_out, its failure reason will be appended to its read name.\
+      \ For example, failed_quality_filter, failed_too_short etc.\nFor PE data, if\
+      \ unpaired reads are not stored (by giving --unpaired1 or --unpaired2), the\
+      \ failed pair of reads will be put together. If one read passes the filters\
+      \ but its pair doesn't, the failure reason will be paired_read_is_failing.\n"
+    info: null
+    example:
+    - "failed.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--overlapped_out"
+    description: "For each read pair, output the overlapped region if it has no any\
+      \ mismatched base.\n"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+- name: "Report output arguments"
+  arguments:
+  - type: "file"
+    name: "--json"
+    alternatives:
+    - "-j"
+    description: "The json format report file name\n"
+    info: null
+    example:
+    - "out.json"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--html"
+    description: "The html format report file name\n"
+    info: null
+    example:
+    - "out.html"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "string"
+    name: "--report_title"
+    description: "The title of the html report, default is \"fastp report\".\n"
+    info: null
+    example:
+    - "fastp report"
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Adapter trimming"
+  description: "Adapter trimming is enabled by default, but you can disable it by\
+    \ `-A` or `--disable_adapter_trimming`. Adapter sequences can be automatically\
+    \ detected for both PE/SE data.\n\n- For SE data, the adapters are evaluated by\
+    \ analyzing the tails of first ~1M reads. This evaluation may be inacurrate, and\
+    \ you can specify the adapter sequence by `-a` or `--adapter_sequence` option.\
+    \ If adapter sequence is specified, the auto detection for SE data will be disabled.\n\
+    - For PE data, the adapters can be detected by per-read overlap analysis, which\
+    \ seeks for the overlap of each pair of reads. This method is robust and fast,\
+    \ so normally you don't have to input the adapter sequence even you know it. But\
+    \ you can still specify the adapter sequences for read1 by `--adapter_sequence`,\
+    \ and for read2 by `--adapter_sequence_r2`. If `fastp` fails to find an overlap\
+    \ (i.e. due to low quality bases), it will use these sequences to trim adapters\
+    \ for read1 and read2 respectively.\n- For PE data, the adapter sequence auto-detection\
+    \ is disabled by default since the adapters can be trimmed by overlap analysis.\
+    \ However, you can specify `--detect_adapter_for_pe` to enable it.\n- For PE data,\
+    \ `fastp` will run a little slower if you specify the sequence adapters or enable\
+    \ adapter auto-detection, but usually result in a slightly cleaner output, since\
+    \ the overlap analysis may fail due to sequencing errors or adapter dimers.\n\
+    - The most widely used adapter is the Illumina TruSeq adapters. If your data is\
+    \ from the TruSeq library, you can add `--adapter_sequence=AGATCGGAAGAGCACACGTCTGAACTCCAGTCA\
+    \ --adapter_sequence_r2=AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT` to your command lines,\
+    \ or enable auto detection for PE data by specifing `detect_adapter_for_pe`.\n\
+    - `fastp` contains some built-in known adapter sequences for better auto-detection.\
+    \ If you want to make some adapters to be a part of the built-in adapters, please\
+    \ file an issue.\n\nYou can also specify --adapter_fasta to give a FASTA file\
+    \ to tell fastp to trim multiple adapters in this FASTA file. Here is a sample\
+    \ of such adapter FASTA file:\n\n```\n>Illumina TruSeq Adapter Read 1\nAGATCGGAAGAGCACACGTCTGAACTCCAGTCA\n\
+    >Illumina TruSeq Adapter Read 2\nAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT\n>polyA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\
+    ```\n\nThe adapter sequence in this file should be at least 6bp long, otherwise\
+    \ it will be skipped. And you can give whatever you want to trim, rather than\
+    \ regular sequencing adapters (i.e. polyA).\n\n`fastp` first trims the auto-detected\
+    \ adapter or the adapter sequences given by `--adapter_sequence | --adapter_sequence_r2`,\
+    \ then trims the adapters given by `--adapter_fasta` one by one.\n\nThe sequence\
+    \ distribution of trimmed adapters can be found at the HTML/JSON reports.\n"
+  arguments:
+  - type: "boolean_true"
+    name: "--disable_adapter_trimming"
+    alternatives:
+    - "-A"
+    description: "Disable adapter trimming.\n"
+    info: null
+    direction: "input"
+  - type: "boolean_true"
+    name: "--detect_adapter_for_pe"
+    description: "By default, the auto-detection for adapter is for SE data input\
+      \ only, turn on this option to enable it for PE data.\n"
+    info: null
+    direction: "input"
+  - type: "string"
+    name: "--adapter_sequence"
+    alternatives:
+    - "-a"
+    description: "The adapter sequences to be trimmed. For SE data, if not specified,\
+      \ the adapters will be auto-detected. For PE data, this is used if R1/R2 are\
+      \ found not overlapped\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "string"
+    name: "--adapter_sequence_r2"
+    description: "The adapter sequences to be trimmed for R2. This is used for PE\
+      \ data if R1/R2 are found overlapped.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--adapter_fasta"
+    description: "A FASTA file containing all the adapter sequences to be trimmed.\
+      \ For SE data, if not specified, the adapters will be auto-detected. For PE\
+      \ data, this is used if R1/R2 are found not overlapped.\n"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Base trimming"
+  arguments:
+  - type: "integer"
+    name: "--trim_front1"
+    alternatives:
+    - "-f"
+    description: "Trimming how many bases in front for read1, default is 0.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--trim_tail1"
+    alternatives:
+    - "-t"
+    description: "Trimming how many bases in tail for read1, default is 0.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--max_len1"
+    alternatives:
+    - "-b"
+    description: "If read1 is longer than max_len1, then trim read1 at its tail to\
+      \ make it as long as max_len1. Default 0 means no limitation.\n"
+    info: null
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--trim_front2"
+    alternatives:
+    - "-F"
+    description: "Trimming how many bases in front for read2, default is 0.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--trim_tail2"
+    alternatives:
+    - "-T"
+    description: "Trimming how many bases in tail for read2, default is 0.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--max_len2"
+    alternatives:
+    - "-B"
+    description: "If read2 is longer than max_len2, then trim read2 at its tail to\
+      \ make it as long as max_len2. Default 0 means no limitation.\n"
+    info: null
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Merging mode"
+  description: "Allows merging paired-end reads into a single longer read if they\
+    \ are overlapping."
+  arguments:
+  - type: "boolean_true"
+    name: "--merge"
+    alternatives:
+    - "-m"
+    description: "For paired-end input, merge each pair of reads into a single read\
+      \ if they are overlapped. The merged reads will be written to the file given\
+      \ by --merged_out, the unmerged reads will be written to the files specified\
+      \ by --out1 and --out2. The merging mode is disabled by default.\n"
+    info: null
+    direction: "input"
+  - type: "file"
+    name: "--merged_out"
+    description: "In the merging mode, specify the file name to store merged output,\
+      \ or specify --stdout to stream the merged output.\n"
+    info: null
+    example:
+    - "merged.fq.gz"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "boolean_true"
+    name: "--include_unmerged"
+    description: "In the merging mode, write the unmerged or unpaired reads to the\
+      \ file specified by --merge. Disabled by default.\n"
+    info: null
+    direction: "input"
+- name: "Additional input arguments"
+  description: "Affects how the input is read."
+  arguments:
+  - type: "boolean_true"
+    name: "--interleaved_in"
+    description: "Indicate that <in1> is an interleaved FASTQ which contains both\
+      \ read1 and read2. Disabled by default.\n"
+    info: null
+    direction: "input"
+  - type: "boolean_true"
+    name: "--fix_mgi_id"
+    description: "The MGI FASTQ ID format is not compatible with many BAM operation\
+      \ tools, enable this option to fix it.\n"
+    info: null
+    direction: "input"
+  - type: "boolean_true"
+    name: "--phred64"
+    alternatives:
+    - "-6"
+    description: "Indicate the input is using phred64 scoring (it'll be converted\
+      \ to phred33, so the output will still be phred33)\n"
+    info: null
+    direction: "input"
+- name: "Additional output arguments"
+  description: "Affects how the output is written."
+  arguments:
+  - type: "integer"
+    name: "--compression"
+    alternatives:
+    - "-z"
+    description: "Compression level for gzip output (1 ~ 9). 1 is fastest, 9 is smallest,\
+      \ default is 4.\n"
+    info: null
+    example:
+    - 4
+    required: false
+    min: 1
+    max: 9
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "boolean_true"
+    name: "--dont_overwrite"
+    description: "Don't overwrite existing files. Overwritting is allowed by default.\n"
+    info: null
+    direction: "input"
+- name: "Logging arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--verbose"
+    alternatives:
+    - "-V"
+    description: "Output verbose log information (i.e. when every 1M reads are processed)."
+    info: null
+    direction: "input"
+- name: "Processing arguments"
+  arguments:
+  - type: "long"
+    name: "--reads_to_process"
+    description: "Specify how many reads/pairs to be processed. Default 0 means process\
+      \ all reads.\n"
+    info: null
+    example:
+    - 1000000
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Deduplication arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--dedup"
+    description: "Enable deduplication to drop the duplicated reads/pairs\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--dup_calc_accuracy"
+    description: "Accuracy level to calculate duplication (1~6). Higher level uses\
+      \ more memory (1G, 2G, 4G, 8G, 16G, 24G). Default 1 for no-dedup mode, and 3\
+      \ for dedup mode.\n"
+    info: null
+    example:
+    - 3
+    required: false
+    min: 1
+    max: 6
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "boolean_true"
+    name: "--dont_eval_duplication"
+    description: "Don't evaluate duplication rate to save time and use less memory.\n"
+    info: null
+    direction: "input"
+- name: "PolyG tail trimming arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--trim_poly_g"
+    alternatives:
+    - "-g"
+    description: "Force polyG tail trimming, by default trimming is automatically\
+      \ enabled for Illumina NextSeq/NovaSeq data\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--poly_g_min_len"
+    description: "The minimum length to detect polyG in the read tail. 10 by default.\n"
+    info: null
+    example:
+    - 10
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "boolean_true"
+    name: "--disable_trim_poly_g"
+    alternatives:
+    - "-G"
+    description: "Disable polyG tail trimming, by default trimming is automatically\
+      \ enabled for Illumina NextSeq/NovaSeq data\n"
+    info: null
+    direction: "input"
+- name: "PolyX tail trimming arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--trim_poly_x"
+    alternatives:
+    - "-x"
+    description: "Enable polyX trimming in 3' ends.\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--poly_x_min_len"
+    description: "The minimum length to detect polyX in the read tail. 10 by default.\n"
+    info: null
+    example:
+    - 10
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Cut arguments"
+  arguments:
+  - type: "integer"
+    name: "--cut_front"
+    alternatives:
+    - "-5"
+    description: "Move a sliding window from front (5') to tail, drop the bases in\
+      \ the window if its mean quality < threshold, stop otherwise.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_tail"
+    alternatives:
+    - "-3"
+    description: "Move a sliding window from tail (3') to front, drop the bases in\
+      \ the window if its mean quality < threshold, stop otherwise.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_right"
+    alternatives:
+    - "-r"
+    description: "Move a sliding window from front to tail, if meet one window with\
+      \ mean quality < threshold, drop the bases in the window and the right part,\
+      \ and then stop.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_window_size"
+    alternatives:
+    - "-W"
+    description: "The window size option shared by cut_front, cut_tail or cut_sliding.\
+      \ Range: 1~1000, default: 4.\n"
+    info: null
+    example:
+    - 4
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_mean_quality"
+    alternatives:
+    - "-M"
+    description: "The mean quality requirement option shared by cut_front, cut_tail\
+      \ or cut_sliding. Range: 1~36 default: 20 (Q20)\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_front_window_size"
+    description: "The window size option of cut_front, default to cut_window_size\
+      \ if not specified.\n"
+    info: null
+    example:
+    - 4
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_front_mean_quality"
+    description: "The mean quality requirement option of cut_front, default to cut_mean_quality\
+      \ if not specified.\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_tail_window_size"
+    description: "The window size option of cut_tail, default to cut_window_size if\
+      \ not specified.\n"
+    info: null
+    example:
+    - 4
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_tail_mean_quality"
+    description: "The mean quality requirement option of cut_tail, default to cut_mean_quality\
+      \ if not specified.\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_right_window_size"
+    description: "The window size option of cut_right, default to cut_window_size\
+      \ if not specified.\n"
+    info: null
+    example:
+    - 4
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--cut_right_mean_quality"
+    description: "The mean quality requirement option of cut_right, default to cut_mean_quality\
+      \ if not specified.\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Quality filtering arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--disable_quality_filtering"
+    alternatives:
+    - "-Q"
+    description: "Quality filtering is enabled by default. If this option is specified,\
+      \ quality filtering is disabled.\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--qualified_quality_phred"
+    alternatives:
+    - "-q"
+    description: "The quality value that a base is qualified. Default 15 means phred\
+      \ quality >=Q15 is qualified.\n"
+    info: null
+    example:
+    - 15
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--unqualified_percent_limit"
+    alternatives:
+    - "-u"
+    description: "How many percents of bases are allowed to be unqualified (0~100).\
+      \ Default 40 means 40%.\n"
+    info: null
+    example:
+    - 40
+    required: false
+    min: 0
+    max: 100
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--n_base_limit"
+    alternatives:
+    - "-n"
+    description: "If one read's number of N base is >n_base_limit, then this read/pair\
+      \ is discarded. Default is 5.\n"
+    info: null
+    example:
+    - 5
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--average_qual"
+    alternatives:
+    - "-e"
+    description: "If one read's average quality score <avg_qual, then this read/pair\
+      \ is discarded. Default 0 means no requirement.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Length filtering arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--disable_length_filtering"
+    alternatives:
+    - "-L"
+    description: "Length filtering is enabled by default. If this option is specified,\
+      \ length filtering is disabled.\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--length_required"
+    alternatives:
+    - "-l"
+    description: "Reads shorter than length_required will be discarded, default is\
+      \ 15.\n"
+    info: null
+    example:
+    - 15
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--length_limit"
+    description: "Reads longer than length_limit will be discarded, default 0 means\
+      \ no limitation.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Low complexity filtering arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--low_complexity_filter"
+    alternatives:
+    - "-y"
+    description: "Enable low complexity filter. The complexity is defined as the percentage\
+      \ of base that is different from its next base (base[i] != base[i+1]).\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--complexity_threshold"
+    alternatives:
+    - "-Y"
+    description: "The threshold for low complexity filter (0~100). Default is 30,\
+      \ which means 30% complexity is required.\n"
+    info: null
+    example:
+    - 30
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Index filtering arguments"
+  arguments:
+  - type: "file"
+    name: "--filter_by_index1"
+    description: "Specify a file contains a list of barcodes of index1 to be filtered\
+      \ out, one barcode per line.\n"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--filter_by_index2"
+    description: "Specify a file contains a list of barcodes of index2 to be filtered\
+      \ out, one barcode per line.\n"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--filter_by_index_threshold"
+    description: "The allowed difference of index barcode for index filtering, default\
+      \ 0 means completely identical.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Overlapped region correction"
+  arguments:
+  - type: "boolean_true"
+    name: "--correction"
+    alternatives:
+    - "-c"
+    description: "Enable base correction in overlapped regions (only for PE data),\
+      \ default is disabled.\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--overlap_len_require"
+    description: "The minimum length to detect overlapped region of PE reads. This\
+      \ will affect overlap analysis based PE merge, adapter trimming and correction.\
+      \ 30 by default.\n"
+    info: null
+    example:
+    - 30
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--overlap_diff_limit"
+    description: "The maximum number of mismatched bases to detect overlapped region\
+      \ of PE reads. This will affect overlap analysis based PE merge, adapter trimming\
+      \ and correction. 5 by default.\n"
+    info: null
+    example:
+    - 5
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--overlap_diff_percent_limit"
+    description: "The maximum percentage of mismatched bases to detect overlapped\
+      \ region of PE reads. This will affect overlap analysis based PE merge, adapter\
+      \ trimming and correction. Default 20 means 20%.\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 0
+    max: 100
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "UMI arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--umi"
+    alternatives:
+    - "-U"
+    description: "Enable unique molecular identifier (UMI) preprocessing.\n"
+    info: null
+    direction: "input"
+  - type: "string"
+    name: "--umi_loc"
+    description: "Specify the location of UMI, can be (index1/index2/read1/read2/per_index/per_read,\
+      \ default is none.\n"
+    info: null
+    required: false
+    choices:
+    - "index1"
+    - "index2"
+    - "read1"
+    - "read2"
+    - "per_index"
+    - "per_read"
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--umi_len"
+    description: "If the UMI is in read1/read2, its length should be provided.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "string"
+    name: "--umi_prefix"
+    description: "If specified, an underline will be used to connect prefix and UMI\
+      \ (i.e. prefix=UMI, UMI=AATTCG, final=UMI_AATTCG). No prefix by default.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "integer"
+    name: "--umi_skip"
+    description: "If the UMI is in read1/read2, fastp can skip several bases following\
+      \ UMI, default is 0.\n"
+    info: null
+    example:
+    - 0
+    required: false
+    min: 0
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "string"
+    name: "--umi_delim"
+    description: "If the UMI is in index1/index2, fastp can use a delimiter to separate\
+      \ UMI from the read sequence, default is none.\n"
+    info: null
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+- name: "Overrepresentation analysis arguments"
+  arguments:
+  - type: "boolean_true"
+    name: "--overrepresentation_analysis"
+    alternatives:
+    - "-p"
+    description: "Enable overrepresentation analysis.\n"
+    info: null
+    direction: "input"
+  - type: "integer"
+    name: "--overrepresentation_sampling"
+    description: "One in (--overrepresentation_sampling) reads will be computed for\
+      \ overrepresentation analysis (1~10000), smaller is slower, default is 20.\n"
+    info: null
+    example:
+    - 20
+    required: false
+    min: 1
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+resources:
+- type: "bash_script"
+  path: "script.sh"
+  is_executable: true
+description: "An ultra-fast all-in-one FASTQ preprocessor (QC/adapters/trimming/filtering/splitting/merging...).\n\
+  \nFeatures:\n\n  - comprehensive quality profiling for both before and after filtering\
+  \ data (quality curves, base contents, KMER, Q20/Q30, GC Ratio, duplication, adapter\
+  \ contents...)\n  - filter out bad reads (too low quality, too short, or too many\
+  \ N...)\n  - cut low quality bases for per read in its 5' and 3' by evaluating the\
+  \ mean quality from a sliding window (like Trimmomatic but faster).\n  - trim all\
+  \ reads in front and tail\n  - cut adapters. Adapter sequences can be automatically\
+  \ detected, which means you don't have to input the adapter sequences to trim them.\n\
+  \  - correct mismatched base pairs in overlapped regions of paired end reads, if\
+  \ one base is with high quality while the other is with ultra low quality\n  - trim\
+  \ polyG in 3' ends, which is commonly seen in NovaSeq/NextSeq data. Trim polyX in\
+  \ 3' ends to remove unwanted polyX tailing (i.e. polyA tailing for mRNA-Seq data)\n\
+  \  - preprocess unique molecular identifier (UMI) enabled data, shift UMI to sequence\
+  \ name.\n  - report JSON format result for further interpreting.\n  - visualize\
+  \ quality control and filtering results on a single HTML page (like FASTQC but faster\
+  \ and more informative).\n  - split the output to multiple files (0001.R1.gz, 0002.R1.gz...)\
+  \ to support parallel processing. Two modes can be used, limiting the total split\
+  \ file number, or limitting the lines of each split file.\n  - support long reads\
+  \ (data from PacBio / Nanopore devices).\n  - support reading from STDIN and writing\
+  \ to STDOUT\n  - support interleaved input\n  - support ultra-fast FASTQ-level deduplication\n"
+test_resources:
+- type: "bash_script"
+  path: "test.sh"
+  is_executable: true
+- type: "file"
+  path: "test_data"
+info: null
+status: "enabled"
+keywords:
+- "RNA-Seq"
+- "Trimming"
+- "Quality control"
+license: "MIT"
+references:
+  doi:
+  - "10.1093/bioinformatics/bty560"
+links:
+  repository: "https://github.com/OpenGene/fastp"
+  documentation: "https://github.com/OpenGene/fastp/blob/master/README.md"
+runners:
+- type: "executable"
+  id: "executable"
+  docker_setup_strategy: "ifneedbepullelsecachedbuild"
+- type: "nextflow"
+  id: "nextflow"
+  directives:
+    tag: "$id"
+  auto:
+    simplifyInput: true
+    simplifyOutput: false
+    transcript: false
+    publish: false
+  config:
+    labels:
+      mem1gb: "memory = 1.GB"
+      mem2gb: "memory = 2.GB"
+      mem4gb: "memory = 4.GB"
+      mem8gb: "memory = 8.GB"
+      mem16gb: "memory = 16.GB"
+      mem32gb: "memory = 32.GB"
+      mem64gb: "memory = 64.GB"
+      mem128gb: "memory = 128.GB"
+      mem256gb: "memory = 256.GB"
+      mem512gb: "memory = 512.GB"
+      mem1tb: "memory = 1.TB"
+      mem2tb: "memory = 2.TB"
+      mem4tb: "memory = 4.TB"
+      mem8tb: "memory = 8.TB"
+      mem16tb: "memory = 16.TB"
+      mem32tb: "memory = 32.TB"
+      mem64tb: "memory = 64.TB"
+      mem128tb: "memory = 128.TB"
+      mem256tb: "memory = 256.TB"
+      mem512tb: "memory = 512.TB"
+      cpu1: "cpus = 1"
+      cpu2: "cpus = 2"
+      cpu5: "cpus = 5"
+      cpu10: "cpus = 10"
+      cpu20: "cpus = 20"
+      cpu50: "cpus = 50"
+      cpu100: "cpus = 100"
+      cpu200: "cpus = 200"
+      cpu500: "cpus = 500"
+      cpu1000: "cpus = 1000"
+  debug: false
+  container: "docker"
+engines:
+- type: "docker"
+  id: "docker"
+  image: "quay.io/biocontainers/fastp:0.23.4--hadf994f_2"
+  namespace_separator: "/"
+  setup:
+  - type: "docker"
+    run:
+    - "fastp --version 2>&1 | sed 's# #: \"#;s#$#\"#' > /var/software_versions.txt\n"
+  entrypoint: []
+  cmd: null
+build_info:
+  config: "src/fastp/config.vsh.yaml"
+  runner: "nextflow"
+  engine: "docker"
+  output: "target/nextflow/fastp"
+  executable: "target/nextflow/fastp/fastp"
+  viash_version: "0.9.0-RC2"
+  git_commit: "d9e7fdf0c7b76a8733d7e0da1989af25891b38d5"
+  git_remote: "https://github.com/viash-hub/biobase"
+package_config:
+  name: "biobase"
+  version: "main"
+  description: "A collection of bioinformatics tools for working with sequence data.\n"
+  info: null
+  viash_version: "0.9.0-RC2"
+  source: "src"
+  target: "target"
+  keywords:
+  - "bioinformatics"
+  - "sequence"
+  - "alignment"
+  - "variant calling"
+  license: "MIT"
+  links:
+    repository: "https://github.com/viash-hub/biobase"
+    issue_tracker: "https://github.com/viash-hub/biobase/issues"

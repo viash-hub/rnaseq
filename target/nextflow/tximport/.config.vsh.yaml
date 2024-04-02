@@ -1,0 +1,222 @@
+name: "tximport"
+version: "main_build"
+argument_groups:
+- name: "Arguments"
+  arguments:
+  - type: "file"
+    name: "--salmon_quant_results"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: true
+    multiple_sep: ","
+  - type: "file"
+    name: "--tx2gene_tsv"
+    info: null
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--versions"
+    info: null
+    must_exist: false
+    create_parent: true
+    required: false
+    direction: "input"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--tpm_gene"
+    info: null
+    default:
+    - "salmon.merged.gene_tpm.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--counts_gene"
+    info: null
+    default:
+    - "salmon.merged.gene_counts.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--counts_gene_length_scaled"
+    info: null
+    default:
+    - "salmon.merged.gene_counts_length_scaled.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--counts_gene_scaled"
+    info: null
+    default:
+    - "salmon.merged.gene_counts_scaled.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--tpm_transcript"
+    info: null
+    default:
+    - "salmon.merged.transcript_tpm.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--counts_transcript"
+    info: null
+    default:
+    - "salmon.merged.transcript_counts.tsv"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+  - type: "file"
+    name: "--updated_versions"
+    info: null
+    default:
+    - "versions.yml"
+    must_exist: true
+    create_parent: true
+    required: false
+    direction: "output"
+    multiple: false
+    multiple_sep: ";"
+resources:
+- type: "bash_script"
+  path: "script.sh"
+  is_executable: true
+- type: "file"
+  path: "tximport.r"
+description: "Get dataframe linking transcript ID, gene ID, and gene name"
+info:
+  migration_info:
+    git_repo: "https://github.com/nf-core/rnaseq.git"
+    paths:
+    - "modules/local/tximport/main.nf"
+    last_sha: "0a1bdcfbb498987643b74e9fccab85ccd9f2a17d"
+status: "enabled"
+requirements:
+  commands:
+  - "ps"
+runners:
+- type: "executable"
+  id: "docker"
+  docker_setup_strategy: "ifneedbepullelsecachedbuild"
+- type: "nextflow"
+  id: "nextflow"
+  directives:
+    tag: "$id"
+  auto:
+    simplifyInput: true
+    simplifyOutput: false
+    transcript: false
+    publish: false
+  config:
+    labels:
+      mem1gb: "memory = 1.GB"
+      mem2gb: "memory = 2.GB"
+      mem4gb: "memory = 4.GB"
+      mem8gb: "memory = 8.GB"
+      mem16gb: "memory = 16.GB"
+      mem32gb: "memory = 32.GB"
+      mem64gb: "memory = 64.GB"
+      mem128gb: "memory = 128.GB"
+      mem256gb: "memory = 256.GB"
+      mem512gb: "memory = 512.GB"
+      mem1tb: "memory = 1.TB"
+      mem2tb: "memory = 2.TB"
+      mem4tb: "memory = 4.TB"
+      mem8tb: "memory = 8.TB"
+      mem16tb: "memory = 16.TB"
+      mem32tb: "memory = 32.TB"
+      mem64tb: "memory = 64.TB"
+      mem128tb: "memory = 128.TB"
+      mem256tb: "memory = 256.TB"
+      mem512tb: "memory = 512.TB"
+      cpu1: "cpus = 1"
+      cpu2: "cpus = 2"
+      cpu5: "cpus = 5"
+      cpu10: "cpus = 10"
+      cpu20: "cpus = 20"
+      cpu50: "cpus = 50"
+      cpu100: "cpus = 100"
+      cpu200: "cpus = 200"
+      cpu500: "cpus = 500"
+      cpu1000: "cpus = 1000"
+  debug: false
+  container: "docker"
+engines:
+- type: "docker"
+  id: "docker"
+  image: "ubuntu:22.04"
+  target_organization: "data-intuitive"
+  target_registry: "ghcr.io"
+  target_tag: "main_build"
+  namespace_separator: "/"
+  target_image_source: "https://github.com/data-intuitive/rnaseq.vsh"
+  setup:
+  - type: "apt"
+    packages:
+    - "r-base"
+    - "libcurl4-openssl-dev"
+    - "libssl-dev"
+    - "libxml2-dev"
+    interactive: false
+  - type: "r"
+    cran:
+    - "jsonlite"
+    bioc:
+    - "SummarizedExperiment"
+    - "tximport"
+    - "tximeta"
+    bioc_force_install: false
+  entrypoint: null
+  cmd: null
+build_info:
+  config: "src/tximport/config.vsh.yaml"
+  runner: "nextflow"
+  engine: "docker"
+  output: "target/nextflow/tximport"
+  executable: "target/nextflow/tximport/tximport"
+  viash_version: "0.9.0-RC2"
+  git_commit: "f1bac79d3ebb4bff084f592da4371d1e3a1a6865"
+  git_remote: "https://github.com/data-intuitive/rnaseq.vsh"
+package_config:
+  info: null
+  viash_version: "0.9.0-RC2"
+  source: "src"
+  target: "target"
+  config_mods:
+  - ".version := 'dev'\n.requirements.commands := ['ps']\n.engines[.type == 'docker'].target_registry\
+    \ := 'ghcr.io'\n.engines[.type == 'docker'].target_organization := 'data-intuitive'\n\
+    .engines[.type == 'docker'].target_image_source := 'https://github.com/data-intuitive/rnaseq.vsh'\n\
+    .runners[.type == 'nextflow'].directives.tag := '$id'\n.runners[.type == 'nextflow'].auto.simplifyOutput\
+    \ := false"
+  - ".version := \"main_build\""
+  - ".engines[.type == 'docker'].target_tag := 'main_build'"
