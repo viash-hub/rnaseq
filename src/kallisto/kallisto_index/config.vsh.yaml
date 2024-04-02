@@ -1,5 +1,5 @@
 functionality:
-  name: kallisto_quant
+  name: kallisto_index
   namespace: kallisto
   info:
     migration_info:
