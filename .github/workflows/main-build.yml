@@ -28,7 +28,7 @@ on:
         type: boolean
         required: false
         default: true
-        description: Also build packages and docker images for viash-hub.com and push them.
+        description: Build packages and docker images for viash-hub.com and push them.
 
   # when used as a subworkflow
   workflow_call:
@@ -53,20 +53,19 @@ on:
         type: string
         required: false
         description: |
-          Branch to deploy the build to. Defaults to name of the branch 
-          that triggered the workflow, suffixed by "_build".
+          Branch to deploy the build to. Defaults to name of the branch that triggered the workflow, suffixed by "_build".
       deploy_to_viash_hub:
         type: boolean
         required: false
-        default: false
-        description: Also build packages and docker images for viash-hub.com and push them.
+        default: true
+        description: Build packages and docker images for viash-hub.com and push them.
     outputs:
       component_matrix:
         description: "A JSON object that can be used to populate a github actions matrix for component jobs."
         value: ${{ jobs.build_and_deploy_target_folder.outputs.component_matrix }}
       workflow_matrix:
         description: "A JSON object that can be used to populate a github actions matrix for workflow jobs."
-        value: ${{ jobs.build_and_deploy_target_folder.outputs.workflow_matrix}}
+        value: ${{ jobs.build_and_deploy_target_folder.outputs.workflow_matrix }}
     secrets:
       VIASH_HUB_USERNAME:
         required: true
