@@ -19,11 +19,10 @@ fi
 
 IFS="," read -ra input <<< $par_input
 
-INDEX=`find -L $meta_resources_dir/ -name "*.grp" | sed 's/\\.grp\$//'`
+INDEX=`find -L $meta_resources_dir/ -name "*.grp" | sed 's/\.grp$//'`
 
 rsem-calculate-expression \
     ${meta_cpus:+--num-theads $meta_cpus} \
-    --temporary-folder $tmpdir \
     $strandedness \
     ${par_paired:+--paired-end} \
     $par_extra_args \
