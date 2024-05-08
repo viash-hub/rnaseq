@@ -1,5 +1,5 @@
 functionality:
-  name: "subread_featurecounts"
+  name: "featurecounts"
   info:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
