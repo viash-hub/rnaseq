@@ -13,7 +13,8 @@ if $par_star; then
         --gtf $par_gtf \
         --star \
         ${meta_cpus:+--num-threads $meta_cpus} \
-        $par_fasta $par_rsem/genome
+        $par_fasta \
+        $par_rsem/genome
     cp "$par_rsem/genome.transcripts.fa" $par_transcript_fasta
 else 
     rsem-prepare-reference \
