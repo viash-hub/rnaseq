@@ -5,12 +5,13 @@ workflow run_wf {
     main: 
         output_ch = input_ch
     
-        | salmon_tx2gene.run (
+        | tx2gene.run (
             fromState: [ 
-                "salmon_quant_results": "salmon_quant_results", 
+                "quant_results": "salmon_quant_results", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf": "gtf", 
                 "gtf_group_features": "gtf_group_features", 
+                "quant_type": "quant_type",
                 "versions": "versions"
             ],
             toState: [ 
@@ -19,10 +20,11 @@ workflow run_wf {
             ]
         )
 
-        | salmon_tximport.run (
+        | tximport.run (
             fromState: [ 
-                "salmon_quant_results": "salmon_quant_results", 
+                "quant_results": "salmon_quant_results", 
                 "tx2gene_tsv": "tx2gene_tsv", 
+                "quant_type": "quant_type",
                 "versions": "versions" 
             ],
             toState:  [
@@ -32,11 +34,13 @@ workflow run_wf {
                 "counts_gene_scaled": "counts_gene_scaled", 
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
+                "length_gene": "length_gene",
+                "length_transcript": "length_transcript",
                 "versions": "updated_versions"
             ]
         )
                 
-        | salmon_summarizedexperiment.run (
+        | summarizedexperiment.run (
             fromState: [ 
                 "tpm_gene": "tpm_gene",
                 "counts_gene": "counts_gene",

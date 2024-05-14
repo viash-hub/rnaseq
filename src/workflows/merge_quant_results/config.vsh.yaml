@@ -1,12 +1,12 @@
 functionality:
-  name: salmon_quant_merge_counts
+  name: merge_quant_results
   namespace: workflows
   description: A sub-workflow to merge the counts obtained from salmon quant across all samples.
 
   argument_groups:
     - name: "Input"
       arguments:
-        - name: "--salmon_quant_results"
+        - name: "--quant_results"
           type: file
           multiple: true
           multiple_sep: ","
@@ -18,6 +18,11 @@ functionality:
         - name: "--gtf_group_features"
           type: string
           default: 'gene_id'
+        - name: "--quant_type"
+          type: string
+          description: Quantification method used.
+          choices: [salmon, kallisto]
+          default: salmon
         - name: "--versions"
           type: file
           must_exist: false
@@ -27,31 +32,39 @@ functionality:
         - name: "--tpm_gene"
           type: file
           direction: output
-          default: salmon.merged.gene_tpm.tsv
+          example: salmon.merged.gene_tpm.tsv
         - name: "--counts_gene"
           type: file
           direction: output
-          default: salmon.merged.gene_counts.tsv
+          example: salmon.merged.gene_counts.tsv
         - name: "--counts_gene_length_scaled"
           type: file
           direction: output
-          default: salmon.merged.gene_counts_length_scaled.tsv
+          example: salmon.merged.gene_counts_length_scaled.tsv
         - name: "--counts_gene_scaled"
           type: file
           direction: output
-          default: salmon.merged.gene_counts_scaled.tsv
+          example: salmon.merged.gene_counts_scaled.tsv
         - name: "--tpm_transcript"
           type: file
           direction: output
-          default: salmon.merged.transcript_tpm.tsv
+          example: salmon.merged.transcript_tpm.tsv
+        - name: "--lengths_gene"
+          type: file
+          direction: output
+          example: salmon.merged.gene_length.tsv
         - name: "--counts_transcript"
           type: file
           direction: output
-          default: salmon.merged.transcript_counts.tsv
+          example: salmon.merged.transcript_counts.tsv
+        - name: "--lengths_transcript"
+          type: file
+          direction: output
+          example: salmon.merged.transcript_length.tsv
         - name: "--salmon_merged_summarizedexperiment"
           type: file
           direction: output
-          default: salmon_merged_summarizedexperiment
+          example: salmon_merged_summarizedexperiment
         - name: "--updated_versions"
           type: file
           default: versions.yml
