@@ -13,7 +13,7 @@ workflow run_wf {
             [ id, state + [biotype_in_gtf: biotype_in_gtf] ]
         }
 
-        | subread_featurecounts.run (
+        | featurecounts.run (
             runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf },
             fromState: [
                 "paired": "paired", 
@@ -280,9 +280,9 @@ workflow run_wf {
                 (state.star_multiqc instanceof java.nio.file.Path && state.star_multiqc.exists()) ? 
                     state.star_multiqc : 
                     null }
-            def salmon_quant_results = list.collect { id, state -> 
-                (state.salmon_quant_results instanceof java.nio.file.Path && state.salmon_quant_results.exists()) ? 
-                    state.salmon_quant_results : 
+            def quant_results = list.collect { id, state -> 
+                (state.quant_results instanceof java.nio.file.Path && state.quant_results.exists()) ? 
+                    state.quant_results : 
                     null }
             def genome_bam_stats = list.collect { id, state -> 
                 (state.genome_bam_stats instanceof java.nio.file.Path && state.genome_bam_stats.exists()) ? 
@@ -367,6 +367,8 @@ workflow run_wf {
             def gtf_group_features = list.collect { id, state -> state.gtf_group_features }.unique()[0]
             def pca_header_multiqc = list.collect { id, state -> state.pca_header_multiqc }.unique()[0]
             def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc } .unique()[0]
+            def aligner = list.collect { id, state -> state.aligner } .unique()[0]
+            def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner } .unique()[0]
             def deseq2_vst = list.collect { id, state -> state.deseq2_vst }.unique()[0]
             def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
             def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
@@ -400,12 +402,14 @@ workflow run_wf {
                 read_distribution_output: read_distribution_output,
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
-                salmon_quant_results: salmon_quant_results, 
+                quant_results: quant_results, 
                 gtf: gtf, 
                 gtf_extra_attributes: gtf_extra_attributes, 
                 gtf_group_features: gtf_group_features,
                 pca_header_multiqc: pca_header_multiqc, 
                 clustering_header_multiqc: clustering_header_multiqc,
+                aligner: aligner,
+                pseudo_aligner: pseudo_aligner,
                 deseq2_vst: deseq2_vst, 
                 extra_deseq2_args: extra_deseq2_args,
                 extra_deseq2_args2: extra_deseq2_args2,
@@ -421,9 +425,9 @@ workflow run_wf {
             ] ]
         } 
 
-        | salmon_quant_merge_counts.run (
+        | merge_quant_results.run (
             fromState: [ 
-                "salmon_quant_results": "salmon_quant_results", 
+                "quant_results": "quant_results", 
                 "gtf": "gtf", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf_group_features": "gtf_group_features", 
@@ -579,7 +583,7 @@ workflow run_wf {
 
         output_ch = qc_ch
         
-        | combine(merged_ch)
+        // | combine(merged_ch)
 
         | map { list -> [list[0], list[1] + list[2]] }
         
@@ -622,18 +626,18 @@ workflow run_wf {
                 "featurecounts_summary": "featurecounts_summary",
                 "featurecounts_multiqc": "featurecounts_multiqc",
                 "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc",
-                "tpm_gene": "tpm_gene",
-                "counts_gene": "counts_gene",
-                "counts_gene_length_scaled": "counts_gene_length_scaled",
-                "counts_gene_scaled": "counts_gene_scaled", 
-                "tpm_transcript": "tpm_transcript", 
-                "counts_transcript": "counts_transcript", 
-                "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
-                "deseq2_output": "deseq2_output", 
-                "multiqc_report": "multiqc_report", 
-                "multiqc_data": "multiqc_data", 
-                "multiqc_plots": "multiqc_plots",
-                "multiqc_versions": "multiqc_versions", 
+                // "tpm_gene": "tpm_gene",
+                // "counts_gene": "counts_gene",
+                // "counts_gene_length_scaled": "counts_gene_length_scaled",
+                // "counts_gene_scaled": "counts_gene_scaled", 
+                // "tpm_transcript": "tpm_transcript", 
+                // "counts_transcript": "counts_transcript", 
+                // "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+                // "deseq2_output": "deseq2_output", 
+                // "multiqc_report": "multiqc_report", 
+                // "multiqc_data": "multiqc_data", 
+                // "multiqc_plots": "multiqc_plots",
+                // "multiqc_versions": "multiqc_versions", 
                 "updated_versions": "versions" 
             ]
         )

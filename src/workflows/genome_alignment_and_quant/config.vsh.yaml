@@ -139,7 +139,7 @@ functionality:
       type: file
       direction: output
       default: $id.transcriptome.idxstats
-    - name: "--salmon_quant_results"
+    - name: "--quant_results"
       type: file
       direction: output
       default: $id.salmon_quant

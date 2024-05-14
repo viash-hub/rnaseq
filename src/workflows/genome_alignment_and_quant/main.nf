@@ -366,7 +366,7 @@ workflow run_wf {
         ],
         args: ["alignment_mode": true],
         toState: [
-          "salmon_quant_results": "output", 
+          "quant_results": "output", 
           "versions": "updated_versions"
         ]
     )
@@ -476,7 +476,7 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_results", 
+        "quant_results": "quant_results", 
         "updated_versions": "versions" ]
     )
 
