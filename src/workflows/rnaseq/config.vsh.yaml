@@ -182,6 +182,12 @@ functionality:
           type: integer
           description: Kmer length passed to indexing step of pseudoaligners.
           default: 31
+        - name: "--kallisto_quant_fragment_length"
+          type: integer
+          description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
+        - name: "--kallisto_quant_fragment_length_sd"
+          type: integer
+          description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
         - name: "--bam_csi_index"
           type: boolean_true
           description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
@@ -823,9 +829,9 @@ functionality:
     - name: cat_fastq
     - name: workflows/pre_processing
     - name: workflows/genome_alignment_and_quant
+    - name: workflows/pseudo_alignment_and_quant
     - name: workflows/post_processing
     - name: workflows/quality_control
-    - name: workflows/salmon_quant_merge_counts
 
 platforms:
   - type: nextflow

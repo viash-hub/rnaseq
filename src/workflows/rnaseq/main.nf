@@ -203,6 +203,8 @@ workflow run_wf {
           "gtf": "gtf",
           "transcript_fasta": "transcript_fasta",
           "bam_csi_index": "bam_csi_index", 
+          "aligner": "aligner",
+          "rsem_index": "rsem_index",
           "star_index": "star_index", 
           "extra_star_align_args": "extra_star_align_args", 
           "star_ignore_sjdbgtf": "star_ignore_sjdbgtf",
@@ -228,7 +230,7 @@ workflow run_wf {
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-          "salmon_quant_results": "salmon_quant_results", 
+          "quant_results": "quant_results", 
           "versions": "updated_versions"
         ]
     )
@@ -300,7 +302,7 @@ workflow run_wf {
           "gtf": "gtf", 
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",
-          "salmon_quant_results": "salmon_quant_results", 
+          "quant_results": "quant_results", 
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 
