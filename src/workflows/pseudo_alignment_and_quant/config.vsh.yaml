@@ -1,0 +1,129 @@
+functionality:
+  name: pseudo_alignment_and_quant
+  namespace: workflows
+  description: |
+    A viash sub-workflow for pseudo alignment and quantification stage of nf-core/rnaseq pipeline.
+  
+  arguments:
+    - name: "--id"
+      required: true
+      type: string
+      description: ID of the sample.
+      example: foo
+    - name: "--fastq_1"
+      alternatives: [-i]
+      type: file
+      description: Path to the sample (or read 1 of paired end sample).
+      required: true
+      example: input.fastq.gz
+    - name: "--fastq_2"
+      type: file
+      required: false
+      description: Path to read 2 of the sample.
+    - name: "--strandedness"
+      type: string 
+      required: false
+      description: Sample strand-specificity. Must be one of unstranded, forward, or reverse
+      choices: [forward, reverse, unstranded]
+    - name: "--gtf"
+      type: file
+      description: GTF file
+    - name: "--transcript_fasta"
+      type: file
+      description: Fasta file of the reference transcriptome.
+    - name: "--pseudo_aligner"
+      type: boolean
+      default: false
+      description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'. 
+      choices: [salmon, kallisto]
+    - name: "--pseudo_index"
+      type: file
+      description: Salmon or Kallisto index
+    - name: "--lib_type"
+      type: string
+      description: Override library type inferred based on strandedness defined in meta object
+      default: ''
+    - name: "--kallisto_quant_fragment_length"
+      type: integer
+      description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
+    - name: "--kallisto_quant_fragment_length_sd"
+      type: integer
+      description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
+    
+    # Output
+    - name: "--star_alignment"
+      type: file
+      direction: output
+      default: $id_STAR
+    - name: "--star_multiqc"
+      type: file
+      direction: output
+      default: $id.star_align.log
+    - name: "--genome_bam_sorted"
+      type: file
+      direction: output
+      default: $id.genome.bam
+    - name: "--genome_bam_index"
+      type: file
+      direction: output
+      default: $id.genome.bam.bai
+    - name: "--genome_bam_stats"
+      type: file
+      direction: output
+      default: $id.genome.stats
+    - name: "--genome_bam_flagstat"
+      type: file
+      direction: output
+      default: $id.genome.flagstat
+    - name: "--genome_bam_idxstats"
+      type: file
+      direction: output
+      default: $id.genome.idxstats
+    - name: "--transcriptome_bam"
+      type: file
+      direction: output
+      default: $id.transcriptome.bam
+    - name: "--transcriptome_bam_index"
+      type: file
+      direction: output
+      default: $id.transcriptome.bam.bai
+    - name: "--transcriptome_bam_stats"
+      type: file
+      direction: output
+      default: $id.transcriptome.stats
+    - name: "--transcriptome_bam_flagstat"
+      type: file
+      direction: output
+      default: $id.transcriptome.flagstat
+    - name: "--transcriptome_bam_idxstats"
+      type: file
+      direction: output
+      default: $id.transcriptome.idxstats
+    - name: "--quant_results"
+      type: file
+      direction: output
+      default: $id.quant
+    - name: "--updated_versions"
+      type: file
+      default: versions.yml
+      direction: output
+
+  resources:
+    - type: nextflow_script
+      path: main.nf
+      entrypoint: run_wf
+  
+  dependencies:
+    - name: star/star_align
+    - name: samtools/samtools_sort
+    - name: samtools/samtools_index
+    - name: samtools/samtools_stats
+    - name: samtools/samtools_flagstat
+    - name: samtools/samtools_idxstats
+    - name: umitools/umitools_dedup
+    - name: umitools_prepareforquant
+    - name: salmon/salmon_quant
+    - name: rsem/rsem_calculate_expression
+
+platforms:
+  - type: nextflow
