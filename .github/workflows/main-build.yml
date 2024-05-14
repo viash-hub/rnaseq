@@ -93,9 +93,9 @@ jobs:
       DEPLOY_BRANCH: ${{ !inputs.deploy_branch && format('{0}_build', github.ref_name) || inputs.deploy_branch  }}
 
     steps:
-    - name: Keep symlinks as-is
-      run: |
-        git config --global core.symlinks true
+    # - name: Keep symlinks as-is
+    #   run: |
+    #     git config --global core.symlinks true
 
     - uses: actions/checkout@v4
       if: ${{ inputs.deploy_to_viash_hub == 'true' }}
