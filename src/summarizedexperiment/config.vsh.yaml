@@ -32,7 +32,7 @@ functionality:
     - name: "--output"
       type: file
       direction: output
-      default: salmon_merged_summarizedexperiment
+      default: merged_summarizedexperiment
     - name: "--updated_versions"
       type: file
       default: versions.yml

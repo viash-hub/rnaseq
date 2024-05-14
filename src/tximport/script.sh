@@ -9,13 +9,18 @@ trap clean_up EXIT
 
 salmon_tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
-IFS="," read -ra salmon_results <<< $par_salmon_quant_results
+IFS="," read -ra salmon_results <<< $par_quant_results
 for result in ${salmon_results[*]}
 do 
     cp -r $result $salmon_tmpdir
 done
 
-Rscript "$meta_resources_dir/salmon_tximport.r" NULL $salmon_tmpdir salmon.merged $par_tx2gene_tsv
+Rscript "$meta_resources_dir/tximport.r" \
+    NULL \
+    $salmon_tmpdir \
+    $par_quant_type.merged \
+    $par_quant_type \
+    $par_tx2gene_tsv
 
 # Version
 tximeta_ver=$(Rscript -e "library(tximeta); cat(as.character(packageVersion('tximeta')))")

@@ -4,11 +4,11 @@ functionality:
     migration_info:
       git_repo: https://github.com/nf-core/rnaseq.git
       paths: [modules/local/tx2gene/main.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+      last_sha: 839ac5cab892504514cc96d44e99e70516b239d2
   description: Get transcript id (tx) to gene names for tximport
 
   arguments: 
-    - name: "--salmon_quant_results"
+    - name: "--quant_results"
       type: file
       multiple: true
       multiple_sep: ","
@@ -20,6 +20,10 @@ functionality:
     - name: "--gtf_group_features"
       type: string
       default: 'gene_id'
+    - name: "--quant_type"
+      type: string
+      description: Method used for quantification
+      choices: ["salmon", "kallisto"]
     - name: "--versions"
       type: file
       must_exist: false
@@ -28,7 +32,7 @@ functionality:
     - name: "--tsv"
       type: file
       direction: output
-      default: salmon_tx2gene.tsv
+      default: tx2gene.tsv
     - name: "--updated_versions"
       type: file
       default: versions.yml
@@ -37,7 +41,7 @@ functionality:
   resources:
     - type: bash_script
       path: script.sh
-    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_tx2gene.py
+    # copied from https://github.com/nf-core/rnaseq/blob/3.14.0/bin/tx2gene.py
     - path: tx2gene.py
    
 platforms:

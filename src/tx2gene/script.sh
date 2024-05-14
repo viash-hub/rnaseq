@@ -9,13 +9,14 @@ trap clean_up EXIT
 
 salmon_tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
-IFS="," read -ra salmon_results <<< $par_salmon_quant_results
+IFS="," read -ra salmon_results <<< $par_quant_results
 for result in ${salmon_results[*]}
 do 
     cp -r $result $salmon_tmpdir
 done
 
-python3 "$meta_resources_dir/salmon_tx2gene.py" \
+python3 "$meta_resources_dir/tx2gene.py" \
+    --quant_type $par_quant_type \
     --gtf $par_gtf \
     --salmon $salmon_tmpdir \
     --id $par_gtf_group_features \
