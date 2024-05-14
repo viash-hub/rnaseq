@@ -40,9 +40,9 @@ functionality:
           type: string
           default: 'gene_name'
           description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
-        - name: "--salmon_quant_results"
+        - name: "--quant_results"
           type: file
-          description: Path to directory with Salmon quantification results.
+          description: Path to directory with quantification results.
         
         - name: "--skip_qc"
           type: boolean
@@ -596,12 +596,12 @@ functionality:
     - name: dupradar
     - name: qualimap
     - name: preseq_lcextrap
-    - name: subread_featurecounts
+    - name: featurecounts
     - name: multiqc_custom_biotype
     - name: deseq2_qc
     - name: prepare_multiqc_input
     - name: multiqc
-    - name: workflows/salmon_quant_merge_counts
+    - name: workflows/merge_quant_results
 
 platforms:
   - type: nextflow
