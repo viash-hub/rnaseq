@@ -32,7 +32,7 @@ functionality:
       type: file
       description: Fasta file of the reference transcriptome.
     - name: "--pseudo_aligner"
-      type: boolean
+      type: string
       default: false
       description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'. 
       choices: [salmon, kallisto]
@@ -51,54 +51,10 @@ functionality:
       description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
     
     # Output
-    - name: "--star_alignment"
+    - name: "--pseudo_multiqc"
       type: file
       direction: output
-      default: $id_STAR
-    - name: "--star_multiqc"
-      type: file
-      direction: output
-      default: $id.star_align.log
-    - name: "--genome_bam_sorted"
-      type: file
-      direction: output
-      default: $id.genome.bam
-    - name: "--genome_bam_index"
-      type: file
-      direction: output
-      default: $id.genome.bam.bai
-    - name: "--genome_bam_stats"
-      type: file
-      direction: output
-      default: $id.genome.stats
-    - name: "--genome_bam_flagstat"
-      type: file
-      direction: output
-      default: $id.genome.flagstat
-    - name: "--genome_bam_idxstats"
-      type: file
-      direction: output
-      default: $id.genome.idxstats
-    - name: "--transcriptome_bam"
-      type: file
-      direction: output
-      default: $id.transcriptome.bam
-    - name: "--transcriptome_bam_index"
-      type: file
-      direction: output
-      default: $id.transcriptome.bam.bai
-    - name: "--transcriptome_bam_stats"
-      type: file
-      direction: output
-      default: $id.transcriptome.stats
-    - name: "--transcriptome_bam_flagstat"
-      type: file
-      direction: output
-      default: $id.transcriptome.flagstat
-    - name: "--transcriptome_bam_idxstats"
-      type: file
-      direction: output
-      default: $id.transcriptome.idxstats
+      default: $id.quant.log
     - name: "--quant_results"
       type: file
       direction: output
@@ -114,16 +70,8 @@ functionality:
       entrypoint: run_wf
   
   dependencies:
-    - name: star/star_align
-    - name: samtools/samtools_sort
-    - name: samtools/samtools_index
-    - name: samtools/samtools_stats
-    - name: samtools/samtools_flagstat
-    - name: samtools/samtools_idxstats
-    - name: umitools/umitools_dedup
-    - name: umitools_prepareforquant
     - name: salmon/salmon_quant
-    - name: rsem/rsem_calculate_expression
+    - name: kallisto/kallisto_quant
 
 platforms:
   - type: nextflow
