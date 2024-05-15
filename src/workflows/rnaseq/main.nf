@@ -194,7 +194,7 @@ workflow run_wf {
 
     // Genome alignment and quantification
     | genome_alignment_and_quant.run (
-        runIf: { id, state -> state.passed_trimmed_reads },
+        runIf: { id, state -> !state.skip_alignment && state.passed_trimmed_reads },
         fromState: [
           "id": "id", 
           "fastq_1": "fastq_1",
@@ -242,6 +242,38 @@ workflow run_wf {
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
 
+    // Pseudo-alignment and quantification
+    | pseudoo_alignment_and _quant.run (
+        runIf: { id, state -> !skip_pseudo_alignment && state.passed_trimmed_reads },
+        fromState: [
+          "id": "id", 
+          "fastq_1": "fastq_1",
+          "fastq_2": "fastq_2", 
+          "strandedness": "strandedness", 
+          "gtf": "gtf",
+          "transcript_fasta": "transcript_fasta",
+          "pseudo_aligner": "pseudo_aligner",
+          "pseudo_index": "pseudo_index",
+          "extra_star_align_args": "extra_star_align_args", 
+          "star_ignore_sjdbgtf": "star_ignore_sjdbgtf",
+          "seq_platform": "seq_platform", 
+          "seq_center": "seq_center",
+          "with_umi": "with_umi", 
+          "umi_dedup_stats": "umi_dedup_stats",
+          "gtf_group_features": "gtf_group_features",
+          "gtf_extra_attributes": "gtf_extra_attributes",
+          "libtype": "salmon_quant_libtype", 
+          "kallisto_quant_fragment_length": "kallisto_quant_fragment_length",
+          "kallisto_quant_fragment_length_sd": "kallisto_quant_fragment_length_sd",
+          "versions": "versions" 
+        ],
+        toState: [
+          "pseudo_multiqc": "pseudo_multiqc", 
+          "quant_results": "quant_results", 
+          "versions": "updated_versions"
+        ]
+    )
+
     | map { id, state ->
       def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
       def paired = input.size() == 2
@@ -250,7 +282,7 @@ workflow run_wf {
 
     // Post-processing
     | post_processing.run (
-        runIf: { id, state -> state.passed_trimmed_reads && state.passed_mapping },
+        runIf: { id, state -> !state.skip_alignment && state.passed_trimmed_reads && state.passed_mapping },
         fromState: [
           "id": "id", 
           "paired": "paired", 
@@ -299,6 +331,8 @@ workflow run_wf {
           "id": "id", 
           "paired": "paired", 
           "strandedness": "strandedness", 
+          "skip_align": "skip_alignment",
+          "skip_pseudo_align": "skippseudo_alignment",
           "gtf": "gtf", 
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",

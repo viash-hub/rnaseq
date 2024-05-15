@@ -49,6 +49,11 @@ functionality:
           default: false
         - name: "--skip_biotype_qc"
           type: boolean
+        - name: "--skip_align"
+          type: boolean
+          default: false
+        - name: "--skip_pseudo_align"
+          type: boolean
 
         # Component specific options
         # preseq

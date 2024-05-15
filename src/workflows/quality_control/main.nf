@@ -547,7 +547,6 @@ workflow run_wf {
             fromState: [
                 "multiqc_title": "multiqc_title", 
                 "multiqc_logo": "multiqc_logo",
-                "multiqc_methods_description": "multiqc_methods_description",
                 "input": "multiqc_input", 
                 "multiqc_custom_config": "multiqc_custom_config",
                 "versions": "versions"
