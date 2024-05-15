@@ -15,13 +15,6 @@ functionality:
           type: file
         - name: "--multiqc_title"
           type: string
-        - name: "--multiqc_methods_description"
-          type: file
-          default: assets/methods_description_template.yml
-        - name: "--mqc_yml"
-          type: file
-        - name: "--workflow_summary"
-          type: file
         - name: "--input"
           type: file
           must_exist: false
