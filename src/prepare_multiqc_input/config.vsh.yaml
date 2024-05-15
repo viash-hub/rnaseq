@@ -1,138 +1,139 @@
-functionality:
-  name: "prepare_multiqc_input"
-  description: |
-    Prepare directory with all the input files for MultiQC.
+name: "prepare_multiqc_input"
+description: |
+  Prepare directory with all the input files for MultiQC.
 
-  argument_groups: 
-    - name: "Input"
-      arguments:
-        - name: "--fail_trimming_multiqc"
-          type: string
-        - name: "--fail_mapping_multiqc"
-          type: string
-        - name: "--fail_strand_multiqc"
-          type: string
-        - name: "--fastqc_raw_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--fastqc_trim_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--trim_log_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--sortmerna_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--star_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        # - name: "--hisat2_multiqc"
-        #   type: file
-        # - name: "--rsem_multiqc"
-        #   type: file
-        - name: "--salmon_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--samtools_stats"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--samtools_flagstat"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--samtools_idxstats"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--markduplicates_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--featurecounts_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--featurecounts_rrna_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--aligner_pca_multiqc"
-          type: file
-        - name: "--aligner_clustering_multiqc"
-          type: file
-        # - name: "--pseudoaligner_pca_multiqc"
-        #   type: file
-        # - name: "--pseudoaligner_clustering_multiqc"
-        #   type: file
-        - name: "--preseq_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--qualimap_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--dupradar_output_dup_intercept_mqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--dupradar_output_duprate_exp_denscurve_mqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--bamstat_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--inferexperiment_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--innerdistance_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--junctionannotation_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--junctionsaturation_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--readdistribution_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--readduplication_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--tin_multiqc"
-          type: file
-          multiple: true
-          multiple_sep: ","
+argument_groups: 
+  - name: "Input"
+    arguments:
+      - name: "--fail_trimming_multiqc"
+        type: string
+      - name: "--fail_mapping_multiqc"
+        type: string
+      - name: "--fail_strand_multiqc"
+        type: string
+      - name: "--fastqc_raw_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--fastqc_trim_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--trim_log_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--sortmerna_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--star_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      # - name: "--hisat2_multiqc"
+      #   type: file
+      # - name: "--rsem_multiqc"
+      #   type: file
+      - name: "--salmon_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--samtools_stats"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--samtools_flagstat"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--samtools_idxstats"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--markduplicates_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--featurecounts_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--featurecounts_rrna_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--aligner_pca_multiqc"
+        type: file
+      - name: "--aligner_clustering_multiqc"
+        type: file
+      # - name: "--pseudoaligner_pca_multiqc"
+      #   type: file
+      # - name: "--pseudoaligner_clustering_multiqc"
+      #   type: file
+      - name: "--preseq_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--qualimap_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--dupradar_output_dup_intercept_mqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--dupradar_output_duprate_exp_denscurve_mqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--bamstat_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--inferexperiment_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--innerdistance_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--junctionannotation_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--junctionsaturation_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--readdistribution_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--readduplication_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--tin_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
 
-    - name: "Ouput"
-      arguments:
-        - name: "--output"
-          type: file
-          direction: output
-          default: multiqc_input
-      
-  resources:
-    - type: bash_script
-      path: script.sh
+  - name: "Ouput"
+    arguments:
+      - name: "--output"
+        type: file
+        direction: output
+        default: multiqc_input
+    
+resources:
+  - type: bash_script
+    path: script.sh
 
-platforms:
+engines:
   - type: docker
     image: ubuntu:22.04
+runners:
+  - type: executable
   - type: nextflow

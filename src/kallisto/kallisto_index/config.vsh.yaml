@@ -1,43 +1,46 @@
-functionality:
-  name: kallisto_index
-  namespace: kallisto
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/kallisto/index/main.nf, modules/nf-core/kallisto/index/meta.yml]
-      last_sha: c0816976384d5e7ee6079c29c45958df1ffa0ee4
-  description: | 
-    Create Kallisto index.
-  
+name: kallisto_index
+namespace: kallisto
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/kallisto/index/main.nf, modules/nf-core/kallisto/index/meta.yml]
+    last_sha: c0816976384d5e7ee6079c29c45958df1ffa0ee4
+description: | 
+  Create Kallisto index.
+
+argument_groups:
+- name: "Input"
   arguments: 
-    - name: "--transcriptome_fasta"
-      type: file
-    - name: "--pseudo_aligner_kmer_size"
-      type: integer
-      description: Kmer length passed to indexing step of pseudoaligners.
-    - name: "--versions"
-      type: file
-      must_exist: false
+  - name: "--transcriptome_fasta"
+    type: file
+  - name: "--pseudo_aligner_kmer_size"
+    type: integer
+    description: Kmer length passed to indexing step of pseudoaligners.
+  - name: "--versions"
+    type: file
+    must_exist: false
 
-    - name: "--kallisto_index"
-      type: file
-      direction: output
-      default: Kallisto_index
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments:
+  - name: "--kallisto_index"
+    type: file
+    direction: output
+    default: Kallisto_index
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-  resources:
-    - type: bash_script
-      path: script.sh
+resources:
+  - type: bash_script
+    path: script.sh
 
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/transcriptome.fasta
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/transcriptome.fasta
 
-platforms:
+engines:
   - type: docker
     image: ubuntu:22.04
     setup:
@@ -48,4 +51,6 @@ platforms:
           wget --no-check-certificate https://github.com/pachterlab/kallisto/releases/download/v0.50.1/kallisto_linux-v0.50.1.tar.gz && \
           tar -xzf kallisto_linux-v0.50.1.tar.gz && \
           mv kallisto/kallisto /usr/local/bin/
+runners:
+  - type: executable
   - type: nextflow  

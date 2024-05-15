@@ -1,44 +1,49 @@
-functionality:
-  name: "umitools_prepareforquant"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/umitools_prepareforrsem.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
+name: "umitools_prepareforquant"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/umitools_prepareforrsem.nf]
+    last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+description: Fix paired-end reads in name sorted BAM file to prepare for salmon quantification
 
-  arguments: 
-    - name: "--bam"
-      type: file
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
-    - name: "--output"
-      type: file
-      direction: output
-      default: $id.transcriptome_sorted.bam
-    - name: "--log"
-      type: file
-      direction: output
-      default: $id.$key.log
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+argument_groups:
+- name: "Input"
+  arguments:  
+  - name: "--bam"
+    type: file
+  - name: "--versions"
+    type: file
+    must_exist: false
 
-  resources:
-    - type: bash_script
-      path: script.sh
-    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/prepare-for-rsem.py
-    - path: prepare-for-rsem.py
-   
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [pip]
-      - type: python
-        packages: [umi_tools, pysam]
-  - type: nextflow
+- name: "Output"
+  arguments:    
+  - name: "--output"
+    type: file
+    direction: output
+    default: $id.transcriptome_sorted.bam
+  - name: "--log"
+    type: file
+    direction: output
+    default: $id.$key.log
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
+
+resources:
+  - type: bash_script
+    path: script.sh
+  # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/prepare-for-rsem.py
+  - path: prepare-for-rsem.py
+  
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages: [pip]
+    - type: python
+      packages: [umi_tools, pysam]
+runners: 
+- type: executable
+- type: nextflow

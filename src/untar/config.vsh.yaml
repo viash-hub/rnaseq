@@ -1,44 +1,48 @@
-functionality:
-  name: "untar"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/untar/main.nf, modules/nf-core/untar/meta.yml]
-      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  description: |
-    Extract tar.gz files.
+name: "untar"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/untar/main.nf, modules/nf-core/untar/meta.yml]
+    last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+description: |
+  Extract tar.gz files.
 
+argument_groups:
+- name: "Input"
   arguments:
-    - name: "--input"
-      type: file 
-      description: Path of file to be uncompressed
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+  - name: "--input"
+    type: file 
+    description: Path of file to be uncompressed
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-    - name: "--output"
-      type: file
-      direction: output
-      description: Directory containing contents of uncompressed file.
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments:  
+  - name: "--output"
+    type: file
+    direction: output
+    description: Directory containing contents of uncompressed file.
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-  resources:
-    - type: bash_script
-      path: script.sh
+resources:
+  - type: bash_script
+    path: script.sh
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/hisat2.tar.gz
   
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/hisat2.tar.gz
-   
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [ tar ]
-  - type: nextflow
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages: [ tar ]
+runners: 
+- type: executable
+- type: nextflow

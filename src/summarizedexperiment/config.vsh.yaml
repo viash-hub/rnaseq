@@ -1,55 +1,57 @@
-functionality:
-  name: "summarizedexperiment"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/summarizedexperiment/main.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: Create SummarizedExperiment object from Salmon counts
+name: "summarizedexperiment"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/summarizedexperiment/main.nf]
+    last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+description: Create SummarizedExperiment object from Salmon counts
 
+argument_groups:
+- name: "Input"
+  arguments:  
+  - name: "--tpm_gene"
+    type: file
+  - name: "--counts_gene"
+    type: file
+  - name: "--counts_gene_length_scaled"
+    type: file
+  - name: "--counts_gene_scaled"
+    type: file
+  - name: "--tpm_transcript"
+    type: file
+  - name: "--counts_transcript"
+    type: file
+  - name: "--tx2gene_tsv"
+    type: file
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
+- name: "Output"
   arguments: 
-    # Input
-    - name: "--tpm_gene"
-      type: file
-    - name: "--counts_gene"
-      type: file
-    - name: "--counts_gene_length_scaled"
-      type: file
-    - name: "--counts_gene_scaled"
-      type: file
-    - name: "--tpm_transcript"
-      type: file
-    - name: "--counts_transcript"
-      type: file
-    - name: "--tx2gene_tsv"
-      type: file
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+  - name: "--output"
+    type: file
+    direction: output
+    default: merged_summarizedexperiment
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-    # Output
-    - name: "--output"
-      type: file
-      direction: output
-      default: merged_summarizedexperiment
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+resources:
+  - type: bash_script
+    path: script.sh
+  # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_summarizedexperiment.r
+  - path: summarizedexperiment.r
   
-  resources:
-    - type: bash_script
-      path: script.sh
-    # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/salmon_summarizedexperiment.r
-    - path: summarizedexperiment.r
-   
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [ r-base, libcurl4-openssl-dev ]
-      - type: r
-        bioc: [ SummarizedExperiment ]
-  - type: nextflow
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages: [ r-base, libcurl4-openssl-dev ]
+    - type: r
+      bioc: [ SummarizedExperiment, tximeta ]
+runners: 
+- type: executable
+- type: nextflow

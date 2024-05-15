@@ -1,50 +1,52 @@
-functionality:
-  name: bedtools_genomecov
-  info: 
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/bedtools_genomecov.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: Compute BEDGRAPH (-bg) summaries of feature coverage
+name: bedtools_genomecov
+info: 
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/bedtools_genomecov.nf]
+    last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+description: Compute BEDGRAPH (-bg) summaries of feature coverage
 
+argument_groups:
+- name: "Input"
   arguments: 
-    - name: "--strandedness"
-      type: string
-      choices: ["unstranded", "forward", "reverse", "auto"]
-      description: Sample strand-specificity. 
-    - name: "--bam"
-      type: file
-      description: Genome BAM file
-    - name: "--extra_bedtools_args"
-      type: string
-      default: ''
-    - name: "--versions"
-      type: file
-      must_exist: false
+  - name: "--strandedness"
+    type: string
+    choices: ["unstranded", "forward", "reverse", "auto"]
+    description: Sample strand-specificity. 
+  - name: "--bam"
+    type: file
+    description: Genome BAM file
+  - name: "--extra_bedtools_args"
+    type: string
+    default: ''
+  - name: "--versions"
+    type: file
+    must_exist: false
+- name: "Output"
+  arguments: 
+  - name: "--bedgraph_forward"
+    type: file
+    default: $id.forward.bedgraph
+    direction: output
+  - name: "--bedgraph_reverse"
+    type: file
+    default: $id.reverse.bedgraph
+    direction: output
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-    - name: "--bedgraph_forward"
-      type: file
-      default: $id.forward.bedgraph
-      direction: output
-    - name: "--bedgraph_reverse"
-      type: file
-      default: $id.reverse.bedgraph
-      direction: output
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+resources:
+  - type: bash_script
+    path: script.sh
 
-  resources:
-    - type: bash_script
-      path: script.sh
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/unit_test_resources/a.sorted.bam
 
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/unit_test_resources/a.sorted.bam
-
-platforms:
+engines:
   - type: docker
     image: ubuntu:22.04
     setup:
@@ -55,4 +57,6 @@ platforms:
           wget --no-check-certificate https://github.com/arq5x/bedtools2/releases/download/v2.31.0/bedtools.static && \
           mv bedtools.static /usr/local/bin/bedtools && \
           chmod a+x /usr/local/bin/bedtools
+runners:
+  - type: executable
   - type: nextflow

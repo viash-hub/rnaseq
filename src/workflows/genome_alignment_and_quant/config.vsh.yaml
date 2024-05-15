@@ -1,169 +1,172 @@
-functionality:
-  name: genome_alignment_and_quant
-  namespace: workflows
-  description: |
-    A viash sub-workflow for genome alignment and quantification stage of nf-core/rnaseq pipeline.
-  
+name: genome_alignment_and_quant
+namespace: workflows
+description: |
+  A viash sub-workflow for genome alignment and quantification stage of nf-core/rnaseq pipeline.
+
+argument_groups:
+- name: "Output"
   arguments:
-    - name: "--id"
-      required: true
-      type: string
-      description: ID of the sample.
-      example: foo
-    - name: "--fastq_1"
-      alternatives: [-i]
-      type: file
-      description: Path to the sample (or read 1 of paired end sample).
-      required: true
-      example: input.fastq.gz
-    - name: "--fastq_2"
-      type: file
-      required: false
-      description: Path to read 2 of the sample.
-    - name: "--strandedness"
-      type: string 
-      required: false
-      description: Sample strand-specificity. Must be one of unstranded, forward, or reverse
-      choices: [forward, reverse, unstranded]
-    - name: "--gtf"
-      type: file
-      description: GTF file
-    - name: "--transcript_fasta"
-      type: file
-      description: Fasta file of the reference transcriptome.
-    - name: "--star_index"
-      type: file
-      description: STAR index directory.
-    - name: "--star_ignore_sjdbgtf"
-      type: boolean
-      default: false
-      description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
-    - name: "--seq_platform"
-      type: string
-      description: Sequencing platform.
-    - name: "--seq_center"
-      type: string
-      description: Sequencing center.
-    - name: "--extra_star_align_args"
-      type: string
-      default: ''
-      description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
-    - name: "--bam_csi_index"
-      type: boolean
-      default: false
-      description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
-    - name: "--umi_dedup_stats"
-      type: boolean
-      description: Generate output stats when running "umi_tools dedup".
-      default: false
-    - name: "--with_umi"
-      type: boolean
-      description: Enable UMI-based read deduplication.
-      default: false
-    - name: "--salmon_quant_libtype"
-      type: string
-      description: Override Salmon library type inferred based on strandedness defined in meta object.
-    - name: "--extra_salmon_quant_args"
-      type: string
-      default: ''
-      description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
-    - name: "--gtf_group_features"
-      type: string
-      default: 'gene_id'
-      description: Define the attribute type used to group features in the GTF file when running Salmon.
-    - name: "--gtf_extra_attributes"
-      type: string
-      default: 'gene_name'
-      description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
-    - name: extra_rsem_calculate_expression_args
-      type: string
-      description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
-    - name: "--aligner"
-      type: string
-      description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
-      choices: [star_salmon, star_rsem, hisat2]
-      default: "star_salmon"
-    - name: "--rsem_index"
-      type: file
-      description: Path to directory or tar.gz archive for pre-built RSEM index.
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
-    # Output
-    - name: "--star_alignment"
-      type: file
-      direction: output
-      default: $id_STAR
-    - name: "--star_multiqc"
-      type: file
-      direction: output
-      default: $id.star_align.log
-    - name: "--genome_bam_sorted"
-      type: file
-      direction: output
-      default: $id.genome.bam
-    - name: "--genome_bam_index"
-      type: file
-      direction: output
-      default: $id.genome.bam.bai
-    - name: "--genome_bam_stats"
-      type: file
-      direction: output
-      default: $id.genome.stats
-    - name: "--genome_bam_flagstat"
-      type: file
-      direction: output
-      default: $id.genome.flagstat
-    - name: "--genome_bam_idxstats"
-      type: file
-      direction: output
-      default: $id.genome.idxstats
-    - name: "--transcriptome_bam"
-      type: file
-      direction: output
-      default: $id.transcriptome.bam
-    - name: "--transcriptome_bam_index"
-      type: file
-      direction: output
-      default: $id.transcriptome.bam.bai
-    - name: "--transcriptome_bam_stats"
-      type: file
-      direction: output
-      default: $id.transcriptome.stats
-    - name: "--transcriptome_bam_flagstat"
-      type: file
-      direction: output
-      default: $id.transcriptome.flagstat
-    - name: "--transcriptome_bam_idxstats"
-      type: file
-      direction: output
-      default: $id.transcriptome.idxstats
-    - name: "--quant_results"
-      type: file
-      direction: output
-      default: $id.salmon_quant
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+  - name: "--id"
+    required: true
+    type: string
+    description: ID of the sample.
+    example: foo
+  - name: "--fastq_1"
+    alternatives: [-i]
+    type: file
+    description: Path to the sample (or read 1 of paired end sample).
+    required: true
+    example: input.fastq.gz
+  - name: "--fastq_2"
+    type: file
+    required: false
+    description: Path to read 2 of the sample.
+  - name: "--strandedness"
+    type: string 
+    required: false
+    description: Sample strand-specificity. Must be one of unstranded, forward, or reverse
+    choices: [forward, reverse, unstranded]
+  - name: "--gtf"
+    type: file
+    description: GTF file
+  - name: "--transcript_fasta"
+    type: file
+    description: Fasta file of the reference transcriptome.
+  - name: "--star_index"
+    type: file
+    description: STAR index directory.
+  - name: "--star_ignore_sjdbgtf"
+    type: boolean
+    default: false
+    description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
+  - name: "--seq_platform"
+    type: string
+    description: Sequencing platform.
+  - name: "--seq_center"
+    type: string
+    description: Sequencing center.
+  - name: "--extra_star_align_args"
+    type: string
+    default: ''
+    description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+  - name: "--bam_csi_index"
+    type: boolean
+    default: false
+    description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
+  - name: "--umi_dedup_stats"
+    type: boolean
+    description: Generate output stats when running "umi_tools dedup".
+    default: false
+  - name: "--with_umi"
+    type: boolean
+    description: Enable UMI-based read deduplication.
+    default: false
+  - name: "--salmon_quant_libtype"
+    type: string
+    description: Override Salmon library type inferred based on strandedness defined in meta object.
+  - name: "--extra_salmon_quant_args"
+    type: string
+    default: ''
+    description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+  - name: "--gtf_group_features"
+    type: string
+    default: 'gene_id'
+    description: Define the attribute type used to group features in the GTF file when running Salmon.
+  - name: "--gtf_extra_attributes"
+    type: string
+    default: 'gene_name'
+    description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
+  - name: extra_rsem_calculate_expression_args
+    type: string
+    description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
+  - name: "--aligner"
+    type: string
+    description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
+    choices: [star_salmon, star_rsem, hisat2]
+    default: "star_salmon"
+  - name: "--rsem_index"
+    type: file
+    description: Path to directory or tar.gz archive for pre-built RSEM index.
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
+- name: "Output"
+  arguments:
+  - name: "--star_alignment"
+    type: file
+    direction: output
+    default: $id_STAR
+  - name: "--star_multiqc"
+    type: file
+    direction: output
+    default: $id.star_align.log
+  - name: "--genome_bam_sorted"
+    type: file
+    direction: output
+    default: $id.genome.bam
+  - name: "--genome_bam_index"
+    type: file
+    direction: output
+    default: $id.genome.bam.bai
+  - name: "--genome_bam_stats"
+    type: file
+    direction: output
+    default: $id.genome.stats
+  - name: "--genome_bam_flagstat"
+    type: file
+    direction: output
+    default: $id.genome.flagstat
+  - name: "--genome_bam_idxstats"
+    type: file
+    direction: output
+    default: $id.genome.idxstats
+  - name: "--transcriptome_bam"
+    type: file
+    direction: output
+    default: $id.transcriptome.bam
+  - name: "--transcriptome_bam_index"
+    type: file
+    direction: output
+    default: $id.transcriptome.bam.bai
+  - name: "--transcriptome_bam_stats"
+    type: file
+    direction: output
+    default: $id.transcriptome.stats
+  - name: "--transcriptome_bam_flagstat"
+    type: file
+    direction: output
+    default: $id.transcriptome.flagstat
+  - name: "--transcriptome_bam_idxstats"
+    type: file
+    direction: output
+    default: $id.transcriptome.idxstats
+  - name: "--quant_results"
+    type: file
+    direction: output
+    default: $id.salmon_quant
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-  resources:
-    - type: nextflow_script
-      path: main.nf
-      entrypoint: run_wf
-  
-  dependencies:
-    - name: star/star_align
-    - name: samtools/samtools_sort
-    - name: samtools/samtools_index
-    - name: samtools/samtools_stats
-    - name: samtools/samtools_flagstat
-    - name: samtools/samtools_idxstats
-    - name: umitools/umitools_dedup
-    - name: umitools_prepareforquant
-    - name: salmon/salmon_quant
-    - name: rsem/rsem_calculate_expression
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
 
-platforms:
-  - type: nextflow
+dependencies:
+  - name: star/star_align
+  - name: samtools/samtools_sort
+  - name: samtools/samtools_index
+  - name: samtools/samtools_stats
+  - name: samtools/samtools_flagstat
+  - name: samtools/samtools_idxstats
+  - name: umitools/umitools_dedup
+  - name: umitools_prepareforquant
+  - name: salmon/salmon_quant
+  - name: rsem/rsem_calculate_expression
+
+runners: 
+- type: executable
+- type: nextflow

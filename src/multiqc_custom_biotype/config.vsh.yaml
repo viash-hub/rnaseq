@@ -1,10 +1,11 @@
-functionality:
-  name: "multiqc_custom_biotype"
-  info: 
-    migration_info: 
-  description: Calculate features percentage for biotype counts
+name: "multiqc_custom_biotype"
+info: 
+  migration_info: 
+description: Calculate features percentage for biotype counts
 
-  arguments: 
+argument_groups: 
+- name: "Input"
+  arguments:
   - name: "--biocounts"
     type: file
     description: File with all biocounts
@@ -18,8 +19,9 @@ functionality:
   - name: "--versions"
     type: file
     must_exist: false
-    
-
+  
+- name: "Output"
+  arguments:
   - name: '--featurecounts_multiqc'
     type: file
     direction: output
@@ -32,18 +34,20 @@ functionality:
     type: file
     default: versions.yml
     direction: output
-  
-  resources:
-    - type: bash_script
-      path: script.sh
-    # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
-    - path: mqc_features_stat.py
 
-platforms:
+resources:
+  - type: bash_script
+    path: script.sh
+  # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
+  - path: mqc_features_stat.py
+
+engines:
   - type: docker
     image: ubuntu:22.04
     setup:
       - type: apt
         packages: [pip]
       - type: python
+runners: 
+  - type: executable
   - type: nextflow

@@ -1,79 +1,82 @@
-functionality:
-  name: "tximport"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/tximport/main.nf]
-      last_sha: 489bcb4efdc7bd58839b22b0360d26b4d80b87a8
-  description: Get dataframe linking transcript ID, gene ID, and gene name
+name: "tximport"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/tximport/main.nf]
+    last_sha: 489bcb4efdc7bd58839b22b0360d26b4d80b87a8
+description: Get dataframe linking transcript ID, gene ID, and gene name
 
-  arguments: 
-    - name: "--quant_results"
-      type: file
-      multiple: true
-      multiple_sep: ","
-    - name: "--tx2gene_tsv"
-      type: file
-    - name: "--quant_type"
-      type: string
-      description: Method used for quantification
-      choices: ["salmon", "kallisto"]
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+argument_groups:
+- name: "Input"
+  arguments:  
+  - name: "--quant_results"
+    type: file
+    multiple: true
+    multiple_sep: ","
+  - name: "--tx2gene_tsv"
+    type: file
+  - name: "--quant_type"
+    type: string
+    description: Method used for quantification
+    choices: ["salmon", "kallisto"]
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-    # Output
-    - name: "--tpm_gene"
-      type: file
-      direction: output
-      example: salmon.merged.gene_tpm.tsv
-    - name: "--counts_gene"
-      type: file
-      direction: output
-      example: salmon.merged.gene_counts.tsv
-    - name: "--counts_gene_length_scaled"
-      type: file
-      direction: output
-      example: salmon.merged.gene_counts_length_scaled.tsv
-    - name: "--counts_gene_scaled"
-      type: file
-      direction: output
-      example: salmon.merged.gene_counts_scaled.tsv
-    - name: "--lengths_gene"
-      type: file
-      direction: output
-      example: salmon.merged.gene_length.tsv
-    - name: "--tpm_transcript"
-      type: file
-      direction: output
-      default: salmon.merged.transcript_tpm.tsv
-    - name: "--counts_transcript"
-      type: file
-      direction: output
-      default: salmon.merged.transcript_counts.tsv
-    - name: "--lengths_transcript"
-      type: file
-      direction: output
-      example: salmon.merged.transcript_length.tsv
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments:   
+  - name: "--tpm_gene"
+    type: file
+    direction: output
+    example: salmon.merged.gene_tpm.tsv
+  - name: "--counts_gene"
+    type: file
+    direction: output
+    example: salmon.merged.gene_counts.tsv
+  - name: "--counts_gene_length_scaled"
+    type: file
+    direction: output
+    example: salmon.merged.gene_counts_length_scaled.tsv
+  - name: "--counts_gene_scaled"
+    type: file
+    direction: output
+    example: salmon.merged.gene_counts_scaled.tsv
+  - name: "--lengths_gene"
+    type: file
+    direction: output
+    example: salmon.merged.gene_length.tsv
+  - name: "--tpm_transcript"
+    type: file
+    direction: output
+    default: salmon.merged.transcript_tpm.tsv
+  - name: "--counts_transcript"
+    type: file
+    direction: output
+    default: salmon.merged.transcript_counts.tsv
+  - name: "--lengths_transcript"
+    type: file
+    direction: output
+    example: salmon.merged.transcript_length.tsv
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
+
+resources:
+  - type: bash_script
+    path: script.sh
+  # copied from https://github.com/nf-core/rnaseq/blob/3.14.0/bin/tximport.r
+  - path: tximport.r
   
-  resources:
-    - type: bash_script
-      path: script.sh
-    # copied from https://github.com/nf-core/rnaseq/blob/3.14.0/bin/tximport.r
-    - path: tximport.r
-   
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [ r-base, libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
-      - type: r      
-        bioc: [ SummarizedExperiment, tximport, tximeta ]
-        cran: [ jsonlite ]
-  - type: nextflow
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages: [ r-base, libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
+    - type: r      
+      bioc: [ SummarizedExperiment, tximport, tximeta ]
+      cran: [ jsonlite ]
+runners: 
+- type: executable
+- type: nextflow

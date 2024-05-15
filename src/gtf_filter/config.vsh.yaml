@@ -1,13 +1,14 @@
-functionality:
-  name: "gtf_filter"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/gtf_filter.nf]
-      last_sha: 1c6012ecbb087014ea4b8f0f3d39b874850277a8
-  description: | 
-    Filters a GTF file based on sequence names in a FASTA file.
+name: "gtf_filter"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/gtf_filter.nf]
+    last_sha: 1c6012ecbb087014ea4b8f0f3d39b874850277a8
+description: | 
+  Filters a GTF file based on sequence names in a FASTA file.
 
+argument_groups:
+- name: "Input"
   arguments:
   - name: "--fasta"
     type: file
@@ -21,7 +22,8 @@ functionality:
   - name: "--versions"
     type: file
     must_exist: false
-
+- name: " Output"
+  arguments:
   - name: "--filtered_gtf"
     type: file
     direction: output
@@ -31,17 +33,19 @@ functionality:
     default: versions.yml
     direction: output
 
-  resources:
-    - type: python_script
-      path: script.py
+resources:
+  - type: python_script
+    path: script.py
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/genome.fasta
+  - path: /testData/minimal_test/reference/genes.gtf.gz
   
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/genome.fasta
-    - path: /testData/minimal_test/reference/genes.gtf.gz
-   
-platforms:
+engines:
   - type: docker
     image: python 
+runners:
+  - type: executable
   - type: nextflow

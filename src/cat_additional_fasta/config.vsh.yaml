@@ -1,57 +1,61 @@
-functionality:
-  name: "cat_additional_fasta"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/cat_additional_fasta.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: |
-    Concatenate addional fasta file to reference FASTA and GTF files.
+name: "cat_additional_fasta"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/cat_additional_fasta.nf]
+    last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+description: |
+  Concatenate addional fasta file to reference FASTA and GTF files.
 
-  arguments:
-    - name: "--fasta"
-      type: file 
-      required: true
-      description: Path to FASTA genome file.
-    - name: "--gtf"
-      type: file
-      description: Path to GTF annotation file.
-    - name: "--additional_fasta"
-      type: file
-      description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
-    - name: "--biotype"
-      type: string
-      description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
-    - name: "--versions"
-      type: file
-      must_exist: false
+argument_groups:
+- name: "Input"
+  arguments: 
+  - name: "--fasta"
+    type: file 
+    required: true
+    description: Path to FASTA genome file.
+  - name: "--gtf"
+    type: file
+    description: Path to GTF annotation file.
+  - name: "--additional_fasta"
+    type: file
+    description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+  - name: "--biotype"
+    type: string
+    description: Biotype value to use when appending entries to GTF file when additional fasta file is provided.
+  - name: "--versions"
+    type: file
+    must_exist: false
 
-    # Output
-    - name: "--fasta_output"
-      type: file
-      direction: output
-      description: Concatenated FASTA file.
-    - name: "--gtf_output"
-      type: file
-      direction: output
-      description: Concatenated GTF file.
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments: 
+  - name: "--fasta_output"
+    type: file
+    direction: output
+    description: Concatenated FASTA file.
+  - name: "--gtf_output"
+    type: file
+    direction: output
+    description: Concatenated GTF file.
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
+
+resources:
+  - type: python_script
+    path: script.py
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/genome.fasta
+  - path: /testData/minimal_test/reference/genes.gtf.gz
+  - path: /testData/minimal_test/reference/gfp.fa.gz
   
-  resources:
-    - type: python_script
-      path: script.py
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/genome.fasta
-    - path: /testData/minimal_test/reference/genes.gtf.gz
-    - path: /testData/minimal_test/reference/gfp.fa.gz
-   
-platforms:
+engines:
   - type: docker
     image: python 
+runners:
+  - type: executable
   - type: nextflow

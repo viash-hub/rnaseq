@@ -1,35 +1,39 @@
-functionality:
-  name: "preprocess_transcripts_fasta"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/local/preprocess_transcripts_fasta_gencode.nf]
-      last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
-  description: |
-    Process transcripts FASTA if GTF file is GENOCODE format
+name: "preprocess_transcripts_fasta"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/local/preprocess_transcripts_fasta_gencode.nf]
+    last_sha: 0a1bdcfbb498987643b74e9fccab85ccd9f2a17d
+description: |
+  Process transcripts FASTA if GTF file is GENOCODE format
 
+argument_groups:
+- name: "Input"
   arguments:
-    - name: "--transcript_fasta"
-      type: file 
-      required: true
-      description: Path of transcripts FASTA file
-      
-    - name: "--output"
-      type: file
-      direction: output
-      required: true
-      description: Path of processed output FASTA file.
+  - name: "--transcript_fasta"
+    type: file 
+    required: true
+    description: Path of transcripts FASTA file
+- name: "Output"
+  arguments:    
+  - name: "--output"
+    type: file
+    direction: output
+    required: true
+    description: Path of processed output FASTA file.
 
-  resources:
-    - type: bash_script
-      path: script.sh
+resources:
+  - type: bash_script
+    path: script.sh
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/transcriptome.fasta
   
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/transcriptome.fasta
-   
-platforms:
+engines:
   - type: docker
     image: ubuntu:22.04
+runners:
+  - type: executable
   - type: nextflow

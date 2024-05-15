@@ -1,90 +1,94 @@
-functionality:
-  name: "rseqc_tin"
-  namespace: "rseqc"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/rseqc/tin/main.nf]
-      last_sha: 
-  description: |
-    Calculte TIN (transcript integrity number) from RNA-seq reads
+name: "rseqc_tin"
+namespace: "rseqc"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/rseqc/tin/main.nf]
+    last_sha: 
+description: |
+  Calculte TIN (transcript integrity number) from RNA-seq reads
 
-  arguments:
-    - name: "--bam_input"
-      type: file 
-      required: true
-      description: Path to input alignment file in BAM or SAM format.
- 
-    - name: "--bai_input"
-      type: file 
-      required: true
-      description: Path to bam index file in bai format.
+argument_groups:
+- name: "Input"
+  arguments: 
+  - name: "--bam_input"
+    type: file 
+    required: true
+    description: Path to input alignment file in BAM or SAM format.
 
-    - name: "--refgene"
-      type: file 
-      required: true
-      description: BED file containing the reference gene model
+  - name: "--bai_input"
+    type: file 
+    required: true
+    description: Path to bam index file in bai format.
 
-    - name: "--minimum_coverage"
-      type: integer
-      required: false
-      default: 10
-      min: 1
-      description: Minimum number of reads mapped to a transcript, default = 10.
+  - name: "--refgene"
+    type: file 
+    required: true
+    description: BED file containing the reference gene model
 
-    - name: "--sample_size"
-      type: integer
-      required: false
-      default: 100
-      min: 1
-      description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
+  - name: "--minimum_coverage"
+    type: integer
+    required: false
+    default: 10
+    min: 1
+    description: Minimum number of reads mapped to a transcript, default = 10.
 
-    - name: "--subtract_background"
-      type: boolean_true
-      description: Set flag to subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads.
+  - name: "--sample_size"
+    type: integer
+    required: false
+    default: 100
+    min: 1
+    description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
 
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+  - name: "--subtract_background"
+    type: boolean_true
+    description: Set flag to subtract background noise (estimated from intronic reads). Only use this option if there are substantial intronic reads.
 
-    - name: "--output_tin_summary"
-      type: file
-      direction: output
-      required: false
-      default: $id.tin_summary.txt
-      description: summary statistics (txt) of calculated TIN metrics
-
-    - name: "--output_tin"
-      type: file
-      direction: output
-      required: false
-      default: $id.tin.xls
-      description: file with TIN metrics (xls)
-
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
-
-  resources:
-    - type: bash_script
-      path: script.sh
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
-    - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam.bai
-    - path: /testData/unit_test_resources/hg19_RefSeq.bed.gz
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:   
-      - type: "apt"
-        packages: [python3-pip]
-      - type: docker
-        run: | 
-          pip3 install RSeQC
-  - type: nextflow
+- name: "Output"
+  arguments: 
+  - name: "--output_tin_summary"
+    type: file
+    direction: output
+    required: false
+    default: $id.tin_summary.txt
+    description: summary statistics (txt) of calculated TIN metrics
+
+  - name: "--output_tin"
+    type: file
+    direction: output
+    required: false
+    default: $id.tin.xls
+    description: file with TIN metrics (xls)
+
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
+
+resources:
+  - type: bash_script
+    path: script.sh
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
+  - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam.bai
+  - path: /testData/unit_test_resources/hg19_RefSeq.bed.gz
+  
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:   
+    - type: "apt"
+      packages: [python3-pip]
+    - type: docker
+      run: | 
+        pip3 install RSeQC
+runners: 
+- type: executable
+- type: nextflow

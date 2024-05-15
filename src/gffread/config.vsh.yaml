@@ -1,46 +1,50 @@
-functionality:
-  name: "gffread"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/gffread/main.nf, modules/nf-core/gffread/meta.yml]
-      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  description: |
-    Validate, filter, convert and perform various other operations on GFF files.
+name: "gffread"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/gffread/main.nf, modules/nf-core/gffread/meta.yml]
+    last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+description: |
+  Validate, filter, convert and perform various other operations on GFF files.
 
+argument_groups:
+- name: "Input"
   arguments:
-    - name: "--input"
-      type: file 
-      required: true
-      description: A reference file in either the GFF3, GFF2 or GTF format.
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+  - name: "--input"
+    type: file 
+    required: true
+    description: A reference file in either the GFF3, GFF2 or GTF format.
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-    - name: "--output"
-      type: file
-      direction: output
-      required: true
-      description: GTF file resulting from the conversion of the GFF input file.
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: " Output"
+  arguments:  
+  - name: "--output"
+    type: file
+    direction: output
+    required: true
+    description: GTF file resulting from the conversion of the GFF input file.
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-  resources:
-    - type: bash_script
-      path: script.sh
+resources:
+  - type: bash_script
+    path: script.sh
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/reference/genes.gff.gz
   
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/reference/genes.gff.gz
-   
-platforms:
+engines:
   - type: docker
     image: ubuntu:22.04
     setup:
       - type: apt
         packages: [ gffread ]
+runners:
+  - type: executable
   - type: nextflow

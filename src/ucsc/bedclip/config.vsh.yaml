@@ -1,54 +1,58 @@
-functionality:
-  name: "bedclip"
-  namespace: "ucsc"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/ucsc/bedclip/main.nf, modules/nf-core/ucsc/bedclip/meta.yml]
-      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  description: Remove lines from bed file that refer to off-chromosome locations
+name: "bedclip"
+namespace: "ucsc"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/ucsc/bedclip/main.nf, modules/nf-core/ucsc/bedclip/meta.yml]
+    last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+description: Remove lines from bed file that refer to off-chromosome locations
 
-  arguments:
-    - name: "--input_bedgraph"
-      type: file
-      description: bedGraph file which should be converted
-    - name: "--sizes"
-      type: file
-      description: File with chromosome sizes
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+argument_groups:
+- name: "Input"
+  arguments: 
+  - name: "--input_bedgraph"
+    type: file
+    description: bedGraph file which should be converted
+  - name: "--sizes"
+    type: file
+    description: File with chromosome sizes
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
+- name: "Output"
+  arguments: 
+  - name: "--output_bedgraph"
+    type: file
+    direction: output
+    description: bedGraph file after clipping
+    default: $id.$key.bedgraph
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-    - name: "--output_bedgraph"
-      type: file
-      direction: output
-      description: bedGraph file after clipping
-      default: $id.$key.bedgraph
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
-  
-  resources:
-    - type: bash_script
-      path: script.sh
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/unit_test_resources/test.bedgraph
-    - path: /testData/unit_test_resources/genome.sizes    
+resources:
+  - type: bash_script
+    path: script.sh
 
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages:
-          - rsync
-          - libcurl4
-      - type: docker
-        run: | 
-          rsync -aP rsync://hgdownload.soe.ucsc.edu/genome/admin/exe/linux.x86_64/bedClip /usr/local/bin/
-  - type: nextflow
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/unit_test_resources/test.bedgraph
+  - path: /testData/unit_test_resources/genome.sizes    
+
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages:
+        - rsync
+        - libcurl4
+    - type: docker
+      run: | 
+        rsync -aP rsync://hgdownload.soe.ucsc.edu/genome/admin/exe/linux.x86_64/bedClip /usr/local/bin/
+runners: 
+- type: executable
+- type: nextflow

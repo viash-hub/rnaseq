@@ -1,60 +1,62 @@
-functionality:
-  name: "samtools_sort"
-  namespace: "samtools"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/samtools/sort/main.nf, modules/nf-core/samtools/sort/meta.yml]
-      last_sha: 88280ca1e495f0e1f0ec014635799c784f1f0ca3
-  description: |
-    Sort BAM file.
- 
-  arguments:
-    - name: "--input"
-      type: file
-      description: BAM input file.
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+name: "samtools_sort"
+namespace: "samtools"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/samtools/sort/main.nf, modules/nf-core/samtools/sort/meta.yml]
+    last_sha: 88280ca1e495f0e1f0ec014635799c784f1f0ca3
+description: |
+  Sort BAM file.
+
+argument_groups:
+- name: "Input"
+  arguments: 
+  - name: "--input"
+    type: file
+    description: BAM input file.
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-    - name: "--output"
-      type: file 
-      description: Sorted BAM
-      direction: output
-      default: $id.$key.bam
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments: 
+  - name: "--output"
+    type: file 
+    description: Sorted BAM
+    direction: output
+    default: $id.$key.bam
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-  resources:
-    - type: bash_script
-      path: script.sh
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/unit_test_resources/chr19.bam
+resources:
+  - type: bash_script
+    path: script.sh
 
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/unit_test_resources/chr19.bam
 
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: docker
-        env: 
-          - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
-        run: |
-          apt-get update && \
-          apt-get install -y --no-install-recommends ${PACKAGES} && \
-          wget --no-check-certificate https://github.com/samtools/samtools/releases/download/1.18/samtools-1.18.tar.bz2 && \
-          tar -xjf samtools-1.18.tar.bz2 && \
-          rm samtools-1.18.tar.bz2 && \
-          cd samtools-1.18 && \
-          ./configure && \
-          make && \
-          make install && \
-          cd
-  - type: nextflow
-  
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: docker
+      env: 
+        - PACKAGES build-essential gcc g++ autoconf automake make wget zlib1g-dev unzip autoconf make gcc perl libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev bzip2 gawk
+      run: |
+        apt-get update && \
+        apt-get install -y --no-install-recommends ${PACKAGES} && \
+        wget --no-check-certificate https://github.com/samtools/samtools/releases/download/1.18/samtools-1.18.tar.bz2 && \
+        tar -xjf samtools-1.18.tar.bz2 && \
+        rm samtools-1.18.tar.bz2 && \
+        cd samtools-1.18 && \
+        ./configure && \
+        make && \
+        make install && \
+        cd
+runners: 
+- type: executable
+- type: nextflow

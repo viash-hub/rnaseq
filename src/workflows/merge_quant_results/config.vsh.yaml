@@ -1,84 +1,84 @@
-functionality:
-  name: merge_quant_results
-  namespace: workflows
-  description: A sub-workflow to merge the counts obtained from salmon quant across all samples.
+name: merge_quant_results
+namespace: workflows
+description: A sub-workflow to merge the counts obtained from salmon quant across all samples.
 
-  argument_groups:
-    - name: "Input"
-      arguments:
-        - name: "--quant_results"
-          type: file
-          multiple: true
-          multiple_sep: ","
-        - name: "--gtf"
-          type: file
-        - name: "--gtf_extra_attributes"
-          type: string
-          default: 'gene_name'
-        - name: "--gtf_group_features"
-          type: string
-          default: 'gene_id'
-        - name: "--quant_type"
-          type: string
-          description: Quantification method used.
-          choices: [salmon, kallisto]
-          default: salmon
-        - name: "--versions"
-          type: file
-          must_exist: false
-          
-    - name: "Output"
-      arguments: 
-        - name: "--tpm_gene"
-          type: file
-          direction: output
-          example: salmon.merged.gene_tpm.tsv
-        - name: "--counts_gene"
-          type: file
-          direction: output
-          example: salmon.merged.gene_counts.tsv
-        - name: "--counts_gene_length_scaled"
-          type: file
-          direction: output
-          example: salmon.merged.gene_counts_length_scaled.tsv
-        - name: "--counts_gene_scaled"
-          type: file
-          direction: output
-          example: salmon.merged.gene_counts_scaled.tsv
-        - name: "--tpm_transcript"
-          type: file
-          direction: output
-          example: salmon.merged.transcript_tpm.tsv
-        - name: "--lengths_gene"
-          type: file
-          direction: output
-          example: salmon.merged.gene_length.tsv
-        - name: "--counts_transcript"
-          type: file
-          direction: output
-          example: salmon.merged.transcript_counts.tsv
-        - name: "--lengths_transcript"
-          type: file
-          direction: output
-          example: salmon.merged.transcript_length.tsv
-        - name: "--salmon_merged_summarizedexperiment"
-          type: file
-          direction: output
-          example: salmon_merged_summarizedexperiment
-        - name: "--updated_versions"
-          type: file
-          default: versions.yml
-          direction: output
+argument_groups:
+  - name: "Input"
+    arguments:
+      - name: "--quant_results"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--gtf"
+        type: file
+      - name: "--gtf_extra_attributes"
+        type: string
+        default: 'gene_name'
+      - name: "--gtf_group_features"
+        type: string
+        default: 'gene_id'
+      - name: "--quant_type"
+        type: string
+        description: Quantification method used.
+        choices: [salmon, kallisto]
+        default: salmon
+      - name: "--versions"
+        type: file
+        must_exist: false
+        
+  - name: "Output"
+    arguments: 
+      - name: "--tpm_gene"
+        type: file
+        direction: output
+        example: salmon.merged.gene_tpm.tsv
+      - name: "--counts_gene"
+        type: file
+        direction: output
+        example: salmon.merged.gene_counts.tsv
+      - name: "--counts_gene_length_scaled"
+        type: file
+        direction: output
+        example: salmon.merged.gene_counts_length_scaled.tsv
+      - name: "--counts_gene_scaled"
+        type: file
+        direction: output
+        example: salmon.merged.gene_counts_scaled.tsv
+      - name: "--tpm_transcript"
+        type: file
+        direction: output
+        example: salmon.merged.transcript_tpm.tsv
+      - name: "--lengths_gene"
+        type: file
+        direction: output
+        example: salmon.merged.gene_length.tsv
+      - name: "--counts_transcript"
+        type: file
+        direction: output
+        example: salmon.merged.transcript_counts.tsv
+      - name: "--lengths_transcript"
+        type: file
+        direction: output
+        example: salmon.merged.transcript_length.tsv
+      - name: "--merged_summarizedexperiment"
+        type: file
+        direction: output
+        example: salmon_merged_summarizedexperiment
+      - name: "--updated_versions"
+        type: file
+        default: versions.yml
+        direction: output
 
-  resources:
-    - type: nextflow_script
-      path: main.nf
-      entrypoint: run_wf
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
 
-  dependencies: 
-    - name: tx2gene
-    - name: tximport
-    - name: summarizedexperiment
-    
-platforms:
-  - type: nextflow
+dependencies: 
+  - name: tx2gene
+  - name: tximport
+  - name: summarizedexperiment
+  
+runners: 
+- type: executable
+- type: nextflow

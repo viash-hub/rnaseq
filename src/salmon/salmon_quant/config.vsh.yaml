@@ -1,112 +1,116 @@
-functionality:
-  name: salmon_quant
-  namespace: salmon
-  description: | 
-    Gene/transcript quantification with Salmon.
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/salmon/quant/main.nf, modules/nf-core/salmon/quant/meta.yml]
-      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  
+name: salmon_quant
+namespace: salmon
+description: | 
+  Gene/transcript quantification with Salmon.
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/salmon/quant/main.nf, modules/nf-core/salmon/quant/meta.yml]
+    last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+
+argument_groups:
+- name: "Input"
   arguments: 
-    - name: "--paired"
-      type: boolean
-      description: Paired-end reads or not?
-    - name: "--strandedness"
-      type: string
-      description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
-    - name: "--input"
-      type: file
-      multiple: true
-      multiple_sep: ","
-      description: List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively, or aligned transcriptome BAM
-    - name: "--salmon_index"
-      type: file
-      description: Folder containing the salmon index files
-    - name: "--gtf"
-      type: file
-      description: GTF of the reference transcriptome
-    - name: "--transcript_fasta"
-      type: file
-      description: Fasta file of the reference transcriptome
-    - name: "--alignment_mode"
-      type: boolean
-      description: whether to run salmon in alignment mode
-    - name: "--lib_type"
-      type: string
-      description: Override library type inferred based on strandedness defined in meta object
-      default: ''
-    - name: "--extra_salmon_quant_args"
-      type: string
-      description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
-      default: ''
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+  - name: "--paired"
+    type: boolean
+    description: Paired-end reads or not?
+  - name: "--strandedness"
+    type: string
+    description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+  - name: "--input"
+    type: file
+    multiple: true
+    multiple_sep: ","
+    description: List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively, or aligned transcriptome BAM
+  - name: "--salmon_index"
+    type: file
+    description: Folder containing the salmon index files
+  - name: "--gtf"
+    type: file
+    description: GTF of the reference transcriptome
+  - name: "--transcript_fasta"
+    type: file
+    description: Fasta file of the reference transcriptome
+  - name: "--alignment_mode"
+    type: boolean
+    description: whether to run salmon in alignment mode
+  - name: "--lib_type"
+    type: string
+    description: Override library type inferred based on strandedness defined in meta object
+    default: ''
+  - name: "--extra_salmon_quant_args"
+    type: string
+    description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+    default: ''
+  - name: "--versions"
+    type: file
+    must_exist: false
+    
+- name: "Output"
+  arguments: 
+  - name: "--output"
+    type: file
+    direction: output
+    description: Folder containing the quantification results for a specific sample
+    default: $id.salmon_quant
+  - name: "--json_info"
+    type: file
+    direction: output
+    description: File containing meta information from Salmon quant
+    default: $id.$key.meta_info.json
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-    - name: "--output"
-      type: file
-      direction: output
-      description: Folder containing the quantification results for a specific sample
-      default: $id.salmon_quant
-    - name: "--json_info"
-      type: file
-      direction: output
-      description: File containing meta information from Salmon quant
-      default: $id.$key.meta_info.json
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
 
+resources:
+  - type: bash_script
+    path: script.sh
 
-  resources:
-    - type: bash_script
-      path: script.sh
-  
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/input_fastq/SRR6357073_1.fastq.gz
-    - path: /testData/minimal_test/reference/salmon.tar.gz
-    - path: /testData/minimal_test/reference/genes.gtf.gz
-    - path: /testData/minimal_test/reference/transcriptome.fasta
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/input_fastq/SRR6357073_1.fastq.gz
+  - path: /testData/minimal_test/reference/salmon.tar.gz
+  - path: /testData/minimal_test/reference/genes.gtf.gz
+  - path: /testData/minimal_test/reference/transcriptome.fasta
 
-platforms:
-  - type: docker
-    image: ubuntu:18.04
-    setup:
-      - type: docker
-        env: 
-          - SALMON_VERSION 1.10.1
-          - TZ Europe/Brussels
-          - PACKAGES git gcc make g++ libboost-all-dev liblzma-dev libbz2-dev ca-certificates zlib1g-dev libcurl4-openssl-dev curl unzip autoconf apt-transport-https ca-certificates gnupg software-properties-common wget tar 
-        run: |
-          ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-          apt-get update && \
-          apt remove -y libcurl4 && \
-          apt-get install -y --no-install-recommends ${PACKAGES} && \
-          apt-get clean && \
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - && \
-          apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' && \
-          apt-get update && \
-          apt-key --keyring /etc/apt/trusted.gpg del C1F34CDD40CD72DA && \
-          apt-get install kitware-archive-keyring && \
-          apt-get install -y cmake && \
-          wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb && \
-          dpkg -i libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb && \
-          curl -k -L https://github.com/COMBINE-lab/salmon/archive/v${SALMON_VERSION}.tar.gz -o salmon-v${SALMON_VERSION}.tar.gz && \
-          tar xzf salmon-v${SALMON_VERSION}.tar.gz && \
-          cd salmon-${SALMON_VERSION} && \
-          mkdir build && \
-          cd build && \
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon_tmp && make && make install && \
-          cd && apt-get update && \
-          apt-get install -y --no-install-recommends libhwloc5 && \
-          rm -rf /var/lib/apt/lists/* && \
-          cp /usr/local/salmon_tmp/bin/salmon /usr/local/bin && \
-          cp -r /usr/local/salmon_tmp/lib/* /usr/local/lib && \
-          rm -r /usr/local/salmon_tmp
-  - type: nextflow  
+engines:
+- type: docker
+  image: ubuntu:18.04
+  setup:
+    - type: docker
+      env: 
+        - SALMON_VERSION 1.10.1
+        - TZ Europe/Brussels
+        - PACKAGES git gcc make g++ libboost-all-dev liblzma-dev libbz2-dev ca-certificates zlib1g-dev libcurl4-openssl-dev curl unzip autoconf apt-transport-https ca-certificates gnupg software-properties-common wget tar 
+      run: |
+        ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+        apt-get update && \
+        apt remove -y libcurl4 && \
+        apt-get install -y --no-install-recommends ${PACKAGES} && \
+        apt-get clean && \
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - && \
+        apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' && \
+        apt-get update && \
+        apt-key --keyring /etc/apt/trusted.gpg del C1F34CDD40CD72DA && \
+        apt-get install kitware-archive-keyring && \
+        apt-get install -y cmake && \
+        wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb && \
+        dpkg -i libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb && \
+        curl -k -L https://github.com/COMBINE-lab/salmon/archive/v${SALMON_VERSION}.tar.gz -o salmon-v${SALMON_VERSION}.tar.gz && \
+        tar xzf salmon-v${SALMON_VERSION}.tar.gz && \
+        cd salmon-${SALMON_VERSION} && \
+        mkdir build && \
+        cd build && \
+        cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/salmon_tmp && make && make install && \
+        cd && apt-get update && \
+        apt-get install -y --no-install-recommends libhwloc5 && \
+        rm -rf /var/lib/apt/lists/* && \
+        cp /usr/local/salmon_tmp/bin/salmon /usr/local/bin && \
+        cp -r /usr/local/salmon_tmp/lib/* /usr/local/lib && \
+        rm -r /usr/local/salmon_tmp
+runners: 
+- type: executable
+- type: nextflow  

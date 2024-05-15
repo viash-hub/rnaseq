@@ -1,837 +1,837 @@
-functionality:
-  name: rnaseq
-  namespace: workflows
-  description: |
-    A viash workflow for the nf-core/rnaseq pipeline.
+name: rnaseq
+namespace: workflows
+description: |
+  A viash workflow for the nf-core/rnaseq pipeline.
+
+argument_groups:
+  - name: Input
+    arguments:
+      - name: "--id"
+        required: true
+        type: string
+        description: ID of the sample.
+        example: foo
+      - name: "--fastq_1"
+        type: file
+        must_exist: true
+        required: true
+        multiple: true
+        multiple_sep: ";"
+        description: Path to the sample (or read 1 of paired end sample). 
+      - name: "--fastq_2"
+        type: file
+        required: false
+        must_exist: false
+        multiple: true
+        multiple_sep: ";"
+        description: Path to read 2 of the sample.
+      - name: "--strandedness"
+        type: string 
+        required: false
+        default: auto
+        choices: ["unstranded", "forward", "reverse", "auto"]
+        description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+
+  - name: Reference genome options
+    arguments:
+      - name: "--fasta"
+        type: file
+        description: Path to FASTA genome file.
+        required: true
+      - name: "--gtf"
+        type: file
+        description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
+        required: false
+      - name: "--gff"
+        type: file
+        description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
+        required: false
+      - name: "--additional_fasta"
+        type: file
+        description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
+      - name: "--transcript_fasta"
+        type: file
+        description: Path to FASTA transcriptome file.
+      - name: "--gene_bed"
+        type: file
+        description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
+      - name: "--splicesites"
+        type: file
+        description: Splice sites file required for HISAT2.
+      - name: "--star_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built STAR index.
+      - name: "--rsem_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built RSEM index.
+      - name: "--salmon_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built Salmon index.
+      - name: "--kallisto_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built Kallisto index.
+      - name: "--hisat2_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built HISAT2 index.
+      - name: "--hisat2_build_memory"
+        type: string
+        description: Minimum memory required to use splice sites and exons in the HiSAT2 index build process.
+        default: 200.GB
+      - name: "--gencode"
+        type: boolean_true
+        description: Specify if the GTF annotation is in GENCODE format.
+      - name: "--gtf_extra_attributes"
+        type: string
+        description: Additional gene identifiers from the input GTF file when running Salmon. More than one value can be specified separated by comma.
+        default: gene_name
+      - name: "--gtf_group_features"
+        type: string
+        description: Define the attribute type used to group features in the GTF file when running Salmon.
+        default: gene_id
+      - name: "--featurecounts_group_type"
+        type: string
+        description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
+        default: gene_biotype
+      - name: "--featurecounts_feature_type"
+        type: string
+        description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
+        default: exon 
+
+  - name: Read trimming options
+    arguments:
+      - name: "--trimmer"
+        type: string
+        description: Specify the trimming tool to use.
+        choices: ["trimgalore", "fastp"]
+        default: "trimgalore"
+      - name: "--extra_trimgalore_args"
+        type: string
+        description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
+      - name: "--extra_fastp_args"
+        type: string
+        description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
+      - name: "--min_trimmed_reads"
+        type: integer
+        description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
+        default: 10000
   
-  argument_groups:
-    - name: Input
-      arguments:
-        - name: "--id"
-          required: true
-          type: string
-          description: ID of the sample.
-          example: foo
-        - name: "--fastq_1"
-          type: file
-          must_exist: true
-          required: true
-          multiple: true
-          multiple_sep: ";"
-          description: Path to the sample (or read 1 of paired end sample). 
-        - name: "--fastq_2"
-          type: file
-          required: false
-          must_exist: false
-          multiple: true
-          multiple_sep: ";"
-          description: Path to read 2 of the sample.
-        - name: "--strandedness"
-          type: string 
-          required: false
-          default: auto
-          choices: ["unstranded", "forward", "reverse", "auto"]
-          description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+  - name: Read filtering options
+    arguments:
+      - name: "--bbsplit_fasta_list"
+        type: file
+        description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+      - name: "--bbsplit_index"
+        type: file
+        description: Path to directory or tar.gz archive for pre-built BBSplit index.
+      - name: "--remove_ribo_rna"
+        type: boolean_true
+        description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
+      - name: "--ribo_database_manifest"
+        type: file
+        description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
+        default: assets/rrna-db-defaults.txt
 
-    - name: Reference genome options
-      arguments:
-        - name: "--fasta"
-          type: file
-          description: Path to FASTA genome file.
-          required: true
-        - name: "--gtf"
-          type: file
-          description: Path to GTF annotation file. This parameter is *mandatory* if --genome is not specified.
-          required: false
-        - name: "--gff"
-          type: file
-          description: Path to GFF3 annotation file. Required if "--gtf" is not specified.
-          required: false
-        - name: "--additional_fasta"
-          type: file
-          description: FASTA file to concatenate to genome FASTA file e.g. containing spike-in sequences.
-        - name: "--transcript_fasta"
-          type: file
-          description: Path to FASTA transcriptome file.
-        - name: "--gene_bed"
-          type: file
-          description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
-        - name: "--splicesites"
-          type: file
-          description: Splice sites file required for HISAT2.
-        - name: "--star_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built STAR index.
-        - name: "--rsem_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built RSEM index.
-        - name: "--salmon_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built Salmon index.
-        - name: "--kallisto_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built Kallisto index.
-        - name: "--hisat2_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built HISAT2 index.
-        - name: "--hisat2_build_memory"
-          type: string
-          description: Minimum memory required to use splice sites and exons in the HiSAT2 index build process.
-          default: 200.GB
-        - name: "--gencode"
-          type: boolean_true
-          description: Specify if the GTF annotation is in GENCODE format.
-        - name: "--gtf_extra_attributes"
-          type: string
-          description: Additional gene identifiers from the input GTF file when running Salmon. More than one value can be specified separated by comma.
-          default: gene_name
-        - name: "--gtf_group_features"
-          type: string
-          description: Define the attribute type used to group features in the GTF file when running Salmon.
-          default: gene_id
-        - name: "--featurecounts_group_type"
-          type: string
-          description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
-          default: gene_biotype
-        - name: "--featurecounts_feature_type"
-          type: string
-          description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
-          default: exon 
-  
-    - name: Read trimming options
-      arguments:
-        - name: "--trimmer"
-          type: string
-          description: Specify the trimming tool to use.
-          choices: ["trimgalore", "fastp"]
-          default: "trimgalore"
-        - name: "--extra_trimgalore_args"
-          type: string
-          description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-        - name: "--extra_fastp_args"
-          type: string
-          description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
-        - name: "--min_trimmed_reads"
-          type: integer
-          description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
-          default: 10000
-   
-    - name: Read filtering options
-      arguments:
-        - name: "--bbsplit_fasta_list"
-          type: file
-          description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
-        - name: "--bbsplit_index"
-          type: file
-          description: Path to directory or tar.gz archive for pre-built BBSplit index.
-        - name: "--remove_ribo_rna"
-          type: boolean_true
-          description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
-        - name: "--ribo_database_manifest"
-          type: file
-          description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
-          default: assets/rrna-db-defaults.txt
+  - name: UMI options
+    arguments:
+      - name: "--with_umi"
+        type: boolean_true
+        description: Enable UMI-based read deduplication.
+      - name: "--umitools_extract_method"
+        type: string
+        description: UMI pattern to use.
+        default: "string"
+        choices: [string, regex]
+      - name: "--umitools_bc_pattern"
+        type: string
+        description: The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI.
+      - name: "--umitools_bc_pattern2"
+        type: string
+        description: The UMI barcode pattern to use if the UMI is located in read 2.
+      - name: "--umi_discard_read"
+        type: integer
+        description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
+        choices: [0, 1, 2]
+        default: 0
+      - name: "--umitools_umi_separator"
+        type: string
+        description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
+        default: "_"
+      - name: "--umitools_grouping_method"
+        type: string
+        description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
+        choices: [ "unique", "percentile", "cluster", "adjacency", "directional" ]
+        default: "directional"
+      - name: "--umi_dedup_stats"
+        type: boolean_true
+        description: Generate output stats when running "umi_tools dedup".
 
-    - name: UMI options
-      arguments:
-        - name: "--with_umi"
-          type: boolean_true
-          description: Enable UMI-based read deduplication.
-        - name: "--umitools_extract_method"
-          type: string
-          description: UMI pattern to use.
-          default: "string"
-          choices: [string, regex]
-        - name: "--umitools_bc_pattern"
-          type: string
-          description: The UMI barcode pattern to use e.g. 'NNNNNN' indicates that the first 6 nucleotides of the read are from the UMI.
-        - name: "--umitools_bc_pattern2"
-          type: string
-          description: The UMI barcode pattern to use if the UMI is located in read 2.
-        - name: "--umi_discard_read"
-          type: integer
-          description: After UMI barcode extraction discard either R1 or R2 by setting this parameter to 1 or 2, respectively.
-          choices: [0, 1, 2]
-          default: 0
-        - name: "--umitools_umi_separator"
-          type: string
-          description: The character that separates the UMI in the read name. Most likely a colon if you skipped the extraction with UMI-tools and used other software.
-          default: "_"
-        - name: "--umitools_grouping_method"
-          type: string
-          description: Method to use to determine read groups by subsuming those with similar UMIs. All methods start by identifying the reads with the same mapping position, but treat similar yet nonidentical UMIs differently.
-          choices: [ "unique", "percentile", "cluster", "adjacency", "directional" ]
-          default: "directional"
-        - name: "--umi_dedup_stats"
-          type: boolean_true
-          description: Generate output stats when running "umi_tools dedup".
+  - name: Alignment options
+    arguments: 
+      - name: "--aligner"
+        type: string
+        description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
+        choices: [star_salmon, star_rsem, hisat2]
+        default: "star_salmon"
+      - name: "--pseudo_aligner"
+        type: string
+        description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
+        choices: [salmon, kallisto]
+        default: "salmon"
+      - name: "--pseudo_aligner_kmer_size"
+        type: integer
+        description: Kmer length passed to indexing step of pseudoaligners.
+        default: 31
+      - name: "--kallisto_quant_fragment_length"
+        type: integer
+        description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
+      - name: "--kallisto_quant_fragment_length_sd"
+        type: integer
+        description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
+      - name: "--bam_csi_index"
+        type: boolean_true
+        description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
+      - name: "--extra_star_align_args"
+        type: string
+        default: '--quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif'
+        description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+      - name: "--star_ignore_sjdbgtf"
+        type: boolean_true
+        description: When using pre-built STAR indices, do not re-extract and use splice junctions from the GTF file. 
+      - name: "--seq_platform"
+        type: string
+        description: Sequencing platform.
+      - name: "--seq_center"
+        type: string
+        description: Sequencing center information to be added to read group of BAM files.
+      - name: "--salmon_quant_libtype"
+        type: string
+        description: Override Salmon library type inferred based on strandedness defined in meta object.
+      - name: "--extra_salmon_quant_args"
+        type: string
+        default: '-v'
+        description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
+      - name: "--min_mapped_reads"
+        type: integer
+        description: Minimum percentage of uniquely mapped reads below which samples are removed from further processing.
+        default: 5
+      - name: "--stringtie_ignore_gtf"
+        type: boolean_true
+        description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
+      - name: "--extra_stringtie_args"
+        type: string
+        default: '-v'
+        description: Extra arguments to pass to stringtie command in addition to defaults defined by the pipeline.
+      - name: "--save_unaligned"
+        type: boolean_true
+        description: Where possible, save unaligned reads from either STAR, HISAT2 or Salmon to the results directory.
+      - name: "--save_align_intermeds"
+        type: boolean_true
+        description: Save the intermediate BAM files from the alignment step.
+      - name: "--skip_alignment"
+        type: boolean_true
+        description: Skip all of the alignment-based processes within the pipeline.
+      - name: "--skip_pseudo_alignment"
+        type: boolean_true
+        description: Skip all of the pseudo-alignment-based processes within the pipeline.  
+      - name: extra_rsem_prepare_reference_args
+        type: string
+        description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
+        default: '--star'
+      - name: extra_rsem_calculate_expression_args
+        type: string
+        description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
+        default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'
 
-    - name: Alignment options
-      arguments: 
-        - name: "--aligner"
-          type: string
-          description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
-          choices: [star_salmon, star_rsem, hisat2]
-          default: "star_salmon"
-        - name: "--pseudo_aligner"
-          type: string
-          description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
-          choices: [salmon, kallisto]
-          default: "salmon"
-        - name: "--pseudo_aligner_kmer_size"
-          type: integer
-          description: Kmer length passed to indexing step of pseudoaligners.
-          default: 31
-        - name: "--kallisto_quant_fragment_length"
-          type: integer
-          description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
-        - name: "--kallisto_quant_fragment_length_sd"
-          type: integer
-          description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
-        - name: "--bam_csi_index"
-          type: boolean_true
-          description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
-        - name: "--extra_star_align_args"
-          type: string
-          default: '--quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif'
-          description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
-        - name: "--star_ignore_sjdbgtf"
-          type: boolean_true
-          description: When using pre-built STAR indices, do not re-extract and use splice junctions from the GTF file. 
-        - name: "--seq_platform"
-          type: string
-          description: Sequencing platform.
-        - name: "--seq_center"
-          type: string
-          description: Sequencing center information to be added to read group of BAM files.
-        - name: "--salmon_quant_libtype"
-          type: string
-          description: Override Salmon library type inferred based on strandedness defined in meta object.
-        - name: "--extra_salmon_quant_args"
-          type: string
-          default: '-v'
-          description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
-        - name: "--min_mapped_reads"
-          type: integer
-          description: Minimum percentage of uniquely mapped reads below which samples are removed from further processing.
-          default: 5
-        - name: "--stringtie_ignore_gtf"
-          type: boolean_true
-          description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
-        - name: "--extra_stringtie_args"
-          type: string
-          default: '-v'
-          description: Extra arguments to pass to stringtie command in addition to defaults defined by the pipeline.
-        - name: "--save_unaligned"
-          type: boolean_true
-          description: Where possible, save unaligned reads from either STAR, HISAT2 or Salmon to the results directory.
-        - name: "--save_align_intermeds"
-          type: boolean_true
-          description: Save the intermediate BAM files from the alignment step.
-        - name: "--skip_alignment"
-          type: boolean_true
-          description: Skip all of the alignment-based processes within the pipeline.
-        - name: "--skip_pseudo_alignment"
-          type: boolean_true
-          description: Skip all of the pseudo-alignment-based processes within the pipeline.  
-        - name: extra_rsem_prepare_reference_args
-          type: string
-          description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
-          default: '--star'
-        - name: extra_rsem_calculate_expression_args
-          type: string
-          description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
-          default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'
+  - name: Process skipping options
+    arguments:
+      - name: "--skip_fastqc"
+        type: boolean
+        description: Skip FatQC step.
+        default: false
+      - name: "--skip_trimming"
+        type: boolean
+        description: Skip the adapter trimming step.
+        default: false
+      - name: "--skip_bbsplit"
+        type: boolean_true
+        description: Skip BBSplit for removal of non-reference genome reads.
+      - name: "--skip_umi_extract"
+        type: boolean
+        description: Skip umi_tools extract step.
+        default: false
+      - name: "--skip_qc"
+        type: boolean_true
+        description: Skip all QC steps except for MultiQC.
+      - name: "--skip_markduplicates"
+        type: boolean_true
+        description: Skip picard MarkDuplicates step.
+      - name: "--skip_stringtie"
+        type: boolean_true
+        description: Skip StringTie.
+      - name: "--skip_biotype_qc"
+        type: boolean_true
+        description: Skip additional featureCounts process for biotype QC.
+      - name: "--skip_bigwig"
+        type: boolean_true
+        description: Skip bigWig file creation.
+      - name: "--skip_preseq"
+        type: boolean_true
+        description: Skip Preseq.
+      - name: "--skip_deseq2_qc"
+        type: boolean_true
+        description: Skip DESeq2 PCA and heatmap plotting.
+      - name: skip_dupradar
+        type: boolean_true
+        description: Skip dupRadar.
+      - name: skip_rseqc
+        type: boolean_true
+        description: Skip RSeQC.
+      - name: skip_multiqc
+        type: boolean_true
+        description: Skip MultiQC.
 
-    - name: Process skipping options
-      arguments:
-        - name: "--skip_fastqc"
-          type: boolean
-          description: Skip FatQC step.
-          default: false
-        - name: "--skip_trimming"
-          type: boolean
-          description: Skip the adapter trimming step.
-          default: false
-        - name: "--skip_bbsplit"
-          type: boolean_true
-          description: Skip BBSplit for removal of non-reference genome reads.
-        - name: "--skip_umi_extract"
-          type: boolean
-          description: Skip umi_tools extract step.
-          default: false
-        - name: "--skip_qc"
-          type: boolean_true
-          description: Skip all QC steps except for MultiQC.
-        - name: "--skip_markduplicates"
-          type: boolean_true
-          description: Skip picard MarkDuplicates step.
-        - name: "--skip_stringtie"
-          type: boolean_true
-          description: Skip StringTie.
-        - name: "--skip_biotype_qc"
-          type: boolean_true
-          description: Skip additional featureCounts process for biotype QC.
-        - name: "--skip_bigwig"
-          type: boolean_true
-          description: Skip bigWig file creation.
-        - name: "--skip_preseq"
-          type: boolean_true
-          description: Skip Preseq.
-        - name: "--skip_deseq2_qc"
-          type: boolean_true
-          description: Skip DESeq2 PCA and heatmap plotting.
-        - name: skip_dupradar
-          type: boolean_true
-          description: Skip dupRadar.
-        - name: skip_rseqc
-          type: boolean_true
-          description: Skip RSeQC.
-        - name: skip_multiqc
-          type: boolean_true
-          description: Skip MultiQC.
+  - name: Other process arguments
+    arguments: 
+      - name: "--extra_fq_subsample_args"
+        type: string
+        default: ' --record-count 1000000 --seed 1'
+        description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
+      - name: "--extra_picard_args"
+        type: string   
+        default: ' --ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp'
+        description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
+      - name: "--extra_bedtools_args"
+        type: string
+        default: ' -split -du'
+        description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
+      - name: "--extra_featurecounts_args"
+        type: string
+        description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+        default: ' -B -C'
+      - name: "--extra_preseq_args"
+        type: string
+        description: Extra arguments to pass to preseq lc_extrap command in addition to defaults defined by the pipeline
+        default: '-verbose -seed 1 -seg_len 100000000'
+      - name: "--pca_header_multiqc"
+        type: file
+        default: assets/multiqc/deseq2_pca_header.txt
+      - name: "--clustering_header_multiqc"
+        type: file
+        default: assets/multiqc/deseq2_clustering_header.txt
+      - name: "--deseq2_vst"
+        type: boolean
+        default: true
+        description: Use vst transformation instead of rlog with DESeq2
+      - name: "--extra_deseq2_args"
+        type: string
+        default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
+      - name: "--extra_deseq2_args2"
+        type: string
+        default: star_salmon
+      - name: "--rseqc_modules"
+        type: string
+        multiple: true
+        multiple_sep: ","
+        description: Specify the RSeQC modules to run_wf
+        default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
+        choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
 
-    - name: Other process arguments
-      arguments: 
-        - name: "--extra_fq_subsample_args"
-          type: string
-          default: ' --record-count 1000000 --seed 1'
-          description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
-        - name: "--extra_picard_args"
-          type: string   
-          default: ' --ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp'
-          description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
-        - name: "--extra_bedtools_args"
-          type: string
-          default: ' -split -du'
-          description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
-        - name: "--extra_featurecounts_args"
-          type: string
-          description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
-          default: ' -B -C'
-        - name: "--extra_preseq_args"
-          type: string
-          description: Extra arguments to pass to preseq lc_extrap command in addition to defaults defined by the pipeline
-          default: '-verbose -seed 1 -seg_len 100000000'
-        - name: "--pca_header_multiqc"
-          type: file
-          default: assets/multiqc/deseq2_pca_header.txt
-        - name: "--clustering_header_multiqc"
-          type: file
-          default: assets/multiqc/deseq2_clustering_header.txt
-        - name: "--deseq2_vst"
-          type: boolean
-          default: true
-          description: Use vst transformation instead of rlog with DESeq2
-        - name: "--extra_deseq2_args"
-          type: string
-          default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
-        - name: "--extra_deseq2_args2"
-          type: string
-          default: star_salmon
-        - name: "--rseqc_modules"
-          type: string
-          multiple: true
-          multiple_sep: ","
-          description: Specify the RSeQC modules to run_wf
-          default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
-          choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
+  - name: Multiqc paramenters
+    arguments:
+      - name: "--multiqc_custom_config"
+        type: file
+        default: assets/multiqc_config.yml
+      - name: "--multiqc_title"
+        type: string
+      - name: "--multiqc_methods_description"
+        type: file
+        default: assets/methods_description_template.yml
+    
+  - name: Output
+    arguments:
+      - name: "--output_fasta"
+        type: file
+        direction: output
+        default: genome/reference_genome.fasta
+      - name: "--output_gtf"
+        type: file
+        direction: output
+        default: genome/gene_annotation.gtf
+      - name: "--output_transcript_fasta"
+        type: file
+        direction: output
+        default: genome/transcriptome.fasta
+      - name: "--output_gene_bed"
+        type: file
+        direction: output
+        default: genome/gene_annotation.bed
+      - name: "--output_star_index"
+        type: file
+        direction: output
+        description: Path to STAR index.
+        default: genome/index/STAR
+      - name: "--output_salmon_index"
+        type: file
+        direction: output
+        description: Path to Salmon index.
+        default: genome/index/Salmon
+      - name: "--output_bbsplit_index"
+        type: file
+        direction: output
+        description: Path to BBSplit index.
+        default: genome/index/BBSplit
+      - name: "--output_kallisto_index"
+        type: file
+        direction: output
+        description: Path to Kallisto index.
+        default: genome/index/Kallisto
+      - name: "--output_fastq_1"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        description: Path to output directory
+        default: fastq/$id.read_1.fastq
+      - name: "--output_fastq_2"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        description: Path to output directory
+        default: fastq/$id.read_2.fastq
+      - name: "--fastqc_html_1"
+        type: file
+        direction: output
+        description: FastQC HTML report for read 1.
+        required: false
+        must_exist: false
+        default: fastqc_raw/$id.read_1.fastqc.html
+      - name: "--fastqc_html_2"
+        type: file
+        direction: output
+        description: FastQC HTML report for read 2.
+        required: false
+        must_exist: false
+        default: fastqc_raw/$id.read_2.fastqc.html
+      - name: "--fastqc_zip_1"
+        type: file
+        direction: output
+        description: FastQC report archive for read 1.
+        required: false
+        must_exist: false
+        default: fastqc_raw/$id.read_1.fastqc.zip
+      - name: "--fastqc_zip_2"
+        type: file
+        direction: output
+        description: FastQC report archive for read 2.
+        required: false
+        must_exist: false
+        default: fastqc_raw/$id.read_2.fastqc.zip
+      - name: "--trim_log_1"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: trimgalore/$id.read_1.trimming_report.txt
+      - name: "--trim_log_2"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: trimgalore/$id.read_2.trimming_report.txt
+      - name: "--trim_html_1"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: fastqc_trim/$id.read_1.trimmed_fastqc.html
+      - name: "--trim_html_2"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: fastqc_trim/$id.read_2.trimmed_fastqc.html
+      - name: "--trim_zip_1"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: fastqc_trim/$id.read_1.trimmed_fastqc.zip
+      - name: "--trim_zip_2"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: fastqc_trim/$id.read_2.trimmed_fastqc.zip
+      - name: "--sortmerna_log"
+        type: file
+        direction: output
+        default: sortmerna/$id.log
+        required: false
+        must_exist: false
+        description: Sortmerna log file.
+      - name: "--star_alignment"
+        type: file
+        direction: output
+        default: STAR_alignment/$id
+      - name: "--genome_bam_sorted"
+        type: file
+        direction: output
+        default: STAR_alignment/genome_processed/$id.genome.bam
+      - name: "--genome_bam_index"
+        type: file
+        direction: output
+        default: STAR_alignment/genome_processed/$id.genome.bam.bai
+      - name: "--genome_bam_stats"
+        type: file
+        direction: output
+        default: samtools_stats/$id.genome.stats
+      - name: "--genome_bam_flagstat"
+        type: file
+        direction: output
+        default: samtools_stats/$id.genome.flagstat
+      - name: "--genome_bam_idxstats"
+        type: file
+        direction: output
+        default: samtools_stats/$id.genome.idxstats
+      - name: "--transcriptome_bam"
+        type: file
+        direction: output
+        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam
+      - name: "--transcriptome_bam_index"
+        type: file
+        direction: output
+        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam.bai
+      - name: "--transcriptome_bam_stats"
+        type: file
+        direction: output
+        default: samtools_stats/$id.transcriptome.stats
+      - name: "--transcriptome_bam_flagstat"
+        type: file
+        direction: output
+        default: samtools_stats/$id.transcriptome.flagstat
+      - name: "--transcriptome_bam_idxstats"
+        type: file
+        direction: output
+        default: samtools_stats/$id.transcriptome.idxstats
+      - name: "--salmon_quant_results"
+        type: file
+        direction: output
+        default: salmon/$id
+      - name: "--tpm_gene"
+        type: file
+        direction: output
+        default: salmon/gene_tpm.tsv
+      - name: "--counts_gene"
+        type: file
+        direction: output
+        default: salmon/gene_counts.tsv
+      - name: "--counts_gene_length_scaled"
+        type: file
+        direction: output
+        default: salmon/gene_counts_length_scaled.tsv
+      - name: "--counts_gene_scaled"
+        type: file
+        direction: output
+        default: salmon/gene_counts_scaled.tsv
+      - name: "--tpm_transcript"
+        type: file
+        direction: output
+        default: salmon/transcript_tpm.tsv
+      - name: "--counts_transcript"
+        type: file
+        direction: output
+        default: salmon/transcript_counts.tsv
+      - name: "--salmon_merged_summarizedexperiment"
+        type: file
+        direction: output
+        default: salmon/summarizedexperiment
+      - name: "--markduplicates_metrics"
+        type: file
+        direction: output
+        default: picard/$id.sorted.MarkDuplicates.metrics.txt
+      - name: "--stringtie_transcript_gtf"
+        type: file
+        direction: output
+        default: stringtie/$id.transcripts.gtf
+      - name: "--stringtie_coverage_gtf"
+        type: file
+        direction: output
+        default: stringtie/$id.coverage.gtf
+      - name: "--stringtie_abundance"
+        type: file
+        direction: output
+        default: stringtie/$id.gene_abundance.txt
+      - name: "--stringtie_ballgown"
+        type: file
+        direction: output
+        default: stringtie/$id.ballgown
+      - name: "--featurecounts"
+        type: file
+        direction: output
+        default: featurecounts/$id.featureCounts.txt
+      - name: "--featurecounts_summary"
+        type: file
+        direction: output
+        default: featurecounts/$id.featureCounts.txt.summary
+      - name: "--featurecounts_multiqc"
+        type: file
+        direction: output
+        must_exist: false
+        default: featurecounts/$id.featureCounts_mqc.tsv
+      - name: "--featurecounts_rrna_multiqc"
+        type: file
+        direction: output
+        must_exist: false
+        default: featurecounts/$id.featureCounts_rrna_mqc.tsv
+      - name: "--bedgraph_forward"
+        type: file
+        direction: output
+        default: bedgraph/$id.forward.bedgraph
+      - name: "--bedgraph_reverse"
+        type: file
+        direction: output
+        default: bedgraph/$id.reverse.bedgraph
+      - name: "--bigwig_forward"
+        type: file
+        direction: output
+        default: bigwig/$id.forward.bigwig
+      - name: "--bigwig_reverse"
+        type: file
+        direction: output
+        default: bigwig/$id.reverse.bigwig
+      - name: "--preseq_output"
+        type: file
+        direction: output
+        default: preseq/$id.lc_extrap.txt
+      - name: "--bamstat_output"
+        type: file
+        direction: output
+        required: false
+        description: Path to output file (txt) of mapping quality statistics
+        default: RSeQC/bamstat/$id.mapping_quality.txt
+      - name: "--strandedness_output"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/inferexperiment/$id.strandedness.txt
+        description: Path to output report (txt) of inferred strandedness
+      - name: "--inner_dist_output_stats"
+        type: file
+        direction: output
+        must_exist: false
+        default: RSeQC/innerdistance/$id.inner_distance.stats
+        description: output file (txt) with summary statistics of inner distances of paired reads
+      - name: "--inner_dist_output_dist"
+        type: file
+        direction: output
+        must_exist: false
+        default: RSeQC/innerdistance/txt/$id.inner_distance.txt
+        description: output file (txt) with inner distances of all paired reads
+      - name: "--inner_dist_output_freq"
+        type: file
+        direction: output
+        must_exist: false
+        default: RSeQC/innerdistance/txt/$id.inner_distance_freq.txt
+        description: output file (txt) with frequencies of inner distances of all paired reads
+      - name: "--inner_dist_output_plot"
+        type: file
+        direction: output
+        must_exist: false
+        default: RSeQC/innerdistance/pdf/$id.inner_distance_plot.pdf
+        description: output file (pdf) with histogram plot of of inner distances of all paired reads
+      - name: "--inner_dist_output_plot_r"
+        type: file
+        direction: output
+        must_exist: false
+        default: RSeQC/innerdistance/rscript/$id.inner_distance_plot.r
+        description: output file (R) with script of histogram plot of of inner distances of all paired reads
+      - name: "--junction_annotation_output_log"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/log/$id.junction_annotation.log
+        description: output log of junction annotation script
+      - name: "--junction_annotation_output_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/rscript/$id.junction_annotation_plot.r
+        description: R script to generate splice_junction and splice_events plot
+      - name: "--junction_annotation_output_junction_bed"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/bed/$id.junction_annotation.bed
+        description: junction annotation file (bed format)
+      - name: "--junction_annotation_output_junction_interact"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/bed/$id.junction_annotation.Interact.bed
+        description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
+      - name: "--junction_annotation_output_junction_sheet"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/xls/$id.junction_annotation.xls
+        description: junction annotation file (xls format)
+      - name: "--junction_annotation_output_splice_events_plot"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/pdf/$id.splice_events.pdf
+        description: plot of splice events (pdf)
+      - name: "--junction_annotation_output_splice_junctions_plot"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionannotation/pdf/$id.splice_junctions_plot.pdf
+        description: plot of junctions (pdf)
+      - name: "--junction_saturation_output_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionsaturation/rscript/$id.junction_saturation_plot.r
+        description: r script to generate junction_saturation_plot plot
+      - name: "--junction_saturation_output_plot"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/junctionsaturation/pdf/$id.junction_saturation_plot.pdf
+        description: plot of junction saturation (pdf
+      - name: "--read_distribution_output"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/readdistribution/$id.read_distribution.txt
+        description: output file (txt) of read distribution analysis.    
+      - name: "--read_duplication_output_duplication_rate_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/readduplication/rscrpt/$id.duplication_rate_plot.r
+        description: R script for generating duplication rate plot
+      - name: "--read_duplication_output_duplication_rate_plot"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/readduplication/pdf/$id.duplication_rate_plot.pdf
+        description: duplication rate plot (pdf)
+      - name: "--read_duplication_output_duplication_rate_mapping"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/readduplication/xls/$id.duplication_rate_mapping.xls
+        description: Summary of mapping-based read duplication
+      - name: "--read_duplication_output_duplication_rate_sequence"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/readduplication/xls/$id.duplication_rate_sequencing.xls
+        description: Summary of sequencing-based read duplication
+      - name: "--tin_output_summary"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/tin/txt/$id.tin_summary.txt
+        description: summary statistics (txt) of calculated TIN metrics
+      - name: "--tin_output_metrics"
+        type: file
+        direction: output
+        required: false
+        default: RSeQC/tin/xls/$id.tin.xls
+        description: file with TIN metrics (xls)
+      - name: "--dupradar_output_dupmatrix"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/gene_data/$id.dup_matrix.txt
+        description: path to output file (txt) of duplicate tag counts
+      - name: "--dupradar_output_dup_intercept_mqc"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/mqc_intercept/$id.dup_intercept_mqc.txt
+        description: path to output file (txt) of multiqc intercept value DupRadar
+      - name: "--dupradar_output_duprate_exp_boxplot"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/box_plot/$id.duprate_exp_boxplot.pdf
+        description: path to output file (pdf) of distribution of expression box plot    
+      - name: "--dupradar_output_duprate_exp_densplot"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/scatter_plot/$id.duprate_exp_densityplot.pdf
+        description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
+      - name: "--dupradar_output_duprate_exp_denscurve_mqc"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/density_curve/$id.duprate_exp_density_curve_mqc.pdf
+        description: path to output file (pdf) of density curve of gene duplication multiqc
+      - name: "--dupradar_output_expression_histogram"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/histogram/$id.expression_hist.pdf
+        description: path to output file (pdf) of distribution of RPK values per gene histogram
+      - name: "--dupradar_output_intercept_slope"
+        type: file
+        direction: output
+        required: false
+        default: dupradar/intercept_slope/$id.intercept_slope.txt
+      - name: "--qualimap_output_pdf"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: qualimap/$id.qualimap_output.pdf
+      - name: "--qualimap_output_dir"
+        type: file
+        direction: output
+        required: false
+        default: qualimap/$id
+      - name: "--deseq2_output"
+        type: file
+        direction: output
+        default: deseq2_qc
+      - name: "--multiqc_report"
+        type: file
+        direction: output
+        default: multiqc/multiqc_report.html
+      - name: "--multiqc_data"
+        type: file
+        direction: output
+        default: multiqc/multiqc_data
+      - name: "--multiqc_plots"
+        type: file
+        direction: output
+        default: multiqc/multiqc_plots
+      - name: "--multiqc_versions"
+        type: file
+        direction: output
+      - name: "--versions"
+        type: file
+        must_exist: false
+        direction: output
 
-    - name: Multiqc paramenters
-      arguments:
-        - name: "--multiqc_custom_config"
-          type: file
-          default: assets/multiqc_config.yml
-        - name: "--multiqc_title"
-          type: string
-        - name: "--multiqc_methods_description"
-          type: file
-          default: assets/methods_description_template.yml
-     
-    - name: Output
-      arguments:
-        - name: "--output_fasta"
-          type: file
-          direction: output
-          default: genome/reference_genome.fasta
-        - name: "--output_gtf"
-          type: file
-          direction: output
-          default: genome/gene_annotation.gtf
-        - name: "--output_transcript_fasta"
-          type: file
-          direction: output
-          default: genome/transcriptome.fasta
-        - name: "--output_gene_bed"
-          type: file
-          direction: output
-          default: genome/gene_annotation.bed
-        - name: "--output_star_index"
-          type: file
-          direction: output
-          description: Path to STAR index.
-          default: genome/index/STAR
-        - name: "--output_salmon_index"
-          type: file
-          direction: output
-          description: Path to Salmon index.
-          default: genome/index/Salmon
-        - name: "--output_bbsplit_index"
-          type: file
-          direction: output
-          description: Path to BBSplit index.
-          default: genome/index/BBSplit
-        - name: "--output_kallisto_index"
-          type: file
-          direction: output
-          description: Path to Kallisto index.
-          default: genome/index/Kallisto
-        - name: "--output_fastq_1"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          description: Path to output directory
-          default: fastq/$id.read_1.fastq
-        - name: "--output_fastq_2"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          description: Path to output directory
-          default: fastq/$id.read_2.fastq
-        - name: "--fastqc_html_1"
-          type: file
-          direction: output
-          description: FastQC HTML report for read 1.
-          required: false
-          must_exist: false
-          default: fastqc_raw/$id.read_1.fastqc.html
-        - name: "--fastqc_html_2"
-          type: file
-          direction: output
-          description: FastQC HTML report for read 2.
-          required: false
-          must_exist: false
-          default: fastqc_raw/$id.read_2.fastqc.html
-        - name: "--fastqc_zip_1"
-          type: file
-          direction: output
-          description: FastQC report archive for read 1.
-          required: false
-          must_exist: false
-          default: fastqc_raw/$id.read_1.fastqc.zip
-        - name: "--fastqc_zip_2"
-          type: file
-          direction: output
-          description: FastQC report archive for read 2.
-          required: false
-          must_exist: false
-          default: fastqc_raw/$id.read_2.fastqc.zip
-        - name: "--trim_log_1"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: trimgalore/$id.read_1.trimming_report.txt
-        - name: "--trim_log_2"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: trimgalore/$id.read_2.trimming_report.txt
-        - name: "--trim_html_1"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: fastqc_trim/$id.read_1.trimmed_fastqc.html
-        - name: "--trim_html_2"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: fastqc_trim/$id.read_2.trimmed_fastqc.html
-        - name: "--trim_zip_1"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: fastqc_trim/$id.read_1.trimmed_fastqc.zip
-        - name: "--trim_zip_2"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: fastqc_trim/$id.read_2.trimmed_fastqc.zip
-        - name: "--sortmerna_log"
-          type: file
-          direction: output
-          default: sortmerna/$id.log
-          required: false
-          must_exist: false
-          description: Sortmerna log file.
-        - name: "--star_alignment"
-          type: file
-          direction: output
-          default: STAR_alignment/$id
-        - name: "--genome_bam_sorted"
-          type: file
-          direction: output
-          default: STAR_alignment/genome_processed/$id.genome.bam
-        - name: "--genome_bam_index"
-          type: file
-          direction: output
-          default: STAR_alignment/genome_processed/$id.genome.bam.bai
-        - name: "--genome_bam_stats"
-          type: file
-          direction: output
-          default: samtools_stats/$id.genome.stats
-        - name: "--genome_bam_flagstat"
-          type: file
-          direction: output
-          default: samtools_stats/$id.genome.flagstat
-        - name: "--genome_bam_idxstats"
-          type: file
-          direction: output
-          default: samtools_stats/$id.genome.idxstats
-        - name: "--transcriptome_bam"
-          type: file
-          direction: output
-          default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam
-        - name: "--transcriptome_bam_index"
-          type: file
-          direction: output
-          default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam.bai
-        - name: "--transcriptome_bam_stats"
-          type: file
-          direction: output
-          default: samtools_stats/$id.transcriptome.stats
-        - name: "--transcriptome_bam_flagstat"
-          type: file
-          direction: output
-          default: samtools_stats/$id.transcriptome.flagstat
-        - name: "--transcriptome_bam_idxstats"
-          type: file
-          direction: output
-          default: samtools_stats/$id.transcriptome.idxstats
-        - name: "--salmon_quant_results"
-          type: file
-          direction: output
-          default: salmon/$id
-        - name: "--tpm_gene"
-          type: file
-          direction: output
-          default: salmon/gene_tpm.tsv
-        - name: "--counts_gene"
-          type: file
-          direction: output
-          default: salmon/gene_counts.tsv
-        - name: "--counts_gene_length_scaled"
-          type: file
-          direction: output
-          default: salmon/gene_counts_length_scaled.tsv
-        - name: "--counts_gene_scaled"
-          type: file
-          direction: output
-          default: salmon/gene_counts_scaled.tsv
-        - name: "--tpm_transcript"
-          type: file
-          direction: output
-          default: salmon/transcript_tpm.tsv
-        - name: "--counts_transcript"
-          type: file
-          direction: output
-          default: salmon/transcript_counts.tsv
-        - name: "--salmon_merged_summarizedexperiment"
-          type: file
-          direction: output
-          default: salmon/summarizedexperiment
-        - name: "--markduplicates_metrics"
-          type: file
-          direction: output
-          default: picard/$id.sorted.MarkDuplicates.metrics.txt
-        - name: "--stringtie_transcript_gtf"
-          type: file
-          direction: output
-          default: stringtie/$id.transcripts.gtf
-        - name: "--stringtie_coverage_gtf"
-          type: file
-          direction: output
-          default: stringtie/$id.coverage.gtf
-        - name: "--stringtie_abundance"
-          type: file
-          direction: output
-          default: stringtie/$id.gene_abundance.txt
-        - name: "--stringtie_ballgown"
-          type: file
-          direction: output
-          default: stringtie/$id.ballgown
-        - name: "--featurecounts"
-          type: file
-          direction: output
-          default: featurecounts/$id.featureCounts.txt
-        - name: "--featurecounts_summary"
-          type: file
-          direction: output
-          default: featurecounts/$id.featureCounts.txt.summary
-        - name: "--featurecounts_multiqc"
-          type: file
-          direction: output
-          must_exist: false
-          default: featurecounts/$id.featureCounts_mqc.tsv
-        - name: "--featurecounts_rrna_multiqc"
-          type: file
-          direction: output
-          must_exist: false
-          default: featurecounts/$id.featureCounts_rrna_mqc.tsv
-        - name: "--bedgraph_forward"
-          type: file
-          direction: output
-          default: bedgraph/$id.forward.bedgraph
-        - name: "--bedgraph_reverse"
-          type: file
-          direction: output
-          default: bedgraph/$id.reverse.bedgraph
-        - name: "--bigwig_forward"
-          type: file
-          direction: output
-          default: bigwig/$id.forward.bigwig
-        - name: "--bigwig_reverse"
-          type: file
-          direction: output
-          default: bigwig/$id.reverse.bigwig
-        - name: "--preseq_output"
-          type: file
-          direction: output
-          default: preseq/$id.lc_extrap.txt
-        - name: "--bamstat_output"
-          type: file
-          direction: output
-          required: false
-          description: Path to output file (txt) of mapping quality statistics
-          default: RSeQC/bamstat/$id.mapping_quality.txt
-        - name: "--strandedness_output"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/inferexperiment/$id.strandedness.txt
-          description: Path to output report (txt) of inferred strandedness
-        - name: "--inner_dist_output_stats"
-          type: file
-          direction: output
-          must_exist: false
-          default: RSeQC/innerdistance/$id.inner_distance.stats
-          description: output file (txt) with summary statistics of inner distances of paired reads
-        - name: "--inner_dist_output_dist"
-          type: file
-          direction: output
-          must_exist: false
-          default: RSeQC/innerdistance/txt/$id.inner_distance.txt
-          description: output file (txt) with inner distances of all paired reads
-        - name: "--inner_dist_output_freq"
-          type: file
-          direction: output
-          must_exist: false
-          default: RSeQC/innerdistance/txt/$id.inner_distance_freq.txt
-          description: output file (txt) with frequencies of inner distances of all paired reads
-        - name: "--inner_dist_output_plot"
-          type: file
-          direction: output
-          must_exist: false
-          default: RSeQC/innerdistance/pdf/$id.inner_distance_plot.pdf
-          description: output file (pdf) with histogram plot of of inner distances of all paired reads
-        - name: "--inner_dist_output_plot_r"
-          type: file
-          direction: output
-          must_exist: false
-          default: RSeQC/innerdistance/rscript/$id.inner_distance_plot.r
-          description: output file (R) with script of histogram plot of of inner distances of all paired reads
-        - name: "--junction_annotation_output_log"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/log/$id.junction_annotation.log
-          description: output log of junction annotation script
-        - name: "--junction_annotation_output_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/rscript/$id.junction_annotation_plot.r
-          description: R script to generate splice_junction and splice_events plot
-        - name: "--junction_annotation_output_junction_bed"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/bed/$id.junction_annotation.bed
-          description: junction annotation file (bed format)
-        - name: "--junction_annotation_output_junction_interact"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/bed/$id.junction_annotation.Interact.bed
-          description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
-        - name: "--junction_annotation_output_junction_sheet"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/xls/$id.junction_annotation.xls
-          description: junction annotation file (xls format)
-        - name: "--junction_annotation_output_splice_events_plot"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/pdf/$id.splice_events.pdf
-          description: plot of splice events (pdf)
-        - name: "--junction_annotation_output_splice_junctions_plot"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionannotation/pdf/$id.splice_junctions_plot.pdf
-          description: plot of junctions (pdf)
-        - name: "--junction_saturation_output_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionsaturation/rscript/$id.junction_saturation_plot.r
-          description: r script to generate junction_saturation_plot plot
-        - name: "--junction_saturation_output_plot"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/junctionsaturation/pdf/$id.junction_saturation_plot.pdf
-          description: plot of junction saturation (pdf
-        - name: "--read_distribution_output"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/readdistribution/$id.read_distribution.txt
-          description: output file (txt) of read distribution analysis.    
-        - name: "--read_duplication_output_duplication_rate_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/readduplication/rscrpt/$id.duplication_rate_plot.r
-          description: R script for generating duplication rate plot
-        - name: "--read_duplication_output_duplication_rate_plot"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/readduplication/pdf/$id.duplication_rate_plot.pdf
-          description: duplication rate plot (pdf)
-        - name: "--read_duplication_output_duplication_rate_mapping"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/readduplication/xls/$id.duplication_rate_mapping.xls
-          description: Summary of mapping-based read duplication
-        - name: "--read_duplication_output_duplication_rate_sequence"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/readduplication/xls/$id.duplication_rate_sequencing.xls
-          description: Summary of sequencing-based read duplication
-        - name: "--tin_output_summary"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/tin/txt/$id.tin_summary.txt
-          description: summary statistics (txt) of calculated TIN metrics
-        - name: "--tin_output_metrics"
-          type: file
-          direction: output
-          required: false
-          default: RSeQC/tin/xls/$id.tin.xls
-          description: file with TIN metrics (xls)
-        - name: "--dupradar_output_dupmatrix"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/gene_data/$id.dup_matrix.txt
-          description: path to output file (txt) of duplicate tag counts
-        - name: "--dupradar_output_dup_intercept_mqc"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/mqc_intercept/$id.dup_intercept_mqc.txt
-          description: path to output file (txt) of multiqc intercept value DupRadar
-        - name: "--dupradar_output_duprate_exp_boxplot"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/box_plot/$id.duprate_exp_boxplot.pdf
-          description: path to output file (pdf) of distribution of expression box plot    
-        - name: "--dupradar_output_duprate_exp_densplot"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/scatter_plot/$id.duprate_exp_densityplot.pdf
-          description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
-        - name: "--dupradar_output_duprate_exp_denscurve_mqc"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/density_curve/$id.duprate_exp_density_curve_mqc.pdf
-          description: path to output file (pdf) of density curve of gene duplication multiqc
-        - name: "--dupradar_output_expression_histogram"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/histogram/$id.expression_hist.pdf
-          description: path to output file (pdf) of distribution of RPK values per gene histogram
-        - name: "--dupradar_output_intercept_slope"
-          type: file
-          direction: output
-          required: false
-          default: dupradar/intercept_slope/$id.intercept_slope.txt
-        - name: "--qualimap_output_pdf"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: qualimap/$id.qualimap_output.pdf
-        - name: "--qualimap_output_dir"
-          type: file
-          direction: output
-          required: false
-          default: qualimap/$id
-        - name: "--deseq2_output"
-          type: file
-          direction: output
-          default: deseq2_qc
-        - name: "--multiqc_report"
-          type: file
-          direction: output
-          default: multiqc/multiqc_report.html
-        - name: "--multiqc_data"
-          type: file
-          direction: output
-          default: multiqc/multiqc_data
-        - name: "--multiqc_plots"
-          type: file
-          direction: output
-          default: multiqc/multiqc_plots
-        - name: "--multiqc_versions"
-          type: file
-          direction: output
-        - name: "--versions"
-          type: file
-          must_exist: false
-          direction: output
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
 
-  resources:
-    - type: nextflow_script
-      path: main.nf
-      entrypoint: run_wf
+dependencies: 
+  - name: workflows/prepare_genome
+  - name: cat_fastq
+  - name: workflows/pre_processing
+  - name: workflows/genome_alignment_and_quant
+  - name: workflows/pseudo_alignment_and_quant
+  - name: workflows/post_processing
+  - name: workflows/quality_control
 
-  dependencies: 
-    - name: workflows/prepare_genome
-    - name: cat_fastq
-    - name: workflows/pre_processing
-    - name: workflows/genome_alignment_and_quant
-    - name: workflows/pseudo_alignment_and_quant
-    - name: workflows/post_processing
-    - name: workflows/quality_control
-
-platforms:
-  - type: nextflow
+runners: 
+- type: executable
+- type: nextflow

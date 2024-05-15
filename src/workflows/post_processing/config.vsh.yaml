@@ -1,162 +1,162 @@
-functionality:
-  name: post_processing
-  namespace: workflows
-  description: |
-    A viash sub-workflow for the post-processing stage of nf-core/rnaseq pipeline.
-  
-  argument_groups:
-    - name: "Input"
-      arguments:
-        - name: "--id"
-          required: true
-          type: string
-          description: ID of the sample.
-          example: foo
-        - name: "--strandedness"
-          type: string 
-          required: false
-          default: auto
-          description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
-        - name: "--paired"
-          type: boolean 
-          description: Paired fastq files or not?
-        - name: "--fasta"
-          type: file
-          description: Path to FASTA genome file.
-          required: true
-        - name: "--fai"
-          type: file
-          description: Path to FASTA index
-          required: true
-        - name: "--gtf"
-          type: file
-          description: GTF file
-        - name: "--genome_bam"
-          type: file
-          description: Genome BAM file
-        - name: "--chrom_sizes"
-          type: file
-          description: File containing chromosome lengths
-        - name: "--star_multiqc"
-          type: file
-          description: STAR align log file.
-        - name: "--extra_picard_args"
-          type: string
-          default: ''
-          description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
-        - name: "--extra_stringtie_args"
-          type: string
-          default: ''
-          description: Extra arguments to pass to stringtie command in addition to defaults defined by the pipeline.
-        - name: "--stringtie_ignore_gtf"
-          type: boolean
-          description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
-        - name: "--extra_bedtools_args"
-          type: string
-          default: ''
-          description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
-        - name: "--bam_csi_index"
-          type: boolean
-          default: false
-          description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
-        - name: "--min_mapped_reads"
-          type: integer
-          description: Minimum percentage of uniquely mapped reads below which samples are removed from further processing.
-        - name: "--with_umi"
-          type: boolean
-          description: Enable UMI-based read deduplication.
-          default: false
-        - name: "--skip_qc"
-          type: boolean
-        - name: "--skip_markduplicates"
-          type: boolean
-        - name: "--skip_stringtie"
-          type: boolean
-        - name: "--skip_bigwig"
-          type: boolean
-        - name: "--versions"
-          type: file
-          must_exist: false
+name: post_processing
+namespace: workflows
+description: |
+  A viash sub-workflow for the post-processing stage of nf-core/rnaseq pipeline.
 
-    - name: "Output"
-      arguments:
-        - name: "--processed_genome_bam"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.bam
-        - name: "--genome_bam_index"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.bam
-        - name: "--genome_bam_stats"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.bam.stats
-        - name: "--genome_bam_flagstat"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.bam.flagstat
-        - name: "--genome_bam_idxstats"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.bam.idxstats
-        - name: "--markduplicates_metrics"
-          type: file
-          direction: output
-          default: $id.markdup.sorted.MarkDuplicates.metrics.txt
-        - name: "--stringtie_transcript_gtf"
-          type: file
-          direction: output
-          default: $id.stringtie.transcripts.gtf
-        - name: "--stringtie_coverage_gtf"
-          type: file
-          direction: output
-          default: $id.stringtie.coverage.gtf
-        - name: "--stringtie_abundance"
-          type: file
-          direction: output
-          default: $id.stringtie.gene_abundance.txt
-        - name: "--stringtie_ballgown"
-          type: file
-          direction: output
-          default: $id.stringtie.ballgown
-        - name: "--bedgraph_forward"
-          type: file
-          direction: output
-          default: $id.forward.bedgraph
-        - name: "--bedgraph_reverse"
-          type: file
-          direction: output
-          default: $id.reverse.bedgraph
-        - name: "--bigwig_forward"
-          type: file
-          direction: output
-          default: $id.forward.bigwig
-        - name: "--bigwig_reverse"
-          type: file
-          direction: output
-          default: $id.reverse.bigwig
-        - name: "--updated_versions"
-          type: file
-          default: versions.yml
-          direction: output
+argument_groups:
+  - name: "Input"
+    arguments:
+      - name: "--id"
+        required: true
+        type: string
+        description: ID of the sample.
+        example: foo
+      - name: "--strandedness"
+        type: string 
+        required: false
+        default: auto
+        description: Sample strand-specificity. Must be one of unstranded, forward, reverse or auto
+      - name: "--paired"
+        type: boolean 
+        description: Paired fastq files or not?
+      - name: "--fasta"
+        type: file
+        description: Path to FASTA genome file.
+        required: true
+      - name: "--fai"
+        type: file
+        description: Path to FASTA index
+        required: true
+      - name: "--gtf"
+        type: file
+        description: GTF file
+      - name: "--genome_bam"
+        type: file
+        description: Genome BAM file
+      - name: "--chrom_sizes"
+        type: file
+        description: File containing chromosome lengths
+      - name: "--star_multiqc"
+        type: file
+        description: STAR align log file.
+      - name: "--extra_picard_args"
+        type: string
+        default: ''
+        description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
+      - name: "--extra_stringtie_args"
+        type: string
+        default: ''
+        description: Extra arguments to pass to stringtie command in addition to defaults defined by the pipeline.
+      - name: "--stringtie_ignore_gtf"
+        type: boolean
+        description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
+      - name: "--extra_bedtools_args"
+        type: string
+        default: ''
+        description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
+      - name: "--bam_csi_index"
+        type: boolean
+        default: false
+        description: Create a CSI index for BAM files instead of the traditional BAI index. This will be required for genomes with larger chromosome sizes.
+      - name: "--min_mapped_reads"
+        type: integer
+        description: Minimum percentage of uniquely mapped reads below which samples are removed from further processing.
+      - name: "--with_umi"
+        type: boolean
+        description: Enable UMI-based read deduplication.
+        default: false
+      - name: "--skip_qc"
+        type: boolean
+      - name: "--skip_markduplicates"
+        type: boolean
+      - name: "--skip_stringtie"
+        type: boolean
+      - name: "--skip_bigwig"
+        type: boolean
+      - name: "--versions"
+        type: file
+        must_exist: false
 
-  resources:
-    - type: nextflow_script
-      path: main.nf
-      entrypoint: run_wf
-  
-  dependencies:
-    - name: picard_markduplicates
-    - name: samtools/samtools_sort
-    - name: samtools/samtools_index
-    - name: samtools/samtools_stats
-    - name: samtools/samtools_flagstat
-    - name: samtools/samtools_idxstats
-    - name: stringtie
-    - name: bedtools_genomecov
-    - name: ucsc/bedclip
-    - name: ucsc/bedgraphtobigwig
+  - name: "Output"
+    arguments:
+      - name: "--processed_genome_bam"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.bam
+      - name: "--genome_bam_index"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.bam
+      - name: "--genome_bam_stats"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.bam.stats
+      - name: "--genome_bam_flagstat"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.bam.flagstat
+      - name: "--genome_bam_idxstats"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.bam.idxstats
+      - name: "--markduplicates_metrics"
+        type: file
+        direction: output
+        default: $id.markdup.sorted.MarkDuplicates.metrics.txt
+      - name: "--stringtie_transcript_gtf"
+        type: file
+        direction: output
+        default: $id.stringtie.transcripts.gtf
+      - name: "--stringtie_coverage_gtf"
+        type: file
+        direction: output
+        default: $id.stringtie.coverage.gtf
+      - name: "--stringtie_abundance"
+        type: file
+        direction: output
+        default: $id.stringtie.gene_abundance.txt
+      - name: "--stringtie_ballgown"
+        type: file
+        direction: output
+        default: $id.stringtie.ballgown
+      - name: "--bedgraph_forward"
+        type: file
+        direction: output
+        default: $id.forward.bedgraph
+      - name: "--bedgraph_reverse"
+        type: file
+        direction: output
+        default: $id.reverse.bedgraph
+      - name: "--bigwig_forward"
+        type: file
+        direction: output
+        default: $id.forward.bigwig
+      - name: "--bigwig_reverse"
+        type: file
+        direction: output
+        default: $id.reverse.bigwig
+      - name: "--updated_versions"
+        type: file
+        default: versions.yml
+        direction: output
 
-platforms:
-  - type: nextflow
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+
+dependencies:
+  - name: picard_markduplicates
+  - name: samtools/samtools_sort
+  - name: samtools/samtools_index
+  - name: samtools/samtools_stats
+  - name: samtools/samtools_flagstat
+  - name: samtools/samtools_idxstats
+  - name: stringtie
+  - name: bedtools_genomecov
+  - name: ucsc/bedclip
+  - name: ucsc/bedgraphtobigwig
+
+runners: 
+- type: executable
+- type: nextflow

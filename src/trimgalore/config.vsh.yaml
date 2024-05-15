@@ -1,114 +1,113 @@
-functionality:
-  name: "trimgalore"
-  info:
-    migration_info:
-      git_repo: https://github.com/nf-core/rnaseq.git
-      paths: [modules/nf-core/trimgalore/main.nf, modules/nf-core/trimgalore/meta.yml]
-      last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
-  description: |
-    A wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files. See https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ for more infomration.
+name: "trimgalore"
+info:
+  migration_info:
+    git_repo: https://github.com/nf-core/rnaseq.git
+    paths: [modules/nf-core/trimgalore/main.nf, modules/nf-core/trimgalore/meta.yml]
+    last_sha: 54721c6946daf6d602d7069dc127deef9cbe6b33
+description: |
+  A wrapper tool around Cutadapt and FastQC to consistently apply quality and adapter trimming to FastQ files. See https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/ for more infomration.
 
-  arguments:
-    # Inputs
-    - name: "--paired"
-      type: boolean 
-      required: false
-      default: false
-      description: Paired fastq files or not?
-    - name: "--input"
-      type: file
-      required: true
-      description: Input fastq files. 
-      example: sample.fastq
-      multiple: true
-      multiple_sep: ","
-    - name: "--versions"
-      type: file
-      must_exist: false
-      
+argument_groups:
+- name: "Input"
+  arguments: 
+  - name: "--paired"
+    type: boolean 
+    required: false
+    default: false
+    description: Paired fastq files or not?
+  - name: "--input"
+    type: file
+    required: true
+    description: Input fastq files. 
+    example: sample.fastq
+    multiple: true
+    multiple_sep: ","
+  - name: "--versions"
+    type: file
+    must_exist: false
     
-    # Outputs
-    - name: "--fastq_1"
-      type: file
-      required: true
-      description: Output file for read 1.
-      direction: output
-      default: $id.$key.read_1.fastq
-    - name: "--fastq_2"
-      type: file
-      required: false
-      must_exist: false
-      description: Output file for read 2.
-      direction: output
-      default: $id.$key.read_2.fastq
-    - name: "--trim_log_1"
-      type: file
-      direction: output
-      default: $id.$key.read_1.trimming_report.txt
-    - name: "--trim_log_2"
-      type: file
-      direction: output
-      required: false
-      must_exist: false
-      default: $id.$key.read_2.trimming_report.txt
-    - name: "--trim_html_1"
-      type: file
-      direction: output
-      default: $id.$key.read_1.fastqc.html
-    - name: "--trim_html_2"
-      type: file
-      direction: output
-      required: false
-      must_exist: false
-      default: $id.$key.read_2.fastqc.html
-    - name: "--trim_zip_1"
-      type: file
-      direction: output
-      default: $id.$key.read_1.fastqc.zip
-    - name: "--trim_zip_2"
-      type: file
-      direction: output
-      required: false
-      must_exist: false
-      default: $id.$key.read_2.fastqc.zip
-    - name: "--updated_versions"
-      type: file
-      default: versions.yml
-      direction: output
+- name: "Output"
+  arguments:   
+  - name: "--fastq_1"
+    type: file
+    required: true
+    description: Output file for read 1.
+    direction: output
+    default: $id.$key.read_1.fastq
+  - name: "--fastq_2"
+    type: file
+    required: false
+    must_exist: false
+    description: Output file for read 2.
+    direction: output
+    default: $id.$key.read_2.fastq
+  - name: "--trim_log_1"
+    type: file
+    direction: output
+    default: $id.$key.read_1.trimming_report.txt
+  - name: "--trim_log_2"
+    type: file
+    direction: output
+    required: false
+    must_exist: false
+    default: $id.$key.read_2.trimming_report.txt
+  - name: "--trim_html_1"
+    type: file
+    direction: output
+    default: $id.$key.read_1.fastqc.html
+  - name: "--trim_html_2"
+    type: file
+    direction: output
+    required: false
+    must_exist: false
+    default: $id.$key.read_2.fastqc.html
+  - name: "--trim_zip_1"
+    type: file
+    direction: output
+    default: $id.$key.read_1.fastqc.zip
+  - name: "--trim_zip_2"
+    type: file
+    direction: output
+    required: false
+    must_exist: false
+    default: $id.$key.read_2.fastqc.zip
+  - name: "--updated_versions"
+    type: file
+    default: versions.yml
+    direction: output
 
-    # Optional arguments
-    - name: "--extra_trimgalore_args"
-      type: string
-      description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
-      default: "" 
-    
-  resources:
-    - type: bash_script
-      path: script.sh
+- name: "Optional"
+  arguments: 
+  - name: "--extra_trimgalore_args"
+    type: string
+    description: "Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline."
+    default: "" 
   
-  test_resources:
-    - type: bash_script
-      path: test.sh
-    - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
-    - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
+resources:
+  - type: bash_script
+    path: script.sh
 
-platforms:
-  - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [fastqc]
-      - type: apt
-        packages: [cutadapt]
-      - type: docker
-        run: | 
-          apt-get update && \
-          apt-get install -y curl tar && \
-          curl -fsSL https://github.com/FelixKrueger/TrimGalore/archive/0.6.10.tar.gz -o trim_galore.tar.gz && \
-          tar -xvzf trim_galore.tar.gz && \
-          cp /TrimGalore-0.6.10/trim_galore /usr/local/bin
-  - type: nextflow
+test_resources:
+  - type: bash_script
+    path: test.sh
+  - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+  - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
 
- 
-  
-  
+engines:
+- type: docker
+  image: ubuntu:22.04
+  setup:
+    - type: apt
+      packages: [fastqc]
+    - type: apt
+      packages: [cutadapt]
+    - type: docker
+      run: | 
+        apt-get update && \
+        apt-get install -y curl tar && \
+        curl -fsSL https://github.com/FelixKrueger/TrimGalore/archive/0.6.10.tar.gz -o trim_galore.tar.gz && \
+        tar -xvzf trim_galore.tar.gz && \
+        cp /TrimGalore-0.6.10/trim_galore /usr/local/bin
+runners: 
+- type: executable
+- type: nextflow

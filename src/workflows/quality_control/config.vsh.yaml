@@ -1,612 +1,612 @@
-functionality:
-  name: quality_control
-  namespace: workflows
-  description: |
-    A subworkflow for the final quality control stage of the nf-core/rnaseq pipeline.
-  
-  argument_groups:
-    - name: Input
-      arguments:
-        - name: "--id"
-          required: true
-          description: ID of the sample
-          type: string 
-          example: test
-        - name: "--strandedness"
-          type: string 
-          required: false
-          default: unstranded
-          description: Sample strand-specificity. Must be one of unstranded, forward, reverse
-        - name: "--paired"
-          type: boolean
-          description: Paired-end reads?
-        - name: "--genome_bam"
-          type: file
-          description: Input genome BAM file
-        - name: "--genome_bam_index"
-          type: file
-          description: Genome BAM index file
-        - name: "--gene_bed"
-          type: file
-          description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
-        - name: "--gtf"
-          type: file
-          description: GTF file
-        - name: "--gtf_group_features"
-          type: string
-          default: 'gene_id'
-          description: Define the attribute type used to group features in the GTF file when running Salmon.
-        - name: "--gtf_extra_attributes"
-          type: string
-          default: 'gene_name'
-          description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
-        - name: "--quant_results"
-          type: file
-          description: Path to directory with quantification results.
+name: quality_control
+namespace: workflows
+description: |
+  A subworkflow for the final quality control stage of the nf-core/rnaseq pipeline.
+
+argument_groups:
+  - name: Input
+    arguments:
+      - name: "--id"
+        required: true
+        description: ID of the sample
+        type: string 
+        example: test
+      - name: "--strandedness"
+        type: string 
+        required: false
+        default: unstranded
+        description: Sample strand-specificity. Must be one of unstranded, forward, reverse
+      - name: "--paired"
+        type: boolean
+        description: Paired-end reads?
+      - name: "--genome_bam"
+        type: file
+        description: Input genome BAM file
+      - name: "--genome_bam_index"
+        type: file
+        description: Genome BAM index file
+      - name: "--gene_bed"
+        type: file
+        description: Path to BED file containing gene intervals. This will be created from the GTF file if not specified.
+      - name: "--gtf"
+        type: file
+        description: GTF file
+      - name: "--gtf_group_features"
+        type: string
+        default: 'gene_id'
+        description: Define the attribute type used to group features in the GTF file when running Salmon.
+      - name: "--gtf_extra_attributes"
+        type: string
+        default: 'gene_name'
+        description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
+      - name: "--quant_results"
+        type: file
+        description: Path to directory with quantification results.
+      
+      - name: "--skip_qc"
+        type: boolean
+        default: false
+      - name: "--skip_biotype_qc"
+        type: boolean
+      - name: "--skip_align"
+        type: boolean
+        default: false
+      - name: "--skip_pseudo_align"
+        type: boolean
+
+      # Component specific options
+      # preseq
+      - name: "--skip_preseq"
+        type: boolean
+        default: false
+      - name: "--extra_preseq_args"
+        type: string
+        default: '-verbose -bam -seed 1'
+
+      # featureCounts
+      - name: "--featurecounts_group_type"
+        type: string
+        description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
+        default: gene_biotype
+      - name: "--featurecounts_feature_type"
+        type: string
+        description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
+        default: exon
+      - name: "--gencode"
+        type: boolean
+        description: Specify if the GTF annotation is in GENCODE format.
+      - name: "--biotypes_header"
+        type: file
+        default: assets/multiqc/biotypes_header.txt
+      - name: "--biotype"
+        type: string
+        description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
+      - name: "--extra_featurecounts_args"
+        type: string
+        description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+      
+      # RSeQC
+      - name: "--rseqc_modules"
+        type: string
+        multiple: true
+        multiple_sep: ","
+        description: Specify the RSeQC modules to run_wf
+        default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
+        choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
+      - name: "--sample_size"
+        type: integer
+        required: false
+        default: 200000
+        min: 1
+        description: Numer of reads sampled from SAM/BAM file to infer experiment and calculate inner distance, default = 200000.
+      - name: "--lower_bound_size"
+        type: integer
+        required: false
+        default: -250 
+        description: Lower bound of inner distance (bp). This option is used for ploting histograme, default = -250.
+      - name: "--upper_bound_size"
+        type: integer
+        required: false
+        default: 250 
+        description: Upper bound of inner distance (bp). This option is used for ploting histograme, default = 250.
+      - name: "--step_size"
+        type: integer
+        required: false
+        default: 5 
+        description: Step size (bp) of histograme of inner distance. This option is used for plotting histogram, default = 5.        
+      - name: "--map_qual"
+        type: integer
+        required: false
+        default: 30 
+        description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default = 30.
+        min: 0
+      - name: "--min_intron"
+        type: integer
+        required: false
+        default: 50
+        min: 1 
+        description: Minimum intron length (bp) to call a junction, default = 50.
+      - name: "--min_splice_read"
+        type: integer
+        required: false
+        default: 1
+        min: 1 
+        description: Minimum number of supporting reads to call a junction, default = 1.
+      - name: "--sampling_percentile_lower_bound"
+        type: integer
+        required: false
+        default: 5 
+        description: Read sampling for junction saturation starts from this percentile, must be an integer between 0 and 100, default = 5.
+        min: 0
+        max: 100
+      - name: "--sampling_percentile_upper_bound"
+        type: integer
+        required: false
+        default: 100
+        description: Read sampling for junction saturation ends at this percentile, must be an integer between 0 and 100, default = 5.
+        min: 0
+        max: 100  
+      - name: "--sampling_percentile_step"
+        type: integer
+        required: false
+        default: 5
+        description: Read sampling for junction saturation frequency in %. Smaller value means more sampling times. Must be an integer between 0 and 100, default = 5.
+        min: 0
+        max: 100
+      - name: "--read_count_upper_limit"
+        type: integer
+        required: false
+        default: 500
+        description: Upper limit of reads' occurence to determine read duplication. Only used for plotting, default = 500 (times).
+        min: 1 
+      - name: "--minimum_coverage"
+        type: integer
+        required: false
+        default: 10
+        min: 1
+        description: Minimum number of reads mapped to a transcript to determin tin, default = 10.
+      - name: "--tin_sample_size"
+        type: integer
+        required: false
+        default: 100
+        min: 1
+        description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
+      - name: "--subtract_background"
+        type: boolean_true
+        description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
+
+      # Qualimap        
+      - name: "--output_format"
+        type: string
+        required: false
+        default: html
+        choices: [ html, pdf ]
+        description: Format of the qualimap output report (PDF or HTML, default is HTML)
+      - name: "--pr_bases"
+        type: integer
+        required: false
+        default: 100
+        min: 1
+        description: Number of upstream/downstream nucleotide bases to compute 5'-3' bias for qualimap (default = 100).
+      - name: "--tr_bias"
+        type: integer
+        required: false
+        default: 1000
+        min: 1
+        description: Number of top highly expressed transcripts to compute 5'-3' bias for qualimap (default = 1000).
+      - name: "--algorithm"
+        type: string
+        required: false
+        default: uniquely-mapped-reads
+        description: Counting algorithm for qualimap (uniquely-mapped-reads (default) or proportional).
+      - name: "--sequencing_protocol"
+        type: string
+        required: false
+        choices: [ "non-strand-specific", "strand-specific-reverse", "strand-specific-forward" ]
+        default: non-strand-specific
+        description: Sequencing library protocol for qualimap (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
+      - name: "--sorted"
+        type: boolean_true
+        description: Setting this flag indicates that the input file is already sorted by name. If flag is not set, additional sorting by name will be performed for qualimap. Only requiredfor paired-end analysis.
+      - name: "--java_memory_size"
+        type: string
+        required: false
+        default: 4G 
+        description: maximum Java heap memory size for qualimap, default = 4G.
+
+      # DESeq2
+      - name: "--skip_deseq2_qc"
+        type: boolean
+      - name: "--pca_header_multiqc"
+        type: file
+        default: assets/multiqc/deseq2_pca_header.txt
+      - name: "--clustering_header_multiqc"
+        type: file
+        default: assets/multiqc/deseq2_clustering_header.txt
+      - name: "--deseq2_vst"
+        type: boolean
+        description: Use vst transformation instead of rlog with DESeq2
+      - name: "--extra_deseq2_args"
+        type: string
+        default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
+      - name: "--extra_deseq2_args2"
+        type: string
+        default: star_salmon
+
+      # MultiQC
+      - name: "--multiqc_custom_config"
+        type: file
+      - name: "--multiqc_title"
+        type: string
+      - name: "--multiqc_methods_description"
+        type: file
+      - name: "--mqc_yml"
+        type: file
+        description: Software versions
+      - name: "--workflow_summary"
+        type: file
+      - name: "--passed_trimmed_reads"
+        type: boolean
+      - name: "--num_trimmed_reads"
+        type: double
+      - name: "--passed_mapping"
+        type: boolean
+      - name: "--percent_mapped"
+        type: double
+      - name: "--fastqc_zip_1"
+        type: file
+        must_exist: false
+      - name: "--fastqc_zip_2"
+        type: file
+        must_exist: false
+      - name: "--trim_zip_1"
+        type: file
+        must_exist: false
+      - name: "--trim_zip_2"
+        type: file
+        must_exist: false
+      - name: "--trim_log_1"
+        type: file
+        must_exist: false
+      - name: "--trim_log_2"
+        type: file
+        must_exist: false
+      - name: "--sortmerna_multiqc"
+        type: file
+        must_exist: false
+      - name: "--star_multiqc"
+        type: file
+        must_exist: false
+      # - name: "--hisat2_multiqc"
+      #   type: file
+      # - name: "--rsem_multiqc"
+      #   type: file
+      - name: "--genome_bam_stats"
+        type: file
+        must_exist: false
+      - name: "--genome_bam_flagstat"
+        type: file
+        must_exist: false
+      - name: "--genome_bam_idxstats"
+        type: file
+        must_exist: false
+      - name: "--markduplicates_multiqc"
+        type: file
+        must_exist: false
+
+      - name: "--versions"
+        type: file
+        must_exist: false
         
-        - name: "--skip_qc"
-          type: boolean
-          default: false
-        - name: "--skip_biotype_qc"
-          type: boolean
-        - name: "--skip_align"
-          type: boolean
-          default: false
-        - name: "--skip_pseudo_align"
-          type: boolean
 
-        # Component specific options
-        # preseq
-        - name: "--skip_preseq"
-          type: boolean
-          default: false
-        - name: "--extra_preseq_args"
-          type: string
-          default: '-verbose -bam -seed 1'
+  - name: Output
+    arguments:
+      # preseq
+      - name: "--preseq_output"
+        type: file
+        direction: output
+        default: $id.lc_extrap.txt
 
-        # featureCounts
-        - name: "--featurecounts_group_type"
-          type: string
-          description: The attribute type used to group feature types in the GTF file when generating the biotype plot with featureCounts.
-          default: gene_biotype
-        - name: "--featurecounts_feature_type"
-          type: string
-          description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
-          default: exon
-        - name: "--gencode"
-          type: boolean
-          description: Specify if the GTF annotation is in GENCODE format.
-        - name: "--biotypes_header"
-          type: file
-          default: assets/multiqc/biotypes_header.txt
-        - name: "--biotype"
-          type: string
-          description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
-        - name: "--extra_featurecounts_args"
-          type: string
-          description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
-        
-        # RSeQC
-        - name: "--rseqc_modules"
-          type: string
-          multiple: true
-          multiple_sep: ","
-          description: Specify the RSeQC modules to run_wf
-          default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
-          choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
-        - name: "--sample_size"
-          type: integer
-          required: false
-          default: 200000
-          min: 1
-          description: Numer of reads sampled from SAM/BAM file to infer experiment and calculate inner distance, default = 200000.
-        - name: "--lower_bound_size"
-          type: integer
-          required: false
-          default: -250 
-          description: Lower bound of inner distance (bp). This option is used for ploting histograme, default = -250.
-        - name: "--upper_bound_size"
-          type: integer
-          required: false
-          default: 250 
-          description: Upper bound of inner distance (bp). This option is used for ploting histograme, default = 250.
-        - name: "--step_size"
-          type: integer
-          required: false
-          default: 5 
-          description: Step size (bp) of histograme of inner distance. This option is used for plotting histogram, default = 5.        
-        - name: "--map_qual"
-          type: integer
-          required: false
-          default: 30 
-          description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default = 30.
-          min: 0
-        - name: "--min_intron"
-          type: integer
-          required: false
-          default: 50
-          min: 1 
-          description: Minimum intron length (bp) to call a junction, default = 50.
-        - name: "--min_splice_read"
-          type: integer
-          required: false
-          default: 1
-          min: 1 
-          description: Minimum number of supporting reads to call a junction, default = 1.
-        - name: "--sampling_percentile_lower_bound"
-          type: integer
-          required: false
-          default: 5 
-          description: Read sampling for junction saturation starts from this percentile, must be an integer between 0 and 100, default = 5.
-          min: 0
-          max: 100
-        - name: "--sampling_percentile_upper_bound"
-          type: integer
-          required: false
-          default: 100
-          description: Read sampling for junction saturation ends at this percentile, must be an integer between 0 and 100, default = 5.
-          min: 0
-          max: 100  
-        - name: "--sampling_percentile_step"
-          type: integer
-          required: false
-          default: 5
-          description: Read sampling for junction saturation frequency in %. Smaller value means more sampling times. Must be an integer between 0 and 100, default = 5.
-          min: 0
-          max: 100
-        - name: "--read_count_upper_limit"
-          type: integer
-          required: false
-          default: 500
-          description: Upper limit of reads' occurence to determine read duplication. Only used for plotting, default = 500 (times).
-          min: 1 
-        - name: "--minimum_coverage"
-          type: integer
-          required: false
-          default: 10
-          min: 1
-          description: Minimum number of reads mapped to a transcript to determin tin, default = 10.
-        - name: "--tin_sample_size"
-          type: integer
-          required: false
-          default: 100
-          min: 1
-          description: Number of equal-spaced nucleotide positions picked from mRNA. Note, if this number is larger than the length of mRNA (L), it will be halved until it's smaller than L (default = 100)
-        - name: "--subtract_background"
-          type: boolean_true
-          description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
+      # RSeQC
+      - name: "--bamstat_output"
+        type: file
+        direction: output
+        required: false
+        description: Path to output file (txt) of mapping quality statistics
+        default: $id.mapping_quality.txt
+      - name: "--strandedness_output"
+        type: file
+        direction: output
+        required: false
+        default: $id.strandedness.txt
+        description: Path to output report (txt) of inferred strandedness
+      - name: "--inner_dist_output_stats"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.inner_distance.stats
+        description: output file (txt) with summary statistics of inner distances of paired reads
+      - name: "--inner_dist_output_dist"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.inner_distance.txt
+        description: output file (txt) with inner distances of all paired reads
+      - name: "--inner_dist_output_freq"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.inner_distance_freq.txt
+        description: output file (txt) with frequencies of inner distances of all paired reads
+      - name: "--inner_dist_output_plot"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.inner_distance_plot.pdf
+        description: output file (pdf) with histogram plot of of inner distances of all paired reads
+      - name: "--inner_dist_output_plot_r"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.inner_distance_plot.r
+        description: output file (R) with script of histogram plot of of inner distances of all paired reads
+      - name: "--junction_annotation_output_log"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_annotation.log
+        description: output log of junction annotation script
+      - name: "--junction_annotation_output_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_annotation_plot.r
+        description: R script to generate splice_junction and splice_events plot
+      - name: "--junction_annotation_output_junction_bed"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_annotation.bed
+        description: junction annotation file (bed format)
+      - name: "--junction_annotation_output_junction_interact"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_annotation.Interact.bed
+        description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
+      - name: "--junction_annotation_output_junction_sheet"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_annotation.xls
+        description: junction annotation file (xls format)
+      - name: "--junction_annotation_output_splice_events_plot"
+        type: file
+        direction: output
+        required: false
+        default: $id.splice_events.pdf
+        description: plot of splice events (pdf)
+      - name: "--junction_annotation_output_splice_junctions_plot"
+        type: file
+        direction: output
+        required: false
+        default: $id.splice_junctions_plot.pdf
+        description: plot of junctions (pdf)
+      - name: "--junction_saturation_output_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_saturation_plot.r
+        description: r script to generate junction_saturation_plot plot
+      - name: "--junction_saturation_output_plot"
+        type: file
+        direction: output
+        required: false
+        default: $id.junction_saturation_plot.pdf
+        description: plot of junction saturation (pdf
+      - name: "--read_distribution_output"
+        type: file
+        direction: output
+        required: false
+        default: $id.read_distribution.txt
+        description: output file (txt) of read distribution analysis.    
+      - name: "--read_duplication_output_duplication_rate_plot_r"
+        type: file
+        direction: output
+        required: false
+        default: $id.duplication_rate_plot.r
+        description: R script for generating duplication rate plot
+      - name: "--read_duplication_output_duplication_rate_plot"
+        type: file
+        direction: output
+        required: false
+        default: $id.duplication_rate_plot.pdf
+        description: duplication rate plot (pdf)
+      - name: "--read_duplication_output_duplication_rate_mapping"
+        type: file
+        direction: output
+        required: false
+        default: $id.duplication_rate_mapping.xls
+        description: Summary of mapping-based read duplication
+      - name: "--read_duplication_output_duplication_rate_sequence"
+        type: file
+        direction: output
+        required: false
+        default: $id.duplication_rate_sequencing.xls
+        description: Summary of sequencing-based read duplication
+      - name: "--tin_output_summary"
+        type: file
+        direction: output
+        required: false
+        default: $id.tin_summary.txt
+        description: summary statistics (txt) of calculated TIN metrics
+      - name: "--tin_output_metrics"
+        type: file
+        direction: output
+        required: false
+        default: $id.tin.xls
+        description: file with TIN metrics (xls)
 
-        # Qualimap        
-        - name: "--output_format"
-          type: string
-          required: false
-          default: html
-          choices: [ html, pdf ]
-          description: Format of the qualimap output report (PDF or HTML, default is HTML)
-        - name: "--pr_bases"
-          type: integer
-          required: false
-          default: 100
-          min: 1
-          description: Number of upstream/downstream nucleotide bases to compute 5'-3' bias for qualimap (default = 100).
-        - name: "--tr_bias"
-          type: integer
-          required: false
-          default: 1000
-          min: 1
-          description: Number of top highly expressed transcripts to compute 5'-3' bias for qualimap (default = 1000).
-        - name: "--algorithm"
-          type: string
-          required: false
-          default: uniquely-mapped-reads
-          description: Counting algorithm for qualimap (uniquely-mapped-reads (default) or proportional).
-        - name: "--sequencing_protocol"
-          type: string
-          required: false
-          choices: [ "non-strand-specific", "strand-specific-reverse", "strand-specific-forward" ]
-          default: non-strand-specific
-          description: Sequencing library protocol for qualimap (strand-specific-forward, strand-specific-reverse or non-strand-specific (default)).
-        - name: "--sorted"
-          type: boolean_true
-          description: Setting this flag indicates that the input file is already sorted by name. If flag is not set, additional sorting by name will be performed for qualimap. Only requiredfor paired-end analysis.
-        - name: "--java_memory_size"
-          type: string
-          required: false
-          default: 4G 
-          description: maximum Java heap memory size for qualimap, default = 4G.
+      # dupRadar
+      - name: "--dupradar_output_dupmatrix"
+        type: file
+        direction: output
+        required: false
+        default: $id.dup_matrix.txt
+        description: path to output file (txt) of duplicate tag counts
+      - name: "--dupradar_output_dup_intercept_mqc"
+        type: file
+        direction: output
+        required: false
+        default: $id.dup_intercept_mqc.txt
+        description: path to output file (txt) of multiqc intercept value DupRadar
+      - name: "--dupradar_output_duprate_exp_boxplot"
+        type: file
+        direction: output
+        required: false
+        default: $id.duprate_exp_boxplot.pdf
+        description: path to output file (pdf) of distribution of expression box plot    
+      - name: "--dupradar_output_duprate_exp_densplot"
+        type: file
+        direction: output
+        required: false
+        default: $id.duprate_exp_densityplot.pdf
+        description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
+      - name: "--dupradar_output_duprate_exp_denscurve_mqc"
+        type: file
+        direction: output
+        required: false
+        default: $id.duprate_exp_density_curve_mqc.pdf
+        description: path to output file (pdf) of density curve of gene duplication multiqc
+      - name: "--dupradar_output_expression_histogram"
+        type: file
+        direction: output
+        required: false
+        default: $id.expression_hist.pdf
+        description: path to output file (pdf) of distribution of RPK values per gene histogram
+      - name: "--dupradar_output_intercept_slope"
+        type: file
+        direction: output
+        required: false
+        default: $id.intercept_slope.txt
 
-        # DESeq2
-        - name: "--skip_deseq2_qc"
-          type: boolean
-        - name: "--pca_header_multiqc"
-          type: file
-          default: assets/multiqc/deseq2_pca_header.txt
-        - name: "--clustering_header_multiqc"
-          type: file
-          default: assets/multiqc/deseq2_clustering_header.txt
-        - name: "--deseq2_vst"
-          type: boolean
-          description: Use vst transformation instead of rlog with DESeq2
-        - name: "--extra_deseq2_args"
-          type: string
-          default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
-        - name: "--extra_deseq2_args2"
-          type: string
-          default: star_salmon
+      # Qualimap
+      - name: "--qualimap_output_pdf"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: $id.qualimap_output.pdf
+      - name: "--qualimap_output_dir"
+        type: file
+        direction: output
+        required: false
+        default: $id.qualimap_output
 
-        # MultiQC
-        - name: "--multiqc_custom_config"
-          type: file
-        - name: "--multiqc_title"
-          type: string
-        - name: "--multiqc_methods_description"
-          type: file
-        - name: "--mqc_yml"
-          type: file
-          description: Software versions
-        - name: "--workflow_summary"
-          type: file
-        - name: "--passed_trimmed_reads"
-          type: boolean
-        - name: "--num_trimmed_reads"
-          type: double
-        - name: "--passed_mapping"
-          type: boolean
-        - name: "--percent_mapped"
-          type: double
-        - name: "--fastqc_zip_1"
-          type: file
-          must_exist: false
-        - name: "--fastqc_zip_2"
-          type: file
-          must_exist: false
-        - name: "--trim_zip_1"
-          type: file
-          must_exist: false
-        - name: "--trim_zip_2"
-          type: file
-          must_exist: false
-        - name: "--trim_log_1"
-          type: file
-          must_exist: false
-        - name: "--trim_log_2"
-          type: file
-          must_exist: false
-        - name: "--sortmerna_multiqc"
-          type: file
-          must_exist: false
-        - name: "--star_multiqc"
-          type: file
-          must_exist: false
-        # - name: "--hisat2_multiqc"
-        #   type: file
-        # - name: "--rsem_multiqc"
-        #   type: file
-        - name: "--genome_bam_stats"
-          type: file
-          must_exist: false
-        - name: "--genome_bam_flagstat"
-          type: file
-          must_exist: false
-        - name: "--genome_bam_idxstats"
-          type: file
-          must_exist: false
-        - name: "--markduplicates_multiqc"
-          type: file
-          must_exist: false
+      # DESeq2
+      - name: "--deseq2_output"
+        type: file
+        direction: output
+        default: deseq2
 
-        - name: "--versions"
-          type: file
-          must_exist: false
-          
+      # MultiQC
+      - name: "--multiqc_report"
+        type: file
+        direction: output
+        default: multiqc_report.html
+      - name: "--multiqc_data"
+        type: file
+        direction: output
+        default: multiqc_data
+      - name: "--multiqc_plots"
+        type: file
+        direction: output
+        default: multiqc_plots
+      - name: "--multiqc_versions"
+        type: file
+        direction: output
 
-    - name: Output
-      arguments:
-        # preseq
-        - name: "--preseq_output"
-          type: file
-          direction: output
-          default: $id.lc_extrap.txt
+      # Biotype QC
+      - name: "--featurecounts"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.featureCounts.txt
+      - name: "--featurecounts_summary"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.featureCounts.txt.summary
+      - name: "--featurecounts_multiqc"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.featureCounts_mqc.tsv
+      - name: "--featurecounts_rrna_multiqc"
+        type: file
+        direction: output
+        must_exist: false
+        default: $id.featureCounts_rrna_mqc.tsv
 
-        # RSeQC
-        - name: "--bamstat_output"
-          type: file
-          direction: output
-          required: false
-          description: Path to output file (txt) of mapping quality statistics
-          default: $id.mapping_quality.txt
-        - name: "--strandedness_output"
-          type: file
-          direction: output
-          required: false
-          default: $id.strandedness.txt
-          description: Path to output report (txt) of inferred strandedness
-        - name: "--inner_dist_output_stats"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.inner_distance.stats
-          description: output file (txt) with summary statistics of inner distances of paired reads
-        - name: "--inner_dist_output_dist"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.inner_distance.txt
-          description: output file (txt) with inner distances of all paired reads
-        - name: "--inner_dist_output_freq"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.inner_distance_freq.txt
-          description: output file (txt) with frequencies of inner distances of all paired reads
-        - name: "--inner_dist_output_plot"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.inner_distance_plot.pdf
-          description: output file (pdf) with histogram plot of of inner distances of all paired reads
-        - name: "--inner_dist_output_plot_r"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.inner_distance_plot.r
-          description: output file (R) with script of histogram plot of of inner distances of all paired reads
-        - name: "--junction_annotation_output_log"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_annotation.log
-          description: output log of junction annotation script
-        - name: "--junction_annotation_output_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_annotation_plot.r
-          description: R script to generate splice_junction and splice_events plot
-        - name: "--junction_annotation_output_junction_bed"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_annotation.bed
-          description: junction annotation file (bed format)
-        - name: "--junction_annotation_output_junction_interact"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_annotation.Interact.bed
-          description: interact file (bed format) of junctions. Can be uploaded to UCSC genome browser or converted to bigInteract (using bedToBigBed program) for visualization.
-        - name: "--junction_annotation_output_junction_sheet"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_annotation.xls
-          description: junction annotation file (xls format)
-        - name: "--junction_annotation_output_splice_events_plot"
-          type: file
-          direction: output
-          required: false
-          default: $id.splice_events.pdf
-          description: plot of splice events (pdf)
-        - name: "--junction_annotation_output_splice_junctions_plot"
-          type: file
-          direction: output
-          required: false
-          default: $id.splice_junctions_plot.pdf
-          description: plot of junctions (pdf)
-        - name: "--junction_saturation_output_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_saturation_plot.r
-          description: r script to generate junction_saturation_plot plot
-        - name: "--junction_saturation_output_plot"
-          type: file
-          direction: output
-          required: false
-          default: $id.junction_saturation_plot.pdf
-          description: plot of junction saturation (pdf
-        - name: "--read_distribution_output"
-          type: file
-          direction: output
-          required: false
-          default: $id.read_distribution.txt
-          description: output file (txt) of read distribution analysis.    
-        - name: "--read_duplication_output_duplication_rate_plot_r"
-          type: file
-          direction: output
-          required: false
-          default: $id.duplication_rate_plot.r
-          description: R script for generating duplication rate plot
-        - name: "--read_duplication_output_duplication_rate_plot"
-          type: file
-          direction: output
-          required: false
-          default: $id.duplication_rate_plot.pdf
-          description: duplication rate plot (pdf)
-        - name: "--read_duplication_output_duplication_rate_mapping"
-          type: file
-          direction: output
-          required: false
-          default: $id.duplication_rate_mapping.xls
-          description: Summary of mapping-based read duplication
-        - name: "--read_duplication_output_duplication_rate_sequence"
-          type: file
-          direction: output
-          required: false
-          default: $id.duplication_rate_sequencing.xls
-          description: Summary of sequencing-based read duplication
-        - name: "--tin_output_summary"
-          type: file
-          direction: output
-          required: false
-          default: $id.tin_summary.txt
-          description: summary statistics (txt) of calculated TIN metrics
-        - name: "--tin_output_metrics"
-          type: file
-          direction: output
-          required: false
-          default: $id.tin.xls
-          description: file with TIN metrics (xls)
+      # Counts
+      - name: "--tpm_gene"
+        type: file
+        direction: output
+        default: salmon.merged.gene_tpm.tsv
+      - name: "--counts_gene"
+        type: file
+        direction: output
+        default: salmon.merged.gene_counts.tsv
+      - name: "--counts_gene_length_scaled"
+        type: file
+        direction: output
+        default: salmon.merged.gene_counts_length_scaled.tsv
+      - name: "--counts_gene_scaled"
+        type: file
+        direction: output
+        default: salmon.merged.gene_counts_scaled.tsv
+      - name: "--tpm_transcript"
+        type: file
+        direction: output
+        default: salmon.merged.transcript_tpm.tsv
+      - name: "--counts_transcript"
+        type: file
+        direction: output
+        default: salmon.merged.transcript_counts.tsv
+      - name: "--salmon_merged_summarizedexperiment"
+        type: file
+        direction: output
+        default: salmon_merged_summarizedexperiment
 
-        # dupRadar
-        - name: "--dupradar_output_dupmatrix"
-          type: file
-          direction: output
-          required: false
-          default: $id.dup_matrix.txt
-          description: path to output file (txt) of duplicate tag counts
-        - name: "--dupradar_output_dup_intercept_mqc"
-          type: file
-          direction: output
-          required: false
-          default: $id.dup_intercept_mqc.txt
-          description: path to output file (txt) of multiqc intercept value DupRadar
-        - name: "--dupradar_output_duprate_exp_boxplot"
-          type: file
-          direction: output
-          required: false
-          default: $id.duprate_exp_boxplot.pdf
-          description: path to output file (pdf) of distribution of expression box plot    
-        - name: "--dupradar_output_duprate_exp_densplot"
-          type: file
-          direction: output
-          required: false
-          default: $id.duprate_exp_densityplot.pdf
-          description: path to output file (pdf) of 2D density scatter plot of duplicate tag counts     
-        - name: "--dupradar_output_duprate_exp_denscurve_mqc"
-          type: file
-          direction: output
-          required: false
-          default: $id.duprate_exp_density_curve_mqc.pdf
-          description: path to output file (pdf) of density curve of gene duplication multiqc
-        - name: "--dupradar_output_expression_histogram"
-          type: file
-          direction: output
-          required: false
-          default: $id.expression_hist.pdf
-          description: path to output file (pdf) of distribution of RPK values per gene histogram
-        - name: "--dupradar_output_intercept_slope"
-          type: file
-          direction: output
-          required: false
-          default: $id.intercept_slope.txt
+      - name: "--updated_versions"
+        type: file
+        default: versions.yml
+        direction: output
 
-        # Qualimap
-        - name: "--qualimap_output_pdf"
-          type: file
-          direction: output
-          required: false
-          must_exist: false
-          default: $id.qualimap_output.pdf
-        - name: "--qualimap_output_dir"
-          type: file
-          direction: output
-          required: false
-          default: $id.qualimap_output
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
 
-        # DESeq2
-        - name: "--deseq2_output"
-          type: file
-          direction: output
-          default: deseq2
+dependencies:
+  - name: rseqc/rseqc_bamstat
+  - name: rseqc/rseqc_inferexperiment
+  - name: rseqc/rseqc_innerdistance
+  - name: rseqc/rseqc_junctionannotation
+  - name: rseqc/rseqc_junctionsaturation
+  - name: rseqc/rseqc_readdistribution
+  - name: rseqc/rseqc_readduplication
+  - name: rseqc/rseqc_tin
+  - name: dupradar
+  - name: qualimap
+  - name: preseq_lcextrap
+  - name: featurecounts
+  - name: multiqc_custom_biotype
+  - name: deseq2_qc
+  - name: prepare_multiqc_input
+  - name: multiqc
+  - name: workflows/merge_quant_results
 
-        # MultiQC
-        - name: "--multiqc_report"
-          type: file
-          direction: output
-          default: multiqc_report.html
-        - name: "--multiqc_data"
-          type: file
-          direction: output
-          default: multiqc_data
-        - name: "--multiqc_plots"
-          type: file
-          direction: output
-          default: multiqc_plots
-        - name: "--multiqc_versions"
-          type: file
-          direction: output
-
-        # Biotype QC
-        - name: "--featurecounts"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.featureCounts.txt
-        - name: "--featurecounts_summary"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.featureCounts.txt.summary
-        - name: "--featurecounts_multiqc"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.featureCounts_mqc.tsv
-        - name: "--featurecounts_rrna_multiqc"
-          type: file
-          direction: output
-          must_exist: false
-          default: $id.featureCounts_rrna_mqc.tsv
-
-        # Counts
-        - name: "--tpm_gene"
-          type: file
-          direction: output
-          default: salmon.merged.gene_tpm.tsv
-        - name: "--counts_gene"
-          type: file
-          direction: output
-          default: salmon.merged.gene_counts.tsv
-        - name: "--counts_gene_length_scaled"
-          type: file
-          direction: output
-          default: salmon.merged.gene_counts_length_scaled.tsv
-        - name: "--counts_gene_scaled"
-          type: file
-          direction: output
-          default: salmon.merged.gene_counts_scaled.tsv
-        - name: "--tpm_transcript"
-          type: file
-          direction: output
-          default: salmon.merged.transcript_tpm.tsv
-        - name: "--counts_transcript"
-          type: file
-          direction: output
-          default: salmon.merged.transcript_counts.tsv
-        - name: "--salmon_merged_summarizedexperiment"
-          type: file
-          direction: output
-          default: salmon_merged_summarizedexperiment
-
-        - name: "--updated_versions"
-          type: file
-          default: versions.yml
-          direction: output
-
-  resources:
-    - type: nextflow_script
-      path: main.nf
-      entrypoint: run_wf
-
-  dependencies:
-    - name: rseqc/rseqc_bamstat
-    - name: rseqc/rseqc_inferexperiment
-    - name: rseqc/rseqc_innerdistance
-    - name: rseqc/rseqc_junctionannotation
-    - name: rseqc/rseqc_junctionsaturation
-    - name: rseqc/rseqc_readdistribution
-    - name: rseqc/rseqc_readduplication
-    - name: rseqc/rseqc_tin
-    - name: dupradar
-    - name: qualimap
-    - name: preseq_lcextrap
-    - name: featurecounts
-    - name: multiqc_custom_biotype
-    - name: deseq2_qc
-    - name: prepare_multiqc_input
-    - name: multiqc
-    - name: workflows/merge_quant_results
-
-platforms:
-  - type: nextflow
+runners: 
+- type: executable
+- type: nextflow
