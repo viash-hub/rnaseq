@@ -6,8 +6,8 @@ target: target
 config_mods: |
   .version := 'dev'
   .requirements.commands := ['ps']
-# .engines[.type == 'docker'].target_registry := 'viash-hub.com:5050'
-# .engines[.type == 'docker'].target_organization := 'data-intuitive'
-# .engines[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
-# .runners[.type == 'nextflow'].directives.tag := '$id'
-# .runners[.type == 'nextflow'].auto.simplifyOutput := false
+  .engines[.type == 'docker'].target_registry := 'viash-hub.com:5050'
+  .engines[.type == 'docker'].target_organization := 'data-intuitive'
+  .engines[.type == 'docker'].target_image_source := 'https://viash-hub.com/data-intuitive/rnaseq.vsh'
+  .runners[.type == 'nextflow'].directives.tag := '$id'
+  .runners[.type == 'nextflow'].auto.simplifyOutput := false
