@@ -12,7 +12,7 @@ workflow run_wf {
 
     // Count reads from BAM alignments using Salmon
     | salmon_quant.run ( 
-        runIf: { id, state -> state.pseudo_aligner == 'salmon'}
+        runIf: { id, state -> state.pseudo_aligner == 'salmon' },
         fromState: [
           "input": "input", 
           "transcript_fasta": "transcript_fasta", 
@@ -23,13 +23,13 @@ workflow run_wf {
         args: ["alignment_mode": false],
         toState: [
           "quant_results": "output", 
-          "pseudo_multiqc": "output"
+          "pseudo_multiqc": "output",
           "versions": "updated_versions"
         ]
     )
 
     | kallisto_quant.run ( 
-        runIf: { id, state -> state.pseudo_aligner == 'kallisto'}
+        runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
         fromState: [
           "input": "input", 
           "gtf": "gtf", 
@@ -40,7 +40,7 @@ workflow run_wf {
         ],
         toState: [
           "quant_results": "output", 
-          "pseudo_multiqc": "log"
+          "pseudo_multiqc": "log",
           "versions": "updated_versions"
         ]
     )

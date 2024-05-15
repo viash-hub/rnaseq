@@ -127,7 +127,7 @@ workflow run_wf {
             ]
         )
 
-        | ucsc_bedclip.run (
+        | bedclip.run (
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
                 "input_bedgraph": "bedgraph_forward", 
@@ -141,7 +141,7 @@ workflow run_wf {
             key: "bedclip_forward"
         )
 
-        | ucsc_bedgraphtobigwig.run (
+        | bedgraphtobigwig.run (
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
                 "bedgraph": "bedgraph_forward", 
@@ -155,7 +155,7 @@ workflow run_wf {
             key: "bedgraphtobigwig_forward"
         )
 
-        | ucsc_bedclip.run (
+        | bedclip.run (
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
                 "input_bedgraph": "bedgraph_reverse", 
@@ -169,7 +169,7 @@ workflow run_wf {
             key: "bedclip_reverse"
         )
 
-        | ucsc_bedgraphtobigwig.run (
+        | bedgraphtobigwig.run (
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
                 "bedgraph": "bedgraph_reverse", 

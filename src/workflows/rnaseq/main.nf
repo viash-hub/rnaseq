@@ -110,7 +110,6 @@ workflow run_wf {
     )
 
     // Pre-process fastq files
-    // TODO: Add arguments for fastp
     | pre_processing.run ( 
         fromState: [
           "id": "id", 
@@ -243,8 +242,8 @@ workflow run_wf {
     }
 
     // Pseudo-alignment and quantification
-    | pseudoo_alignment_and _quant.run (
-        runIf: { id, state -> !skip_pseudo_alignment && state.passed_trimmed_reads },
+    | pseudo_alignment_and_quant.run (
+        runIf: { id, state -> !state.skip_pseudo_alignment && state.passed_trimmed_reads },
         fromState: [
           "id": "id", 
           "fastq_1": "fastq_1",

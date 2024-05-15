@@ -835,5 +835,3 @@ functionality:
 
 platforms:
   - type: nextflow
-    directives: 
-      label: [ "lowtime", "lowmem", "lowcpu" ]

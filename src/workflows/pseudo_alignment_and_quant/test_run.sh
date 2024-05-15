@@ -1,6 +1,6 @@
 #!/bin/bash
 
-viash ns build --setup cb --parallel
+viash ns build --setup cb -q pseudo_alignment_and_quant
 
 # Split error message from standard output
 # viash ns list > /dev/null 
@@ -8,19 +8,19 @@ viash ns build --setup cb --parallel
 CURR=`pwd` 
 
 # Test paired-end data
-cat > testData/minimal_test/sample_sheet.csv << HERE
-id,fastq_1,fastq_2
-SRR6357070,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read_1.fq.gz,$CURR/testData/paired_end_test/SRR6357070.pre_processing.read_2.fq.gz
-SRR6357071,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read_1.fq.gz,$CURR/testData/paired_end_test/SRR6357071.pre_processing.read_2.fq.gz
+cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
+id,fastq_1,fastq_2,strandedness
+WT_REP1,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz,reverse
+WT_REP2,SRR6357072_1.fastq.gz,SRR6357072_2.fastq.gz,reverse
 HERE
 
-nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
-  --param_list testData/minimal_test/sample_sheet.csv \
-  --publish_dir "testData/paired_end_test" \
-  --fasta testData/test_output/reference_genome.fasta \
-  --gtf testData/test_output/ \
-  --transcript_fasta testData/test_output/transcriptome.fasta \
+nextflow run target/nextflow/workflows/pseudo_alignment_and_quant/main.nf \
+  --param_list testData/minimal_test/input_fastq/sample_sheet.csv \
+  --publish_dir "test_results/psudo_alignment_test" \
+  --fasta testData/minimal_test/reference/genome.fasta \
+  --gtf testData/minimal_test/reference/genes.gtf.gz \
+  --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
   --salmon_index testData/minimal_test/reference/salmon.tar.gz \
-  --pseudo_aligner salmon
-  # -profile docker \
+  --pseudo_aligner salmon \
+  -profile docker \
   # -resume
