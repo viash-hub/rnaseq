@@ -46,18 +46,7 @@ workflow run_wf {
     )
 
     | setState (
-      [ "star_alignment": "star_alignment", 
-        "star_multiqc": "star_multiqc", 
-        "genome_bam_sorted": "genome_bam_sorted", 
-        "genome_bam_index": "genome_bam_index",  
-        "genome_bam_stats": "genome_bam_stats", 
-        "genome_bam_flagstat": "genome_bam_flagstat", 
-        "genome_bam_idxstats": "genome_bam_idxstats", 
-        "transcriptome_bam": "transcriptome_bam", 
-        "transcriptome_bam_index": "transcriptome_bam_index", 
-        "transcriptome_bam_stats": "transcriptome_bam_stats", 
-        "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
-        "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
+      [ "pseudo_multiqc": "pseudo_multiqc", 
         "quant_results": "quant_results", 
         "updated_versions": "versions" ]
     )
