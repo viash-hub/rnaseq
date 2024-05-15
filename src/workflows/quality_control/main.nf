@@ -383,7 +383,7 @@ workflow run_wf {
                 trim_log: trim_log_1 + trim_log_2, 
                 sortmerna_log: sortmerna_log,
                 star_multiqc: star_multiqc, 
-                salmon_multiqc: salmon_quant_results,
+                salmon_multiqc: quant_results,
                 genome_bam_stats: genome_bam_stats,
                 genome_bam_flagstat: genome_bam_flagstat,
                 genome_bam_idxstats: genome_bam_idxstats,
@@ -440,7 +440,9 @@ workflow run_wf {
                 "counts_gene_scaled": "counts_gene_scaled", 
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
-                "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment", 
+                "lengths_gene": "lengths_gene",
+                "lengths_transcript": "lengths_transcript",
+                "salmon_merged_summarizedexperiment": "merged_summarizedexperiment", 
                 "versions": "versions"
             ], 
         )
@@ -582,7 +584,7 @@ workflow run_wf {
 
         output_ch = qc_ch
         
-        // | combine(merged_ch)
+        | combine(merged_ch)
 
         | map { list -> [list[0], list[1] + list[2]] }
         
@@ -625,18 +627,20 @@ workflow run_wf {
                 "featurecounts_summary": "featurecounts_summary",
                 "featurecounts_multiqc": "featurecounts_multiqc",
                 "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc",
-                // "tpm_gene": "tpm_gene",
-                // "counts_gene": "counts_gene",
-                // "counts_gene_length_scaled": "counts_gene_length_scaled",
-                // "counts_gene_scaled": "counts_gene_scaled", 
-                // "tpm_transcript": "tpm_transcript", 
-                // "counts_transcript": "counts_transcript", 
-                // "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
-                // "deseq2_output": "deseq2_output", 
-                // "multiqc_report": "multiqc_report", 
-                // "multiqc_data": "multiqc_data", 
-                // "multiqc_plots": "multiqc_plots",
-                // "multiqc_versions": "multiqc_versions", 
+                "tpm_gene": "tpm_gene",
+                "counts_gene": "counts_gene",
+                "counts_gene_length_scaled": "counts_gene_length_scaled",
+                "counts_gene_scaled": "counts_gene_scaled", 
+                "tpm_transcript": "tpm_transcript", 
+                "counts_transcript": "counts_transcript", 
+                "lengths_gene": "lengths_gene",
+                "lengths_transcript": "lengths_transcript",
+                "merged_summarizedexperiment": "merged_summarizedexperiment",
+                "deseq2_output": "deseq2_output", 
+                "multiqc_report": "multiqc_report", 
+                "multiqc_data": "multiqc_data", 
+                "multiqc_plots": "multiqc_plots",
+                "multiqc_versions": "multiqc_versions", 
                 "updated_versions": "versions" 
             ]
         )

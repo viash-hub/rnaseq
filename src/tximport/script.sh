@@ -7,17 +7,17 @@ function clean_up {
 }
 trap clean_up EXIT
 
-salmon_tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
+tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
 
-IFS="," read -ra salmon_results <<< $par_quant_results
-for result in ${salmon_results[*]}
+IFS="," read -ra results <<< $par_quant_results
+for result in ${results[*]}
 do 
-    cp -r $result $salmon_tmpdir
+    cp -r $result $tmpdir
 done
 
 Rscript "$meta_resources_dir/tximport.r" \
     NULL \
-    $salmon_tmpdir \
+    $tmpdir \
     $par_quant_type.merged \
     $par_quant_type \
     $par_tx2gene_tsv

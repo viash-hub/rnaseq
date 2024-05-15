@@ -7,7 +7,7 @@ workflow run_wf {
     
         | tx2gene.run (
             fromState: [ 
-                "quant_results": "salmon_quant_results", 
+                "quant_results": "quant_results", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf": "gtf", 
                 "gtf_group_features": "gtf_group_features", 
@@ -22,7 +22,7 @@ workflow run_wf {
 
         | tximport.run (
             fromState: [ 
-                "quant_results": "salmon_quant_results", 
+                "quant_results": "quant_results", 
                 "tx2gene_tsv": "tx2gene_tsv", 
                 "quant_type": "quant_type",
                 "versions": "versions" 
