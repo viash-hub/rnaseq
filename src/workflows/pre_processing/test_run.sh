@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --parallel --setup cb
+viash ns build --parallel --setup cb 
 
 # nextflow run target/nextflow/workflows/pre_processing/main.nf \
 #   --id RAP1_UNINDUCED_REP1 \
@@ -28,6 +28,6 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --salmon_index testData/minimal_test/reference/salmon.tar.gz \
   --skip_trimming false \
   --trimmer fastp \
-  --remove_ribo_rna true \
+  --remove_ribo_rna false \
   -profile docker \
   -resume
