@@ -272,6 +272,7 @@ dependencies:
     repository: 
       type: vsh
       repo: viash-hub/biobase
+      tag: v0.1.0
 
 runners: 
 - type: executable
