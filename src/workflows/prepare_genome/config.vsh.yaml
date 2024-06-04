@@ -70,9 +70,6 @@ argument_groups:
       - name: "--filter_gtf"
         type: boolean
         description: Whether to filter the GTF or not?
-      - name: "--versions"
-        type: file
-        must_exist: false
         
   - name: "Output"
     arguments:
@@ -130,10 +127,6 @@ argument_groups:
         description: FASTA index file
         direction: output
         default: reference_genome.fasta.fai
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
 
 resources:
   - type: nextflow_script
@@ -143,6 +136,7 @@ resources:
 dependencies:
   - name: gunzip
   - name: gffread
+    repository: biobase
   - name: cat_additional_fasta
   - name: gtf2bed
   - name: preprocess_transcripts_fasta
@@ -153,7 +147,14 @@ dependencies:
   - name: star/star_genomegenerate
   - name: bbmap_bbsplit
   - name: salmon/salmon_index
+    repository: biobase
   - name: kallisto/kallisto_index
+
+repositories:
+  - name: biobase
+    type: vsh
+    repo: viash-hub/biobase
+    tag: v0.1.0
 
 runners: 
 - type: executable

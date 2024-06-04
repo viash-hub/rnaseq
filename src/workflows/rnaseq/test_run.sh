@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --setup cb --parallel
+viash ns build --setup cb --parallel
 
 # cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 # id,fastq_1,fastq_2,strandedness

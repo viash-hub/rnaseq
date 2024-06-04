@@ -19,12 +19,12 @@ if [ ${#read_2[@]} -gt 0 ]; then
     $command ${read_2[*]} > $par_fastq_2
 fi
 
-# Version
-text="${meta_functionality_name}:
-    cat: $(echo $(cat --version 2>&1) | grep -oP 'cat \(GNU coreutils\) \K\d+\.\d+')"
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# # Version
+# text="${meta_functionality_name}:
+#     cat: $(echo $(cat --version 2>&1) | grep -oP 'cat \(GNU coreutils\) \K\d+\.\d+')"
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

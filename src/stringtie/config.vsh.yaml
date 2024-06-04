@@ -23,9 +23,6 @@ argument_groups:
   - name: "--stringtie_ignore_gtf"
     type: boolean
     description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -45,10 +42,6 @@ argument_groups:
     type: file
     description: for running ballgown
     default: $id.$key.ballgown
-    direction: output
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
     direction: output
 
 resources: 

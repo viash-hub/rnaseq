@@ -58,13 +58,13 @@ else
     fi
 fi
 
-# Version
-text="${meta_functionality_name}:
-    umitools: $(umi_tools --version 2>&1 | sed 's/^.*UMI-tools version://; s/ *\$//')"
+# # Version
+# text="${meta_functionality_name}:
+#     umitools: $(umi_tools --version 2>&1 | sed 's/^.*UMI-tools version://; s/ *\$//')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

@@ -18,9 +18,6 @@ argument_groups:
   - name: "--gtf"
     type: file
     description: GTF file
-  - name: "--versions"
-    type: file
-    must_exist: false
   
 - name: "Output"
   arguments: 
@@ -29,10 +26,6 @@ argument_groups:
     direction: output
     description: STAR index directory.
     default: STAR_index
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

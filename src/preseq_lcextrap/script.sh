@@ -29,12 +29,12 @@ preseq lc_extrap \
     -o $par_output
 
 # Version
-text="${meta_functionality_name}:
-    preseq: $(echo $(preseq 2>&1) | grep -oP 'Version: \K\d+\.\d+\.\d+')"
+# text="${meta_functionality_name}:
+#     preseq: $(echo $(preseq 2>&1) | grep -oP 'Version: \K\d+\.\d+\.\d+')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

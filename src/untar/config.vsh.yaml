@@ -13,9 +13,6 @@ argument_groups:
   - name: "--input"
     type: file 
     description: Path of file to be uncompressed
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:  
@@ -23,10 +20,6 @@ argument_groups:
     type: file
     direction: output
     description: Directory containing contents of uncompressed file.
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

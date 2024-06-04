@@ -36,9 +36,6 @@ argument_groups:
   - name: "--built_bbsplit_index"
     type: file
     description: Directory with index files
-  - name: "--versions"
-    type: file
-    must_exist: false
   
 - name: "Output"
   arguments:
@@ -62,11 +59,7 @@ argument_groups:
     direction: output
     must_exist: false
     default: BBSplit_index
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
-
+    
 resources:
   - type: bash_script
     path: script.sh

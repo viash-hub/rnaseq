@@ -25,13 +25,12 @@ mv $prefix_forward.bedGraph $par_bedgraph_forward
 mv $prefix_reverse.bedGraph $par_bedgraph_reverse
 
 # Version
+# text="${meta_functionality_name}:
+#     bedtools: $(bedtools --version | sed -e "s/bedtools\ v//g")"
 
-text="${meta_functionality_name}:
-    bedtools: $(bedtools --version | sed -e "s/bedtools\ v//g")"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

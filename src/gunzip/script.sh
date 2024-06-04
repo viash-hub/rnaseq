@@ -10,12 +10,12 @@ else
     cat $par_input > $par_output
 fi
 
-# Version
-text="${meta_functionality_name}: 
-    gunzip: $(echo $(gunzip --version 2>&1) | sed -n 's/.* \([0-9]\+\.[0-9]\+\).*/\1/p')"
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# # Version
+# text="${meta_functionality_name}: 
+#     gunzip: $(echo $(gunzip --version 2>&1) | sed -n 's/.* \([0-9]\+\.[0-9]\+\).*/\1/p')"
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

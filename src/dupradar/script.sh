@@ -28,14 +28,14 @@ mv "$par_id"_expressionHist.pdf $par_output_expression_histogram
 mv "$par_id"_intercept_slope.txt $par_output_intercept_slope
 
 # Version
-dupradar_ver=$(Rscript -e "library(dupRadar); cat(as.character(packageVersion('dupRadar')))")
-text="${meta_functionality_name}:
-    r-base: $(echo $(R --version 2>&1) | grep -oP 'R version \K\d+\.\d+\.\d+')
-    bioconductor-dupradar: ${dupradar_ver}"
+# dupradar_ver=$(Rscript -e "library(dupRadar); cat(as.character(packageVersion('dupRadar')))")
+# text="${meta_functionality_name}:
+#     r-base: $(echo $(R --version 2>&1) | grep -oP 'R version \K\d+\.\d+\.\d+')
+#     bioconductor-dupradar: ${dupradar_ver}"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

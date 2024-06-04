@@ -13,82 +13,53 @@ workflow run_wf {
                 "bam": "genome_bam",
                 "fasta": "fasta",
                 "fai": "fai",
-                "extra_picard_args": "extra_picard_args", 
-                "versions": "versions"
+                "extra_picard_args": "extra_picard_args"
             ], 
             toState: [
                 "genome_bam": "output_bam",
-                "markduplicates_metrics": "metrics", 
-                "versions": "updated_versions"
+                "markduplicates_metrics": "metrics"
             ]
         )
         | samtools_sort.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
-            fromState: [ 
-                "input": "genome_bam", 
-                "versions": "versions" 
-            ],
-            toState: [ 
-                "genome_bam": "output", 
-                "versions": "updated_versions" 
-            ],
+            fromState: [ "input": "genome_bam" ],
+            toState: [ "genome_bam": "output" ],
             key: "genome_sorted_MarkDuplicates" 
         )
         | samtools_index.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
             fromState: [
                 "input": "genome_bam", 
-                "bam_csi_index": "bam_csi_index", 
-                "versions": "versions" 
+                "csi": "bam_csi_index"
             ],
-            toState: [
-                "genome_bam_bai": "output_bai", 
-                "genome_bam_csi": "output_csi", 
-                "versions": "updated_versions" 
-            ],
+            toState: [ "genome_bam_index": "output" ],
             key: "genome_sorted_MarkDuplicates", 
         )
-        | map { id, state -> 
-            def genome_bam_index = state.genome_bam_bai ? state.genome_bam_bai : state.genome_bam_csi
-            [ id, state + [ genome_bam_index: genome_bam_index ] ]
-        }
         | samtools_stats.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
-                "bam": "genome_bam", 
-                "bai": "genome_bam_index", 
-                "versions": "versions" 
+                "input": "genome_bam", 
+                "bai": "genome_bam_index" 
             ],
-            toState: [
-                "genome_bam_stats": "output", 
-                "versions": "updated_versions"
-            ],
+            toState: [ "genome_bam_stats": "output" ],
             key: "MarkDuplicates_stats"
         )
         | samtools_flagstat.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
-            "bam": "genome_bam", 
-            "bai": "genome_bam_index", 
-            "versions": "versions" 
+                "bam": "genome_bam", 
+                "bai": "genome_bam_index"
             ],
-            toState: [
-                "genome_bam_flagstat": "output", 
-                "versions": "updated_versions"
-            ],
+            toState: [ "genome_bam_flagstat": "output" ],
             key: "MarkDuplicates_flagstat"
         )
         | samtools_idxstats.run(
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
             "bam": "genome_bam", 
-            "bai": "genome_bam_index", 
-            "versions": "versions" 
+            "bai": "genome_bam_index"
             ],
-            toState: [
-                "genome_bam_idxstats": "output", 
-                "versions": "updated_versions"
-            ],
+            toState: [ "genome_bam_idxstats": "output" ],
             key: "MarkDuplicates_idxstats"
         ) 
 
@@ -98,15 +69,13 @@ workflow run_wf {
                 "strandedness": "strandedness", 
                 "bam": "genome_bam",
                 "annotation_gtf": "gtf",
-                "extra_stringtie_args": "extra_stringtie_args", 
-                "versions": "versions"
+                "extra_stringtie_args": "extra_stringtie_args"
             ], 
             toState: [
                 "stringtie_transcript_gtf": "transcript_gtf",
                 "stringtie_coverage_gtf": "coverage_gtf",
                 "stringtie_abundance": "abundance",
-                "stringtie_ballgown": "ballgown", 
-                "versions": "updated_versions"
+                "stringtie_ballgown": "ballgown"
             ]
         )
 
@@ -117,13 +86,11 @@ workflow run_wf {
             fromState: [
                 "strandedness": "strandedness", 
                 "bam": "genome_bam",
-                "extra_bedtools_args": "extra_bedtools_args", 
-                "versions": "versions"
+                "extra_bedtools_args": "extra_bedtools_args"
             ],
             toState: [
                 "bedgraph_forward": "bedgraph_forward",
-                "bedgraph_reverse": "bedgraph_reverse", 
-                "versions": "updated_versions"
+                "bedgraph_reverse": "bedgraph_reverse"
             ]
         )
 
@@ -132,12 +99,8 @@ workflow run_wf {
             fromState: [
                 "input_bedgraph": "bedgraph_forward", 
                 "sizes": "chrom_sizes" 
-                // "versions": "versions"
             ],
-            toState: [ 
-                "bedgraph_forward": "output_bedgraph" 
-                // "versions": "updated_versions" 
-            ], 
+            toState: [ "bedgraph_forward": "output_bedgraph" ], 
             key: "bedclip_forward"
         )
 
@@ -146,12 +109,8 @@ workflow run_wf {
             fromState: [
                 "bedgraph": "bedgraph_forward", 
                 "sizes": "chrom_sizes" 
-                // "versions": "versions"
             ],
-            toState: [ 
-                "bigwig_forward": "bigwig" 
-                // "versions": "updated_versions" 
-            ], 
+            toState: [ "bigwig_forward": "bigwig" ], 
             key: "bedgraphtobigwig_forward"
         )
 
@@ -160,12 +119,8 @@ workflow run_wf {
             fromState: [
                 "input_bedgraph": "bedgraph_reverse", 
                 "sizes": "chrom_sizes", 
-                // "versions": "updated_versions"
             ],
-            toState: [ 
-                "bedgraph_reverse": "output_bedgraph" 
-                // "versions": "updated_versions" 
-            ], 
+            toState: [ "bedgraph_reverse": "output_bedgraph" ], 
             key: "bedclip_reverse"
         )
 
@@ -174,12 +129,8 @@ workflow run_wf {
             fromState: [
                 "bedgraph": "bedgraph_reverse", 
                 "sizes": "chrom_sizes" 
-                // "versions": "updated_versions"
             ],
-            toState: [ 
-                "bigwig_reverse": "bigwig" 
-                // "versions": "updated_versions" 
-            ], 
+            toState: [ "bigwig_reverse": "bigwig" ], 
             key: "bedgraphtobigwig_reverse"
         )
 
@@ -197,8 +148,7 @@ workflow run_wf {
             "bedgraph_forward": "bedgraph_forward",
             "bedgraph_reverse": "bedgraph_reverse",
             "bigwig_forward": "bigwig_forward",
-            "bigwig_reverse": "bigwig_reverse", 
-            "updated_versions": "versions"
+            "bigwig_reverse": "bigwig_reverse"
         )
 
     emit:

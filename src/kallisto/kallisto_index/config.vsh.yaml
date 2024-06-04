@@ -16,9 +16,6 @@ argument_groups:
   - name: "--pseudo_aligner_kmer_size"
     type: integer
     description: Kmer length passed to indexing step of pseudoaligners.
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments:
@@ -26,10 +23,6 @@ argument_groups:
     type: file
     direction: output
     default: Kallisto_index
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

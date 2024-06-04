@@ -153,10 +153,6 @@ argument_groups:
         type: string
         default: '--record-count 1000000 --seed 1'
         description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
-      - name: "--versions"
-        type: file
-        must_exist: false
-        
 
   - name: "Output"
     arguments:
@@ -245,15 +241,11 @@ argument_groups:
         required: false
         must_exist: false
         description: Sortmerna log file.
-      - name: "--salmon_json_info"
+      - name: "--salmon_quant_output"
         type: file
         direction: output
-        description: File containing meta information from Salmon quant
-        default: $id.salmon_meta_info.json
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
+        description: Results from Salmon quant
+        default: $id.salmon_quant_output
 
 resources:
   - type: nextflow_script
@@ -261,19 +253,23 @@ resources:
     entrypoint: run_wf
 
 dependencies:
-  - name: fq_subsample
-  - name: salmon/salmon_quant
   - name: fastqc
   - name: umitools/umitools_extract
   - name: trimgalore
   - name: bbmap_bbsplit
   - name: sortmerna
   - name: fastp
-    repository: 
-      type: vsh
-      repo: viash-hub/biobase
-      tag: v0.1.0
+    repository: biobase
+  - name: fq_subsample
+  - name: salmon/salmon_quant
+    repository: biobase
 
+repositories:
+  - name: biobase
+    type: vsh
+    repo: viash-hub/biobase
+    tag: v0.1.0
+    
 runners: 
 - type: executable
 - type: nextflow

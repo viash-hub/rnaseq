@@ -46,12 +46,12 @@ def filter_gtf(fasta: str, gtf_in: str, filtered_gtf_out: str, skip_transcript_i
 
 filter_gtf(par["fasta"], par["gtf"], par["filtered_gtf"], par["skip_transcript_id_check"])
 
-# Get versions
-text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
-if par['versions'] and os.path.exists(par['versions']):
-    with open(par['versions'], 'a') as f:
-        f.write(text + '\n')
-    os.rename(par['versions'], par['updated_versions'])
-else:
-    with open(par['updated_versions'], 'w') as f:
-        f.write(text + '\n')
+# # Get versions
+# text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
+# if par['versions'] and os.path.exists(par['versions']):
+#     with open(par['versions'], 'a') as f:
+#         f.write(text + '\n')
+#     os.rename(par['versions'], par['updated_versions'])
+# else:
+#     with open(par['updated_versions'], 'w') as f:
+#         f.write(text + '\n')

@@ -20,12 +20,12 @@ mv $prefix.splice_events.pdf $par_output_splice_events_plot
 mv $prefix.splice_junction.pdf $par_output_splice_junctions_plot
 
 # Version
-text="${meta_functionality_name}:
-    rseqc: $(junction_annotation.py --version | sed -e 's/junction_annotation.py //g')"
+# text="${meta_functionality_name}:
+#     rseqc: $(junction_annotation.py --version | sed -e 's/junction_annotation.py //g')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

@@ -20,15 +20,13 @@ workflow run_wf {
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
-        input: input, 
-        versions: state.versions ]
+        input: input ]
       },
       toState: [
         "fastqc_html_1": "fastqc_html_1",
         "fastqc_html_2": "fastqc_html_2",
         "fastqc_zip_1": "fastqc_zip_1",
-        "fastqc_zip_2": "fastqc_zip_2", 
-        "versions": "updated_versions" 
+        "fastqc_zip_2": "fastqc_zip_2"
       ]
     )
 
@@ -41,13 +39,11 @@ workflow run_wf {
         [ paired: state.paired,
         input: input, 
         bc_pattern: bc_pattern, 
-        umi_discard_read: state.umi_discard_read, 
-        versions: state.versions ]
+        umi_discard_read: state.umi_discard_read ]
       },
       toState: [ 
         "fastq_1": "fastq_1", 
-        "fastq_2": "fastq_2", 
-        "versions": "updated_versions" 
+        "fastq_2": "fastq_2"
       ]
     )
     
@@ -70,8 +66,7 @@ workflow run_wf {
         [ paired: state.paired,
         input: input, 
         extra_trimgalore_args: state.extra_trimgalore_args, 
-        min_trimmed_reads: state.min_trimmed_reads, 
-        versions: state.versions ]
+        min_trimmed_reads: state.min_trimmed_reads ]
       },
       toState: [
         "fastq_1": "fastq_1", 
@@ -81,8 +76,7 @@ workflow run_wf {
         "trim_zip_1": "trim_zip_1",
         "trim_zip_2": "trim_zip_2",
         "trim_html_1": "trim_html_1",
-        "trim_html_2": "trim_html_2", 
-        "versions": "updated_versions" 
+        "trim_html_2": "trim_html_2"
       ]
     )
 
@@ -115,15 +109,13 @@ workflow run_wf {
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
-        input: input, 
-        versions: state.versions ]
+        input: input ]
       },
       toState: [
         "trim_html_1": "fastqc_html_1",
         "trim_html_2": "fastqc_html_2",
         "trim_zip_1": "fastqc_zip_1",
-        "trim_zip_2": "fastqc_zip_2", 
-        "versions": "updated_versions" 
+        "trim_zip_2": "fastqc_zip_2"
       ], 
       key: "fastqc_trimming"
     )
@@ -135,14 +127,12 @@ workflow run_wf {
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
         input: input,
-        built_bbsplit_index: state.bbsplit_index,
-        versions: state.versions ]
+        built_bbsplit_index: state.bbsplit_index ]
       },
       args: ["only_build_index": false], 
       toState: [
         "fastq_1": "fastq_1", 
-        "fastq_2": "fastq_2",
-        "versions": "updated_versions"
+        "fastq_2": "fastq_2"
       ]
     )
 
@@ -153,14 +143,12 @@ workflow run_wf {
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
           input: input,
-          ribo_database_manifest: state.ribo_database_manifest, 
-          versions: state.versions ] 
+          ribo_database_manifest: state.ribo_database_manifest ] 
       },
       toState: [
         "fastq_1": "fastq_1", 
         "fastq_2": "fastq_2",
-        "sortmerna_log": "sortmerna_log", 
-        "versions": "updated_versions" 
+        "sortmerna_log": "sortmerna_log"
       ] 
     )
 
@@ -170,38 +158,49 @@ workflow run_wf {
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ input: input,
-          extra_args: state.extra_fq_subsample_args, 
-          versions: state.versions ] 
+          extra_args: state.extra_fq_subsample_args ] 
       },
       toState: [
         "subsampled_fastq_1": "output_1",
-        "subsampled_fastq_2": "output_2", 
-        "versions": "updated_versions" 
+        "subsampled_fastq_2": "output_2"
       ]
     )
 
+    // Infer lib-type for salmon quant
+    | map { id, state -> 
+      def lib_type = (state.paired) ? 
+        (
+          (state.strandedness == "forward") ? 
+            "ISF" : 
+            (
+              (state.strandedness == "reverse") ? "ISR" : "IU"
+            )
+        ) 
+        : (
+          (state.strandedness == "forward") ? 
+            "SF" : 
+            (
+              (state.strandedness == "reverse") ? "SR" : "U"
+            )
+        ) 
+      [ id, state + [lib_type: lib_type] ]
+    }
     | salmon_quant.run (
       runIf: { id, state -> state.strandedness == 'auto' }, 
       fromState: { id, state ->
-        def input = state.paired ? [ state.subsampled_fastq_1, state.subsampled_fastq_2 ] : [ state.subsampled_fastq_1 ]
-        [ paired: state.paired, 
-          strandedness: state.strandedness, 
-          input: input, 
-          transcript_fasta: state.transcript_fasta, 
-          gtf: state.gtf, 
-          salmon_index: state.salmon_index, 
-          versions: state.versions ]
+        def unmated_reads = !state.paired ? state.subsampled_fastq_1 : null
+        def mates1 = state.paired ? state.subsampled_fastq_1 : null
+        def mates2 = state.paired ? state.subsampled_fastq_2 : null
+        [ unmated_reads: unmated_reads,
+          mates1: state.fastq1, 
+          mates2: state.fastq2, 
+          targets: state.transcript_fasta, 
+          gene_map: state.gtf, 
+          index: state.salmon_index,
+          lib_type: state.lib_type ]
       },
-      args: [
-        "alignment_mode": false, 
-        "lib_type": "A", 
-        "extra_salmon_quant_args": "--skipQuant"
-      ],
-      toState: [
-        "salmon_quant_output": "output",
-        "salmon_json_info": "json_info", 
-        "versions": "updated_versions" 
-      ]
+      args: [ "skip_quant": true ],
+      toState: [ "salmon_quant_output": "output" ]
     )
 
     | map { id, state -> 
@@ -225,14 +224,13 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
-        "salmon_json_info": "salmon_json_info", 
         "failed_trim": "failed_trim",
         "failed_trim_unpaired1": "failed_trim_unpaired1",
         "failed_trim_unpaired2": "failed_trim_unpaired2",
         "trim_json": "trim_json",
         "trim_html": "trim_html",
         "trim_merged_out": "trim_merged_out",
-        "updated_versions": "versions" 
+        "salmon_quant_output": "salmon_quant_output"
     )
 
   emit:

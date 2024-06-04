@@ -20,6 +20,6 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --gtf testData/minimal_test/reference/genes.gtf.gz \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
   --star_index testData/test_output/star_index \
-  --extra_star_align_args "--readFilesCommand gunzip -c --quantMode TranscriptomeSAM --twopassMode Basic --outSAMtype BAM Unsorted --runRNGseed 0 --outFilterMultimapNmax 20 --alignSJDBoverhangMin 1 --outSAMattributes NH HI AS NM MD --quantTranscriptomeBan Singleend --outSAMstrandField intronMotif" \
+  --aligner "star_rsem" \
   -profile docker \
   # -resume

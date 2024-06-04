@@ -73,7 +73,14 @@ resources:
 
 dependencies:
   - name: salmon/salmon_quant
+    repository: biobase
   - name: kallisto/kallisto_quant
+
+repositories:
+  - name: biobase
+    type: vsh
+    repo: viash-hub/biobase
+    tag: v0.1.0
 
 runners: 
 - type: executable

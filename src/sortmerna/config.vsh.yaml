@@ -21,9 +21,6 @@ argument_groups:
   - name: "--ribo_database_manifest"
     type: file
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments:     
@@ -47,10 +44,6 @@ argument_groups:
     description: Output file for read 2.
     direction: output
     default: $id.$key.read_2.fastq
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

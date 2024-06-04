@@ -292,12 +292,7 @@ argument_groups:
         must_exist: false
       - name: "--markduplicates_multiqc"
         type: file
-        must_exist: false
-
-      - name: "--versions"
-        type: file
-        must_exist: false
-        
+        must_exist: false        
 
   - name: Output
     arguments:
@@ -578,11 +573,6 @@ argument_groups:
         direction: output
         default: salmon_merged_summarizedexperiment
 
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
-
 resources:
   - type: nextflow_script
     path: main.nf
@@ -601,11 +591,19 @@ dependencies:
   - name: qualimap
   - name: preseq_lcextrap
   - name: featurecounts
+    repository: biobase
   - name: multiqc_custom_biotype
   - name: deseq2_qc
   - name: prepare_multiqc_input
   - name: multiqc
+    repository: biobase
   - name: workflows/merge_quant_results
+
+repositories:
+  - name: biobase
+    type: vsh
+    repo: viash-hub/biobase
+    tag: v0.1.0
 
 runners: 
 - type: executable

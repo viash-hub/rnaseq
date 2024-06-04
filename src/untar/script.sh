@@ -17,12 +17,12 @@ else
 fi
 
 # Version
-text="${meta_functionality_name}:
-    untar: $(echo $(tar --version 2>&1) | grep -oP 'tar \(GNU tar\) \K\d+\.\d+')"
+# text="${meta_functionality_name}:
+#     untar: $(echo $(tar --version 2>&1) | grep -oP 'tar \(GNU tar\) \K\d+\.\d+')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

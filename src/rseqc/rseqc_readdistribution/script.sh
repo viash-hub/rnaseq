@@ -8,12 +8,12 @@ read_distribution.py \
 > $par_output
 
 # Version
-text="${meta_functionality_name}:
-    rseqc: $(read_distribution.py --version | sed -e 's/read_distribution.py //g')"
+# text="${meta_functionality_name}:
+#     rseqc: $(read_distribution.py --version | sed -e 's/read_distribution.py //g')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

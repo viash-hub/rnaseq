@@ -64,14 +64,13 @@ else
     fi
 fi
 
-# Version
+# # Version
+# text="${meta_functionality_name}:
+#     bbmap: $(bbversion.sh | grep -v "Duplicate cpuset")"
 
-text="${meta_functionality_name}:
-    bbmap: $(bbversion.sh | grep -v "Duplicate cpuset")"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

@@ -34,11 +34,7 @@ argument_groups:
     default: 30 
     description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
     min: 0
-
-  - name: "--versions"
-    type: file
-    must_exist: false
-    
+  
 - name: "Output"
   arguments: 
   - name: "--output"
@@ -47,11 +43,6 @@ argument_groups:
     required: false
     default: $id.strandedness.txt
     description: output file (txt) of strandness report
-
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

@@ -11,21 +11,16 @@ workflow run_wf {
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf": "gtf", 
                 "gtf_group_features": "gtf_group_features", 
-                "quant_type": "quant_type",
-                "versions": "versions"
+                "quant_type": "quant_type"
             ],
-            toState: [ 
-                "tx2gene_tsv": "tsv", 
-                "versions": "updated_versions" 
-            ]
+            toState: [ "tx2gene_tsv": "tsv" ]
         )
 
         | tximport.run (
             fromState: [ 
                 "quant_results": "quant_results", 
                 "tx2gene_tsv": "tx2gene_tsv", 
-                "quant_type": "quant_type",
-                "versions": "versions" 
+                "quant_type": "quant_type"
             ],
             toState:  [
                 "tpm_gene": "tpm_gene",
@@ -35,8 +30,7 @@ workflow run_wf {
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
                 "length_gene": "length_gene",
-                "length_transcript": "length_transcript",
-                "versions": "updated_versions"
+                "length_transcript": "length_transcript"
             ]
         )
                 
@@ -48,24 +42,19 @@ workflow run_wf {
                 "counts_gene_scaled": "counts_gene_scaled", 
                 "tpm_transcript": "tpm_transcript", 
                 "counts_transcript": "counts_transcript", 
-                "tx2gene_tsv": "tx2gene_tsv", 
-                "versions": "versions" 
+                "tx2gene_tsv": "tx2gene_tsv"
             ],
-            toState: [ 
-                "salmon_merged_summarizedexperiment": "output", 
-                "versions": "updated_versions" 
-            ]
+            toState: [ "quant_merged_summarizedexperiment": "output" ]
         )
 
         | setState (
-            "tpm_gene": "tpm_gene",
+            [ "tpm_gene": "tpm_gene",
             "counts_gene": "counts_gene",
             "counts_gene_length_scaled": "counts_gene_length_scaled",
             "counts_gene_scaled": "counts_gene_scaled", 
             "tpm_transcript": "tpm_transcript", 
             "counts_transcript": "counts_transcript", 
-            "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment", 
-            "updated_versions": "versions"
+            "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment" ]
         )
 
     emit: 

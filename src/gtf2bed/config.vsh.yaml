@@ -14,9 +14,6 @@ argument_groups:
     type: file 
     required: true
     description: A reference file in GTF format.
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: " Output"
   arguments:  
@@ -25,10 +22,6 @@ argument_groups:
     direction: output
     required: true
     description: BED file resulting from the conversion of the GTF input file.
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

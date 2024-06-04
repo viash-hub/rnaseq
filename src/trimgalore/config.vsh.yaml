@@ -22,9 +22,6 @@ argument_groups:
     example: sample.fastq
     multiple: true
     multiple_sep: ","
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:   
@@ -71,10 +68,6 @@ argument_groups:
     required: false
     must_exist: false
     default: $id.$key.read_2.fastqc.zip
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 - name: "Optional"
   arguments: 

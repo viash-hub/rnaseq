@@ -25,12 +25,12 @@ mv ballgown $par_ballgown
 mv abundance.txt $par_abundance
 
 # Version
-text="${meta_functionality_name}:
-    stringtie: $(stringtie --version 2>&1)"
+# text="${meta_functionality_name}:
+#     stringtie: $(stringtie --version 2>&1)"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

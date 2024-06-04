@@ -24,12 +24,12 @@ python3 "$meta_resources_dir/tx2gene.py" \
     -o $par_tsv
 
 # Version
-text="${meta_functionality_name}:
-    python: $(python3 --version | sed 's/Python //g')"
+# text="${meta_functionality_name}:
+#     python: $(python3 --version | sed 's/Python //g')"
 
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi

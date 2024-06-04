@@ -15,15 +15,14 @@ STAR \
     --runThreadN ${meta_cpus:-1} \
     --genomeSAindexNbases $NUM_BASES 
 
-# Version
-text="${meta_functionality_name}:
-    star: $(STAR --version | sed -e "s/STAR_//g")
-    samtools: $(echo $(samtools --version 2>&1) | grep -oP 'samtools \K\d+\.\d+')
-    gawk: $(echo $(gawk --version 2>&1) | grep -oP 'GNU Awk \K\d+\.\d+\.\d+')"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+# # Version
+# text="${meta_functionality_name}:
+#     star: $(STAR --version | sed -e "s/STAR_//g")
+#     samtools: $(echo $(samtools --version 2>&1) | grep -oP 'samtools \K\d+\.\d+')
+#     gawk: $(echo $(gawk --version 2>&1) | grep -oP 'GNU Awk \K\d+\.\d+\.\d+')"
+# if [ -e "$par_versions" ]; then
+#     echo "$text" >> "$par_versions"
+#     mv "$par_versions" "$par_updated_versions"
+# else
+#     echo "$text" > "$par_updated_versions"
+# fi
