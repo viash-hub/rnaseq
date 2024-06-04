@@ -9,51 +9,31 @@ workflow run_wf {
       def paired = input.size() == 2
       [ id, state + [ paired: paired, input: input ] ]
     }
-    | star_align.run (
+
+    | star_align_reads.run (
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: [
-          "input", 
-          "gtf", 
-          "star_index", 
-          "extra_star_align_args", 
-          "seq_platform", 
-          "seq_center", 
-          "star_ignore_sjdbgtf"
+          "input": "fastq_1",
+          "input_r2": "fastq_2",
+          "sjdbGTFfile": "gtf",
+          "outSAMattrRGline": "star_sam_attr_rg_line"
         ],
         toState: [
-          "star_alignment": "output", 
-          "genome_bam": "star_align_bam", 
-          "transcriptome_bam": "star_align_bam_transcriptome", 
-          "star_multiqc": "log_final"
-        ]
+          "genome_bam": "aligned_reads",
+          "transcriptome_bam": "transcriptome",
+          "star_multiqc": "log"
+        ],
+        args: [
+          quantMode: "TranscriptomeSAM", 
+          twopassMode: "Basic", 
+          outSAMtype: "BAM Unsorted", 
+          runRNGseed: 0, 
+          outFilterMultimapNmax: 20, 
+          alignSJDBoverhangMin: 1, 
+          outSAMattributes: "NH HI AS NM MD", 
+          quantTranscriptomeBan: "Singleend", 
+          outSAMstrandField: "intronMotif"]
     )
-
-    // TODO: Add parameter for outSAMattrRGline
-    // Get transcriptome bam as output
-    // | star_align_reads.run (
-    //     runIf: { id, state -> state.aligner == 'star_salmon' },
-    //     fromState: [
-    //       "input": "fastq_1",
-    //       "input_r2": "fastq_2",
-    //       "sjdbGTFfile": "gtf",
-    //       "outSAMattrRGline": "star_sam_attr_rg_line"
-    //     ],
-    //     toState: [
-    //       "genome_bam": "aligned_reads",
-    //       "transcriptome_bam": "",
-    //       "star_multiqc": "log"
-    //     ],
-    //     args: [
-    //       quantMode: "TranscriptomeSAM", 
-    //       twopassMode: "Basic", 
-    //       outSAMtype: "BAM Unsorted", 
-    //       runRNGseed: 0, 
-    //       outFilterMultimapNmax: 20, 
-    //       alignSJDBoverhangMin: 1, 
-    //       outSAMattributes: "NH HI AS NM MD", 
-    //       quantTranscriptomeBan: "Singleend", 
-    //       outSAMstrandField: "intronMotif"]
-    // )
 
     // GENOME BAM
     | samtools_sort.run (

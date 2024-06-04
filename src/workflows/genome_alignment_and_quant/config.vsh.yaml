@@ -149,9 +149,8 @@ resources:
     entrypoint: run_wf
 
 dependencies:
-  - name: star/star_align
-  # - name: star/star_align_reads
-  #   repository: biobase
+  - name: star/star_align_reads
+    repository: biobase
   - name: samtools/samtools_sort
     repository: biobase
   - name: samtools/samtools_index
