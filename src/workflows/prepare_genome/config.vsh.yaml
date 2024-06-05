@@ -145,6 +145,7 @@ dependencies:
   - name: getchromsizes
   - name: untar
   - name: star/star_genomegenerate
+    # repository: biobase
   - name: bbmap_bbsplit
   - name: salmon/salmon_index
     repository: biobase

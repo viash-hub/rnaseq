@@ -72,7 +72,6 @@ workflow run_wf {
                 "fasta": "fasta_output", 
                 "gtf": "gtf_output"
             ], 
-            key: "cat_additional",
             args: [
                 fasta_output: "genome_additional.fasta", 
                 gtf_output: "genome_additional.gtf"
@@ -110,7 +109,6 @@ workflow run_wf {
             runIf: {id, state -> state.transcript_fasta && state.gencode}, 
             fromState: [ "transcript_fasta": "transcript_fasta" ], 
             toState: [ "transcript_fasta": "output" ], 
-            key: "transcript_fixed", 
             args: [output: "transcriptome.fasta"] 
         )
 
@@ -145,7 +143,7 @@ workflow run_wf {
             runIf: {id, state -> state.bbsplit_index}, 
             fromState: [ "input": "bbsplit_index" ], 
             toState: [ "bbsplit_index": "output" ], 
-            key: "bbsplit_uncompressed",
+            key: "untar_bbsplit_index",
             args: [output: "BBSplit_index"] 
         )
         
@@ -161,7 +159,7 @@ workflow run_wf {
                 only_build_index: true, 
                 bbsplit_index: "BBSplit_index"
             ], 
-            key: "bbsplit_index_uncompressed" 
+            key: "generate_bbsplit_index" 
         )
 
         // Uncompress STAR index or generate from scratch if required
@@ -169,7 +167,7 @@ workflow run_wf {
             runIf: {id, state -> state.star_index}, 
             fromState: [ "input": "star_index" ], 
             toState: [ "star_index": "output" ], 
-            key: "star_index_uncompressed",
+            key: "untar_star_index",
             args: [output: "STAR_index"]
         )
         
@@ -181,7 +179,7 @@ workflow run_wf {
                 "gtf": "gtf"
             ], 
             toState: [ "star_index": "star_index" ], 
-            key: "star_index_uncompressed",
+            key: "generate_star_index",
             args: [star_index: "STAR_index"]
         )
 
@@ -190,7 +188,7 @@ workflow run_wf {
             runIf: {id, state -> state.rsem_index}, 
             fromState: [ "input": "rsem_index" ], 
             toState: [ "rsem_index": "output" ], 
-            key: "rsem_index_uncompressed",
+            key: "untar_rsem_index",
             args: [output: "RSEM_index"]
         )
 
@@ -201,7 +199,7 @@ workflow run_wf {
                 "gtf": "gtf"
             ], 
             toState: [ "rsem_index": "rsem" ], 
-            key: "prepare_rsem_index",
+            key: "generate_rsem_index",
         )
         
         // TODO: Uncompress HISAT2 index or generate from scratch if required
@@ -211,7 +209,7 @@ workflow run_wf {
             runIf: {id, state -> state.salmon_index}, 
             fromState: [ "input": "salmon_index" ], 
             toState: [ "salmon_index": "output" ], 
-            key: "salmon_index_uncompressed",
+            key: "untar_salmon_index",
             args: [output: "Salmon_index"]
         )
 
@@ -224,8 +222,8 @@ workflow run_wf {
                 "gencode": "gencode"
             ], 
             toState: [ "salmon_index": "index" ], 
-            key: "salmon_index_uncompressed",
-            args: [salmon_index: "Salmon_index"] 
+            key: "generate_salmon_index",
+            args: [index: "Salmon_index"] 
         )
 
         // Uncompress Kallisto index or generate from scratch if required
@@ -236,7 +234,7 @@ workflow run_wf {
                 "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
             ], 
             toState: [ "kallisto_index": "output" ], 
-            key: "kallisto_index_uncompressed",
+            key: "untar_kallisto_index",
             args: [output: "Kallisto_index"]
         )
 
@@ -247,6 +245,7 @@ workflow run_wf {
                 "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
             ],
             toState: [ "kallisto_index": "kallisto_index" ],
+            key: "generate_kallisto_index",
             args: [kallisto_index: "Kallisto_index"]
         )
 
