@@ -54,15 +54,3 @@ else
         cp $zip $par_trim_zip_1
     fi
 fi
-
-# Version
-text="${meta_functionality_name}:
-    trimgalore: $(echo $(trim_galore --version 2>&1) | grep -oP 'version \K\d+\.\d+\.\d+')
-    cutadapt: $(cutadapt --version)"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi

@@ -21,14 +21,3 @@ mv $prefix.inner_distance.txt $par_output_dist
 mv $prefix.inner_distance_plot.pdf $par_output_plot
 mv $prefix.inner_distance_plot.r $par_output_plot_r
 mv $prefix.inner_distance_freq.txt $par_output_freq
-
-# Version
-# text="${meta_functionality_name}:
-#     rseqc: $(inner_distance.py --version | sed -e 's/inner_distance.py //g')"
-
-# if [ -e "$par_versions" ]; then
-#     echo "$text" >> "$par_versions"
-#     mv "$par_versions" "$par_updated_versions"
-# else
-#     echo "$text" > "$par_updated_versions"
-# fi

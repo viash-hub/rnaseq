@@ -46,15 +46,3 @@ if [ -f "$par_deseq2_output/R_sessionInfo.log" ]; then
     sed -i -e "s/DESeq2 sample/${label_upper} DESeq2 sample/g" tmp.txt
     cat tmp.txt $par_deseq2_output/*.sample.dists.txt > $par_dists_multiqc
 fi
-
-# Version
-# deseq2_ver=$(Rscript -e "library(DESeq2); cat(as.character(packageVersion('DESeq2')))")
-# text="${meta_functionality_name}:
-#     r-base: $(echo $(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-#     bioconductor-deseq2: ${deseq2_ver}"
-# if [ -e "$par_versions" ]; then
-#     echo "$text" >> "$par_versions"
-#     mv "$par_versions" "$par_updated_versions"
-# else
-#     echo "$text" > "$par_updated_versions"
-# fi

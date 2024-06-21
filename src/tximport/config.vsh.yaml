@@ -25,23 +25,23 @@ argument_groups:
   - name: "--tpm_gene"
     type: file
     direction: output
-    example: salmon.merged.gene_tpm.tsv
+    default: salmon.merged.gene_tpm.tsv
   - name: "--counts_gene"
     type: file
     direction: output
-    example: salmon.merged.gene_counts.tsv
+    default: salmon.merged.gene_counts.tsv
   - name: "--counts_gene_length_scaled"
     type: file
     direction: output
-    example: salmon.merged.gene_counts_length_scaled.tsv
+    default: salmon.merged.gene_counts_length_scaled.tsv
   - name: "--counts_gene_scaled"
     type: file
     direction: output
-    example: salmon.merged.gene_counts_scaled.tsv
+    default: salmon.merged.gene_counts_scaled.tsv
   - name: "--lengths_gene"
     type: file
     direction: output
-    example: salmon.merged.gene_length.tsv
+    default: salmon.merged.gene_length.tsv
   - name: "--tpm_transcript"
     type: file
     direction: output
@@ -53,7 +53,7 @@ argument_groups:
   - name: "--lengths_transcript"
     type: file
     direction: output
-    example: salmon.merged.transcript_length.tsv
+    default: salmon.merged.transcript_length.tsv
 
 resources:
   - type: bash_script

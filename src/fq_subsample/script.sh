@@ -22,14 +22,3 @@ else
     echo "FQ/SUBSAMPLE only accepts 1 or 2 FASTQ files!"
     exit 1
 fi
-
-# # Version
-# text="${meta_functionality_name}:
-#     fq: $(echo $(fq subsample --version | sed 's/fq-subsample //g'))"
-
-# if [ -e "$par_versions" ]; then
-#     echo "$text" >> "$par_versions"
-#     mv "$par_versions" "$par_updated_versions"
-# else
-#     echo "$text" > "$par_updated_versions"
-# fi

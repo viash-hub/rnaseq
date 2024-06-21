@@ -24,14 +24,4 @@ else
     "$par_rsem/genome"
     cp "$par_rsem/genome.transcripts.fa" $par_transcript_fasta
 fi
-
-# # Version
-# text="${meta_functionality_name}:
-#     rsem: $(rsem-calculate-expression --version | sed -e 's/Current version: RSEM v//g')
-#     star: $(STAR --version | sed -e 's/STAR_//g')"
-# if [ -e "$par_versions" ]; then
-#     echo "$text" >> "$par_versions"
-#     mv "$par_versions" "$par_updated_versions"
-# else
-#     echo "$text" > "$par_updated_versions"
-# fi     
+    
