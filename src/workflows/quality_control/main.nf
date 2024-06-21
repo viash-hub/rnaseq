@@ -349,7 +349,9 @@ workflow run_wf {
             def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
             def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
             def multiqc_custom_config = list.collect { id, state -> state.multiqc_custom_config }.unique()[0] 
-            def versions = list.collect { id, state -> state.versions }.unique()[0]
+            def skip_qc = list.collect { id, state -> state.skip_qc }.unique()[0] 
+            def skip_align = list.collect { id, state -> state.skip_align }.unique()[0] 
+            def skip_pseudo_align = list.collect { id, state -> state.skip_pseudo_align }.unique()[0] 
             ["merged", [
                 ids: ids, 
                 strandedness: strandedness, 
@@ -396,13 +398,15 @@ workflow run_wf {
                 percent_mapped: percent_mapped,
                 inferred_strand: inferred_strand, 
                 passed_strand_check: passed_strand_check, 
-                multiqc_custom_config: multiqc_custom_config
+                multiqc_custom_config: multiqc_custom_config,
+                skip_align: skip_align,
+                skip_pseudo_align: skip_pseudo_align
             ] ]
         } 
 
         // Merge quantification results of alignment
         | merge_quant_results.run (
-            runIf: { id, state -> !state.skip_alignment && state.aligner == 'star_salmon' },
+            runIf: { id, state -> !state.skip_align && state.aligner == 'star_salmon' },
             fromState: [ 
                 "quant_results": "quant_results", 
                 "gtf": "gtf", 
@@ -425,7 +429,7 @@ workflow run_wf {
         )
 
         | deseq2_qc.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_alignment },
+            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_align },
             fromState: [
                 "counts": "counts_gene_length_scaled",
                 "pca_header_multiqc": "pca_header_multiqc", 
@@ -444,7 +448,7 @@ workflow run_wf {
 
         // Merge quantification results of pseudo alignment
         | merge_quant_results.run (
-            runIf: { id, state -> !state.skip_pseudo_alignment },
+            runIf: { id, state -> !state.skip_pseudo_align },
             fromState: [ 
                 "quant_results": "pseudo_quant_results", 
                 "gtf": "gtf", 
@@ -467,7 +471,7 @@ workflow run_wf {
         )
 
         | deseq2_qc.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_pseudo_alignment },
+            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_pseudo_align },
             fromState: [
                 "counts": "pseudo_counts_gene_length_scaled",
                 "pca_header_multiqc": "pca_header_multiqc", 
