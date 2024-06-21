@@ -175,12 +175,12 @@ workflow run_wf {
         | star_genomegenerate.run (
             runIf: {id, state -> !state.star_index}, 
             fromState: [ 
-                "fasta": "fasta", 
-                "gtf": "gtf"
+                "genomeFastaFiles": "fasta", 
+                "sjdbGTFfile": "gtf"
             ], 
-            toState: [ "star_index": "star_index" ], 
+            toState: [ "star_index": "index" ], 
             key: "generate_star_index",
-            args: [star_index: "STAR_index"]
+            args: [index: "STAR_index"]
         )
 
         // Uncompress RSEM index or generate from scratch if required

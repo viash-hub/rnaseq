@@ -4,7 +4,7 @@ workflow run_wf {
 
     main: 
         output_ch = input_ch
-    
+
         | tx2gene.run (
             fromState: [ 
                 "quant_results": "quant_results", 

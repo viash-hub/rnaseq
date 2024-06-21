@@ -1,28 +1,29 @@
 #!/bin/bash
 
-set -eo pipefail
+set -e
 
-samtools faidx "$par_fasta"
-NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", int((log(sum)/log(2))/2 - 1)}}' $par_fasta.fai`
+## VIASH START
+## VIASH END
 
-mkdir -p $par_star_index
+mkdir -p $par_index
 
 STAR \
     --runMode genomeGenerate \
-    --genomeDir $par_star_index \
-    --genomeFastaFiles $par_fasta \
-    --sjdbGTFfile $par_gtf \
-    --runThreadN ${meta_cpus:-1} \
-    --genomeSAindexNbases $NUM_BASES 
-
-# # Version
-# text="${meta_functionality_name}:
-#     star: $(STAR --version | sed -e "s/STAR_//g")
-#     samtools: $(echo $(samtools --version 2>&1) | grep -oP 'samtools \K\d+\.\d+')
-#     gawk: $(echo $(gawk --version 2>&1) | grep -oP 'GNU Awk \K\d+\.\d+\.\d+')"
-# if [ -e "$par_versions" ]; then
-#     echo "$text" >> "$par_versions"
-#     mv "$par_versions" "$par_updated_versions"
-# else
-#     echo "$text" > "$par_updated_versions"
-# fi
+    --genomeDir $par_index \
+    --genomeFastaFiles $par_genomeFastaFiles \
+    ${meta_cpus:+--runThreadN "${meta_cpus}"} \
+    ${par_sjdbGTFfile:+--sjdbGTFfile "${par_sjdbGTFfile}"} \
+    ${par_sjdbOverhang:+--sjdbOverhang "${par_sjdbOverhang}"} \
+    ${par_genomeSAindexNbases:+--genomeSAindexNbases "${par_genomeSAindexNbases}"} \
+    ${par_sjdbGTFchrPrefix:+--sjdbGTFchrPrefix "${par_sjdbGTFchrPrefix}"} \
+    ${par_sjdbGTFfeatureExon:+--sjdbGTFfeatureExon "${par_sjdbGTFfeatureExon}"} \
+    ${par_sjdbGTFtagExonParentTranscript:+--sjdbGTFtagExonParentTranscript "${par_sjdbGTFtagExonParentTranscript}"} \
+    ${par_sjdbGTFtagExonParentGene:+--sjdbGTFtagExonParentGene "${par_sjdbGTFtagExonParentGene}"} \
+    ${par_sjdbGTFtagExonParentGeneName:+--sjdbGTFtagExonParentGeneName "${par_sjdbGTFtagExonParentGeneName}"} \
+    ${par_sjdbGTFtagExonParentGeneType:+--sjdbGTFtagExonParentGeneType "${sjdbGTFtagExonParentGeneType}"} \
+    ${par_limitGenomeGenerateRAM:+--limitGenomeGenerateRAM "${par_limitGenomeGenerateRAM}"} \
+    ${par_genomeChrBinNbits:+--genomeChrBinNbits "${par_genomeChrBinNbits}"} \
+    ${par_genomeSAsparseD:+--genomeSAsparseD "${par_genomeSAsparseD}"} \
+    ${par_genomeSuffixLengthMax:+--genomeSuffixLengthMax "${par_genomeSuffixLengthMax}"} \
+    ${par_genomeTransformType:+--genomeTransformType "${par_genomeTransformType}"} \
+    ${par_genomeTransformVCF:+--genomeTransformVCF "${par_genomeTransformVCF}"} \

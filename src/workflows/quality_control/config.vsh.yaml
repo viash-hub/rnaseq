@@ -39,9 +39,24 @@ argument_groups:
         type: string
         default: 'gene_name'
         description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
-      - name: "--quant_results"
+      - name: "--quant_out_dir"
         type: file
-        description: Path to directory with quantification results.
+        description: Directory containing quantification results.
+      - name: "--quant_results_file"
+        type: file
+        description: Quantification file.
+      - name: "--pseudo_quant_out_dir"
+        type: file
+        description: Directory containing quantification results for pseudo alignment.
+      - name: "--pseudp_quant_results_file"
+        type: file
+        description: Quantification file for pseudo alignment.
+      - name: "--aligner"
+        type: string
+        description: Method used for alognment and qqunatification.
+      - name: "--pseudo_aligner"
+        type: string
+        description: Method used for [seudo alignment and quantification.
       
       - name: "--skip_qc"
         type: boolean
@@ -503,6 +518,10 @@ argument_groups:
         type: file
         direction: output
         default: deseq2
+      - name: "--deseq2_output_pseudo"
+        type: file
+        direction: output
+        default: deseq2_pseudo
 
       # MultiQC
       - name: "--multiqc_report"
@@ -568,10 +587,38 @@ argument_groups:
         type: file
         direction: output
         default: salmon.merged.transcript_counts.tsv
-      - name: "--salmon_merged_summarizedexperiment"
+      - name: "--quant_merged_summarizedexperiment"
         type: file
         direction: output
         default: salmon_merged_summarizedexperiment
+      - name: "--pseudo_tpm_gene"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_gene_tpm.tsv
+      - name: "--pseudo_counts_gene"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_gene_counts.tsv
+      - name: "--pseudo_counts_gene_length_scaled"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_gene_counts_length_scaled.tsv
+      - name: "--pseudo_counts_gene_scaled"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_gene_counts_scaled.tsv
+      - name: "--pseudo_tpm_transcript"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_transcript_tpm.tsv
+      - name: "--pseudo_counts_transcript"
+        type: file
+        direction: output
+        default: salmon.merged.pseudo_transcript_counts.tsv
+      - name: "--pseudo_quant_merged_summarizedexperiment"
+        type: file
+        direction: output
+        default: pseudo_quant_merged_summarizedexperiment
 
 resources:
   - type: nextflow_script

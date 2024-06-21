@@ -207,7 +207,8 @@ workflow run_wf {
           "umi_dedup_stats": "umi_dedup_stats",
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
-          "salmon_quant_libtype": "salmon_quant_libtype" 
+          "salmon_quant_libtype": "salmon_quant_libtype",
+          "salmon_index": "salmon_index" 
         ],
         toState: [
           "star_alignment": "star_alignment", 
@@ -222,7 +223,8 @@ workflow run_wf {
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-          "quant_results": "quant_results"
+          "quant_out_dir": "quant_out_dir",
+          "quant_results_file": "quant_results_file"
         ]
     )
 
@@ -258,8 +260,8 @@ workflow run_wf {
           "kallisto_quant_fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
-          "pseudo_multiqc": "pseudo_multiqc", 
-          "quant_results": "quant_results"
+          "pseudo_quant_out_dir": "quant_out_dir",
+          "pseudo_quant_results_file": "quant_results_file"
         ]
     )
 
@@ -319,11 +321,16 @@ workflow run_wf {
           "paired": "paired", 
           "strandedness": "strandedness", 
           "skip_align": "skip_alignment",
-          "skip_pseudo_align": "skippseudo_alignment",
+          "skip_pseudo_align": "skip_pseudo_alignment",
           "gtf": "gtf", 
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",
-          "quant_results": "quant_results", 
+          "quant_out_dir": "quant_out_dir",
+          "quant_results_file": "quant_results_file",
+          "pseudo_quant_out_dir": "pseudo_quant_out_dir",
+          "pseudo_quant_results_file": "pseudo_quant_results_file", 
+          "aligner": "aligner",
+          "pseudo_aligner": "pseudo_aligner",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 
@@ -500,8 +507,18 @@ workflow run_wf {
         "counts_gene_scaled": "counts_gene_scaled", 
         "tpm_transcript": "tpm_transcript", 
         "counts_transcript": "counts_transcript", 
-        "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+        "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
         "deseq2_output": "deseq2_output", 
+        "pseudo_tpm_gene": "pseudo_tpm_gene",
+        "pseudo_counts_gene": "pseudo_counts_gene",
+        "pseudo_counts_gene_length_scaled": "pseudo_counts_gene_length_scaled",
+        "pseudo_counts_gene_scaled": "pseudo_counts_gene_scaled", 
+        "pseudo_tpm_transcript": "pseudo_tpm_transcript", 
+        "pseudo_counts_transcript": "pseudo_counts_transcript", 
+        "pseudo_lengths_gene": "pseudo_lengths_gene",
+        "pseudo_lengths_transcript": "pseudo_lengths_transcript",
+        "pseudo_quant_merged_summarizedexperiment": "pseudo_quant_merged_summarizedexperiment",
+        "deseq2_output_pseudo": "deseq2_output_pseudo",  
         "multiqc_report": "multiqc_report", 
         "multiqc_data": "multiqc_data", 
         "multiqc_plots": "multiqc_plots",

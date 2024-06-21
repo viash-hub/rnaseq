@@ -46,7 +46,10 @@ workflow run_wf {
             index: state.pseudo_index,
             lib_type: state.lib_type ]
         },
-        toState: [ "quant_results": "output" ]
+        toState: [ 
+          "quant_results_dir": "output",
+          "quant_results_file": "quant_results" 
+        ]
     )
 
     | kallisto_quant.run ( 
@@ -59,14 +62,15 @@ workflow run_wf {
           "fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
-          "quant_results": "output", 
+          "quant_out_dir": "output", 
           "pseudo_multiqc": "log"
         ]
     )
 
     | setState (
       [ "pseudo_multiqc": "quant_results", 
-        "quant_results": "quant_results" ]
+        "quant_out_dir": "quant_out_dir",
+        "quant_results_file": "quant_results_file" ]
     )
 
   emit:

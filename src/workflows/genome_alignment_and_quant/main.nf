@@ -15,6 +15,7 @@ workflow run_wf {
         fromState: [
           "input": "fastq_1",
           "input_r2": "fastq_2",
+          "genomeDir": "star_index",
           "sjdbGTFfile": "gtf",
           "outSAMattrRGline": "star_sam_attr_rg_line"
         ],
@@ -23,16 +24,16 @@ workflow run_wf {
           "transcriptome_bam": "transcriptome",
           "star_multiqc": "log"
         ],
-        args: [
+        args: [ 
           quantMode: "TranscriptomeSAM", 
           twopassMode: "Basic", 
-          outSAMtype: "BAM Unsorted", 
+          outSAMtype: "BAM;Unsorted", 
           runRNGseed: 0, 
           outFilterMultimapNmax: 20, 
           alignSJDBoverhangMin: 1, 
-          outSAMattributes: "NH HI AS NM MD", 
-          quantTranscriptomeBan: "Singleend", 
-          outSAMstrandField: "intronMotif"]
+          outSAMattributes: "NH;HI;AS;NM;MD", 
+          quantTranscriptomeSAMoutput: "BanSingleEnd" 
+        ]
     )
 
     // GENOME BAM
@@ -273,7 +274,10 @@ workflow run_wf {
           "targets": "transcript_fasta", 
           "gene_map": "gtf"
         ],
-        toState: [ "quant_results": "output" ]
+        toState: [ 
+          "quant_out_dir": "output",
+          "quant_results_file": "quant_results" 
+        ]
     )
 
     | rsem_calculate_expression.run (
@@ -358,9 +362,10 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "quant_results": "quant_results" ]
+        "quant_out_dir": "quant_out_dir",
+        "quant_results_file": "quant_results_file" ]
     )
-
+    
   emit:
     output_ch
 }

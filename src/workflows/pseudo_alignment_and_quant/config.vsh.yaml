@@ -57,15 +57,15 @@ argument_groups:
     type: file
     direction: output
     default: $id.quant.log
-  - name: "--quant_results"
+  - name: "--quant_out_dir"
     type: file
     direction: output
-    default: $id.quant
-  - name: "--updated_versions"
+    default: $id.salmon_quant
+  - name: "--quant_results_file"
     type: file
-    default: versions.yml
     direction: output
-
+    default: $id.quant.sf
+ 
 resources:
   - type: nextflow_script
     path: main.nf

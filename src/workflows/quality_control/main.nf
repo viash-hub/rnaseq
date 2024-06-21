@@ -251,9 +251,14 @@ workflow run_wf {
                     state.star_multiqc : 
                     null }
             def quant_results = list.collect { id, state -> 
-                (state.quant_results instanceof java.nio.file.Path && state.quant_results.exists()) ? 
-                    state.quant_results : 
+                (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
+                    state.quant_results_file : 
                     null }
+            def pseudo_quant_results = list.collect { id, state -> 
+                (state.pseudo_quant_results_file instanceof java.nio.file.Path && state.pseudo_quant_results_file.exists()) ? 
+                    state.pseudo_quant_results_file : 
+                    null }
+
             def genome_bam_stats = list.collect { id, state -> 
                 (state.genome_bam_stats instanceof java.nio.file.Path && state.genome_bam_stats.exists()) ? 
                     state.genome_bam_stats : 
@@ -373,6 +378,7 @@ workflow run_wf {
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
                 quant_results: quant_results, 
+                pseudo_quant_results: pseudo_quant_results,
                 gtf: gtf, 
                 gtf_extra_attributes: gtf_extra_attributes, 
                 gtf_group_features: gtf_group_features,
@@ -394,13 +400,16 @@ workflow run_wf {
             ] ]
         } 
 
+        // Merge quantification results of alignment
         | merge_quant_results.run (
+            runIf: { id, state -> !state.skip_alignment && state.aligner == 'star_salmon' },
             fromState: [ 
                 "quant_results": "quant_results", 
                 "gtf": "gtf", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf_group_features": "gtf_group_features"
             ],
+            args: [ quant_type: "salmon"],
             toState: [
                 "tpm_gene": "tpm_gene",
                 "counts_gene": "counts_gene",
@@ -410,12 +419,13 @@ workflow run_wf {
                 "counts_transcript": "counts_transcript", 
                 "lengths_gene": "lengths_gene",
                 "lengths_transcript": "lengths_transcript",
-                "salmon_merged_summarizedexperiment": "merged_summarizedexperiment"
+                "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment"
             ], 
+            key: "merge_qunat_results"
         )
 
         | deseq2_qc.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc },
+            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_alignment },
             fromState: [
                 "counts": "counts_gene_length_scaled",
                 "pca_header_multiqc": "pca_header_multiqc", 
@@ -429,6 +439,49 @@ workflow run_wf {
                 "deseq2_pca_multiqc": "pca_multiqc", 
                 "deseq2_dists_multiqc": "dists_multiqc" 
             ], 
+            key: "deseq2_qc_align_quant"
+        )
+
+        // Merge quantification results of pseudo alignment
+        | merge_quant_results.run (
+            runIf: { id, state -> !state.skip_pseudo_alignment },
+            fromState: [ 
+                "quant_results": "pseudo_quant_results", 
+                "gtf": "gtf", 
+                "gtf_extra_attributes": "gtf_extra_attributes", 
+                "gtf_group_features": "gtf_group_features",
+                "quant_type": "pseudo_aligner"
+            ],
+            toState: [
+                "pseudo_tpm_gene": "tpm_gene",
+                "pseudo_counts_gene": "counts_gene",
+                "pseudo_counts_gene_length_scaled": "counts_gene_length_scaled",
+                "pseudo_counts_gene_scaled": "counts_gene_scaled", 
+                "pseudo_tpm_transcript": "tpm_transcript", 
+                "pseudo_counts_transcript": "counts_transcript", 
+                "pseudo_lengths_gene": "lengths_gene",
+                "pseudo_lengths_transcript": "lengths_transcript",
+                "pseudo_quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment"
+            ], 
+            key: "merge_pseudo_quant_results",
+        )
+
+        | deseq2_qc.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_pseudo_alignment },
+            fromState: [
+                "counts": "pseudo_counts_gene_length_scaled",
+                "pca_header_multiqc": "pca_header_multiqc", 
+                "clustering_header_multiqc": "clustering_header_multiqc",
+                "deseq2_vst": "deseq2_vst", 
+                "extra_deseq2_args": "extra_deseq2_args",
+                "extra_deseq2_args2": "extra_deseq2_args2" 
+            ], 
+            toState: [
+                "deseq2_output_pseudo": "deseq2_output", 
+                "deseq2_pca_multiqc_pseudo": "pca_multiqc", 
+                "deseq2_dists_multiqc_pseudo_": "dists_multiqc" 
+            ], 
+            key: "deseq2_qc_pseuso_align_quant"
         )
 
         // Get list of samples that failed trimming, mapping, and strand check for MultiQC report
@@ -491,6 +544,8 @@ workflow run_wf {
                 "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
                 "aligner_pca_multiqc": "deseq2_pca_multiqc", 
                 "aligner_clustering_multiqc": "deseq2_dists_multiqc", 
+                "pseudo_aligner_pca_multiqc": "deseq2_pca_multiqc_pseudo", 
+                "pseudo_aligner_clustering_multiqc": "deseq2_dists_multiqc_pseudo", 
                 "preseq_multiqc": "preseq_output", 
                 "qualimap_multiqc": "qualimap_output_dir", 
                 "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc", 
@@ -502,7 +557,8 @@ workflow run_wf {
                 "junctionsaturation_multiqc": "junction_saturation_output_plot_r",
                 "readdistribution_multiqc": "read_distribution_output",
                 "readduplication_multiqc": "read_duplication_output_duplication_rate_mapping", 
-                "tin_multiqc": "tin_output_summary"
+                "tin_multiqc": "tin_output_summary",
+                "multiqc_config": "multiqc_custom_config"
             ], 
             toState: [ "multiqc_input": "output" ]
         )
@@ -511,7 +567,6 @@ workflow run_wf {
             fromState: [
                 "title": "multiqc_title", 
                 "input": "multiqc_input", 
-                "cl_config": "multiqc_custom_config"
             ], 
             toState: [
                 "multiqc_report": "output_report", 
@@ -528,8 +583,16 @@ workflow run_wf {
                 counts_gene_scaled: state.counts_gene_scaled, 
                 tpm_transcript: state.tpm_transcript, 
                 counts_transcript: state.counts_transcript, 
-                salmon_merged_summarizedexperiment: state.salmon_merged_summarizedexperiment,
+                quant_merged_summarizedexperiment: state.quant_merged_summarizedexperiment,
                 deseq2_output: state.deseq2_output, 
+                pseudo_tpm_gene: state.pseudo_tpm_gene,
+                pseudo_counts_gene: state.pseudo_counts_gene,
+                pseudo_counts_gene_length_scaled: state.pseudo_counts_gene_length_scaled,
+                pseudo_counts_gene_scaled: state.pseudo_counts_gene_scaled, 
+                pseudo_tpm_transcript: state.pseudo_tpm_transcript, 
+                pseudo_counts_transcript: state.pseudo_counts_transcript, 
+                pseudo_quant_merged_summarizedexperiment: state.pseudo_quant_merged_summarizedexperiment,
+                deseq2_output_pseudo: state.deseq2_output_pseudo,
                 multiqc_report: state.multiqc_report, 
                 multiqc_data: state.multiqc_data, 
                 multiqc_plots: state.multiqc_plots
@@ -591,8 +654,18 @@ workflow run_wf {
                 "counts_transcript": "counts_transcript", 
                 "lengths_gene": "lengths_gene",
                 "lengths_transcript": "lengths_transcript",
-                "merged_summarizedexperiment": "merged_summarizedexperiment",
+                "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
                 "deseq2_output": "deseq2_output", 
+                "pseudo_tpm_gene": "pseudo_tpm_gene",
+                "pseudo_counts_gene": "pseudo_counts_gene",
+                "pseudo_counts_gene_length_scaled": "pseudo_counts_gene_length_scaled",
+                "pseudo_counts_gene_scaled": "pseudo_counts_gene_scaled", 
+                "pseudo_tpm_transcript": "pseudo_tpm_transcript", 
+                "pseudo_counts_transcript": "pseudo_counts_transcript", 
+                "pseudo_lengths_gene": "pseudo_lengths_gene",
+                "pseudo_lengths_transcript": "pseudo_lengths_transcript",
+                "pseudo_quant_merged_summarizedexperiment": "pseudo_quant_merged_summarizedexperiment",
+                "deseq2_output_pseudo": "deseq2_output_pseudo", 
                 "multiqc_report": "multiqc_report", 
                 "multiqc_data": "multiqc_data", 
                 "multiqc_plots": "multiqc_plots",
