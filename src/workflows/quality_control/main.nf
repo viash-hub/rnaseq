@@ -254,11 +254,14 @@ workflow run_wf {
                 (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
                     state.quant_results_file : 
                     null }
-            def pseudo_quant_results = list.collect { id, state -> 
-                (state.pseudo_quant_results_file instanceof java.nio.file.Path && state.pseudo_quant_results_file.exists()) ? 
-                    state.pseudo_quant_results_file : 
+            def pseudo_salmon_quant_results = list.collect { id, state -> 
+                (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
+                    state.pseudo_salmon_quant_results_file : 
                     null }
-
+            def pseudo_kallisto_quant_results = list.collect { id, state -> 
+                (state.pseudo_kallisto_quant_results_file instanceof java.nio.file.Path && state.pseudo_kallisto_quant_results_file.exists()) ? 
+                    state.pseudo_kallisto_quant_results_file : 
+                    null }
             def genome_bam_stats = list.collect { id, state -> 
                 (state.genome_bam_stats instanceof java.nio.file.Path && state.genome_bam_stats.exists()) ? 
                     state.genome_bam_stats : 
@@ -274,6 +277,10 @@ workflow run_wf {
             def markduplicates_multiqc = list.collect { id, state -> 
                 (state.markduplicates_multiqc instanceof java.nio.file.Path && state.markduplicates_multiqc.exists()) ? 
                     state.markduplicates_multiqc : 
+                    null }
+            def pseudo_multiqc = list.collect { id, state -> 
+                (state.pseudo_multiqc instanceof java.nio.file.Path && state.pseudo_multiqc.exists()) ? 
+                    state.pseudo_multiqc : 
                     null }
             def featurecounts_multiqc = list.collect { id, state -> 
                 (state.featurecounts_multiqc instanceof java.nio.file.Path && state.featurecounts_multiqc.exists()) ? 
@@ -365,6 +372,7 @@ workflow run_wf {
                 genome_bam_flagstat: genome_bam_flagstat,
                 genome_bam_idxstats: genome_bam_idxstats,
                 markduplicates_multiqc: markduplicates_multiqc,
+                pseudo_multiqc: pseudo_multiqc,
                 featurecounts_multiqc: featurecounts_multiqc,
                 featurecounts_rrna_multiqc: featurecounts_rrna_multiqc,
                 preseq_output: preseq_output,
@@ -380,7 +388,8 @@ workflow run_wf {
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
                 quant_results: quant_results, 
-                pseudo_quant_results: pseudo_quant_results,
+                pseudo_salmon_quant_results: pseudo_salmon_quant_results,
+                pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
                 gtf: gtf, 
                 gtf_extra_attributes: gtf_extra_attributes, 
                 gtf_group_features: gtf_group_features,
@@ -403,12 +412,12 @@ workflow run_wf {
                 skip_pseudo_align: skip_pseudo_align
             ] ]
         } 
-
+        
         // Merge quantification results of alignment
         | merge_quant_results.run (
             runIf: { id, state -> !state.skip_align && state.aligner == 'star_salmon' },
             fromState: [ 
-                "quant_results": "quant_results", 
+                "salmon_quant_results": "quant_results", 
                 "gtf": "gtf", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf_group_features": "gtf_group_features"
@@ -450,7 +459,8 @@ workflow run_wf {
         | merge_quant_results.run (
             runIf: { id, state -> !state.skip_pseudo_align },
             fromState: [ 
-                "quant_results": "pseudo_quant_results", 
+                "salmon_quant_results": "pseudo_salmon_quant_results",
+                "kallisto_quant_results": "pseudo_kallisto_quant_results",
                 "gtf": "gtf", 
                 "gtf_extra_attributes": "gtf_extra_attributes", 
                 "gtf_group_features": "gtf_group_features",
@@ -467,7 +477,7 @@ workflow run_wf {
                 "pseudo_lengths_transcript": "lengths_transcript",
                 "pseudo_quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment"
             ], 
-            key: "merge_pseudo_quant_results",
+            key: "merge_pseudo_quant_results"
         )
 
         | deseq2_qc.run (
@@ -544,6 +554,7 @@ workflow run_wf {
                 "samtools_flagstat": "genome_bam_flagstat", 
                 "samtools_idxstats": "genome_bam_idxstats", 
                 "markduplicates_multiqc": "markduplicates_multiqc", 
+                "pseudo_multiqc": "pseudo_multiqc",
                 "featurecounts_multiqc": "featurecounts_multiqc",
                 "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
                 "aligner_pca_multiqc": "deseq2_pca_multiqc", 

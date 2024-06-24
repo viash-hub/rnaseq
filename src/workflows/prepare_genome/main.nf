@@ -172,7 +172,7 @@ workflow run_wf {
         )
         
         // TODO: Add to viah-hub or adapt star_align_reads to enable the generateGenome runMode 
-        | star_genomegenerate.run (
+        | star_genome_generate.run (
             runIf: {id, state -> !state.star_index}, 
             fromState: [ 
                 "genomeFastaFiles": "fasta", 
@@ -214,7 +214,7 @@ workflow run_wf {
         )
 
         | salmon_index.run (
-            runIf: {id, state -> !state.salmon_index}, 
+            runIf: {id, state -> (state.aligner == 'star_salmon' || state.pseudo_aligner == "salmon") && !state.salmon_index}, 
             fromState: [ 
                 "genome": "fasta", 
                 "transcripts": "transcript_fasta", 
@@ -241,7 +241,7 @@ workflow run_wf {
         | kallisto_index.run(
             runIf: {id, state -> state.pseudo_aligner == "kallisto" && !state.kallisto_index}, 
             fromState: [
-                "transcriptome_fasta": "transcriptome_fasta",
+                "transcriptome_fasta": "transcript_fasta",
                 "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
             ],
             toState: [ "kallisto_index": "kallisto_index" ],

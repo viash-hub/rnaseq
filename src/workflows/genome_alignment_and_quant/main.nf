@@ -21,7 +21,7 @@ workflow run_wf {
         ],
         toState: [
           "genome_bam": "aligned_reads",
-          "transcriptome_bam": "transcriptome",
+          "transcriptome_bam": "reads_aligned_to_transcriptome",
           "star_multiqc": "log"
         ],
         args: [ 

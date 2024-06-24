@@ -93,14 +93,15 @@ workflow run_wf {
       ],
       toState: [
         "fastq_1": "out1", 
-        "fastq_2": "out2",
+        // "fastq_2": "out2",
         "failed_trim": "failed_out",
         "failed_trim_unpaired1": "unpaired1",
         "failed_trim_unpaired2": "unpaired2",
         "trim_json": "json",
         "trim_html": "html",
         "trim_merged_out": "merged_out"
-      ]
+      ],
+      debug: true
     )
 
     // Perform FASTQC on reads trimmed using fastp

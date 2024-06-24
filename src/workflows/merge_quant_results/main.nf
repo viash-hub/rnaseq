@@ -5,6 +5,10 @@ workflow run_wf {
     main: 
         output_ch = input_ch
 
+        | map { id, state -> 
+            def quant_results = state.quant_type == 'kallisto' ? state.kallisto_quant_results : state.salmon_quant_results
+            [id, state + [quant_results: quant_results]]
+        }
         | tx2gene.run (
             fromState: [ 
                 "quant_results": "quant_results", 
@@ -33,7 +37,7 @@ workflow run_wf {
                 "length_transcript": "length_transcript"
             ]
         )
-                
+        
         | summarizedexperiment.run (
             fromState: [ 
                 "tpm_gene": "tpm_gene",

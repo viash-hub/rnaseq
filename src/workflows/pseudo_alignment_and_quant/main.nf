@@ -35,20 +35,19 @@ workflow run_wf {
     | salmon_quant.run ( 
         runIf: { id, state -> state.pseudo_aligner == 'salmon' },
         fromState: { id, state ->
-          def unmated_reads = !state.paired ? state.subsampled_fastq_1 : null
-          def mates1 = state.paired ? state.subsampled_fastq_1 : null
-          def mates2 = state.paired ? state.subsampled_fastq_2 : null
+          def unmated_reads = !state.paired ? state.fastq_1 : null
+          def mates1 = state.paired ? state.fastq_1 : null
+          def mates2 = state.paired ? state.fastq_2 : null
           [ unmated_reads: unmated_reads,
-            mates1: state.fastq1, 
-            mates2: state.fastq2, 
-            targets: state.transcript_fasta, 
+            mates1: mates1, 
+            mates2: mates2, 
             gene_map: state.gtf, 
-            index: state.pseudo_index,
+            index: state.salmon_index,
             lib_type: state.lib_type ]
         },
         toState: [ 
           "quant_results_dir": "output",
-          "quant_results_file": "quant_results" 
+          "salmon_quant_results_file": "quant_results" 
         ]
     )
 
@@ -56,13 +55,15 @@ workflow run_wf {
         runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
         fromState: [
           "input": "input", 
+          "paired": "paired",
           "gtf": "gtf", 
-          "index": "pseudo_index",
+          "index": "kallisto_index",
           "fragment_length": "kallisto_quant_fragment_length", 
           "fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
           "quant_out_dir": "output", 
+          "kallisto_quant_results_file": "quant_results_file", 
           "pseudo_multiqc": "log"
         ]
     )
@@ -70,7 +71,8 @@ workflow run_wf {
     | setState (
       [ "pseudo_multiqc": "quant_results", 
         "quant_out_dir": "quant_out_dir",
-        "quant_results_file": "quant_results_file" ]
+        "salmon_quant_results_file": "salmon_quant_results_file",
+        "kallisto_quant_results_file": "kallisto_quant_results_file" ]
     )
 
   emit:

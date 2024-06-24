@@ -48,9 +48,12 @@ argument_groups:
       - name: "--pseudo_quant_out_dir"
         type: file
         description: Directory containing quantification results for pseudo alignment.
-      - name: "--pseudp_quant_results_file"
+      - name: "--pseudo_salmon_quant_results_file"
         type: file
-        description: Quantification file for pseudo alignment.
+        description: Quantification file from Salmon for pseudo alignment.
+      - name: "--pseudo_kallisto_quant_results_file"
+        type: file
+        description: Quantification file from Kallisto for pseudo alignment.
       - name: "--aligner"
         type: string
         description: Method used for alognment and qqunatification.
@@ -307,7 +310,10 @@ argument_groups:
         must_exist: false
       - name: "--markduplicates_multiqc"
         type: file
-        must_exist: false        
+        must_exist: false      
+      - name: "--pseudo_multiqc"
+        type: file
+        must_exist: false      
 
   - name: Output
     arguments:

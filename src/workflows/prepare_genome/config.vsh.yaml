@@ -70,6 +70,16 @@ argument_groups:
       - name: "--filter_gtf"
         type: boolean
         description: Whether to filter the GTF or not?
+      - name: "--aligner"
+        type: string
+        description: Specifies the alignment algorithm to use - available options are 'star_salmon', 'star_rsem' and 'hisat2'. 
+        choices: [star_salmon, star_rsem, hisat2]
+        default: "star_salmon"
+      - name: "--pseudo_aligner"
+        type: string
+        description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
+        choices: [salmon, kallisto]
+        default: "salmon"
         
   - name: "Output"
     arguments:
@@ -98,6 +108,7 @@ argument_groups:
         type: file
         direction: output
         description: Path to directory or tar.gz archive for pre-built RSEM index.
+        default: RSEM_index
       - name: "--salmon_index_uncompressed"
         type: file
         direction: output
@@ -106,7 +117,7 @@ argument_groups:
       - name: "--kallisto_index_uncompressed"
         type: file
         direction: output
-        description: Path to Salmon index.
+        description: Path to Kallisto index.
         default: Kallisto_index
       # - name: "--hisat2_index_uncompressed"
       #   type: file
@@ -144,7 +155,7 @@ dependencies:
   - name: rsem/rsem_prepare_reference
   - name: getchromsizes
   - name: untar
-  - name: star/star_genomegenerate
+  - name: star/star_genome_generate
     # repository: biobase
   - name: bbmap_bbsplit
   - name: salmon/salmon_index

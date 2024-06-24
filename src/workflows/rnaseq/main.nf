@@ -30,10 +30,13 @@ workflow run_wf {
           gene_bed: list[1][-1].gene_bed,
           splicesites: list[1][-1].splicesites,
           bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
+          aligner: list[1][-1].aligner,
+          pseudo_aligner: list[1][-1].pseudo_aligner,
           star_index: list[1][-1].star_index,
           rsem_index: list[1][-1].rsem_index,
           salmon_index: list[1][-1].salmon_index,
-          hisat2_index: list[1][-1].hisat2_index,
+          kallisto_index: list[1][-1].kallisto_index,
+          // hisat2_index: list[1][-1].hisat2_index,
           bbsplit_index: list[1][-1].bbsplit_index,
           skip_bbsplit: list[1][-1].skip_bbsplit,
           gencode: list[1][-1].gencode,
@@ -64,7 +67,9 @@ workflow run_wf {
           "skip_bbsplit": "skip_bbsplit", 
           "gencode": "gencode", 
           "biotype": "biotype",
-          "filter_gtf": "filter_gtf"
+          "filter_gtf": "filter_gtf",
+          "aligner": "aligner",
+          "pseudo_aligner": "pseudo_aligner"
         ],
         toState: [
           "fasta": "uncompressed_fasta", 
@@ -246,7 +251,8 @@ workflow run_wf {
           "gtf": "gtf",
           "transcript_fasta": "transcript_fasta",
           "pseudo_aligner": "pseudo_aligner",
-          "pseudo_index": "pseudo_index",
+          "salmon_index": "salmon_index",
+          "kallisto_index": "kallisto_index",
           "extra_star_align_args": "extra_star_align_args", 
           "star_ignore_sjdbgtf": "star_ignore_sjdbgtf",
           "seq_platform": "seq_platform", 
@@ -255,13 +261,15 @@ workflow run_wf {
           "umi_dedup_stats": "umi_dedup_stats",
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
-          "libtype": "salmon_quant_libtype", 
+          "lib_type": "salmon_quant_libtype", 
           "kallisto_quant_fragment_length": "kallisto_quant_fragment_length",
           "kallisto_quant_fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
           "pseudo_quant_out_dir": "quant_out_dir",
-          "pseudo_quant_results_file": "quant_results_file"
+          "pseudo_salmon_quant_results_file": "salmon_quant_results_file",
+          "pseudo_kallisto_quant_results_file": "kallisto_quant_results_file",
+          "pseudo_multiqc": "pseudo_multiqc"
         ]
     )
 
@@ -328,9 +336,11 @@ workflow run_wf {
           "quant_out_dir": "quant_out_dir",
           "quant_results_file": "quant_results_file",
           "pseudo_quant_out_dir": "pseudo_quant_out_dir",
-          "pseudo_quant_results_file": "pseudo_quant_results_file", 
+          "pseudo_salmon_quant_results_file": "pseudo_salmon_quant_results_file", 
+          "pseudo_kallisto_quant_results_file": "pseudo_kallisto_quant_results_file", 
           "aligner": "aligner",
           "pseudo_aligner": "pseudo_aligner",
+          "pseudo_multiqc": "pseudo_multiqc",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 

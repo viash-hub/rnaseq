@@ -113,9 +113,9 @@ argument_groups:
       - name: "--extra_trimgalore_args"
         type: string
         description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-      - name: "--extra_fastp_args"
-        type: string
-        description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
+      # - name: "--extra_fastp_args"
+      #   type: string
+      #   description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
       - name: "--min_trimmed_reads"
         type: integer
         description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
