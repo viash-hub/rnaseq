@@ -32,6 +32,9 @@ IFS="," read -ra samtools_idxstats <<< $par_samtools_idxstats && for file in "${
 
 IFS="," read -ra markduplicates_multiqc <<< $par_markduplicates_multiqc && for file in "${markduplicates_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
+IFS="," read -ra pseudo_multiqc <<< $par_pseudo_multiqc && for file in "${pseudo_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+
+
 IFS="," read -ra featurecounts_multiqc <<< $par_featurecounts_multiqc && for file in "${featurecounts_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra featurecounts_rrna_multiqc <<< $par_featurecounts_rrna_multiqc&& for file in "${featurecounts_rrna_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
