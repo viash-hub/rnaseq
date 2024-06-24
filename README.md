@@ -117,12 +117,20 @@ The pipeline has 5 sub-workflows that can be run separately.
 ## Reusing components from biobox
 
 At the moment, this pipeline makes use of the following components from
-\[biobox\] (https://github.com/viash-hub/biobox): - `gffread` -
-`star/star_genome_generate` - `star/star_align_reads` -
-`salmon/salmon_index` - `salmon/salmon_quant` - `featurecounts` -
-`samtools/samtools_sort` - `samtools/samtools_index` -
-`samtools/samtools_stats` - `samtools/samtools_flagstat` -
-`amtools/samtools_idxstats` - `multiqc` (work in progress - updating
-`assets/multiqc_config.yaml`) - `fastp` (work in progress) -
-`rsem/rsem_prepare_reference` (work in progress) -
-`rsem/rsem_calculate_expression` (work in progress)
+[biobox](https://github.com/viash-hub/biobox):
+
+- `gffread`
+- `star/star_genome_generate`
+- `star/star_align_reads`
+- `salmon/salmon_index`
+- `salmon/salmon_quant`
+- `featurecounts`
+- `samtools/samtools_sort`
+- `samtools/samtools_index`
+- `samtools/samtools_stats`
+- `samtools/samtools_flagstat`
+- `samtools/samtools_idxstats`
+- `multiqc` (work in progress - updating `assets/multiqc_config.yaml`)
+- `fastp` (work in progress)
+- `rsem/rsem_prepare_reference` (work in progress)
+- `rsem/rsem_calculate_expression` (work in progress)
