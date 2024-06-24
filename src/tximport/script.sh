@@ -18,6 +18,6 @@ done
 Rscript "$meta_resources_dir/tximport.r" \
     NULL \
     $tmpdir \
-    $par_quant_type.merged \
+    merged \
     $par_quant_type \
     $par_tx2gene_tsv

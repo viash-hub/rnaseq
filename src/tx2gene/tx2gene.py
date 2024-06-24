@@ -123,7 +123,7 @@ def map_transcripts_to_gene(
     bool: True if the operation was successful, False otherwise.
     """
     # Read the top transcripts based on quantification type
-    transcripts = read_top_transcripts(quant_dir, "*quant_results.sf" if quant_type == "salmon" else "abundance.tsv")
+    transcripts = read_top_transcripts(quant_dir, "*quant_results.sf" if quant_type == "salmon" else "*abundance.tsv")
     # Discover the attribute that corresponds to transcripts in the GTF
     transcript_attribute = discover_transcript_attribute(gtf_file, transcripts)
 
