@@ -1,4 +1,4 @@
-name: star_genomegenerate
+name: star_genome_generate
 namespace: star
 description: | 
   Create index for STAR
