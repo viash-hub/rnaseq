@@ -46,3 +46,4 @@ kallisto quant \
 
 mv ${par_output}/kallisto_quant.log ${par_log}
 mv ${par_output}/run_info.json ${par_run_info}
+cp ${par_output}/abundance.tsv ${par_quant_results_file}

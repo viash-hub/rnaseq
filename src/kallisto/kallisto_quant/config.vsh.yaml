@@ -55,6 +55,11 @@ argument_groups:
     description: A json file containing information about the run
     default: "$id.run_info.json"
     direction: output 
+  - name: "--quant_results_file"
+    type: file
+    description: TSV file containing abundance estimates from Kallisto
+    direction: output
+    default: $id.abundance.tsv
 
 resources:
   - type: bash_script
