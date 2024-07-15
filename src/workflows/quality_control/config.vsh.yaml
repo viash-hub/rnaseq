@@ -644,19 +644,20 @@ dependencies:
   - name: qualimap
   - name: preseq_lcextrap
   - name: featurecounts
-    repository: biobase
+    repository: biobox
   - name: multiqc_custom_biotype
   - name: deseq2_qc
   - name: prepare_multiqc_input
   - name: multiqc
-    repository: biobase
+    repository: biobox
   - name: workflows/merge_quant_results
 
 repositories:
-  - name: biobase
+  - name: biobox
     type: vsh
-    repo: viash-hub/biobase
-    tag: v0.1.0
+    repo: vsh/biobox
+    tag: v0.1
+
 
 runners: 
 - type: executable

@@ -147,7 +147,7 @@ resources:
 dependencies:
   - name: gunzip
   - name: gffread
-    repository: biobase
+    repository: biobox
   - name: cat_additional_fasta
   - name: gtf2bed
   - name: preprocess_transcripts_fasta
@@ -156,16 +156,16 @@ dependencies:
   - name: getchromsizes
   - name: untar
   - name: star/star_genome_generate
-    # repository: biobase
+    repository: biobox
   - name: bbmap_bbsplit
   - name: salmon/salmon_index
-    repository: biobase
+    repository: biobox
   - name: kallisto/kallisto_index
 
 repositories:
-  - name: biobase
+  - name: biobox
     type: vsh
-    repo: viash-hub/biobase
+    repo: vsh/biobox
     tag: v0.1.0
 
 runners: 

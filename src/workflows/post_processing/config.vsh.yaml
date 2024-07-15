@@ -141,25 +141,25 @@ resources:
 dependencies:
   - name: picard_markduplicates
   - name: samtools/samtools_sort
-    repository: biobase
+    repository: biobox
   - name: samtools/samtools_index
-    repository: biobase
+    repository: biobox
   - name: samtools/samtools_stats
-    repository: biobase
+    repository: biobox
   - name: samtools/samtools_flagstat
-    repository: biobase
+    repository: biobox
   - name: samtools/samtools_idxstats
-    repository: biobase
+    repository: biobox
   - name: stringtie
   - name: bedtools_genomecov
   - name: ucsc/bedclip
   - name: ucsc/bedgraphtobigwig
 
 repositories:
-  - name: biobase
+  - name: biobox
     type: vsh
-    repo: viash-hub/biobase
-    tag: v0.1.0
+    repo: vsh/biobox
+    tag: v0.1
 
 runners: 
 - type: executable
