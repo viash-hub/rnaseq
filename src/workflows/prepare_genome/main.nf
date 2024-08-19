@@ -249,6 +249,11 @@ workflow run_wf {
             args: [kallisto_index: "Kallisto_index"]
         )
 
+        | map { id, state -> 
+          def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+          [ id, mod_state ]
+        }
+
         | setState ( 
             "fasta_uncompressed": "fasta", 
             "gtf_uncompressed": "gtf", 

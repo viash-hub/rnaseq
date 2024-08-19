@@ -9,6 +9,7 @@ workflow run_wf {
             def quant_results = state.quant_type == 'kallisto' ? state.kallisto_quant_results : state.salmon_quant_results
             [id, state + [quant_results: quant_results]]
         }
+        
         | tx2gene.run (
             fromState: [ 
                 "quant_results": "quant_results", 

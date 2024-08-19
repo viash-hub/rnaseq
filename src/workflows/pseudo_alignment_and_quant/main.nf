@@ -68,6 +68,11 @@ workflow run_wf {
         ]
     )
 
+    | map { id, state -> 
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
+    }
+
     | setState (
       [ "pseudo_multiqc": "quant_results", 
         "quant_out_dir": "quant_out_dir",

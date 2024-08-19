@@ -153,7 +153,7 @@ resources:
 
 dependencies:
   - name: star/star_align_reads
-    # repository: biobox
+    repository: biobox
   - name: samtools/samtools_sort
     repository: biobox
   - name: samtools/samtools_index
@@ -165,16 +165,19 @@ dependencies:
   - name: samtools/samtools_idxstats
     repository: biobox
   - name: umitools/umitools_dedup
-  - name: umitools_prepareforquant
-  - name: salmon/salmon_quant
     # repository: biobox
+  - name: umitools_prepareforquant
+    # repository: biobox
+  - name: salmon/salmon_quant
+    repository: biobox
   - name: rsem/rsem_calculate_expression
+    # repository: biobox
 
 repositories:
   - name: biobox
     type: vsh
     repo: vsh/biobox
-    tag: v0.1
+    # tag: v0.1
 
 
 runners: 

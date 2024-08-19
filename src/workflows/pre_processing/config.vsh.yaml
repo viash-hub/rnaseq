@@ -254,8 +254,11 @@ resources:
 
 dependencies:
   - name: fastqc
+    # repository: biobox
   - name: umitools/umitools_extract
+    # repository: biobox
   - name: trimgalore
+    # repository: biobox
   - name: bbmap_bbsplit
   - name: sortmerna
   - name: fastp
@@ -268,7 +271,7 @@ repositories:
   - name: biobox
     type: vsh
     repo: vsh/biobox
-    tag: v0.1
+    # tag: v0.1
     
 runners: 
 - type: executable

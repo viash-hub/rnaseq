@@ -577,7 +577,7 @@ workflow run_wf {
             ], 
             toState: [ "multiqc_input": "output" ]
         )
-        
+
         | multiqc.run (
             fromState: [
                 "title": "multiqc_title", 
@@ -621,7 +621,12 @@ workflow run_wf {
         | combine(merged_ch)
 
         | map { list -> [list[0], list[1] + list[2]] }
-        
+
+        | map { id, state -> 
+          def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+          [ id, mod_state ]
+        }
+
         | setState (
             [
                 "preseq_output": "preseq_output",

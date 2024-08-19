@@ -134,6 +134,11 @@ workflow run_wf {
             key: "bedgraphtobigwig_reverse"
         )
 
+        | map { id, state -> 
+          def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+          [ id, mod_state ]
+        }
+
         | setState (
             "processed_genome_bam": "genome_bam", 
             "genome_bam_index": "genome_bam_index",

@@ -348,6 +348,11 @@ workflow run_wf {
         key: "genome_idxstats"
     )
 
+    | map { id, state -> 
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
+    }
+
     | setState (
       [ "star_alignment": "star_alignment", 
         "star_multiqc": "star_multiqc", 

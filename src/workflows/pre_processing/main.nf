@@ -1,5 +1,3 @@
-// TODO: Add arguments for fastp
-
 workflow run_wf {
   
   take:
@@ -65,18 +63,17 @@ workflow run_wf {
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         [ paired: state.paired,
         input: input, 
-        extra_trimgalore_args: state.extra_trimgalore_args, 
         min_trimmed_reads: state.min_trimmed_reads ]
       },
       toState: [
-        "fastq_1": "fastq_1", 
-        "fastq_2": "fastq_2",
-        "trim_log_1": "trim_log_1", 
-        "trim_log_2": "trim_log_2", 
-        "trim_zip_1": "trim_zip_1",
-        "trim_zip_2": "trim_zip_2",
-        "trim_html_1": "trim_html_1",
-        "trim_html_2": "trim_html_2"
+        "fastq_1": "trimmed_r1", 
+        "fastq_2": "trimmed_r2",
+        "trim_log_1": "trimming_report_r1", 
+        "trim_log_2": "trimming_report_r2", 
+        "trim_zip_1": "trimmed_fastqc_zip_1",
+        "trim_zip_2": "trimmed_fastqc_zip_2",
+        "trim_html_1": "trimmed_fastqc_html_1",
+        "trim_html_2": "trimmed_fastqc_html_2"
       ]
     )
 
@@ -100,8 +97,7 @@ workflow run_wf {
         "trim_json": "json",
         "trim_html": "html",
         "trim_merged_out": "merged_out"
-      ],
-      debug: true
+      ]
     )
 
     // Perform FASTQC on reads trimmed using fastp
@@ -209,6 +205,11 @@ workflow run_wf {
         [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2), failed_trim_unpaired2: state.remove(state.failed_trim_unpaired2)] : 
         []
       [ id, state + mod_state ]
+    }
+
+    | map { id, state -> 
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
     }
 
     | setState ( 
