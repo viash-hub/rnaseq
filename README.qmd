@@ -48,7 +48,7 @@ Now we can run the pipeline using the command:
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
   -profile docker \
   --id test \
-  --input testData/minimal_test/SRR6357070_1.fastq.gz \
+  --fastq_1 testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz \
   --publish_dir testData/test_output/
 ```
 
