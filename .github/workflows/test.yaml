@@ -7,5 +7,5 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test:
     uses: viash-io/viash-actions/.github/workflows/test.yaml@v6
