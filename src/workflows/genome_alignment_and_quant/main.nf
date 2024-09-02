@@ -15,9 +15,9 @@ workflow run_wf {
         fromState: [
           "input": "fastq_1",
           "input_r2": "fastq_2",
-          "genomeDir": "star_index",
-          "sjdbGTFfile": "gtf",
-          "outSAMattrRGline": "star_sam_attr_rg_line"
+          "genome_dir": "star_index",
+          "sjdb_gtf_file": "gtf",
+          "out_sam_attr_rg_line": "star_sam_attr_rg_line"
         ],
         toState: [
           "genome_bam": "aligned_reads",
@@ -25,14 +25,14 @@ workflow run_wf {
           "star_multiqc": "log"
         ],
         args: [ 
-          quantMode: "TranscriptomeSAM", 
-          twopassMode: "Basic", 
-          outSAMtype: "BAM;Unsorted", 
-          runRNGseed: 0, 
-          outFilterMultimapNmax: 20, 
-          alignSJDBoverhangMin: 1, 
-          outSAMattributes: "NH;HI;AS;NM;MD", 
-          quantTranscriptomeSAMoutput: "BanSingleEnd" 
+          quant_mode: "TranscriptomeSAM", 
+          twopass_mode: "Basic", 
+          out_sam_type: "BAM;Unsorted", 
+          run_rng_seed: 0, 
+          out_filter_multimap_nmax: 20, 
+          align_sjdb_overhang_min: 1, 
+          out_sam_attributes: "NH;HI;AS;NM;MD", 
+          quant_transcriptome_sam_output: "BanSingleEnd" 
         ]
     )
 

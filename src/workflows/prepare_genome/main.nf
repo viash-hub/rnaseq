@@ -175,8 +175,8 @@ workflow run_wf {
         | star_genome_generate.run (
             runIf: {id, state -> !state.star_index}, 
             fromState: [ 
-                "genomeFastaFiles": "fasta", 
-                "sjdbGTFfile": "gtf"
+                "genome_fasta_files": "fasta", 
+                "sjdb_gtf_file": "gtf"
             ], 
             toState: [ "star_index": "index" ], 
             key: "generate_star_index",
