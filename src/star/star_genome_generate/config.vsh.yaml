@@ -114,8 +114,8 @@ engines:
     # setup derived from https://github.com/alexdobin/STAR/blob/master/extras/docker/Dockerfile
     - type: docker
       env: 
-        - STAR_VERSION 2.7.11b
-        - PACKAGES gcc g++ make wget zlib1g-dev unzip xxd
+        - STAR_VERSION=2.7.11b
+        - PACKAGES=gcc g++ make wget zlib1g-dev unzip xxd
       run: |
         apt-get update && \
           apt-get install -y --no-install-recommends ${PACKAGES} && \

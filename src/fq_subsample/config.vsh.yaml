@@ -50,7 +50,7 @@ engines:
     setup: 
       - type: docker
         env: 
-            - TZ Europe/Brussels
+            - TZ=Europe/Brussels
         run: | 
           ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
           apt-get update && \
