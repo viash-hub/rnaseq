@@ -18,7 +18,7 @@ IFS="," read -ra sortmerna_multiqc <<< $par_sortmerna_multiqc && for file in "${
 
 IFS="," read -ra star_multiqc <<< $par_star_multiqc && for file in "${star_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
-IFS="," read -ra hisat2_multiqc <<< $par_hisat2_multiqc && for file in "${hisat2_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+# IFS="," read -ra hisat2_multiqc <<< $par_hisat2_multiqc && for file in "${hisat2_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra rsem_multiqc <<< $par_rsem_multiqc && for file in "${rsem_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 

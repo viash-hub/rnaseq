@@ -128,8 +128,8 @@ sp:
   star:
     fn: "*.star_aligned.log.final.out"
 
-  hisat2:
-    fn: "*.hisat2.summary.log"
+  # hisat2:
+  #   fn: "*.hisat2.summary.log"
 
   salmon/meta:
     fn: "*meta_info.json"

@@ -28,7 +28,7 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/minimal_test/reference/hisat2.tar.gz
+  - path: /testData/minimal_test/reference/salmon.tar.gz
   
 engines:
 - type: docker
