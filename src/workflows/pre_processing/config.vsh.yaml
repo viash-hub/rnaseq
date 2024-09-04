@@ -262,16 +262,29 @@ resources:
 
 dependencies:
   - name: fq_subsample
+    repository: local
   - name: salmon/salmon_quant
+    repository: local
   - name: fastqc
+    repository: local
   - name: umitools/umitools_extract
+    repository: local
   - name: trimgalore
+    repository: local
   - name: bbmap_bbsplit
+    repository: local
   - name: sortmerna
+    repository: local
   - name: fastp
-    repository: 
-      type: vsh
-      repo: viash-hub/biobase
+    repository: bb
+
+repositories:
+  - name: local
+    type: local
+  - name: bb
+    type: vsh
+    repo: biobox
+    tag: main
 
 runners: 
 - type: executable
