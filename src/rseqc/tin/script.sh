@@ -23,7 +23,7 @@ tin.py \
     -n $par_sample_size \
     -s $par_subtract_background
 
-[[ ! -z "${bam_file%.*}.summary.tx" ]] && mv ${bam_file%.*}.summary.txt $par_output_tin_summary
-[[ ! -z "${bam_file%.*}.tin.xls" ]] && mv ${bam_file%.*}.tin.xls $par_output_tin
+[[ -f "${bam_file%.*}.summary.txt" ]] && mv ${bam_file%.*}.summary.txt $par_output_tin_summary
+[[ -f "${bam_file%.*}.tin.xls" ]] && mv ${bam_file%.*}.tin.xls $par_output_tin
 
 clean_up

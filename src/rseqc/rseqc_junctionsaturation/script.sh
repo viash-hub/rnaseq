@@ -15,5 +15,5 @@ junction_saturation.py \
     -v $par_min_splice_read \
     -q $par_map_qual
 
-[[ ! -z "$prefix.junctionSaturation_plot.pdf" ]] && mv $prefix.junctionSaturation_plot.pdf $par_output_plot
-[[ ! -z "$prefix.junctionSaturation_plot.r" ]] && mv $prefix.junctionSaturation_plot.r $par_output_plot_r
+[[ -f "$prefix.junctionSaturation_plot.pdf" ]] && mv $prefix.junctionSaturation_plot.pdf $par_output_plot
+[[ -f "$prefix.junctionSaturation_plot.r" ]] && mv $prefix.junctionSaturation_plot.r $par_output_plot_r
