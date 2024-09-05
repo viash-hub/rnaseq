@@ -92,9 +92,9 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/qualimap_test.bam
-  - path: /testData/unit_test_resources/qualimap_test.bam.bai
-  - path: /testData/unit_test_resources/qualimap_test_annot.gtf
+  - path: /testData/unit_test_resources/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam
+  - path: /testData/unit_test_resources/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam.bai
+  - path: /testData/unit_test_resources/genes.gtf
   
 engines:
 - type: docker

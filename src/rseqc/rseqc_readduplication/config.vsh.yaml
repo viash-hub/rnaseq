@@ -67,7 +67,7 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
+  - path: /testData/unit_test_resources/sarscov2/test.paired_end.sorted.bam
   
 engines:
 - type: docker

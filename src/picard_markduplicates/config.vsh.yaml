@@ -50,8 +50,8 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/a.bam
-  - path: /testData/unit_test_resources/genome.fasta
+  - path: /testData/unit_test_resources/sarscov2/test.paired_end.sorted.bam
+  - path: /testData/unit_test_resources/sarscov2/genome.fasta
 
 engines: 
   - type: docker

@@ -17,7 +17,7 @@ inner_distance.py \
 
 head -n 2 stdout.txt > $par_output_stats
 
-mv $prefix.inner_distance.txt $par_output_dist
-mv $prefix.inner_distance_plot.pdf $par_output_plot
-mv $prefix.inner_distance_plot.r $par_output_plot_r
-mv $prefix.inner_distance_freq.txt $par_output_freq
+[[ ! -z "$prefix.inner_distance.txt" ]] && mv $prefix.inner_distance.txt $par_output_dist
+[[ ! -z "$prefix.inner_distance_plot.pdf" ]] && mv $prefix.inner_distance_plot.pdf $par_output_plot
+[[ ! -z "$prefix.inner_distance_plot.r" ]] && mv $prefix.inner_distance_plot.r $par_output_plot_r
+[[ ! -z "$prefix.inner_distance_freq.txt" ]] && mv $prefix.inner_distance_freq.txt $par_output_freq

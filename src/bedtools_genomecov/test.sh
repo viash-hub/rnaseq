@@ -5,7 +5,7 @@ echo ">>> Testing $meta_functionality_name"
 
 "$meta_executable" \
     --strandedness unstranded \
-    --bam $meta_resources_dir/a.sorted.bam \
+    --bam $meta_resources_dir/test.paired_end.sorted.bam \
     --bedgraph_forward forward.bedgraph \
     --bedgraph_reverse reverse.bedgraph
 
