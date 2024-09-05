@@ -5,7 +5,7 @@ target: target
 
 info:
   test_resources:
-    - path: gs://viash-hub-test-data/rnaseq/v1/
+    - path: gs://viash-hub-test-data/rnaseq/v1
       dest: testData
 
 config_mods: |
