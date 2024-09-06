@@ -83,12 +83,12 @@ resources:
   - type: bash_script
     path: script.sh
 
-test_resources:
-  - type: bash_script
-    path: test.sh
-  - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
-  - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
-  - path: /testData/minimal_test/reference/rsem.tar.gz
+# test_resources:
+#   - type: bash_script
+#     path: test.sh
+#   - path: /testData/minimal_test/input_fastq/SRR6357070_1.fastq.gz
+#   - path: /testData/minimal_test/input_fastq/SRR6357070_2.fastq.gz
+#   - path: /testData/minimal_test/reference/rsem.tar.gz
 
 # TODO: Install bowtie/bowtie2 
 engines:
