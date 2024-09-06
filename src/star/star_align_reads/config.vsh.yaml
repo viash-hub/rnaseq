@@ -99,7 +99,7 @@ engines:
       - type: docker
         env: 
           - STAR_VERSION=2.7.11b
-          - PACKAGES=gcc g++ make wget zlib1g-dev unzip xxd
+          - PACKAGES="gcc g++ make wget zlib1g-dev unzip xxd"
         run: |
           apt-get update && \
             apt-get install -y --no-install-recommends ${PACKAGES} && \
