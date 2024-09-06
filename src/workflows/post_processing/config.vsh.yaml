@@ -73,9 +73,6 @@ argument_groups:
         type: boolean
       - name: "--skip_bigwig"
         type: boolean
-      - name: "--versions"
-        type: file
-        must_exist: false
 
   - name: "Output"
     arguments:
@@ -135,10 +132,6 @@ argument_groups:
         type: file
         direction: output
         default: $id.reverse.bigwig
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
 
 resources:
   - type: nextflow_script
@@ -148,14 +141,25 @@ resources:
 dependencies:
   - name: picard_markduplicates
   - name: samtools/samtools_sort
+    repository: biobox
   - name: samtools/samtools_index
+    repository: biobox
   - name: samtools/samtools_stats
+    repository: biobox
   - name: samtools/samtools_flagstat
+    repository: biobox
   - name: samtools/samtools_idxstats
+    repository: biobox
   - name: stringtie
   - name: bedtools_genomecov
   - name: ucsc/bedclip
   - name: ucsc/bedgraphtobigwig
+
+repositories:
+  - name: biobox
+    type: vsh
+    repo: vsh/biobox
+    tag: v0.1
 
 runners: 
 - type: executable

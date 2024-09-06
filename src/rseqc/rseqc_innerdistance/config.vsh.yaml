@@ -52,11 +52,7 @@ argument_groups:
     required: false
     default: 5 
     description: Step size (bp) of histograme. This option is used for plotting histogram, default=5.
-  
-  - name: "--versions"
-    type: file
-    must_exist: false
-    
+
 - name: "Output"
   arguments: 
   - name: "--output_stats"
@@ -98,12 +94,7 @@ argument_groups:
     must_exist: false
     default: $id.inner_distance_plot.r
     description: output file (R) with script of histogram plot of of inner distances of all paired reads
-
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
-
+    
 resources:
   - type: bash_script
     path: script.sh

@@ -19,9 +19,6 @@ argument_groups:
     type: string
     default: ""
     description: Extra arguments to pass to fq subsample
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Input"
   arguments: 
@@ -36,10 +33,6 @@ argument_groups:
     direction: output
     default: $id.read_2.subsampled.fastq
     description: Sampled read 2 fastq files
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script
@@ -57,7 +50,7 @@ engines:
     setup: 
       - type: docker
         env: 
-            - TZ Europe/Brussels
+            - TZ=Europe/Brussels
         run: | 
           ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
           apt-get update && \

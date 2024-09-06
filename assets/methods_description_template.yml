@@ -6,7 +6,7 @@ plot_type: "html"
 
 data: |
   <h4>Methods</h4>
-  <p>Data was processed using rnaseq.vsh which is a version of the nf-core/rnaseq (v.3.12.0) workflow wriiten using the Viash framework .</p>
+  <p>Data was processed using rnaseq.vsh which is a version of the nf-core/rnaseq (v.3.14.0) workflow wriiten using the Viash framework .</p>
   <p>The pipeline was executed with Nextflow v${workflow.nextflow.version} (<a href="https://doi.org/10.1038/nbt.3820">Di Tommaso <em>et al.</em>, 2017</a>) with the following command:</p>
   <pre><code>${workflow.commandLine}</code></pre>
   <h4>References</h4>

@@ -17,14 +17,3 @@ qualimap rnaseq \
     -outdir $par_output_dir \
     -outformat $par_output_format 
 
-# Version
-
-text="${meta_functionality_name}:
-    qualimap: $(echo $(qualimap --help 2>&1) | grep -oP 'QualiMap v\.\K\d+\.\d+')"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi

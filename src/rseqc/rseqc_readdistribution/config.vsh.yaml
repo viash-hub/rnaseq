@@ -20,10 +20,6 @@ argument_groups:
     type: file 
     required: true
     description: Reference gene model in bed format
-  
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:   
@@ -33,11 +29,6 @@ argument_groups:
     required: false
     default: $id.read_distribution.txt
     description: output file (txt) of read distribution analysis.
-
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

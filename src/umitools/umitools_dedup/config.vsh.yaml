@@ -24,9 +24,6 @@ argument_groups:
   - name: "--get_output_stats"
     type: boolean
     description: Whether or not to generate output stats.
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:   
@@ -40,10 +37,6 @@ argument_groups:
     description: Directory containing UMI based dedupllication statistics files
     direction: output
     default: $id.umi_dedup.stats
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

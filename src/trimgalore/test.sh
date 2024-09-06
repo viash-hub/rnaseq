@@ -1,47 +1,127 @@
 #!/bin/bash
 
-echo ">>> Testing $meta_functionality_name"
+set -e
+set -eo pipefail
 
-echo ">>> Testing for paired-end reads"
-"$meta_executable" \
-    --paired true \
-    --input $meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz \
-    --trim_html_1 SRR6357070_1.trimmed.html \
-    --trim_html_2 SRR6357070_2.trimmed.html \
-    --trim_zip_1 SRR6357070_1.trimmed.zip \
-    --trim_zip_2 SRR6357070_2.trimmed.zip \
-    --fastq_1 SRR6357070_1.trimmed.fastq.gz \
-    --fastq_2 SRR6357070_2.trimmed.fastq.gz \
-    --trim_log_1 SRR6357070_1.trimming_report.txt \
-    --trim_log_2 SRR6357070_2.trimming_report.txt
+# helper functions
+assert_file_exists() {
+  [ -f "$1" ] || { echo "File '$1' does not exist" && exit 1; }
+}
+assert_file_doesnt_exist() {
+  [ ! -f "$1" ] || { echo "File '$1' exists but shouldn't" && exit 1; }
+}
+assert_file_empty() {
+  [ ! -s "$1" ] || { echo "File '$1' is not empty but should be" && exit 1; }
+}
+assert_file_not_empty() {
+  [ -s "$1" ] || { echo "File '$1' is empty but shouldn't be" && exit 1; }
+}
+assert_file_contains() {
+  grep -q "$2" "$1" || { echo "File '$1' does not contain '$2'" && exit 1; }
+}
+assert_file_not_contains() {
+  grep -q "$2" "$1" && { echo "File '$1' contains '$2' but shouldn't" && exit 1; }
+}
 
-echo ">> Checking if the correct files are present"
-[[ ! -f "SRR6357070_1.trimmed.html" ]] || [[ ! -f "SRR6357070_2.trimmed.html" ]] && echo "Report file missing!" && exit 1
-[[ ! -s "SRR6357070_1.trimmed.html" ]] || [[ ! -s "SRR6357070_2.trimmed.html" ]] && echo "Report file empty!" && exit 1
-[[ ! -f "SRR6357070_1.trimmed.zip" ]] || [[ ! -f "SRR6357070_2.trimmed.zip" ]] && echo "Zip file missing!" && exit 1
-[[ ! -f "SRR6357070_1.trimmed.fastq.gz" ]] || [[ ! -f "SRR6357070_2.trimmed.fastq.gz" ]] && echo "Trimmed reads file missing!" && exit 1
-[[ ! -s "SRR6357070_1.trimmed.fastq.gz" ]] || [[ ! -s "SRR6357070_2.trimmed.fastq.gz" ]] && echo "Trimmed reads file empty!" && exit 1
-[[ ! -f "SRR6357070_1.trimming_report.txt" ]] || [[ ! -f "SRR6357070_2.trimming_report.txt" ]] && echo "Trimming report log file missing!" && exit 1
-[[ ! -s "SRR6357070_2.trimming_report.txt" ]] || [[ ! -s "SRR6357070_2.trimming_report.txt" ]] && echo "Trimming report log file empty!" && exit 1
+#################################################################
 
+echo ">>> Prepare test data"
+
+cat > example_R1.fastq <<'EOF'
+@SRR6357071.22842410 22842410/1 kraken:taxid|4932
+CAAGTTTTCATCTTCAACAGCTGATTGACTTCTTTGTGGTATGCCTCGATATATTTTTCTTTTTCTTTAATATCTTTATTATAGGTGATTGCCTCATCGTA
++
+BBBBBFFFFFFFFFFFFFFF/BFFFFFFFFFFFFFFFFBFFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFFBF<
+@SRR6357071.52260105 52260105/1 kraken:taxid|4932
+TAGACTTACCAGTACCCTTTTCGACGGCGGAAACATTCAAAATACCGTTAGAGTCGACATCGAAAGTGACTTCAATTTGTGGGACACCTCTTGGAGCTGGT
++
+BBBBBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF/FFFFFFFFFFFFFFFF
+EOF
+
+cat > example_R2.fastq <<'EOF'
+@SRR6357071.22842410 22842410/2 kraken:taxid|4932
+CCGAGATCGAAGAAACGAATTCACCTGATTGCAGCTGTAAAAGCAGTAAAATCAATCAAACCAATACGGACAACCTTACGATACGATGAGGCAATCACCTA
++
+BBBBBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+@SRR6357071.52260105 52260105/2 kraken:taxid|4932
+GTTGATTCCAAGAAACTCTACCATTCCAACTAAGAAATCCGAAGTTTTCTCTACTTATGCTGACAACCAACCAGGTGTCTTGATTCAAGTCTTTGAAGGTG
++
+BBBBBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+EOF
+
+#################################################################
 
 echo ">>> Testing for single-end reads"
 "$meta_executable" \
     --paired false \
-    --input $meta_resources_dir/SRR6357070_1.fastq.gz \
-    --trim_html_1 SRR6357070_1.trimmed.html \
-    --trim_zip_1 SRR6357070_1.trimmed.zip \
-    --fastq_1 SRR6357070_1.trimmed.fastq.gz \
-    --trim_log_1 SRR6357070_1.trimming_report.txt 
+    --input "example_R1.fastq" \
+    --trimmed_fastqc_html_1 output_se_test/example.trimmed.html \
+    --trimmed_fastqc_zip_1 output_se_test/example.trimmed.zip \
+    --trimmed_r1 output_se_test/example.trimmed.fastq \
+    --trimming_report_r1 output_se_test/example.trimming_report.txt \
+    --fastqc true \
+    --output_dir output_se_test
 
-echo ">> Checking if the correct files are present"
-[ ! -f 'SRR6357070_1.trimmed.html' ] && echo "Report file missing" && exit 1
-[ ! -s "SRR6357070_1.trimmed.html" ] && echo "Report file empty" && exit 1
-[ ! -f "SRR6357070_1.trimmed.zip" ] && echo "Zip file missing" && exit 1
-[ ! -f "SRR6357070_1.trimmed.fastq.gz" ] && echo "Trimmed reads file missing" && exit 1
-[ ! -s "SRR6357070_1.trimmed.fastq.gz" ] && echo "Trimmed reads file empty" && exit 1
-[ ! -f "SRR6357070_2.trimming_report.txt" ] && echo "Trimming report log file missing" && exit 1
-[ ! -s "SRR6357070_2.trimming_report.txt" ] && echo "Trimming report log file empty" && exit 1
+echo ">> Checking output"
+assert_file_exists "output_se_test/example.trimmed.html"
+assert_file_exists "output_se_test/example.trimmed.zip"
+assert_file_exists "output_se_test/example.trimmed.fastq"
+assert_file_exists "output_se_test/example.trimming_report.txt"
+
+echo ">> Check if output is empty"
+assert_file_not_empty "output_se_test/example.trimmed.html"
+assert_file_not_empty "output_se_test/example.trimmed.zip"
+assert_file_not_empty "output_se_test/example.trimmed.fastq"
+assert_file_not_empty "output_se_test/example.trimming_report.txt"
+
+echo ">> Check contents"
+assert_file_contains "output_se_test/example.trimmed.fastq" "@SRR6357071.22842410 22842410/1"
+assert_file_contains "output_se_test/example.trimming_report.txt" "Sequences removed because they became shorter than the length cutoff"
+
+#################################################################
+
+echo ">>> Testing for paired-end reads"
+"$meta_executable" \
+    --paired true \
+    --input "example_R1.fastq;example_R2.fastq" \
+    --trimmed_fastqc_html_1 output_pe_test/example_R1.trimmed.html \
+    --trimmed_fastqc_html_2 output_pe_test/example_R2.trimmed.html \
+    --trimmed_fastqc_zip_1 output_pe_test/example_R1.trimmed.zip \
+    --trimmed_fastqc_zip_2 output_pe_test/example_R2.trimmed.zip \
+    --trimmed_r1 output_pe_test/example_R1.trimmed.fastq \
+    --trimmed_r2 output_pe_test/example_R2.trimmed.fastq \
+    --trimming_report_r1 output_pe_test/example_R1.trimming_report.txt \
+    --trimming_report_r2 output_pe_test/example_R2.trimming_report.txt \
+    --fastqc true \
+    --output_dir output_pe_test
+
+echo ">> Checking output"
+assert_file_exists "output_pe_test/example_R1.trimmed.html"
+assert_file_exists "output_pe_test/example_R2.trimmed.html"
+assert_file_exists "output_pe_test/example_R1.trimmed.zip"
+assert_file_exists "output_pe_test/example_R2.trimmed.zip"
+assert_file_exists "output_pe_test/example_R1.trimmed.fastq"
+assert_file_exists "output_pe_test/example_R2.trimmed.fastq"
+assert_file_exists "output_pe_test/example_R1.trimming_report.txt"
+assert_file_exists "output_pe_test/example_R2.trimming_report.txt"
+
+echo ">> Check if output is empty"
+assert_file_not_empty "output_pe_test/example_R1.trimmed.html"
+assert_file_not_empty "output_pe_test/example_R2.trimmed.html"
+assert_file_not_empty "output_pe_test/example_R1.trimmed.zip"
+assert_file_not_empty "output_pe_test/example_R2.trimmed.zip"
+assert_file_not_empty "output_pe_test/example_R1.trimmed.fastq"
+assert_file_not_empty "output_pe_test/example_R2.trimmed.fastq"
+assert_file_not_empty "output_pe_test/example_R1.trimming_report.txt"
+assert_file_not_empty "output_pe_test/example_R2.trimming_report.txt"
+
+echo ">> Check contents"
+assert_file_contains "output_pe_test/example_R1.trimmed.fastq" "@SRR6357071.22842410 22842410/1"
+assert_file_contains "output_pe_test/example_R2.trimmed.fastq" "@SRR6357071.22842410 22842410/2"
+assert_file_contains "output_pe_test/example_R1.trimming_report.txt" "sequences processed in total"
+assert_file_contains "output_pe_test/example_R2.trimming_report.txt" "Number of sequence pairs removed because at least one read was shorter than the length cutoff"
+
+#################################################################
 
 echo ">>> Test finished successfully"
 exit 0

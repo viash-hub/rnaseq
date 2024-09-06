@@ -22,9 +22,6 @@ argument_groups:
     multiple_sep: ","
     description: Input fastq files, either one or two (paired)
     example: sample.fastq
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:   
@@ -52,10 +49,6 @@ argument_groups:
     required: false
     must_exist: false
     default: $id.read_2.fastqc.zip
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

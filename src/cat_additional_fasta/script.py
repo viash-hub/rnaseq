@@ -78,13 +78,3 @@ with open(output, 'r') as g2:
     g_content2 = g2.read()
 with open(par['gtf_output'], 'w') as g_out:
     g_out.write(g_content1 + g_content2)
-
-text = f"{meta['functionality_name']}:\n  python: {sys.version.split()[0]}"
-
-if par['versions'] and os.path.exists(par['versions']):
-    with open(par['versions'], 'a') as f:
-        f.write(text + '\n')
-    os.rename(par['versions'], par['updated_versions'])
-else:
-    with open(par['updated_versions'], 'w') as f:
-        f.write(text + '\n')

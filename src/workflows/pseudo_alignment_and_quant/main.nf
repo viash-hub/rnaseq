@@ -10,21 +10,44 @@ workflow run_wf {
       [ id, state + [ paired: paired, input: input ] ]
     }
 
+
+    // Infer lib-type for salmon quant
+    | map { id, state -> 
+      def lib_type = (state.paired) ? 
+        (
+          (state.strandedness == "forward") ? 
+            "ISF" : 
+            (
+              (state.strandedness == "reverse") ? "ISR" : "IU"
+            )
+        ) 
+        : (
+          (state.strandedness == "forward") ? 
+            "SF" : 
+            (
+              (state.strandedness == "reverse") ? "SR" : "U"
+            )
+        ) 
+      [ id, state + [lib_type: lib_type] ]
+    }
+    
     // Count reads from BAM alignments using Salmon
     | salmon_quant.run ( 
         runIf: { id, state -> state.pseudo_aligner == 'salmon' },
-        fromState: [
-          "input": "input", 
-          "transcript_fasta": "transcript_fasta", 
-          "gtf": "gtf", 
-          "salmon_index": "pseudo_index",
-          "versions": "versions" 
-        ],
-        args: ["alignment_mode": false],
-        toState: [
-          "quant_results": "output", 
-          "pseudo_multiqc": "output",
-          "versions": "updated_versions"
+        fromState: { id, state ->
+          def unmated_reads = !state.paired ? state.fastq_1 : null
+          def mates1 = state.paired ? state.fastq_1 : null
+          def mates2 = state.paired ? state.fastq_2 : null
+          [ unmated_reads: unmated_reads,
+            mates1: mates1, 
+            mates2: mates2, 
+            gene_map: state.gtf, 
+            index: state.salmon_index,
+            lib_type: state.lib_type ]
+        },
+        toState: [ 
+          "quant_results_dir": "output",
+          "salmon_quant_results_file": "quant_results" 
         ]
     )
 
@@ -32,23 +55,29 @@ workflow run_wf {
         runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
         fromState: [
           "input": "input", 
+          "paired": "paired",
           "gtf": "gtf", 
-          "index": "pseudo_index",
+          "index": "kallisto_index",
           "fragment_length": "kallisto_quant_fragment_length", 
-          "fragment_length_sd": "kallisto_quant_fragment_length_sd", 
-          "versions": "versions" 
+          "fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
-          "quant_results": "output", 
-          "pseudo_multiqc": "log",
-          "versions": "updated_versions"
+          "quant_out_dir": "output", 
+          "kallisto_quant_results_file": "quant_results_file", 
+          "pseudo_multiqc": "log"
         ]
     )
 
+    | map { id, state -> 
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
+    }
+
     | setState (
-      [ "pseudo_multiqc": "pseudo_multiqc", 
-        "quant_results": "quant_results", 
-        "updated_versions": "versions" ]
+      [ "pseudo_multiqc": "quant_results", 
+        "quant_out_dir": "quant_out_dir",
+        "salmon_quant_results_file": "salmon_quant_results_file",
+        "kallisto_quant_results_file": "kallisto_quant_results_file" ]
     )
 
   emit:

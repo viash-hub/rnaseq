@@ -37,9 +37,6 @@ argument_groups:
   - name: "--fragment_length_sd"
     type: integer
     description: For single-end mode only, the estimated standard deviation of the fragment length.
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments:
@@ -58,10 +55,11 @@ argument_groups:
     description: A json file containing information about the run
     default: "$id.run_info.json"
     direction: output 
-  - name: "--updated_versions"
+  - name: "--quant_results_file"
     type: file
-    default: versions.yml
+    description: TSV file containing abundance estimates from Kallisto
     direction: output
+    default: $id.abundance.tsv
 
 resources:
   - type: bash_script

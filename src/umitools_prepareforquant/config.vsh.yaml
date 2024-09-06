@@ -11,9 +11,6 @@ argument_groups:
   arguments:  
   - name: "--bam"
     type: file
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments:    
@@ -25,10 +22,6 @@ argument_groups:
     type: file
     direction: output
     default: $id.$key.log
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

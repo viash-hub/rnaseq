@@ -37,9 +37,12 @@ argument_groups:
     default: false
     description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'. 
     choices: [salmon, kallisto]
-  - name: "--pseudo_index"
+  - name: "--salmon_index"
     type: file
-    description: Salmon or Kallisto index
+    description: Salmon index
+  - name: "--kallisto_index"
+    type: file
+    description: Kallisto index
   - name: "--lib_type"
     type: string
     description: Override library type inferred based on strandedness defined in meta object
@@ -57,15 +60,19 @@ argument_groups:
     type: file
     direction: output
     default: $id.quant.log
-  - name: "--quant_results"
+  - name: "--quant_out_dir"
     type: file
     direction: output
-    default: $id.quant
-  - name: "--updated_versions"
+    default: $id.salmon_quant
+  - name: "--salmon_quant_results_file"
     type: file
-    default: versions.yml
     direction: output
-
+    default: $id.quant.sf
+  - name: "--kallisto_quant_results_file"
+    type: file
+    direction: output
+    default: $id.abundance.tsv
+ 
 resources:
   - type: nextflow_script
     path: main.nf
@@ -73,7 +80,14 @@ resources:
 
 dependencies:
   - name: salmon/salmon_quant
+    repository: biobox
   - name: kallisto/kallisto_quant
+
+repositories:
+  - name: biobox
+    type: vsh
+    repo: vsh/biobox
+    tag: v0.1
 
 runners: 
 - type: executable

@@ -19,19 +19,13 @@ argument_groups:
   - name: "--skip_transcript_id_check"
     type: boolean_true
     description: Skip checking for transcript IDs in the GTF file.
-  - name: "--versions"
-    type: file
-    must_exist: false
+
 - name: " Output"
   arguments:
   - name: "--filtered_gtf"
     type: file
     direction: output
     description: Filtered GTF file containing only sequences in the FASTA file
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: python_script

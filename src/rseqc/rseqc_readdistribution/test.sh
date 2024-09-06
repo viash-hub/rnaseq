@@ -3,7 +3,6 @@
 # define input and output for script
 input_bam="$meta_resources_dir/test.paired_end.sorted.bam"
 input_bed="$meta_resources_dir/test.bed12"
-
 output="read_distribution.txt"
 
 # run executable and test

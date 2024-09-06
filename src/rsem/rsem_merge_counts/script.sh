@@ -26,13 +26,3 @@ paste gene_ids.txt tmp/genes/*.counts.txt > $par_merged_gene_counts
 paste gene_ids.txt tmp/genes/*.tpm.txt > $par_merged_gene_tpm
 paste transcript_ids.txt tmp/isoforms/*.counts.txt > $par_merged_transcript_counts
 paste transcript_ids.txt tmp/isoforms/*.tpm.txt > $par_merged_transcript_tpm
-
-# Version
-text="${meta_functionality_name}:
-    sed: $(echo $(sed --version 2>&1) | grep -oP 'sed \(GNU sed\) \K\d+\.\d+')"
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi

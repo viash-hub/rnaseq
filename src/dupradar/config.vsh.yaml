@@ -33,11 +33,8 @@ argument_groups:
     required: false
     choices: ["forward", "reverse", "unstranded"]
     description: strandedness of input bam file reads (forward, reverse or unstranded (default, applicable to paired reads))
-
-  - name: "--versions"
-    type: file
-    must_exist: false
     
+
 - name: "Output"
   arguments: 
   - name: "--output_dupmatrix"
@@ -95,11 +92,6 @@ argument_groups:
     must_exist: true
     default: $id.intercept_slope.txt
     description: output file (txt) with progression of duplication rate value 
-  
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

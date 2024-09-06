@@ -16,9 +16,6 @@ argument_groups:
   - name: "--sizes"
     type: file
     description: File with chromosome sizes
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -27,10 +24,6 @@ argument_groups:
     direction: output
     description: bedGraph file after clipping
     default: $id.$key.bedgraph
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

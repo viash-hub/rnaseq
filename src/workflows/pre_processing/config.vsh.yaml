@@ -113,9 +113,9 @@ argument_groups:
       - name: "--extra_trimgalore_args"
         type: string
         description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-      - name: "--extra_fastp_args"
-        type: string
-        description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
+      # - name: "--extra_fastp_args"
+      #   type: string
+      #   description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
       - name: "--min_trimmed_reads"
         type: integer
         description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
@@ -153,10 +153,6 @@ argument_groups:
         type: string
         default: '--record-count 1000000 --seed 1'
         description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
-      - name: "--versions"
-        type: file
-        must_exist: false
-        
 
   - name: "Output"
     arguments:
@@ -245,15 +241,11 @@ argument_groups:
         required: false
         must_exist: false
         description: Sortmerna log file.
-      - name: "--salmon_json_info"
+      - name: "--salmon_quant_output"
         type: file
         direction: output
-        description: File containing meta information from Salmon quant
-        default: $id.salmon_meta_info.json
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
+        description: Results from Salmon quant
+        default: $id.salmon_quant_output
 
 resources:
   - type: nextflow_script
@@ -271,21 +263,28 @@ dependencies:
     repository: local
   - name: trimgalore
     repository: local
+  - name: fastqc
+    # repository: biobox
+  - name: umitools/umitools_extract
+    # repository: biobox
+  - name: trimgalore
+    # repository: biobox
   - name: bbmap_bbsplit
     repository: local
   - name: sortmerna
     repository: local
   - name: fastp
-    repository: bb
+    repository: biobox
+  - name: fq_subsample
+  - name: salmon/salmon_quant
+    repository: biobox
 
 repositories:
-  - name: local
-    type: local
-  - name: bb
+  - name: biobox
     type: vsh
-    repo: biobox
+    repo: vsh/biobox
     tag: main
-
+    
 runners: 
 - type: executable
 - type: nextflow

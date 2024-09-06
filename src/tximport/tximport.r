@@ -78,9 +78,9 @@ create_summarized_experiment <- function(counts, abundance, length, col_data, ro
 # Main script starts here
 
 # Define pattern for file names based on quantification type
-pattern <- ifelse(quant_type == "kallisto", "abundance.tsv", "quant.sf")
+pattern <- ifelse(quant_type == "kallisto", "abundance.tsv", ".*quant_results\\.sf")
 fns <- list.files(path, pattern = pattern, recursive = T, full.names = T)
-names <- basename(dirname(fns))
+names <- basename(fns)
 names(fns) <- names
 dropInfReps <- quant_type == "kallisto"
 

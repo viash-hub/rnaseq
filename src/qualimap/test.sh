@@ -1,10 +1,9 @@
 echo "> Running $meta_functionality_name."
 
 # define input and output for script
-input_bam="$meta_resources_dir/qualimap_test.bam"
-input_gtf="$meta_resources_dir/qualimap_test_annot.gtf"
+input_bam="$meta_resources_dir/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam"
+input_gtf="$meta_resources_dir/genes.gtf"
 output_dir="qualimap_output"
-mkdir -p $output_dir
 
 "$meta_executable" \
     --input "$input_bam" \

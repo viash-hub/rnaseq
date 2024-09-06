@@ -55,6 +55,10 @@ argument_groups:
         type: file
         multiple: true
         multiple_sep: ","
+      - name: "--pseudo_multiqc"
+        type: file
+        multiple: true
+        multiple_sep: ","
       - name: "--featurecounts_multiqc"
         type: file
         multiple: true
@@ -67,10 +71,10 @@ argument_groups:
         type: file
       - name: "--aligner_clustering_multiqc"
         type: file
-      # - name: "--pseudoaligner_pca_multiqc"
-      #   type: file
-      # - name: "--pseudoaligner_clustering_multiqc"
-      #   type: file
+      - name: "--pseudo_aligner_pca_multiqc"
+        type: file
+      - name: "--pseudo_aligner_clustering_multiqc"
+        type: file
       - name: "--preseq_multiqc"
         type: file
         multiple: true
@@ -119,6 +123,9 @@ argument_groups:
         type: file
         multiple: true
         multiple_sep: ","
+      - name: "--multiqc_config"
+        type: file
+        
 
   - name: "Ouput"
     arguments:

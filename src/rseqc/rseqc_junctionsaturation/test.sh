@@ -2,8 +2,7 @@
 
 # define input and output for script
 input_bam="$meta_resources_dir/test.paired_end.sorted.bam"
-input_bed="$meta_resources_dir/test.bed12"
-
+input_bed="$meta_resources_dir/test.bed"
 
 output_plot="junction_saturation_plot.pdf"
 output_plot_r="junction_saturation_plot.r"

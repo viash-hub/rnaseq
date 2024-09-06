@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # define input and output for script
-input="hisat2.tar.gz"
-output="hisat2"
+input="salmon.tar.gz"
+output="salmon"
 
 # run executable and tests
 echo "> Running $meta_functionality_name."

@@ -29,10 +29,6 @@ argument_groups:
     default: 30 
     description: Minimum mapping quality (phred scaled) to determine uniquely mapped reads, default=30.
     min: 0
-
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -63,11 +59,6 @@ argument_groups:
     required: false
     default: $id.duplication_rate_sequencing.xls
     description: Summary of sequencing-based read duplication
-  
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

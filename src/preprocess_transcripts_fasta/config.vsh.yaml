@@ -14,6 +14,7 @@ argument_groups:
     type: file 
     required: true
     description: Path of transcripts FASTA file
+
 - name: "Output"
   arguments:    
   - name: "--output"

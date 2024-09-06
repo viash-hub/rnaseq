@@ -19,10 +19,6 @@ argument_groups:
     type: file
     required: true
     description: path to annotations file in Ensembl GTF format.
-
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -46,11 +42,6 @@ argument_groups:
     required: false
     default: html
     description: Format of the output report (PDF or HTML, default is HTML)
-
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 - name: "Optional"
   arguments: 
@@ -101,9 +92,9 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/qualimap_test.bam
-  - path: /testData/unit_test_resources/qualimap_test.bam.bai
-  - path: /testData/unit_test_resources/qualimap_test_annot.gtf
+  - path: /testData/unit_test_resources/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam
+  - path: /testData/unit_test_resources/wgEncodeCaltechRnaSeqGm12878R1x75dAlignsRep2V2.bam.bai
+  - path: /testData/unit_test_resources/genes.gtf
   
 engines:
 - type: docker
