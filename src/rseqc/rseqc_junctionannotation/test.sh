@@ -1,10 +1,8 @@
 #!/bin/bash
 
-gunzip "$meta_resources_dir/hg19_RefSeq.bed.gz"
-
 # define input and output for script
-input_bam="$meta_resources_dir/Pairend_StrandSpecific_51mer_Human_hg19.bam"
-input_bed="$meta_resources_dir/hg19_RefSeq.bed"
+input_bam="$meta_resources_dir/test.paired_end.sorted.bam"
+input_bed="$meta_resources_dir/test.bed12"
 
 output_junction_bed="junction_annotation.bed"
 output_junction_interact="junction_annotation.Interact.bed"
@@ -20,6 +18,8 @@ echo "> Running $meta_functionality_name"
 "$meta_executable" \
     --input "$input_bam" \
     --refgene "$input_bed" \
+    --map_qual 30 \
+    --min_intron 1 \
     --output_log "$output_log" \
     --output_plot_r "$output_plot_r" \
     --output_junction_bed "$output_junction_bed" \
