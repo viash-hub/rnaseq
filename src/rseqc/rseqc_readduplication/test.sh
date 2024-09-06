@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # define input and output for script
-input_bam="$meta_resources_dir/Pairend_StrandSpecific_51mer_Human_hg19.bam"
+input_bam="$meta_resources_dir/test.paired_end.sorted.bam"
 
 output_duplication_rate_plot_r="duplication_rate_plot.r"
 output_duplication_rate_plot="duplication_rate_plot.pdf"
