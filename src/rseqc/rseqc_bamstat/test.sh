@@ -2,7 +2,7 @@
 
 # define input and output for script
 
-input_bam="Pairend_StrandSpecific_51mer_Human_hg19.bam"
+input_bam="test.paired_end.sorted.bam"
 output_summary="mapping_quality.txt"
 
 # run executable and tests

@@ -1,10 +1,9 @@
 #!/bin/bash
 
-gunzip "$meta_resources_dir/hg19_RefSeq.bed.gz"
-
 # define input and output for script
-input_bam="$meta_resources_dir/Pairend_StrandSpecific_51mer_Human_hg19.bam"
-input_bed="$meta_resources_dir/hg19_RefSeq.bed"
+input_bam="$meta_resources_dir/test.paired_end.sorted.bam"
+input_bed="$meta_resources_dir/test.bed12"
+
 output="read_distribution.txt"
 
 # run executable and test
