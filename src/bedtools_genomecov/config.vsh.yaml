@@ -38,7 +38,7 @@ resources:
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/test.paired_end.sorted.bam
+  - path: /testData/unit_test_resources/chr19.bam
 
 engines:
   - type: docker
