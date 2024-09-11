@@ -3,8 +3,11 @@ viash_version: 0.9.0
 source: src
 target: target
 
+info:
+  test_resources:
+    - path: gs://viash-hub-test-data/rnaseq/v1
+      dest: testData
+
 config_mods: |
-  .version := 'dev'
   .requirements.commands := ['ps']
   .runners[.type == 'nextflow'].directives.tag := '$id'
-  .runners[.type == 'nextflow'].auto.simplifyOutput := false
