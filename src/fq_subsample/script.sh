@@ -2,14 +2,13 @@
 
 set -eo pipefail
 
-IFS="," read -ra input <<< $par_input
+IFS=";" read -ra input <<< $par_input
 n_fastq=${#input[@]}
 
 required_args=("-p" "--probability" "-n" "--read-count")
-
 for arg in "${required_args[@]}"; do
     if [[ "$par_extra_args" == *"$arg"* ]]; then
-        echo "FQ/SUBSAMPLE requires --probability (-p) or --record-count (-n) specified in task.ext.args!"
+        echo "FQ/SUBSAMPLE requires either --probability (-p) or --record-count (-n) to be specified with --extra_args"
         exit 1
     fi
 done

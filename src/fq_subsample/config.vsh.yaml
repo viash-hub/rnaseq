@@ -14,7 +14,7 @@ argument_groups:
     type: file
     description: Input fastq files to subsample
     multiple: true
-    multiple_sep: ","
+    multiple_sep: ";"
   - name: "--extra_args"
     type: string
     default: ""
