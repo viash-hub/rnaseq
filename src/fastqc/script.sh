@@ -7,7 +7,7 @@ function clean_up {
 }
 trap clean_up EXIT
 
-tmpdir=$(mktemp -d "$meta_temp_dir/$meta_functionality_name-XXXXXXXX")
+tmpdir=$(mktemp -d "$meta_temp_dir/$meta_name-XXXXXXXX")
 
 IFS="," read -ra input <<< $par_input
 count=${#input[@]}
@@ -32,23 +32,8 @@ file1=$(basename -- "${input[0]}")
 read1="${file1%.fastq*}"
 file2=$(basename -- "${input[1]}")
 read2="${file2%.fastq*}"
-html1=$(find $tmpdir/ -iname "*.read_1*.html")
-html2=$(find $tmpdir/ -iname "*.read2*.html")
-zip1=$(find $tmpdir/ -iname "*.read_1*.zip")
-zip2=$(find $tmpdir/ -iname "*.read_2*.zip")
 
-if [ -e "$html1" ]; then 
-  cp $html1 $par_fastqc_html_1
-fi
-
-if [ -e "$html2" ]; then 
-  cp $html2 $par_fastqc_html_2
-fi
-
-if [ -e "$zip1" ]; then
-  cp $zip1 $par_fastqc_zip_1
-fi
-
-if [ -e "$zip2" ]; then
-  cp $zip2 $par_fastqc_zip_2
-fi
+[[ -e "${tmpdir}/${read1}_fastqc.html" ]] && cp "${tmpdir}/${read1}_fastqc.html" $par_fastqc_html_1
+[[ -e "${tmpdir}/${read2}_fastqc.html" ]] && cp "${tmpdir}/${read2}_fastqc.html" $par_fastqc_html_2
+[[ -e "${tmpdir}/${read1}_fastqc.zip" ]] && cp "${tmpdir}/${read1}_fastqc.zip" $par_fastqc_zip_1
+[[ -e "${tmpdir}/${read2}_fastqc.zip" ]] && cp "${tmpdir}/${read2}_fastqc.zip" $par_fastqc_zip_2
