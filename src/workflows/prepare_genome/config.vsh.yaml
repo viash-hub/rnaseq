@@ -153,9 +153,10 @@ dependencies:
   - name: preprocess_transcripts_fasta
   - name: gtf_filter
   - name: rsem/rsem_prepare_reference
-    # repository: biobox
+    repository: biobox
   - name: getchromsizes
   - name: untar
+    repository: craftbox
   - name: star/star_genome_generate
     repository: biobox
   - name: bbmap_bbsplit
@@ -166,8 +167,12 @@ dependencies:
 repositories:
   - name: biobox
     type: vsh
-    repo: vsh/biobox
-    # tag: v0.1.0
+    repo: biobox
+    tag: main
+  - name: craftbox
+    type: vsh
+    repo: craftbox
+    tag: main
 
 runners: 
 - type: executable
