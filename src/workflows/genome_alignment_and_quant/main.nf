@@ -9,24 +9,30 @@ workflow run_wf {
       def paired = input.size() == 2
       [ id, state + [ paired: paired, input: input ] ]
     }
-    | star_align.run (
+
+    | star_align_reads.run (
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: [
-          "input", 
-          "gtf", 
-          "star_index", 
-          "extra_star_align_args", 
-          "seq_platform", 
-          "seq_center", 
-          "star_ignore_sjdbgtf", 
-          "versions" 
+          "input": "fastq_1",
+          "input_r2": "fastq_2",
+          "genome_dir": "star_index",
+          "sjdb_gtf_file": "gtf",
+          "out_sam_attr_rg_line": "star_sam_attr_rg_line"
         ],
         toState: [
-          "star_alignment": "output", 
-          "genome_bam": "star_align_bam", 
-          "transcriptome_bam": "star_align_bam_transcriptome", 
-          "star_multiqc": "log_final", 
-          "versions": "updated_versions" 
+          "genome_bam": "aligned_reads",
+          "transcriptome_bam": "reads_aligned_to_transcriptome",
+          "star_multiqc": "log"
+        ],
+        args: [ 
+          quant_mode: "TranscriptomeSAM", 
+          twopass_mode: "Basic", 
+          out_sam_type: "BAM;Unsorted", 
+          run_rng_seed: 0, 
+          out_filter_multimap_nmax: 20, 
+          align_sjdb_overhang_min: 1, 
+          out_sam_attributes: "NH;HI;AS;NM;MD", 
+          quant_transcriptome_sam_output: "BanSingleEnd" 
         ]
     )
 
@@ -41,32 +47,19 @@ workflow run_wf {
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: [ 
           "input": "genome_bam_sorted", 
-          "bam_csi_index": "bam_csi_index", 
-          "versions": "versions" 
+          "csi": "bam_csi_index"
         ],
-        toState: [ 
-          "genome_bam_bai": "output_bai", 
-          "genome_bam_csi": "output_csi", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_index": "output" ],
         key: "genome_sorted"
     )
-    | map { id, state -> 
-      def genome_bam_index = state.genome_bam_bai ? state.genome_bam_bai : state.genome_bam_csi
-      [ id, state + [ genome_bam_index: genome_bam_index ] ]
-    }
     | samtools_stats.run (
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: [
-          "bam": "genome_bam_sorted", 
+          "input": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_stats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_stats": "output" ],
         key: "genome_stats"
     )
     | samtools_flagstat.run (
@@ -74,13 +67,9 @@ workflow run_wf {
         fromState: [
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_flagstat": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_flagstat": "output" ],
         key: "genome_flagstat"
     )
     | samtools_idxstats.run(
@@ -88,13 +77,9 @@ workflow run_wf {
         fromState: [
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_idxstats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_idxstats": "output" ],
         key: "genome_idxstats"
     )
 
@@ -109,45 +94,28 @@ workflow run_wf {
           "paired": "paired", 
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index",
-          "get_output_stats": "umi_dedup_stats", 
-          "versions": "versions" 
+          "get_output_stats": "umi_dedup_stats"
         ],
-        toState: [
-          "genome_bam_sorted": "output_bam", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_sorted": "output_bam" ],
         key: "genome_deduped"
     )
     | samtools_index.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
           "input": "genome_bam_sorted", 
-          "bam_csi_index": "bam_csi_index", 
-          "versions": "versions"
+          "csi": "bam_csi_index"
         ],
-        toState: [ 
-          "genome_bam_bai": "output_bai", 
-          "genome_bam_csi": "output_csi", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_index": "output" ],
         key: "genome_deduped"
     )
-    | map { id, state -> 
-      def genome_bam_index = state.genome_bam_bai ? state.genome_bam_bai : state.genome_bam_csi
-      [ id, state + [ genome_bam_index: genome_bam_index ] ]
-    }
     | samtools_stats.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
-          "bam": "genome_bam_sorted", 
+          "input": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_stats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_stats": "output" ],
         key: "genome_deduped_stats"
     )
     | samtools_flagstat.run (
@@ -155,13 +123,9 @@ workflow run_wf {
         fromState: [
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_flagstat": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_flagstat": "output" ],
         key: "genome_deduped_flagstat"
     )
     | samtools_idxstats.run(
@@ -170,12 +134,8 @@ workflow run_wf {
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
           "fasta": "fasta", 
-          "versions": "versions" 
         ],
-        toState: [
-          "genome_bam_idxstats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_idxstats": "output" ],
         key: "genome_deduped_idxstats"
     )
 
@@ -183,75 +143,44 @@ workflow run_wf {
 
     | samtools_sort.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
-        fromState: [
-          "input": "transcriptome_bam", 
-          "versions": "versions"
-        ],
-        toState: [
-          "transcriptome_bam": "output", 
-          "versions": "updated_versions"
-        ],
+        fromState: [ "input": "transcriptome_bam" ],
+        toState: [ "transcriptome_bam": "output" ],
         key: "transcriptome_sorted"
     )
     | samtools_index.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
           "input": "transcriptome_bam", 
-          "bam_csi_index": "bam_csi_index", 
-          "versions": "versions" 
+          "csi": "bam_csi_index"
         ],
-        toState: [
-          "transcriptome_bam_bai": "output_bai", 
-          "transcriptome_bam_csi": "output_csi", 
-          "versions": "updated_versions" 
-        ],
-        key: "transcriptome_sorted", 
+        toState: [ "transcriptome_bam_index": "output" ],
+        key: "transcriptome_sorted"
     )
-    | map { id, state -> 
-      if (state.with_umi) {
-        def transcriptome_bam_index = state.transcriptome_bam_bai ? state.transcriptome_bam_bai : state.transcriptome_bam_csi
-        [ id, state + [ transcriptome_bam_index: transcriptome_bam_index ] ]
-      } else {
-        [ id, state ]
-      }
-    }
     | samtools_stats.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
-          "bam": "transcriptome_bam", 
+          "input": "transcriptome_bam", 
           "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
         ],
-        toState: [
-          "transcriptome_bam_stats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_stats": "output" ],
         key: "transcriptome_stats"
     )
     | samtools_flagstat.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
           "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
+          "bai": "transcriptome_bam_index"
         ],
-        toState: [
-          "transcriptome_bam_flagstat": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_flagstat": "output" ],
         key: "transcriptome_flagstat"
     )
     | samtools_idxstats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [
           "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
+          "bai": "transcriptome_bam_index" 
         ],
-        toState: [
-          "transcriptome_bam_idxstats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_idxstats": "output" ],
         key: "transcriptome_idxstats"
     )    
      
@@ -262,112 +191,92 @@ workflow run_wf {
           "bam": "transcriptome_bam", 
           "bai": "transcriptome_bam_index",
           "get_output_stats": "umi_dedup_stats", 
-          "versions": "versions" 
         ],
-        toState: [
-          "transcriptome_bam_deduped": "output_bam", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_deduped": "output_bam" ],
         key: "transcriptome_deduped"
     )
     | samtools_sort.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
-        fromState: [
-          "input": "transcriptome_bam_deduped", 
-          "versions": "versions"
-        ],
-        toState: [
-          "transcriptome_bam": "output", 
-          "versions": "updated_versions"
-        ],
+        fromState: [ "input": "transcriptome_bam_deduped" ],
+        toState: [ "transcriptome_bam": "output" ],
         key: "transcriptome_deduped_sorted"
     )
     | samtools_index.run (
       runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
       fromState: [
         "input": "transcriptome_bam", 
-        "bam_csi_index": "bam_csi_index", 
-        "versions": "versions" 
+        "csi": "bam_csi_index"
       ],
-      toState: [
-        "transcriptome_bam_bai": "output_bai", 
-        "transcriptome_bam_csi": "output_csi", 
-        "versions": "updated_versions" 
-      ],
-      key: "transcriptome_deduped_sorted", 
+      toState: [ "transcriptome_bam_index": "output" ],
+      key: "transcriptome_deduped_sorted"
     )
-    | map { id, state -> 
-      def transcriptome_bam_index = state.transcriptome_bam_bai ? state.transcriptome_bam_bai : state.transcriptome_bam_csi
-      [ id, state + [ transcriptome_bam_index: transcriptome_bam_index ] ]
-    }
     | samtools_stats.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
         fromState: [
-          "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
+          "input": "transcriptome_bam", 
+          "bai": "transcriptome_bam_index"
         ],
-        toState: [
-          "transcriptome_bam_stats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_stats": "output" ],
         key: "transcriptome_deduped_stats"
     )
     | samtools_flagstat.run (
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
         fromState: [
           "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
+          "bai": "transcriptome_bam_index"
         ],
-        toState: [
-          "transcriptome_bam_flagstat": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_flagstat": "output" ],
         key: "transcriptome_deduped_flagstat"
     )
     | samtools_idxstats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
         fromState: [
           "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index", 
-          "versions": "versions" 
+          "bai": "transcriptome_bam_index" 
         ],
-        toState: [
-          "transcriptome_bam_idxstats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "transcriptome_bam_idxstats": "output" ],
         key: "transcriptome_deduped_idxstats"
     ) 
 
     // Fix paired-end reads in name sorted BAM file
     | umitools_prepareforquant.run (
-        runIf: {id, state -> state.with_umi && state.paired && state.aligner == 'star_salmon' },
-        fromState: [
-          "bam": "transcriptome_bam", 
-          "versions": "versions"
-        ],
-        toState: [
-          "transcriptome_bam": "output", 
-          "versions": "updated_versions"
-        ]
+        runIf: { id, state -> state.with_umi && state.paired && state.aligner == 'star_salmon' },
+        fromState: [ "bam": "transcriptome_bam" ],
+        toState: [ "transcriptome_bam": "output" ]
     )
+
+    // Infer lib-type for salmon quant
+    | map { id, state -> 
+      def lib_type = (state.paired) ? 
+        (
+          (state.strandedness == "forward") ? 
+            "ISF" : 
+            (
+              (state.strandedness == "reverse") ? "ISR" : "IU"
+            )
+        ) 
+        : (
+          (state.strandedness == "forward") ? 
+            "SF" : 
+            (
+              (state.strandedness == "reverse") ? "SR" : "U"
+            )
+        ) 
+      [ id, state + [lib_type: lib_type] ]
+    }
 
     // Count reads from BAM alignments using Salmon
     | salmon_quant.run ( 
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: [
-          "paired": "paired", 
-          "strandedness": "strandedness", 
-          "input": "transcriptome_bam", 
-          "transcript_fasta": "transcript_fasta", 
-          "gtf": "gtf", 
-          "versions": "versions" 
+          "lib_type": "lib_type",
+          "alignments": "transcriptome_bam", 
+          "targets": "transcript_fasta", 
+          "gene_map": "gtf"
         ],
-        args: ["alignment_mode": true],
-        toState: [
-          "quant_results": "output", 
-          "versions": "updated_versions"
+        toState: [ 
+          "quant_out_dir": "output",
+          "quant_results_file": "quant_results" 
         ]
     )
 
@@ -379,8 +288,7 @@ workflow run_wf {
           "paired": "paired",
           "input": "input",
           "index": "rsem_index",
-          "extra_args": "extra_args",
-          "versions": "versions"
+          "extra_args": "extra_args"
         ],
         toState: [
           "rsem_counts_gene": "counts_gene",
@@ -389,8 +297,7 @@ workflow run_wf {
           "star_multiqc": "logs",
           "bam_star_rsem": "bam_star",
           "bam_genome_rsem": "bam_genome",
-          "bam_transcript_rsem": "bam_transcript",
-          "versions": "update_versions"
+          "bam_transcript_rsem": "bam_transcript"
         ]
     )
 
@@ -405,32 +312,19 @@ workflow run_wf {
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: [ 
           "input": "genome_bam_sorted", 
-          "bam_csi_index": "bam_csi_index", 
-          "versions": "versions" 
+          "csi": "bam_csi_index"
         ],
-        toState: [ 
-          "genome_bam_bai": "output_bai", 
-          "genome_bam_csi": "output_csi", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_index": "output" ],
         key: "genome_sorted"
     )
-    | map { id, state -> 
-      def genome_bam_index = state.genome_bam_bai ? state.genome_bam_bai : state.genome_bam_csi
-      [ id, state + [ genome_bam_index: genome_bam_index ] ]
-    }
     | samtools_stats.run (
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: [
-          "bam": "genome_bam_sorted", 
+          "input": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta"
         ],
-        toState: [
-          "genome_bam_stats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_stats": "output" ],
         key: "genome_stats"
     )
     | samtools_flagstat.run (
@@ -438,13 +332,9 @@ workflow run_wf {
         fromState: [
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta" 
         ],
-        toState: [
-          "genome_bam_flagstat": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_flagstat": "output" ],
         key: "genome_flagstat"
     )
     | samtools_idxstats.run(
@@ -452,15 +342,16 @@ workflow run_wf {
         fromState: [
           "bam": "genome_bam_sorted", 
           "bai": "genome_bam_index", 
-          "fasta": "fasta", 
-          "versions": "versions" 
+          "fasta": "fasta" 
         ],
-        toState: [
-          "genome_bam_idxstats": "output", 
-          "versions": "updated_versions"
-        ],
+        toState: [ "genome_bam_idxstats": "output" ],
         key: "genome_idxstats"
     )
+
+    | map { id, state -> 
+      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+      [ id, mod_state ]
+    }
 
     | setState (
       [ "star_alignment": "star_alignment", 
@@ -476,10 +367,10 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "quant_results": "quant_results", 
-        "updated_versions": "versions" ]
+        "quant_out_dir": "quant_out_dir",
+        "quant_results_file": "quant_results_file" ]
     )
-
+    
   emit:
     output_ch
 }

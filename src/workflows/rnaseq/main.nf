@@ -28,12 +28,15 @@ workflow run_wf {
           additional_fasta: list[1][-1].additional_fasta,
           transcript_fasta: list[1][-1].transcript_fasta, 
           gene_bed: list[1][-1].gene_bed,
-          splicesites: list[1][-1].splicesites,
           bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
+          aligner: list[1][-1].aligner,
+          pseudo_aligner: list[1][-1].pseudo_aligner,
           star_index: list[1][-1].star_index,
           rsem_index: list[1][-1].rsem_index,
           salmon_index: list[1][-1].salmon_index,
-          hisat2_index: list[1][-1].hisat2_index,
+          kallisto_index: list[1][-1].kallisto_index,
+          // splicesites: list[1][-1].splicesites,
+          // hisat2_index: list[1][-1].hisat2_index,
           bbsplit_index: list[1][-1].bbsplit_index,
           skip_bbsplit: list[1][-1].skip_bbsplit,
           gencode: list[1][-1].gencode,
@@ -65,7 +68,8 @@ workflow run_wf {
           "gencode": "gencode", 
           "biotype": "biotype",
           "filter_gtf": "filter_gtf",
-          "versions": "versions" 
+          "aligner": "aligner",
+          "pseudo_aligner": "pseudo_aligner"
         ],
         toState: [
           "fasta": "uncompressed_fasta", 
@@ -77,8 +81,7 @@ workflow run_wf {
           "star_index": "star_index_uncompressed", 
           "salmon_index": "salmon_index_uncompressed", 
           "kallisto_index": "kallisto_index_uncompressed",
-          "gene_bed": "gene_bed_uncompressed",
-          "versions": "updated_versions" 
+          "gene_bed": "gene_bed_uncompressed"
         ]
     )
 
@@ -99,13 +102,11 @@ workflow run_wf {
     | cat_fastq.run (
         fromState: [
           "read_1": "fastq_1", 
-          "read_2": "fastq_2",
-          "versions": "versions"
+          "read_2": "fastq_2"
         ], 
         toState: [ 
           "fastq_1": "fastq_1",
-          "fastq_2": "fastq_2", 
-          "versions": "updated_versions"
+          "fastq_2": "fastq_2"
         ]
     )
 
@@ -133,8 +134,7 @@ workflow run_wf {
           "skip_trimming": "skip_trimming",
           "trimmer": "trimmer",
           "skip_bbsplit": "skip_bbsplit",
-          "remove_ribo_rna": "remove_ribo_rna", 
-          "versions": "versions"
+          "remove_ribo_rna": "remove_ribo_rna"
         ], 
         toState: [ 
           "fastqc_html_1": "fastqc_html_1",
@@ -152,21 +152,20 @@ workflow run_wf {
           "passed_trimmed_reads": "passed_trimmed_reads",
           "num_trimmed_reads": "num_trimmed_reads",
           "sortmerna_log": "sortmerna_log",
-          "salmon_json_info": "salmon_json_info", 
+          "salmon_quant_output": "salmon_quant_output",
           "fastp_failed_trim": "failed_trim",
           "fastp_failed_trim_unpaired1": "failed_trim_unpaired1",
           "fastp_failed_trim_unpaired2": "failed_trim_unpaired2",
           "fastp_trim_json": "trim_json",
           "fastp_trim_html": "trim_html",
-          "fastp_trim_merged_out": "trim_merged_out",
-          "versions": "updated_versions"
+          "fastp_trim_merged_out": "trim_merged_out"
         ]
     )
 
     // Infer strandedness from Salmon pseudo-alignment results
     | map { id, state -> 
     (state.strandedness == 'auto') ? 
-      [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_json_info)] ] : 
+      [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_quant_output)] ] : 
       [id, state] 
     }
 
@@ -213,8 +212,8 @@ workflow run_wf {
           "umi_dedup_stats": "umi_dedup_stats",
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
-          "salmon_quant_libtype": "salmon_quant_libtype", 
-          "versions": "versions" 
+          "salmon_quant_libtype": "salmon_quant_libtype",
+          "salmon_index": "salmon_index" 
         ],
         toState: [
           "star_alignment": "star_alignment", 
@@ -229,8 +228,8 @@ workflow run_wf {
           "transcriptome_bam_stats": "transcriptome_bam_stats", 
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-          "quant_results": "quant_results", 
-          "versions": "updated_versions"
+          "quant_out_dir": "quant_out_dir",
+          "quant_results_file": "quant_results_file"
         ]
     )
 
@@ -252,7 +251,8 @@ workflow run_wf {
           "gtf": "gtf",
           "transcript_fasta": "transcript_fasta",
           "pseudo_aligner": "pseudo_aligner",
-          "pseudo_index": "pseudo_index",
+          "salmon_index": "salmon_index",
+          "kallisto_index": "kallisto_index",
           "extra_star_align_args": "extra_star_align_args", 
           "star_ignore_sjdbgtf": "star_ignore_sjdbgtf",
           "seq_platform": "seq_platform", 
@@ -261,15 +261,15 @@ workflow run_wf {
           "umi_dedup_stats": "umi_dedup_stats",
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
-          "libtype": "salmon_quant_libtype", 
+          "lib_type": "salmon_quant_libtype", 
           "kallisto_quant_fragment_length": "kallisto_quant_fragment_length",
-          "kallisto_quant_fragment_length_sd": "kallisto_quant_fragment_length_sd",
-          "versions": "versions" 
+          "kallisto_quant_fragment_length_sd": "kallisto_quant_fragment_length_sd"
         ],
         toState: [
-          "pseudo_multiqc": "pseudo_multiqc", 
-          "quant_results": "quant_results", 
-          "versions": "updated_versions"
+          "pseudo_quant_out_dir": "quant_out_dir",
+          "pseudo_salmon_quant_results_file": "salmon_quant_results_file",
+          "pseudo_kallisto_quant_results_file": "kallisto_quant_results_file",
+          "pseudo_multiqc": "pseudo_multiqc"
         ]
     )
 
@@ -302,8 +302,7 @@ workflow run_wf {
           "skip_qc": "skip_qc",
           "skip_markduplicates": "skip_markduplicates", 
           "skip_stringtie": "skip_stringtie", 
-          "skip_bigwig":"gencode", 
-          "versions": "versions"
+          "skip_bigwig":"gencode"
         ], 
         toState: [
           "genome_bam_sorted": "processed_genome_bam", 
@@ -319,8 +318,7 @@ workflow run_wf {
           "bedgraph_forward": "bedgraph_forward",
           "bedgraph_reverse": "bedgraph_reverse",
           "bigwig_forward": "bigwig_forward",
-          "bigwig_reverse": "bigwig_reverse", 
-          "versions": "updated_versions"
+          "bigwig_reverse": "bigwig_reverse"
         ]
     )
 
@@ -331,11 +329,18 @@ workflow run_wf {
           "paired": "paired", 
           "strandedness": "strandedness", 
           "skip_align": "skip_alignment",
-          "skip_pseudo_align": "skippseudo_alignment",
+          "skip_pseudo_align": "skip_pseudo_alignment",
           "gtf": "gtf", 
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",
-          "quant_results": "quant_results", 
+          "quant_out_dir": "quant_out_dir",
+          "quant_results_file": "quant_results_file",
+          "pseudo_quant_out_dir": "pseudo_quant_out_dir",
+          "pseudo_salmon_quant_results_file": "pseudo_salmon_quant_results_file", 
+          "pseudo_kallisto_quant_results_file": "pseudo_kallisto_quant_results_file", 
+          "aligner": "aligner",
+          "pseudo_aligner": "pseudo_aligner",
+          "pseudo_multiqc": "pseudo_multiqc",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 
@@ -367,8 +372,7 @@ workflow run_wf {
           "num_trimmed_reads": "num_trimmed_reads",
           "passed_trimmed_reads": "passed_trimmed_reads",
           "passed_mapping": "passed_mapping",
-          "percent_mapped": "percent_mapped", 
-          "versions": "versions"
+          "percent_mapped": "percent_mapped"
         ], 
         toState: [
           "preseq_output": "preseq_output",
@@ -418,9 +422,7 @@ workflow run_wf {
           "deseq2_output": "deseq2_output", 
           "multiqc_report": "multiqc_report", 
           "multiqc_data": "multiqc_data", 
-          "multiqc_plots": "multiqc_plots",
-          "multiqc_versions": "multiqc_versions", 
-          "versions": "updated_versions" 
+          "multiqc_plots": "multiqc_plots"
         ] 
     )
 
@@ -515,13 +517,22 @@ workflow run_wf {
         "counts_gene_scaled": "counts_gene_scaled", 
         "tpm_transcript": "tpm_transcript", 
         "counts_transcript": "counts_transcript", 
-        "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+        "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
         "deseq2_output": "deseq2_output", 
+        "pseudo_tpm_gene": "pseudo_tpm_gene",
+        "pseudo_counts_gene": "pseudo_counts_gene",
+        "pseudo_counts_gene_length_scaled": "pseudo_counts_gene_length_scaled",
+        "pseudo_counts_gene_scaled": "pseudo_counts_gene_scaled", 
+        "pseudo_tpm_transcript": "pseudo_tpm_transcript", 
+        "pseudo_counts_transcript": "pseudo_counts_transcript", 
+        "pseudo_lengths_gene": "pseudo_lengths_gene",
+        "pseudo_lengths_transcript": "pseudo_lengths_transcript",
+        "pseudo_quant_merged_summarizedexperiment": "pseudo_quant_merged_summarizedexperiment",
+        "deseq2_output_pseudo": "deseq2_output_pseudo",  
         "multiqc_report": "multiqc_report", 
         "multiqc_data": "multiqc_data", 
         "multiqc_plots": "multiqc_plots",
-        "multiqc_versions": "multiqc_versions", 
-        "versions": "versions"
+        "multiqc_versions": "multiqc_versions"
       ]
     )
 
@@ -558,7 +569,8 @@ import groovy.json.JsonSlurper
 //
 // Function that parses Salmon quant 'meta_info.json' output file to get inferred strandedness
 //
-def getSalmonInferredStrandedness(json_file) {
+def getSalmonInferredStrandedness(salmon_quant_output) {
+  def json_file = new File(salmon_quant_output).listFiles().find { it.name == "meta_info.json" || it.isDirectory() && it.listFiles().find { it.name == "meta_info.json" } }
   def lib_type = new JsonSlurper().parseText(json_file.text).get('library_types')[0]
   def strandedness = 'reverse'
   if (lib_type) {

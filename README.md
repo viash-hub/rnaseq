@@ -91,13 +91,15 @@ The pipeline has 5 sub-workflows that can be run separately.
 
 2.  Pre-processing: This is a workflow for performing quality control on
     the input reads It performs FastQC, extracts UMIs, trims adapters,
-    and removes ribosomal RNA reads.
+    and removes ribosomal RNA reads. Adapters can be trimmed using
+    either Trim galore! or fastp (work in progress).
 
 3.  Genome alignment and quantification: This is a workflow for
     performing genome alignment using STAR and transcript quantification
-    using Salmon or RSEM. Alignment sorting and indexing, as well as
-    computation of statistics from the BAM files is performed using
-    Samtools. UMI-based deduplication is also performed.
+    using Salmon or RSEM (using RSEM’s built-in support for STAR) (work
+    in progress). Alignment sorting and indexing, as well as computation
+    of statistics from the BAM files is performed using Samtools.
+    UMI-based deduplication is also performed.
 
 4.  Post-processing: This is a workflow for duplicate read marking
     (picard MarkDuplicates), transcript assembly and quantification
@@ -111,3 +113,24 @@ The pipeline has 5 sub-workflows that can be run separately.
     control (RSeQC, dupRadar, Qualimap, Preseq, DESeq2, featureCounts).
     It presents QC for raw reads, alignments, gene biotype, sample
     similarity, and strand specificity (MultiQC).
+
+## Reusing components from biobox
+
+At the moment, this pipeline makes use of the following components from
+[biobox](https://github.com/viash-hub/biobox):
+
+- `gffread`
+- `star/star_genome_generate`
+- `star/star_align_reads`
+- `salmon/salmon_index`
+- `salmon/salmon_quant`
+- `featurecounts`
+- `samtools/samtools_sort`
+- `samtools/samtools_index`
+- `samtools/samtools_stats`
+- `samtools/samtools_flagstat`
+- `samtools/samtools_idxstats`
+- `multiqc` (work in progress - updating `assets/multiqc_config.yaml`)
+- `fastp` (work in progress)
+- `rsem/rsem_prepare_reference` (work in progress)
+- `rsem/rsem_calculate_expression` (work in progress)

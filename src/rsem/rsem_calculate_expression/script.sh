@@ -29,13 +29,4 @@ rsem-calculate-expression \
     ${input[*]} \
     $INDEX \
     $par_id
-
-# Version
-text="${meta_functionality_name}:
-    rsem: $(rsem-calculate-expression --version | sed -e 's/Current version: RSEM v//g')"
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi     
+    

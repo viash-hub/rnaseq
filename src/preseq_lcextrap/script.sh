@@ -27,14 +27,3 @@ preseq lc_extrap \
     $paired \
     $par_extra_preseq_args \
     -o $par_output
-
-# Version
-text="${meta_functionality_name}:
-    preseq: $(echo $(preseq 2>&1) | grep -oP 'Version: \K\d+\.\d+\.\d+')"
-
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi

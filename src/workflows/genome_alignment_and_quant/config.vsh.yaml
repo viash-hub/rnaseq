@@ -4,7 +4,7 @@ description: |
   A viash sub-workflow for genome alignment and quantification stage of nf-core/rnaseq pipeline.
 
 argument_groups:
-- name: "Output"
+- name: "Input"
   arguments:
   - name: "--id"
     required: true
@@ -86,17 +86,13 @@ argument_groups:
     default: "star_salmon"
   - name: "--rsem_index"
     type: file
-    description: Path to directory or tar.gz archive for pre-built RSEM index.
-  - name: "--versions"
+    description: Path to directory for pre-built RSEM index.
+  - name: "--salmon_index"
     type: file
-    must_exist: false
+    description: Path to directory for pre-built Salmon index.
     
 - name: "Output"
   arguments:
-  - name: "--star_alignment"
-    type: file
-    direction: output
-    default: $id_STAR
   - name: "--star_multiqc"
     type: file
     direction: output
@@ -141,14 +137,14 @@ argument_groups:
     type: file
     direction: output
     default: $id.transcriptome.idxstats
-  - name: "--quant_results"
+  - name: "--quant_out_dir"
     type: file
     direction: output
     default: $id.salmon_quant
-  - name: "--updated_versions"
+  - name: "--quant_results_file"
     type: file
-    default: versions.yml
     direction: output
+    default: $id.quant.sf
 
 resources:
   - type: nextflow_script
@@ -156,16 +152,33 @@ resources:
     entrypoint: run_wf
 
 dependencies:
-  - name: star/star_align
+  - name: star/star_align_reads
+    repository: biobox
   - name: samtools/samtools_sort
+    repository: biobox
   - name: samtools/samtools_index
+    repository: biobox
   - name: samtools/samtools_stats
+    repository: biobox
   - name: samtools/samtools_flagstat
+    repository: biobox
   - name: samtools/samtools_idxstats
+    repository: biobox
   - name: umitools/umitools_dedup
+    # repository: biobox
   - name: umitools_prepareforquant
+    # repository: biobox
   - name: salmon/salmon_quant
+    repository: biobox
   - name: rsem/rsem_calculate_expression
+    # repository: biobox
+
+repositories:
+  - name: biobox
+    type: vsh
+    repo: vsh/biobox
+    # tag: v0.1
+
 
 runners: 
 - type: executable

@@ -46,13 +46,4 @@ kallisto quant \
 
 mv ${par_output}/kallisto_quant.log ${par_log}
 mv ${par_output}/run_info.json ${par_run_info}
-
-# Version
-text="${meta_functionality_name}:
-    salmon: $(echo $(kallisto 2>&1) | grep -oP 'kallisto \K\d+\.\d+\.\d+')"
-if [ -e "$par_versions" ]; then
-    echo "$text" >> "$par_versions"
-    mv "$par_versions" "$par_updated_versions"
-else
-    echo "$text" > "$par_updated_versions"
-fi
+cp ${par_output}/abundance.tsv ${par_quant_results_file}

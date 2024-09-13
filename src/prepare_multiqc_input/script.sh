@@ -18,7 +18,7 @@ IFS="," read -ra sortmerna_multiqc <<< $par_sortmerna_multiqc && for file in "${
 
 IFS="," read -ra star_multiqc <<< $par_star_multiqc && for file in "${star_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
-IFS="," read -ra hisat2_multiqc <<< $par_hisat2_multiqc && for file in "${hisat2_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+# IFS="," read -ra hisat2_multiqc <<< $par_hisat2_multiqc && for file in "${hisat2_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra rsem_multiqc <<< $par_rsem_multiqc && for file in "${rsem_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
@@ -32,6 +32,9 @@ IFS="," read -ra samtools_idxstats <<< $par_samtools_idxstats && for file in "${
 
 IFS="," read -ra markduplicates_multiqc <<< $par_markduplicates_multiqc && for file in "${markduplicates_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
+IFS="," read -ra pseudo_multiqc <<< $par_pseudo_multiqc && for file in "${pseudo_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+
+
 IFS="," read -ra featurecounts_multiqc <<< $par_featurecounts_multiqc && for file in "${featurecounts_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra featurecounts_rrna_multiqc <<< $par_featurecounts_rrna_multiqc&& for file in "${featurecounts_rrna_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
@@ -40,9 +43,9 @@ IFS="," read -ra featurecounts_rrna_multiqc <<< $par_featurecounts_rrna_multiqc&
 
 [ -e "$par_aligner_clustering_multiqc" ] && cp -r $par_aligner_clustering_multiqc "$par_output/"
 
-[ -e "$par_pseudoaligner_pca_multiqc" ] && cp -r $par_pseudoaligner_pca_multiqc "$par_output/"
+[ -e "$par_pseudo_aligner_pca_multiqc" ] && cp -r $par_pseudo_aligner_pca_multiqc "$par_output/"
 
-[ -e "$par_pseudoaligner_clustering_multiqc" ] && cp -r $par_pseudoaligner_clustering_multiqc "$par_output/"
+[ -e "$par_pseudo_aligner_clustering_multiqc" ] && cp -r $par_pseudo_aligner_clustering_multiqc "$par_output/"
 
 IFS="," read -ra preseq_multiqc <<< $par_preseq_multiqc && for file in "${preseq_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
@@ -67,3 +70,5 @@ IFS="," read -ra readdistribution_multiqc <<< $par_readdistribution_multiqc && f
 IFS="," read -ra readduplication_multiqc <<< $par_readduplication_multiqc && for file in "${readduplication_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra tin_multiqc <<< $par_tin_multiqc && for file in "${tin_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+
+[ -e "$par_multiqc_config" ] && cp -r $par_multiqc_config "$par_output/"

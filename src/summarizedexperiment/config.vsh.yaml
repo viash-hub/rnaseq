@@ -23,9 +23,6 @@ argument_groups:
     type: file
   - name: "--tx2gene_tsv"
     type: file
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -33,10 +30,6 @@ argument_groups:
     type: file
     direction: output
     default: merged_summarizedexperiment
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script

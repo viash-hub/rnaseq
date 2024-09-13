@@ -5,7 +5,11 @@ description: A sub-workflow to merge the counts obtained from salmon quant acros
 argument_groups:
   - name: "Input"
     arguments:
-      - name: "--quant_results"
+      - name: "--salmon_quant_results"
+        type: file
+        multiple: true
+        multiple_sep: ","
+      - name: "--kallisto_quant_results"
         type: file
         multiple: true
         multiple_sep: ","
@@ -31,43 +35,39 @@ argument_groups:
       - name: "--tpm_gene"
         type: file
         direction: output
-        example: salmon.merged.gene_tpm.tsv
+        example: gene_tpm.tsv
       - name: "--counts_gene"
         type: file
         direction: output
-        example: salmon.merged.gene_counts.tsv
+        example: gene_counts.tsv
       - name: "--counts_gene_length_scaled"
         type: file
         direction: output
-        example: salmon.merged.gene_counts_length_scaled.tsv
+        example: gene_counts_length_scaled.tsv
       - name: "--counts_gene_scaled"
         type: file
         direction: output
-        example: salmon.merged.gene_counts_scaled.tsv
+        example: gene_counts_scaled.tsv
       - name: "--tpm_transcript"
         type: file
         direction: output
-        example: salmon.merged.transcript_tpm.tsv
+        example: transcript_tpm.tsv
       - name: "--lengths_gene"
         type: file
         direction: output
-        example: salmon.merged.gene_length.tsv
+        example: gene_length.tsv
       - name: "--counts_transcript"
         type: file
         direction: output
-        example: salmon.merged.transcript_counts.tsv
+        example: transcript_counts.tsv
       - name: "--lengths_transcript"
         type: file
         direction: output
-        example: salmon.merged.transcript_length.tsv
-      - name: "--merged_summarizedexperiment"
+        example: transcript_length.tsv
+      - name: "--quant_merged_summarizedexperiment"
         type: file
         direction: output
-        example: salmon_merged_summarizedexperiment
-      - name: "--updated_versions"
-        type: file
-        default: versions.yml
-        direction: output
+        example: quant_merged_summarizedexperiment
 
 resources:
   - type: nextflow_script

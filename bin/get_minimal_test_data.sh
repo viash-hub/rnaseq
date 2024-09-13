@@ -75,7 +75,7 @@ wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/tr
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/gfp.fa.gz
 
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/bbsplit_fasta_list.txt
-wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/hisat2.tar.gz
+# wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/hisat2.tar.gz
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/salmon.tar.gz
 wget https://raw.githubusercontent.com/nf-core/test-datasets/rnaseq/reference/rsem.tar.gz
 

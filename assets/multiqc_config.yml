@@ -16,12 +16,13 @@ run_modules:
   - custom_content
   - fastqc
   - cutadapt
-  # - fastp
+  - fastp
   - sortmerna
   - star
   # - hisat2
-  # - rsem
+  - rsem
   - salmon
+  - kallisto
   - samtools
   - picard
   - preseq
@@ -39,6 +40,8 @@ top_modules:
   - "star_salmon_deseq2_clustering"
   - "salmon_deseq2_pca"
   - "salmon_deseq2_clustering"
+  - "kallisto_deseq2_pca"
+  - "kallisto_deseq2_clustering"
   - "biotype_counts"
   - "dupradar"
 
@@ -125,8 +128,8 @@ sp:
   star:
     fn: "*.star_aligned.log.final.out"
 
-  hisat2:
-    fn: "*.hisat2.summary.log"
+  # hisat2:
+  #   fn: "*.hisat2.summary.log"
 
   salmon/meta:
     fn: "*meta_info.json"

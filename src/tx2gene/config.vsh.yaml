@@ -25,9 +25,6 @@ argument_groups:
     type: string
     description: Method used for quantification
     choices: ["salmon", "kallisto"]
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments:   

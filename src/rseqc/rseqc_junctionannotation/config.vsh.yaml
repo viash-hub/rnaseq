@@ -34,10 +34,6 @@ argument_groups:
     default: 50
     min: 1 
     description: Minimum intron length (bp), default = 50.
-
-  - name: "--versions"
-    type: file
-    must_exist: false
     
 - name: "Output"
   arguments: 
@@ -90,19 +86,14 @@ argument_groups:
     default: $id.splice_junctions_plot.pdf
     description: plot of junctions (pdf)
 
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
-
 resources:
   - type: bash_script
     path: script.sh
 test_resources:
   - type: bash_script
     path: test.sh
-  - path: /testData/unit_test_resources/Pairend_StrandSpecific_51mer_Human_hg19.bam
-  - path: /testData/unit_test_resources/hg19_RefSeq.bed.gz
+  - path: /testData/unit_test_resources/sarscov2/test.paired_end.sorted.bam
+  - path: /testData/unit_test_resources/sarscov2/test.bed12
   
 engines:
 - type: docker

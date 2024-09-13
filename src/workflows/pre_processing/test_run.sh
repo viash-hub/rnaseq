@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --parallel --setup cb
+# viash ns build --parallel --setup cb 
 
 # nextflow run target/nextflow/workflows/pre_processing/main.nf \
 #   --id RAP1_UNINDUCED_REP1 \
@@ -20,14 +20,12 @@ HERE
 nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --param_list testData/minimal_test/input_fastq/sample_sheet.csv \
   --publish_dir "testData/paired_end_test" \
-  --umitools_bc_pattern "NNNN" \
-  --umitools_bc_pattern2 "NNNN" \
   --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
   --gtf testData/minimal_test/reference/gene_annotation.gtf \
   --salmon_index testData/minimal_test/reference/salmon.tar.gz \
   --skip_trimming false \
-  --trimmer fastp \
-  --remove_ribo_rna true \
+  --trimmer trimgalore \
+  --remove_ribo_rna false \
   -profile docker \
   -resume
