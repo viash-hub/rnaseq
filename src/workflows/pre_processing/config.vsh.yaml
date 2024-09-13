@@ -266,13 +266,7 @@ dependencies:
   - name: fq_subsample
   - name: salmon/salmon_quant
     repository: biobox
-
-repositories:
-  - name: biobox
-    type: vsh
-    repo: vsh/biobox
-    tag: v0.2.0
-    
+   
 runners: 
 - type: executable
 - type: nextflow

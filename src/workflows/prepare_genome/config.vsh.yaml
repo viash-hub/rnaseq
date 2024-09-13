@@ -164,16 +164,6 @@ dependencies:
     repository: biobox
   - name: kallisto/kallisto_index
 
-repositories:
-  - name: biobox
-    type: vsh
-    repo: biobox
-    tag: v0.2.0
-  - name: craftbox
-    type: vsh
-    repo: craftbox
-    tag: v0.1.0
-
 runners: 
 - type: executable
 - type: nextflow
