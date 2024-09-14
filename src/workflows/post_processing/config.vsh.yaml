@@ -155,12 +155,6 @@ dependencies:
   - name: ucsc/bedclip
   - name: ucsc/bedgraphtobigwig
 
-repositories:
-  - name: biobox
-    type: vsh
-    repo: vsh/biobox
-    tag: v0.2.0
-
 runners: 
 - type: executable
 - type: nextflow
