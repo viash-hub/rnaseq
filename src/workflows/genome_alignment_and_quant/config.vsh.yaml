@@ -173,13 +173,6 @@ dependencies:
   - name: rsem/rsem_calculate_expression
     # repository: biobox
 
-repositories:
-  - name: biobox
-    type: vsh
-    repo: vsh/biobox
-    # tag: v0.1
-
-
 runners: 
 - type: executable
 - type: nextflow
