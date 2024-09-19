@@ -46,7 +46,7 @@ workflow run_wf {
             lib_type: state.lib_type ]
         },
         toState: [ 
-          "quant_results_dir": "output",
+          "quant_outs_dir": "output",
           "salmon_quant_results_file": "quant_results" 
         ]
     )

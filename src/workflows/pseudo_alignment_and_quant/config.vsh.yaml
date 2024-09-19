@@ -63,7 +63,7 @@ argument_groups:
   - name: "--quant_out_dir"
     type: file
     direction: output
-    default: $id.salmon_quant
+    default: $id.quant
   - name: "--salmon_quant_results_file"
     type: file
     direction: output
