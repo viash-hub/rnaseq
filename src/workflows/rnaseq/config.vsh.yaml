@@ -233,11 +233,7 @@ argument_groups:
       - name: "--skip_pseudo_alignment"
         type: boolean_true
         description: Skip all of the pseudo-alignment-based processes within the pipeline.  
-      - name: extra_rsem_prepare_reference_args
-        type: string
-        description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
-        default: '--star'
-      - name: extra_rsem_calculate_expression_args
+      - name: --extra_rsem_calculate_expression_args
         type: string
         description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
         default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'

@@ -213,7 +213,8 @@ workflow run_wf {
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
           "salmon_quant_libtype": "salmon_quant_libtype",
-          "salmon_index": "salmon_index" 
+          "salmon_index": "salmon_index",
+          "extra_rsem_calculate_expression_args": "extra_rsem_calculate_expression_args" 
         ],
         toState: [
           "star_alignment": "star_alignment", 
