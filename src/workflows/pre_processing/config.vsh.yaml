@@ -139,13 +139,13 @@ argument_groups:
   - name: "Read filtering options"
     arguments: 
       - name: "--skip_bbsplit"
-        type: boolean
+        type: boolean_true
         description: Skip BBSplit for removal of non-reference genome reads.
-        default: true
+        # default: true
       - name: "--remove_ribo_rna"
-        type: boolean
+        type: boolean_true
         description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
-        default: false
+        # default: false
   
   - name: "Other options"
     arguments: 
@@ -256,14 +256,18 @@ dependencies:
   - name: fastqc
     # repository: biobox
   - name: umitools/umitools_extract
-    # repository: biobox
+  - name: umi_tools/umi_tools_extract
+    repository: biobox
   - name: trimgalore
     # repository: biobox
   - name: bbmap_bbsplit
+    # repository: biobox
   - name: sortmerna
+    # repository: biobox
   - name: fastp
     repository: biobox
   - name: fq_subsample
+    # repository: biobox
   - name: salmon/salmon_quant
     repository: biobox
    
