@@ -23,16 +23,7 @@ if [[ "$par_extra_args" != *"--fr-stranded"* ]] && [[ "$par_extra_args" != *"--r
 fi
 
 mkdir -p $par_output
-echo "kallisto quant \
-    ${meta_cpus:+--threads $meta_cpus} \
-    --index $par_index \
-    ${par_gtf:+--gtf $par_gtf} \
-    ${par_chromosomes:+--chromosomes $par_chromosomes} \
-    $single_end_params \
-    $strandedness \
-    $par_extra_args \
-    -o $par_output \
-    ${input[*]} 2> >(tee -a ${par_output}/kallisto_quant.log >&2)"
+
 kallisto quant \
     ${meta_cpus:+--threads $meta_cpus} \
     --index $par_index \
