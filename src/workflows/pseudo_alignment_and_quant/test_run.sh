@@ -13,7 +13,7 @@ tar -C testData/minimal_test/reference/salmon_index --strip-components 1 -xavf t
 cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
 WT_REP1,SRR6357070_1.fastq.gz,SRR6357070_2.fastq.gz,reverse
-WT_REP2,SRR6357072_1.fastq.gz,SRR6357072_2.fastq.gz,reverse
+RAP1_UNINDUCED_REP1,SRR6357073_1.fastq.gz,,reverse
 HERE
 
 echo "> Test 1: Salmon qunatification"

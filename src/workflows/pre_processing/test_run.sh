@@ -11,7 +11,7 @@ tar -C testData/minimal_test/reference/salmon_index --strip-components 1 -xavf t
 cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
 WT_REP2,SRR6357072_1.fastq.gz,SRR6357072_2.fastq.gz,auto
-RAP1_IAA_30M_REP1,SRR6357076_1.fastq.gz,SRR6357076_2.fastq.gz,reverse
+RAP1_UNINDUCED_REP1,SRR6357073_1.fastq.gz,,reverse
 HERE
 
 echo "> Test 1: Running workflow with trimgalore"
@@ -27,7 +27,7 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --remove_ribo_rna false \
   --ribo_database_manifest testData/minimal_test/reference/rrna-db-defaults.txt \
   --skip_bbsplit false \
-  --bbsplit_index test_results/output_test1/BBSplit_index \
+  --bbsplit_index test_results/prepare_genome_test1/BBSplit_index \
   -profile docker \
   -resume
 
