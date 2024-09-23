@@ -230,7 +230,11 @@ workflow run_wf {
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
           "quant_out_dir": "quant_out_dir",
-          "quant_results_file": "quant_results_file"
+          "quant_results_file": "quant_results_file",
+          "rsem_counts_gene": "rsem_counts_gene",
+          "rsem_counts_transcripts": "rsem_counts_transcripts",
+          "bam_genome_rsem": "bam_genome_rsem",
+          "bam_transcript_rsem": "bam_transcript_rsem"
         ]
     )
 

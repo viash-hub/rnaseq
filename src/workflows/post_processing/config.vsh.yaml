@@ -151,7 +151,8 @@ dependencies:
   - name: samtools/samtools_idxstats
     repository: biobox
   - name: stringtie
-  - name: bedtools_genomecov
+  - name: bedtools/bedtools_genomecov
+    repository: biobox
   - name: ucsc/bedclip
   - name: ucsc/bedgraphtobigwig
 

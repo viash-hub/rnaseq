@@ -600,27 +600,27 @@ argument_groups:
       - name: "--pseudo_tpm_gene"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_tpm.tsv
+        default: pseudo_gene_tpm.tsv
       - name: "--pseudo_counts_gene"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts.tsv
+        default: pseudo_gene_counts.tsv
       - name: "--pseudo_counts_gene_length_scaled"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts_length_scaled.tsv
+        default: pseudo_gene_counts_length_scaled.tsv
       - name: "--pseudo_counts_gene_scaled"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts_scaled.tsv
+        default: pseudo_gene_counts_scaled.tsv
       - name: "--pseudo_tpm_transcript"
         type: file
         direction: output
-        default: salmon.merged.pseudo_transcript_tpm.tsv
+        default: pseudo_transcript_tpm.tsv
       - name: "--pseudo_counts_transcript"
         type: file
         direction: output
-        default: salmon.merged.pseudo_transcript_counts.tsv
+        default: pseudo_transcript_counts.tsv
       - name: "--pseudo_quant_merged_summarizedexperiment"
         type: file
         direction: output
@@ -642,6 +642,8 @@ dependencies:
   - name: rseqc/rseqc_tin
   - name: dupradar
   - name: qualimap
+  # - name: qualimap/qualimap_rnaseq
+  #   repository: biobox
   - name: preseq_lcextrap
   - name: featurecounts
     repository: biobox

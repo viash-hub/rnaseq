@@ -435,6 +435,16 @@ argument_groups:
         required: false
         must_exist: false
         default: trimgalore/$id.read_2.trimming_report.txt
+        - name: --fastp_trim_json
+        type: file
+        description: The fastp json format report file name
+        default: fastp/$id_out.json
+        direction: output
+      - name: --fastp_trim_html
+        type: file
+        description: The fastp html format report file name
+        default: fastp/$id_out.html
+        direction: output
       - name: "--trim_html_1"
         type: file
         direction: output
@@ -513,35 +523,35 @@ argument_groups:
       - name: "--salmon_quant_results"
         type: file
         direction: output
-        default: salmon/$id
+        default: alignment_quantification/$id
       - name: "--tpm_gene"
         type: file
         direction: output
-        default: salmon/gene_tpm.tsv
+        default: alignment_quantification/gene_tpm.tsv
       - name: "--counts_gene"
         type: file
         direction: output
-        default: salmon/gene_counts.tsv
+        default: alignment_quantification/gene_counts.tsv
       - name: "--counts_gene_length_scaled"
         type: file
         direction: output
-        default: salmon/gene_counts_length_scaled.tsv
+        default: alignment_quantification/gene_counts_length_scaled.tsv
       - name: "--counts_gene_scaled"
         type: file
         direction: output
-        default: salmon/gene_counts_scaled.tsv
+        default: alignment_quantification/gene_counts_scaled.tsv
       - name: "--tpm_transcript"
         type: file
         direction: output
-        default: salmon/transcript_tpm.tsv
+        default: alignment_quantification/transcript_tpm.tsv
       - name: "--counts_transcript"
         type: file
         direction: output
-        default: salmon/transcript_counts.tsv
+        default: alignment_quantification/transcript_counts.tsv
       - name: "--salmon_merged_summarizedexperiment"
         type: file
         direction: output
-        default: salmon/summarizedexperiment
+        default: alignment_quantification/summarizedexperiment
       - name: "--markduplicates_metrics"
         type: file
         direction: output
@@ -813,7 +823,31 @@ argument_groups:
         type: file
         must_exist: false
         direction: output
-
+      - name: "--pseudo_counts_gene"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_counts.tsv
+      - name: "--pseudo_counts_gene_length_scaled"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_counts_length_scaled.tsv
+      - name: "--pseudo_counts_gene_scaled"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_counts_scaled.tsv
+      - name: "--pseudo_tpm_transcript"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/transcript_tpm.tsv
+      - name: "--pseudo_counts_transcript"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/transcript_counts.tsv
+      - name: "--pseudo_quant_merged_summarizedexperiment"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/quant_merged_summarizedexperiment
+        
 resources:
   - type: nextflow_script
     path: main.nf

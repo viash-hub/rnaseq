@@ -246,7 +246,20 @@ argument_groups:
         direction: output
         description: Results from Salmon quant
         default: $id.salmon_quant_output
-
+      - name: --trim_json
+        type: file
+        description: The fastp json format report file name
+        default: $id.fastp_out.json
+        direction: output
+      - name: --trim_html
+        type: file
+        description: The fastp html format report file name
+        default: $id.fastp_out.html
+        direction: output
+      - name: --merged_out
+        type: file
+        description: File name to store merged fastp output.
+        direction: output
 resources:
   - type: nextflow_script
     path: main.nf
