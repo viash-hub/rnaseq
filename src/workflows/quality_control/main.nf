@@ -215,6 +215,7 @@ workflow run_wf {
         
         | toSortedList
 
+        // TODO: Get Salmon meta info
         | map { list -> 
             def ids = list.collect { id, state -> state.id }
             def strandedness = list.collect { id, state -> state.strandedness }

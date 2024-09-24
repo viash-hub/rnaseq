@@ -96,7 +96,7 @@ argument_groups:
   - name: "--star_multiqc"
     type: file
     direction: output
-    default: $id.log
+    default: $id_star.log
   - name: "--genome_bam_sorted"
     type: file
     direction: output
