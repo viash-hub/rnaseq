@@ -145,7 +145,7 @@ argument_groups:
     type: file
     direction: output
     default: $id.quant.sf
-  - name: "--counts_gene"
+  - name: "--rsem_counts_gene"
     type: file
     description: Expression counts on gene level
     default: $id.genes.results
@@ -194,8 +194,9 @@ dependencies:
     repository: biobox
   - name: samtools/samtools_idxstats
     repository: biobox
-  - name: umi_tools/umi_tools_dedup
-    repository: biobox
+  - name: umitools/umitools_dedup
+  # - name: umi_tools/umi_tools_dedup
+    # repository: biobox
   - name: umitools_prepareforquant
   # - name: umi_tools/umi_tools_prepareforquant
   #   repository: biobox
