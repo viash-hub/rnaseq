@@ -340,6 +340,8 @@ workflow run_wf {
           "genome_bam_index": "genome_bam_index",
           "quant_out_dir": "quant_out_dir",
           "quant_results_file": "quant_results_file",
+          "rsem_counts_gene": "rsem_counts_gene",
+          "rsem_counts_transcripts": "rsem_counts_transcripts",
           "pseudo_quant_out_dir": "pseudo_quant_out_dir",
           "pseudo_salmon_quant_results_file": "pseudo_salmon_quant_results_file", 
           "pseudo_kallisto_quant_results_file": "pseudo_kallisto_quant_results_file", 

@@ -254,6 +254,14 @@ workflow run_wf {
                 (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
                     state.quant_results_file : 
                     null }
+            def rsem_counts_gene = list.collect { id, state -> 
+                (state.rsem_counts_gene instanceof java.nio.file.Path && state.rsem_counts_gene.exists()) ? 
+                    state.rsem_counts_gene : 
+                    null }
+            def rsem_counts_transcripts = list.collect { id, state -> 
+                (state.rsem_counts_transcripts instanceof java.nio.file.Path && state.rsem_counts_transcripts.exists()) ? 
+                    state.rsem_counts_transcripts : 
+                    null }
             def pseudo_salmon_quant_results = list.collect { id, state -> 
                 (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
                     state.pseudo_salmon_quant_results_file : 
@@ -348,9 +356,9 @@ workflow run_wf {
             def gtf_extra_attributes = list.collect { id, state -> state.gtf_extra_attributes }.unique()[0]
             def gtf_group_features = list.collect { id, state -> state.gtf_group_features }.unique()[0]
             def pca_header_multiqc = list.collect { id, state -> state.pca_header_multiqc }.unique()[0]
-            def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc } .unique()[0]
-            def aligner = list.collect { id, state -> state.aligner } .unique()[0]
-            def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner } .unique()[0]
+            def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc }.unique()[0]
+            def aligner = list.collect { id, state -> state.aligner }.unique()[0]
+            def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner }.unique()[0]
             def deseq2_vst = list.collect { id, state -> state.deseq2_vst }.unique()[0]
             def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
             def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
@@ -388,6 +396,8 @@ workflow run_wf {
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
                 quant_results: quant_results, 
+                rsem_counts_gene: rsem_counts_gene,
+                rsem_counts_transcripts: rsem_counts_transcripts,
                 pseudo_salmon_quant_results: pseudo_salmon_quant_results,
                 pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
                 gtf: gtf, 
@@ -415,7 +425,7 @@ workflow run_wf {
         
         // Merge quantification results of alignment
         | merge_quant_results.run (
-            runIf: { id, state -> !state.skip_align && state.aligner == 'star_salmon' },
+            runIf: { id, state -> (!state.skip_align && state.aligner == 'star_salmon') || !skip_pseudo_align },
             fromState: [ 
                 "salmon_quant_results": "quant_results", 
                 "gtf": "gtf", 
@@ -437,16 +447,33 @@ workflow run_wf {
             key: "merge_qunat_results"
         )
 
+        | rsem_merge_counts.run (
+            runIf: { id, state -> state.aligner == 'star_rsem' }, 
+            fromState: [
+                "counts_gene": "rsem_counts_gene",
+                "counts_transcripts": "rsem_counts_transcripts"
+            ],
+            toState: [
+                "tpm_gene": "merged_gene_tpm",
+                "counts_gene": "merged_gene_counts",
+                "tpm_transcript": "merged_transcript_tpm", 
+                "counts_transcript": "merged_transcript_counts"
+            ]
+        )
+
         | deseq2_qc.run (
             runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_align },
-            fromState: [
-                "counts": "counts_gene_length_scaled",
-                "pca_header_multiqc": "pca_header_multiqc", 
-                "clustering_header_multiqc": "clustering_header_multiqc",
-                "deseq2_vst": "deseq2_vst", 
-                "extra_deseq2_args": "extra_deseq2_args",
-                "extra_deseq2_args2": "extra_deseq2_args2" 
-            ], 
+            fromState: { id, state ->
+                def counts = (state.aligner == "star_rsem") ? state.counts_gene : state.counts_gene_length_scaled
+                [
+                    counts: counts,
+                    pca_header_multiqc: state.pca_header_multiqc, 
+                    clustering_header_multiqc: state.clustering_header_multiqc,
+                    deseq2_vst: state.deseq2_vst, 
+                    extra_deseq2_args: state.extra_deseq2_args,
+                    extra_deseq2_args2: state.extra_deseq2_args2 
+                ]
+            }, 
             toState: [
                 "deseq2_output": "deseq2_output", 
                 "deseq2_pca_multiqc": "pca_multiqc", 

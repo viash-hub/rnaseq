@@ -6,9 +6,9 @@ cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
 WT_REP1,SRR6357070_1.fastq.gz;SRR6357071_1.fastq.gz,SRR6357070_2.fastq.gz;SRR6357071_2.fastq.gz,reverse
 WT_REP2,SRR6357072_1.fastq.gz,SRR6357072_2.fastq.gz,reverse
+RAP1_IAA_30M_REP1,SRR6357076_1.fastq.gz,SRR6357076_2.fastq.gz,reverse
 RAP1_UNINDUCED_REP1,SRR6357073_1.fastq.gz,,reverse
 RAP1_UNINDUCED_REP2,SRR6357074_1.fastq.gz;SRR6357075_1.fastq.gz,,reverse
-RAP1_IAA_30M_REP1,SRR6357076_1.fastq.gz,SRR6357076_2.fastq.gz,reverse
 HERE
 
 echo ">> Test 1: Trimming reads with Trim galore; alignment with STAR and quantification with Salmon"

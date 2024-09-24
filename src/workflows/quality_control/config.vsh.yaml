@@ -41,10 +41,10 @@ argument_groups:
         description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
       - name: "--quant_out_dir"
         type: file
-        description: Directory containing quantification results.
+        description: Directory containing Salmon quantification results.
       - name: "--quant_results_file"
         type: file
-        description: Quantification file.
+        description: Salmon quantification file.
       - name: "--pseudo_quant_out_dir"
         type: file
         description: Directory containing quantification results for pseudo alignment.
@@ -59,8 +59,14 @@ argument_groups:
         description: Method used for alognment and qqunatification.
       - name: "--pseudo_aligner"
         type: string
-        description: Method used for [seudo alignment and quantification.
-      
+        description: Method used for pseudo alignment and quantification.
+      - name: "--rsem_counts_gene"
+        type: file
+        description: Expression counts on gene level
+      - name: "--rsem_counts_transcripts"
+        type: file
+        description: Expression counts on transcript level
+
       - name: "--skip_qc"
         type: boolean
         default: false
@@ -652,6 +658,7 @@ dependencies:
   - name: prepare_multiqc_input
   - name: multiqc
     repository: biobox
+  - name: rsem/rsem_merge_counts
   - name: workflows/merge_quant_results
 
 runners: 
