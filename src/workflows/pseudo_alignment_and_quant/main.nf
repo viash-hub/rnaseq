@@ -46,10 +46,15 @@ workflow run_wf {
             lib_type: state.lib_type ]
         },
         toState: [ 
-          "quant_outs_dir": "output",
+          "quant_out_dir": "output",
           "salmon_quant_results_file": "quant_results" 
         ]
     )
+
+    | map { id, state -> 
+      def mod_state = (state.pseudo_aligner == 'salmon') ? state + [pseudo_multiqc: state.quant_out_dir] : state
+      [ id, mod_state ]
+    }
 
     | kallisto_quant.run ( 
         runIf: { id, state -> state.pseudo_aligner == 'kallisto'},

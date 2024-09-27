@@ -79,27 +79,27 @@ argument_groups:
       - name: "--processed_genome_bam"
         type: file
         direction: output
-        default: $id.markdup.sorted.bam
+        default: $id..genome.bam
       - name: "--genome_bam_index"
         type: file
         direction: output
-        default: $id.markdup.sorted.bam
+        default: $id.genome.bam.bai
       - name: "--genome_bam_stats"
         type: file
         direction: output
-        default: $id.markdup.sorted.bam.stats
+        default: $id.genome.stats
       - name: "--genome_bam_flagstat"
         type: file
         direction: output
-        default: $id.markdup.sorted.bam.flagstat
+        default: $id.genome.flagstat
       - name: "--genome_bam_idxstats"
         type: file
         direction: output
-        default: $id.markdup.sorted.bam.idxstats
+        default: $id.genome.idxstats
       - name: "--markduplicates_metrics"
         type: file
         direction: output
-        default: $id.markdup.sorted.MarkDuplicates.metrics.txt
+        default: $id.MarkDuplicates.metrics.txt
       - name: "--stringtie_transcript_gtf"
         type: file
         direction: output

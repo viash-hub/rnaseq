@@ -75,7 +75,7 @@ workflow run_wf {
         "trim_html_1": "trimmed_fastqc_html_1",
         "trim_html_2": "trimmed_fastqc_html_2"
       ],
-      args: [gzip: true]
+      args: [gzip: true, fastqc: true]
     )
 
     // Trim reads using fastp

@@ -280,6 +280,11 @@ workflow run_wf {
         ]
     )
 
+    | map { id, state -> 
+      def mod_state = (state.aligner == 'star_salmon') ? state + [salmon_multiqc: state.quant_out_dir] : state
+      [ id, mod_state ]
+    }
+    | niceView()
     | rsem_calculate_expression.run (
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: [
@@ -357,6 +362,7 @@ workflow run_wf {
       [ "star_alignment": "star_alignment", 
         "star_multiqc": "star_multiqc", 
         "rsem_multiqc": "rsem_multiqc",
+        "salmon_multiqc": "salmon_multiqc",
         "genome_bam_sorted": "genome_bam_sorted", 
         "genome_bam_index": "genome_bam_index",  
         "genome_bam_stats": "genome_bam_stats", 

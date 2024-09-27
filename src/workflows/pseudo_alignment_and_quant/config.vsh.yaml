@@ -59,7 +59,6 @@ argument_groups:
   - name: "--pseudo_multiqc"
     type: file
     direction: output
-    default: $id.quant.log
   - name: "--quant_out_dir"
     type: file
     direction: output

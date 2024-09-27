@@ -145,6 +145,9 @@ argument_groups:
     type: file
     direction: output
     default: $id.quant.sf
+  - name: "--salmon_multiqc"
+    type: file
+    direction: output
   - name: "--rsem_counts_gene"
     type: file
     description: Expression counts on gene level

@@ -219,6 +219,8 @@ workflow run_wf {
         toState: [
           "star_alignment": "star_alignment", 
           "star_multiqc": "star_multiqc", 
+          "rsem_multiqc": "rsem_multiqc",
+          "salmon_multiqc": "salmon_multiqc",
           "genome_bam_sorted": "genome_bam_sorted",
           "genome_bam_index": "genome_bam_index", 
           "genome_bam_stats": "genome_bam_stats", 
@@ -244,7 +246,7 @@ workflow run_wf {
       def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
-
+    
     // Pseudo-alignment and quantification
     | pseudo_alignment_and_quant.run (
         runIf: { id, state -> !state.skip_pseudo_alignment && state.passed_trimmed_reads },
@@ -336,18 +338,23 @@ workflow run_wf {
           "skip_align": "skip_alignment",
           "skip_pseudo_align": "skip_pseudo_alignment",
           "gtf": "gtf", 
+          "num_trimmed_reads": "num_trimmed_reads",
+          "passed_trimmed_reads": "passed_trimmed_reads",
+          "passed_mapping": "passed_mapping",
+          "percent_mapped": "percent_mapped",
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",
-          "quant_out_dir": "quant_out_dir",
+          "salmon_multiqc": "salmon_multiqc",
           "quant_results_file": "quant_results_file",
+          "rsem_multiqc": "rsem_multiqc",
           "rsem_counts_gene": "rsem_counts_gene",
           "rsem_counts_transcripts": "rsem_counts_transcripts",
+          "pseudo_multiqc": "pseudo_multiqc",
           "pseudo_quant_out_dir": "pseudo_quant_out_dir",
           "pseudo_salmon_quant_results_file": "pseudo_salmon_quant_results_file", 
           "pseudo_kallisto_quant_results_file": "pseudo_kallisto_quant_results_file", 
           "aligner": "aligner",
           "pseudo_aligner": "pseudo_aligner",
-          "pseudo_multiqc": "pseudo_multiqc",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 
@@ -375,11 +382,7 @@ workflow run_wf {
           "genome_bam_flagstat": "genome_bam_flagstat", 
           "genome_bam_idxstats": "genome_bam_idxstats", 
           "markduplicates_multiqc": "markduplicates_metrics", 
-          "rseqc_modules": "rseqc_modules",
-          "num_trimmed_reads": "num_trimmed_reads",
-          "passed_trimmed_reads": "passed_trimmed_reads",
-          "passed_mapping": "passed_mapping",
-          "percent_mapped": "percent_mapped"
+          "rseqc_modules": "rseqc_modules"
         ], 
         toState: [
           "preseq_output": "preseq_output",
@@ -425,7 +428,7 @@ workflow run_wf {
           "counts_gene_scaled": "counts_gene_scaled", 
           "tpm_transcript": "tpm_transcript", 
           "counts_transcript": "counts_transcript", 
-          "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+          "qunat_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
           "deseq2_output": "deseq2_output", 
           "multiqc_report": "multiqc_report", 
           "multiqc_data": "multiqc_data", 
@@ -472,7 +475,8 @@ workflow run_wf {
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_results",
+        "salmon_quant_results": "quant_out_dir",
+        "pseudo_quant_results": "pseudo_quant_out_dir",
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
@@ -538,8 +542,7 @@ workflow run_wf {
         "deseq2_output_pseudo": "deseq2_output_pseudo",  
         "multiqc_report": "multiqc_report", 
         "multiqc_data": "multiqc_data", 
-        "multiqc_plots": "multiqc_plots",
-        "multiqc_versions": "multiqc_versions"
+        "multiqc_plots": "multiqc_plots"
       ]
     )
 
@@ -618,7 +621,7 @@ def getFastpReadsAfterFiltering(json_file) {
 }
 
 //
-// Function that parses and returns the alignment rate from the STAR log output
+// Function that parses and returns the alignment rate from the STAR log outputs
 //
 def getStarPercentMapped(align_log) {
   def percent_aligned = 0

@@ -264,11 +264,6 @@ argument_groups:
         type: string
       - name: "--multiqc_methods_description"
         type: file
-      - name: "--mqc_yml"
-        type: file
-        description: Software versions
-      - name: "--workflow_summary"
-        type: file
       - name: "--passed_trimmed_reads"
         type: boolean
       - name: "--num_trimmed_reads"
@@ -303,8 +298,8 @@ argument_groups:
         must_exist: false
       # - name: "--hisat2_multiqc"
       #   type: file
-      # - name: "--rsem_multiqc"
-      #   type: file
+      - name: "--rsem_multiqc"
+        type: file
       - name: "--genome_bam_stats"
         type: file
         must_exist: false
@@ -548,9 +543,6 @@ argument_groups:
         type: file
         direction: output
         default: multiqc_plots
-      - name: "--multiqc_versions"
-        type: file
-        direction: output
 
       # Biotype QC
       - name: "--featurecounts"

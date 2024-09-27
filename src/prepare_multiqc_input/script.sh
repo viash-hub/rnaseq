@@ -22,8 +22,9 @@ IFS="," read -ra star_multiqc <<< $par_star_multiqc && for file in "${star_multi
 
 IFS="," read -ra rsem_multiqc <<< $par_rsem_multiqc && for file in "${rsem_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
-# TODO: Fetch Salmon meta info
-# IFS="," read -ra salmon_multiqc <<< $par_salmon_multiqc && for file in "${salmon_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+IFS="," read -ra salmon_multiqc <<< $par_salmon_multiqc && for file in "${salmon_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
+
+IFS="," read -ra pseudo_multiqc <<< $par_pseudo_multiqc && for file in "${pseudo_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra samtools_stats <<< $par_samtools_stats && for file in "${samtools_stats[@]}"; do [ -e "$file" ] && cp -r "$file" $par_output/; done
 
@@ -32,9 +33,6 @@ IFS="," read -ra samtools_flagstat <<< $par_samtools_flagstat && for file in "${
 IFS="," read -ra samtools_idxstats <<< $par_samtools_idxstats && for file in "${samtools_idxstats[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
 IFS="," read -ra markduplicates_multiqc <<< $par_markduplicates_multiqc && for file in "${markduplicates_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
-
-IFS="," read -ra pseudo_multiqc <<< $par_pseudo_multiqc && for file in "${pseudo_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
-
 
 IFS="," read -ra featurecounts_multiqc <<< $par_featurecounts_multiqc && for file in "${featurecounts_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 

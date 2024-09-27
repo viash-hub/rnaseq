@@ -536,11 +536,15 @@ argument_groups:
         direction: output
         default: samtools_stats/$id.transcriptome.idxstats
       
-      # Salmon
+      # Transcript quantification
       - name: "--salmon_quant_results"
         type: file
         direction: output
-        default: Salmon/$id
+        default: STAR_Salmon/$id
+      - name: "--pseudo_quant_results"
+        type: file
+        direction: output
+        default: Pseudo_align_quant/$id
 
       # RSEM
       - name: "--rsem_counts_gene"
