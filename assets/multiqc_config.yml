@@ -64,12 +64,12 @@ table_columns_visible:
   fastqc:
     percent_duplicates: False
 
-fn_clean_extn:
+extra_fn_clean_extn:
   - ".mapping_quality"
-  - ".MarkDuplicates_flagstat"
-  - ".MarkDuplicates_stats"
-  - ".genome_sorted"
-  - ".MarkDuplicates"
+  - ".MarkDuplicates_flagstat.output.flagstat"
+  - ".MarkDuplicates_idxstats.output.idxstats"
+  - ".MarkDuplicates_stats.output.txt"
+  - ".genome_sorted_MarkDuplicates.output.bam"
   - ".genome_sorted_MarkDuplicates"
   - ".read_1"  
   - ".read_2"  
@@ -112,7 +112,7 @@ custom_data:
 # See https://multiqc.info/docs/#optimise-file-search-patterns for details
 sp:
 
-  fastqc:
+  fastqc/zip:
     fn: "*.fastqc.zip"
 
   cutadapt:
