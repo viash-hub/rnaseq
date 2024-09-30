@@ -477,6 +477,7 @@ workflow run_wf {
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
         "salmon_quant_results": "quant_out_dir",
         "pseudo_quant_results": "pseudo_quant_out_dir",
+        "markduplicates_metrics": "markduplicates_metrics",
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
