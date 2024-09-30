@@ -723,6 +723,7 @@ workflow run_wf {
                 "title": "multiqc_title", 
                 "input": "multiqc_input", 
             ], 
+            args: [exclude_modules: "general_stats"],
             toState: [
                 "multiqc_report": "output_report", 
                 "multiqc_data": "output_data",
