@@ -65,15 +65,14 @@ table_columns_visible:
     percent_duplicates: False
 
 extra_fn_clean_extn:
-  - ".mapping_quality"
-  - ".MarkDuplicates_flagstat.output.flagstat"
-  - ".MarkDuplicates_idxstats.output.idxstats"
-  - ".MarkDuplicates_stats.output.txt"
-  - ".genome_sorted_MarkDuplicates.output.bam"
-  - ".genome_sorted_MarkDuplicates"
+  # - ".mapping_quality"
+  # - ".MarkDuplicates_flagstat.output.flagstat"
+  # - ".MarkDuplicates_idxstats.output.idxstats"
+  # - ".MarkDuplicates_stats.output.txt"
+  # - ".genome_sorted_MarkDuplicates.output.bam"
+  # - ".genome_sorted_MarkDuplicates"
   - ".read_1"  
   - ".read_2"  
-  - "_merged" 
 
 # See https://github.com/ewels/MultiQC_TestData/blob/master/data/custom_content/with_config/table_headerconfig/multiqc_config.yaml
 custom_data:
@@ -129,8 +128,6 @@ sp:
 
   # hisat2:
   #   fn: "*.hisat2.summary.log"
-
-  # TODO: Add Salmon meta info
   # salmon:
   #   fn: "*meta_info.json"
 
