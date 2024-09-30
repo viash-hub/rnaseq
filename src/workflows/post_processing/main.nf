@@ -138,7 +138,6 @@ workflow run_wf {
           def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
           [ id, mod_state ]
         }
-        | niceView()
 
         | setState (
             "processed_genome_bam": "processed_genome_bam", 
