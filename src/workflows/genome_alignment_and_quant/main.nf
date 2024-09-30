@@ -284,7 +284,7 @@ workflow run_wf {
       def mod_state = (state.aligner == 'star_salmon') ? state + [salmon_multiqc: state.quant_out_dir] : state
       [ id, mod_state ]
     }
-    | niceView()
+  
     | rsem_calculate_expression.run (
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: [

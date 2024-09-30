@@ -492,23 +492,23 @@ argument_groups:
       - name: "--star_alignment"
         type: file
         direction: output
-        default: STAR_alignment/$id
+        default: STAR/$id
       - name: "--genome_bam_sorted"
         type: file
         direction: output
-        default: STAR_alignment/genome_processed/$id.genome.bam
+        default: STAR/genome_processed/$id.genome.bam
       - name: "--genome_bam_index"
         type: file
         direction: output
-        default: STAR_alignment/genome_processed/$id.genome.bam.bai
+        default: STAR/genome_processed/$id.genome.bam.bai
       - name: "--transcriptome_bam"
         type: file
         direction: output
-        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam
+        default: STAR/transcriptome_processed/$id.transcriptome.bam
       - name: "--transcriptome_bam_index"
         type: file
         direction: output
-        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam.bai
+        default: STAR/transcriptome_processed/$id.transcriptome.bam.bai
 
       # samtools
       - name: "--genome_bam_stats"
@@ -541,6 +541,10 @@ argument_groups:
         type: file
         direction: output
         default: STAR_Salmon/$id
+      - name: "--salmon_quant_results_file"
+        type: file
+        direction: output
+        default: STAR_Salmon/$id/quant.sf
       - name: "--pseudo_quant_results"
         type: file
         direction: output
@@ -577,37 +581,37 @@ argument_groups:
       - name: "--tpm_gene"
         type: file
         direction: output
-        default: alignment_quantification/gene_tpm.tsv
+        default: transcript_quantification/gene_tpm.tsv
       - name: "--counts_gene"
         type: file
         direction: output
-        default: alignment_quantification/gene_counts.tsv
+        default: transcript_quantification/gene_counts.tsv
       - name: "--counts_gene_length_scaled"
         type: file
         direction: output
-        default: alignment_quantification/gene_counts_length_scaled.tsv
+        default: transcript_quantification/gene_counts_length_scaled.tsv
       - name: "--counts_gene_scaled"
         type: file
         direction: output
-        default: alignment_quantification/gene_counts_scaled.tsv
+        default: transcript_quantification/gene_counts_scaled.tsv
       - name: "--tpm_transcript"
         type: file
         direction: output
-        default: alignment_quantification/transcript_tpm.tsv
+        default: transcript_quantification/transcript_tpm.tsv
       - name: "--counts_transcript"
         type: file
         direction: output
-        default: alignment_quantification/transcript_counts.tsv
+        default: transcript_quantification/transcript_counts.tsv
       - name: "--quant_merged_summarizedexperiment"
         type: file
         direction: output
-        default: alignment_quantification/summarizedexperiment
+        default: transcript_quantification/summarizedexperiment
 
       # MarkDuplicates
       - name: "--markduplicates_metrics"
         type: file
         direction: output
-        default: picard/$id.sorted.MarkDuplicates.metrics.txt
+        default: picard/$id.MarkDuplicates.metrics.txt
 
       # StringTie
       - name: "--stringtie_transcript_gtf"

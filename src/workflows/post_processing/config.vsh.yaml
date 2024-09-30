@@ -79,7 +79,7 @@ argument_groups:
       - name: "--processed_genome_bam"
         type: file
         direction: output
-        default: $id..genome.bam
+        default: $id.genome.bam
       - name: "--genome_bam_index"
         type: file
         direction: output
