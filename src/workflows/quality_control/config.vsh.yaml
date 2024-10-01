@@ -41,10 +41,10 @@ argument_groups:
         description: By default, the pipeline uses the gene_name field to obtain additional gene identifiers from the input GTF file when running Salmon.
       - name: "--quant_out_dir"
         type: file
-        description: Directory containing quantification results.
+        description: Directory containing Salmon quantification results.
       - name: "--quant_results_file"
         type: file
-        description: Quantification file.
+        description: Salmon quantification file.
       - name: "--pseudo_quant_out_dir"
         type: file
         description: Directory containing quantification results for pseudo alignment.
@@ -59,8 +59,14 @@ argument_groups:
         description: Method used for alognment and qqunatification.
       - name: "--pseudo_aligner"
         type: string
-        description: Method used for [seudo alignment and quantification.
-      
+        description: Method used for pseudo alignment and quantification.
+      - name: "--rsem_counts_gene"
+        type: file
+        description: Expression counts on gene level
+      - name: "--rsem_counts_transcripts"
+        type: file
+        description: Expression counts on transcript level
+
       - name: "--skip_qc"
         type: boolean
         default: false
@@ -258,11 +264,6 @@ argument_groups:
         type: string
       - name: "--multiqc_methods_description"
         type: file
-      - name: "--mqc_yml"
-        type: file
-        description: Software versions
-      - name: "--workflow_summary"
-        type: file
       - name: "--passed_trimmed_reads"
         type: boolean
       - name: "--num_trimmed_reads"
@@ -297,8 +298,8 @@ argument_groups:
         must_exist: false
       # - name: "--hisat2_multiqc"
       #   type: file
-      # - name: "--rsem_multiqc"
-      #   type: file
+      - name: "--rsem_multiqc"
+        type: file
       - name: "--genome_bam_stats"
         type: file
         must_exist: false
@@ -542,9 +543,6 @@ argument_groups:
         type: file
         direction: output
         default: multiqc_plots
-      - name: "--multiqc_versions"
-        type: file
-        direction: output
 
       # Biotype QC
       - name: "--featurecounts"
@@ -600,27 +598,27 @@ argument_groups:
       - name: "--pseudo_tpm_gene"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_tpm.tsv
+        default: pseudo_gene_tpm.tsv
       - name: "--pseudo_counts_gene"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts.tsv
+        default: pseudo_gene_counts.tsv
       - name: "--pseudo_counts_gene_length_scaled"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts_length_scaled.tsv
+        default: pseudo_gene_counts_length_scaled.tsv
       - name: "--pseudo_counts_gene_scaled"
         type: file
         direction: output
-        default: salmon.merged.pseudo_gene_counts_scaled.tsv
+        default: pseudo_gene_counts_scaled.tsv
       - name: "--pseudo_tpm_transcript"
         type: file
         direction: output
-        default: salmon.merged.pseudo_transcript_tpm.tsv
+        default: pseudo_transcript_tpm.tsv
       - name: "--pseudo_counts_transcript"
         type: file
         direction: output
-        default: salmon.merged.pseudo_transcript_counts.tsv
+        default: pseudo_transcript_counts.tsv
       - name: "--pseudo_quant_merged_summarizedexperiment"
         type: file
         direction: output
@@ -642,6 +640,8 @@ dependencies:
   - name: rseqc/rseqc_tin
   - name: dupradar
   - name: qualimap
+  # - name: qualimap/qualimap_rnaseq
+  #   repository: biobox
   - name: preseq_lcextrap
   - name: featurecounts
     repository: biobox
@@ -650,6 +650,7 @@ dependencies:
   - name: prepare_multiqc_input
   - name: multiqc
     repository: biobox
+  - name: rsem/rsem_merge_counts
   - name: workflows/merge_quant_results
 
 runners: 

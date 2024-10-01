@@ -18,9 +18,6 @@ argument_groups:
   - name: "--counts_transcripts"
     type: file
     description: Expression counts on transcript level (isoforms)
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments: 
@@ -43,10 +40,6 @@ argument_groups:
     type: file
     description: File containing transcript TPM across all samples.
     default: rsem.merged.transcript_tpm.tsv
-    direction: output
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
     direction: output
 
 resources:

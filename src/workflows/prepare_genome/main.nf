@@ -35,9 +35,15 @@ workflow run_wf {
         // gff to gtf
         | gffread.run (
             runIf: {id, state -> !state.gtf && state.gff}, 
-            fromState: [ "input": "annotation" ], 
+            fromState: [ 
+                "input": "gff",
+                "genome": "fasta" 
+            ], 
             toState: [ "gtf": "outfile" ],
-            args: [output: "gene_annotation.gtf"] 
+            args: [
+                outfile: "gene_annotation.gtf", 
+                gtf_output: true
+            ] 
         )
 
         | gtf_filter.run(
@@ -116,13 +122,19 @@ workflow run_wf {
         | rsem_prepare_reference.run ( 
             runIf: {id, state -> !state.transcript_fasta}, 
             fromState: [
-                "fasta": "fasta", 
+                "reference_fasta_files": "fasta", 
                 "gtf": "gtf"
             ], 
-            toState: [ "transcript_fasta": "transcript_fasta" ], 
-            key: "make_transcript_fasta",
-            args: [transcript_fasta: "transcriptome.fasta"]
+            toState: [ "make_transcript_fasta_output": "output" ], 
+            key: "make_transcript_fasta",\
+            args: [reference_name: "genome"]
         )
+        | map { id, state -> 
+            def transcript_fasta = (!state.transcript_fasta) ?
+                state.make_transcript_fasta_output.listFiles().find{it.name == "genome.transcripts.fa"} : 
+                state.transcript_fasta
+            [ id, state + [transcript_fasta: transcript_fasta] ]
+        }
 
         // chromosome size and fai index
         | getchromsizes.run (
@@ -195,11 +207,12 @@ workflow run_wf {
         | rsem_prepare_reference.run ( 
             runIf: {id, state -> !state.rsem_index && state.aligner == 'star_rsem'}, 
             fromState: [
-                "fasta": "fasta", 
+                "reference_fasta_files": "fasta", 
                 "gtf": "gtf"
             ], 
-            toState: [ "rsem_index": "rsem" ], 
+            toState: [ "rsem_index": "output" ], 
             key: "generate_rsem_index",
+            args: [reference_name: "genome"]
         )
         
         // TODO: Uncompress HISAT2 index or generate from scratch if required
@@ -229,10 +242,7 @@ workflow run_wf {
         // Uncompress Kallisto index or generate from scratch if required
         | untar.run (
             runIf: {id, state -> state.kallisto_index}, 
-            fromState: [
-                "input": "kallisto_index", 
-                "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
-            ], 
+            fromState: [ "input": "kallisto_index" ], 
             toState: [ "kallisto_index": "output" ], 
             key: "untar_kallisto_index",
             args: [output: "Kallisto_index"]

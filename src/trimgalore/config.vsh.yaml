@@ -232,13 +232,13 @@ argument_groups:
         required: false
         description: Output file for read 1. Only works when 1 file (single-end) or 2 files (paired-end) are specified, but not for longer lists.
         direction: output
-        example: read_1.fastq
+        example: read_1.fastq.gz
       - name: --trimmed_r2
         type: file
         required: false
         description: Output file for read 2. Only works when 1 file (single-end) or 2 files (paired-end) are specified, but not for longer lists.
         direction: output
-        example: read_2.fastq
+        example: read_2.fastq.gz
       - name: --trimming_report_r1
         type: file
         required: false

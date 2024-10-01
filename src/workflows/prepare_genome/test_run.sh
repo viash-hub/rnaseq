@@ -1,26 +1,50 @@
 #!/bin/bash
 
-viash ns build --setup cb --parallel
+# viash ns build --setup cb --parallel -q prepare_genome
 
+# echo "Test 1: Annotation file format - GTF"
+# nextflow run target/nextflow/workflows/prepare_genome/main.nf \
+#     --id test1 \
+#     --publish_dir "test_results/prepare_genome_test1" \
+#     --fasta testData/minimal_test/reference/genome.fasta \
+#     --gtf testData/minimal_test/reference/genes.gtf.gz \
+#     --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
+#     --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
+#     --genotype false \
+#     --biotype gene_biotype \
+#     --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+#     --salmon_index testData/minimal_test/reference/salmon.tar.gz \
+#     --rsem_index testData/minimal_test/reference/rsem.tar.gz \
+#     -profile docker \
+#     -resume
+
+# echo "Test 2: Annotation file format - GFF"
+# nextflow run target/nextflow/workflows/prepare_genome/main.nf \
+#     --id test2 \
+#     --publish_dir "test_results/prepare_genome_test2" \
+#     --fasta testData/minimal_test/reference/genome.fasta \
+#     --gff testData/minimal_test/reference/genes.gff.gz \
+#     --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
+#     --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
+#     --genotype false \
+#     --biotype gene_biotype \
+#     --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+#     --salmon_index testData/minimal_test/reference/salmon.tar.gz \
+#     --rsem_index testData/minimal_test/reference/rsem.tar.gz \
+#     -profile docker \
+#     -resume
+
+echo "Test 3: Annotation file format - GTF; Generate indices; Generate transcripts fasta"
 nextflow run target/nextflow/workflows/prepare_genome/main.nf \
-    --id ref \
-    --publish_dir "testData/test_output" \
-    --fasta testData/reference/genome.fasta \
-    --gtf testData/reference/genes.gtf.gz \
-    --additional_fasta testData/reference/gfp.fa.gz \
-    --transcript_fasta testData/reference/transcriptome.fasta \
+    --id test3 \
+    --publish_dir "test_results/prepare_genome_test3" \
+    --fasta testData/minimal_test/reference/genome.fasta \
+    --gtf testData/minimal_test/reference/genes.gtf.gz \
+    --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
     --genotype false \
     --biotype gene_biotype \
-    --bbsplit_fasta_list testData/reference/bbsplit_fasta_list.txt \
-    --salmon_index testData/reference/salmon.tar.gz \
-    # -profile docker \ 
-    # -resume
-    # --gff testData/reference/genes.gff.gz \
-    # --prepare_tools_indices a,b,c \
-    # --gene_bed "" \
-    # --splicesites "" \
-    # --star_index "" \
-    # --bbsplit_index "" \
-    # --rsem_index testData/reference/rsem.tar.gz \
-    # --salmon_index testData/reference/salmon.tar.gz \
-    # --hisat2_index testData/reference/hisat2.tar.gz \
+    --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+    --pseudo_aligner kallisto \
+    --aligner star_rsem \
+    -profile docker \
+    -resume

@@ -163,6 +163,7 @@ dependencies:
   - name: salmon/salmon_index
     repository: biobox
   - name: kallisto/kallisto_index
+    # repository: biobox
 
 runners: 
 - type: executable

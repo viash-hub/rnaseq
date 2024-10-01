@@ -33,9 +33,6 @@ argument_groups:
   - name: "--extra_args"
     type: string
     description: Extra rsem-calculate-expression arguments in addition to the defaults.
-  - name: "--versions"
-    type: file
-    must_exist: false
 
 - name: "Output"
   arguments:

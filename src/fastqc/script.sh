@@ -30,10 +30,12 @@ fastqc -o $tmpdir ${input[*]}
 
 file1=$(basename -- "${input[0]}")
 read1="${file1%.fastq*}"
-file2=$(basename -- "${input[1]}")
-read2="${file2%.fastq*}"
-
 [[ -e "${tmpdir}/${read1}_fastqc.html" ]] && cp "${tmpdir}/${read1}_fastqc.html" $par_fastqc_html_1
-[[ -e "${tmpdir}/${read2}_fastqc.html" ]] && cp "${tmpdir}/${read2}_fastqc.html" $par_fastqc_html_2
 [[ -e "${tmpdir}/${read1}_fastqc.zip" ]] && cp "${tmpdir}/${read1}_fastqc.zip" $par_fastqc_zip_1
-[[ -e "${tmpdir}/${read2}_fastqc.zip" ]] && cp "${tmpdir}/${read2}_fastqc.zip" $par_fastqc_zip_2
+
+if $par_paired; then
+  file2=$(basename -- "${input[1]}")
+  read2="${file2%.fastq*}"
+  [[ -e "${tmpdir}/${read2}_fastqc.html" ]] && cp "${tmpdir}/${read2}_fastqc.html" $par_fastqc_html_2
+  [[ -e "${tmpdir}/${read2}_fastqc.zip" ]] && cp "${tmpdir}/${read2}_fastqc.zip" $par_fastqc_zip_2
+fi

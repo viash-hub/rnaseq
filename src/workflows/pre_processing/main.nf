@@ -74,7 +74,8 @@ workflow run_wf {
         "trim_zip_2": "trimmed_fastqc_zip_2",
         "trim_html_1": "trimmed_fastqc_html_1",
         "trim_html_2": "trimmed_fastqc_html_2"
-      ]
+      ],
+      args: [gzip: true, fastqc: true]
     )
 
     // Trim reads using fastp
@@ -90,7 +91,7 @@ workflow run_wf {
       ],
       toState: [
         "fastq_1": "out1", 
-        // "fastq_2": "out2",
+        "fastq_2": "out2",
         "failed_trim": "failed_out",
         "failed_trim_unpaired1": "unpaired1",
         "failed_trim_unpaired2": "unpaired2",
@@ -154,8 +155,10 @@ workflow run_wf {
       runIf: { id, state -> state.strandedness == 'auto' }, 
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-        [ input: input,
-          extra_args: state.extra_fq_subsample_args ] 
+        [ 
+          input: input,
+          extra_args: state.extra_fq_subsample_args
+        ]
       },
       toState: [
         "subsampled_fastq_1": "output_1",
@@ -189,9 +192,8 @@ workflow run_wf {
         def mates1 = state.paired ? state.subsampled_fastq_1 : null
         def mates2 = state.paired ? state.subsampled_fastq_2 : null
         [ unmated_reads: unmated_reads,
-          mates1: state.fastq1, 
-          mates2: state.fastq2, 
-          targets: state.transcript_fasta, 
+          mates1: mates1, 
+          mates2: mates2, 
           gene_map: state.gtf, 
           index: state.salmon_index,
           lib_type: state.lib_type ]

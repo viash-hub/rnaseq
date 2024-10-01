@@ -55,7 +55,7 @@ workflow run_wf {
                 "input": "genome_bam",
                 "extra_preseq_args": "extra_preseq_args"
             ],
-            toState: [ "preseq_output": "output" ],
+            toState: [ "preseq_output": "output" ]
         )
    
         | rseqc_bamstat.run (
@@ -214,10 +214,49 @@ workflow run_wf {
         merged_ch = qc_ch
         
         | toSortedList
-
         | map { list -> 
             def ids = list.collect { id, state -> state.id }
             def strandedness = list.collect { id, state -> state.strandedness }
+            def num_trimmed_reads = list.collect { id, state -> state.num_trimmed_reads }
+            def passed_trimmed_reads = list.collect { id, state -> state.passed_trimmed_reads }
+            def passed_mapping = list.collect { id, state -> state.passed_mapping }
+            def percent_mapped = list.collect { id, state -> state.percent_mapped }
+            def inferred_strand = list.collect { id, state -> state.inferred_strand }
+            def passed_strand_check = list.collect { id, state -> state.passed_strand_check }
+            def gtf = list.collect { id, state -> state.gtf }.unique()[0]
+            def gtf_extra_attributes = list.collect { id, state -> state.gtf_extra_attributes }.unique()[0]
+            def gtf_group_features = list.collect { id, state -> state.gtf_group_features }.unique()[0]
+            def pca_header_multiqc = list.collect { id, state -> state.pca_header_multiqc }.unique()[0]
+            def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc }.unique()[0]
+            def aligner = list.collect { id, state -> state.aligner }.unique()[0]
+            def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner }.unique()[0]
+            def deseq2_vst = list.collect { id, state -> state.deseq2_vst }.unique()[0]
+            def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
+            def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
+            def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
+            def skip_qc = list.collect { id, state -> state.skip_qc }.unique()[0] 
+            def skip_align = list.collect { id, state -> state.skip_align }.unique()[0] 
+            def skip_pseudo_align = list.collect { id, state -> state.skip_pseudo_align }.unique()[0] 
+            def quant_results = list.collect { id, state -> 
+                (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
+                    state.quant_results_file : 
+                    null }
+            def rsem_counts_gene = list.collect { id, state -> 
+                (state.rsem_counts_gene instanceof java.nio.file.Path && state.rsem_counts_gene.exists()) ? 
+                    state.rsem_counts_gene : 
+                    null }
+            def rsem_counts_transcripts = list.collect { id, state -> 
+                (state.rsem_counts_transcripts instanceof java.nio.file.Path && state.rsem_counts_transcripts.exists()) ? 
+                    state.rsem_counts_transcripts : 
+                    null }
+            def pseudo_salmon_quant_results = list.collect { id, state -> 
+                (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
+                    state.pseudo_salmon_quant_results_file : 
+                    null }
+            def pseudo_kallisto_quant_results = list.collect { id, state -> 
+                (state.pseudo_kallisto_quant_results_file instanceof java.nio.file.Path && state.pseudo_kallisto_quant_results_file.exists()) ? 
+                    state.pseudo_kallisto_quant_results_file : 
+                    null }
             def fastqc_zip_1 = list.collect { id, state -> 
                 (state.fastqc_zip_1 instanceof java.nio.file.Path && state.fastqc_zip_1.exists()) ? 
                     state.fastqc_zip_1 : 
@@ -242,25 +281,13 @@ workflow run_wf {
                 (state.trim_log_2 instanceof java.nio.file.Path && state.trim_log_2.exists()) ? 
                     state.trim_log_2 : 
                     null }
-            def sortmerna_log = list.collect { id, state -> 
-                (state.sortmerna_log instanceof java.nio.file.Path && state.sortmerna_log.exists()) ? 
-                    state.sortmerna_log : 
+            def sortmerna_multiqc = list.collect { id, state -> 
+                (state.sortmerna_multiqc instanceof java.nio.file.Path && state.sortmerna_multiqc.exists()) ? 
+                    state.sortmerna_multiqc : 
                     null }
             def star_multiqc = list.collect { id, state -> 
                 (state.star_multiqc instanceof java.nio.file.Path && state.star_multiqc.exists()) ? 
                     state.star_multiqc : 
-                    null }
-            def quant_results = list.collect { id, state -> 
-                (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
-                    state.quant_results_file : 
-                    null }
-            def pseudo_salmon_quant_results = list.collect { id, state -> 
-                (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
-                    state.pseudo_salmon_quant_results_file : 
-                    null }
-            def pseudo_kallisto_quant_results = list.collect { id, state -> 
-                (state.pseudo_kallisto_quant_results_file instanceof java.nio.file.Path && state.pseudo_kallisto_quant_results_file.exists()) ? 
-                    state.pseudo_kallisto_quant_results_file : 
                     null }
             def genome_bam_stats = list.collect { id, state -> 
                 (state.genome_bam_stats instanceof java.nio.file.Path && state.genome_bam_stats.exists()) ? 
@@ -277,6 +304,14 @@ workflow run_wf {
             def markduplicates_multiqc = list.collect { id, state -> 
                 (state.markduplicates_multiqc instanceof java.nio.file.Path && state.markduplicates_multiqc.exists()) ? 
                     state.markduplicates_multiqc : 
+                    null }
+            def salmon_multiqc = list.collect { id, state -> 
+                (state.salmon_multiqc instanceof java.nio.file.Path && state.salmon_multiqc.exists()) ? 
+                    state.salmon_multiqc : 
+                    null }
+            def rsem_multiqc = list.collect { id, state -> 
+                (state.rsem_multiqc instanceof java.nio.file.Path && state.rsem_multiqc.exists()) ? 
+                    state.rsem_multiqc : 
                     null }
             def pseudo_multiqc = list.collect { id, state -> 
                 (state.pseudo_multiqc instanceof java.nio.file.Path && state.pseudo_multiqc.exists()) ? 
@@ -338,40 +373,45 @@ workflow run_wf {
                 (state.tin_output_summary instanceof java.nio.file.Path && state.tin_output_summary.exists()) ? 
                     state.tin_output_summary : 
                     null }
-            def num_trimmed_reads = list.collect { id, state -> state.num_trimmed_reads }
-            def passed_trimmed_reads = list.collect { id, state -> state.passed_trimmed_reads }
-            def passed_mapping = list.collect { id, state -> state.passed_mapping }
-            def percent_mapped = list.collect { id, state -> state.percent_mapped }
-            def inferred_strand = list.collect { id, state -> state.inferred_strand }
-            def passed_strand_check = list.collect { id, state -> state.passed_strand_check }
-            def gtf = list.collect { id, state -> state.gtf }.unique()[0]
-            def gtf_extra_attributes = list.collect { id, state -> state.gtf_extra_attributes }.unique()[0]
-            def gtf_group_features = list.collect { id, state -> state.gtf_group_features }.unique()[0]
-            def pca_header_multiqc = list.collect { id, state -> state.pca_header_multiqc }.unique()[0]
-            def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc } .unique()[0]
-            def aligner = list.collect { id, state -> state.aligner } .unique()[0]
-            def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner } .unique()[0]
-            def deseq2_vst = list.collect { id, state -> state.deseq2_vst }.unique()[0]
-            def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
-            def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
-            def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
             def multiqc_custom_config = list.collect { id, state -> state.multiqc_custom_config }.unique()[0] 
-            def skip_qc = list.collect { id, state -> state.skip_qc }.unique()[0] 
-            def skip_align = list.collect { id, state -> state.skip_align }.unique()[0] 
-            def skip_pseudo_align = list.collect { id, state -> state.skip_pseudo_align }.unique()[0] 
             ["merged", [
                 ids: ids, 
                 strandedness: strandedness, 
+                num_trimmed_reads: num_trimmed_reads,
+                passed_trimmed_reads: passed_trimmed_reads,
+                passed_mapping: passed_mapping,
+                percent_mapped: percent_mapped,
+                inferred_strand: inferred_strand, 
+                passed_strand_check: passed_strand_check, 
+                skip_align: skip_align,
+                skip_pseudo_align: skip_pseudo_align,
+                quant_results: quant_results, 
+                rsem_counts_gene: rsem_counts_gene,
+                rsem_counts_transcripts: rsem_counts_transcripts,
+                pseudo_salmon_quant_results: pseudo_salmon_quant_results,
+                pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
+                gtf: gtf, 
+                gtf_extra_attributes: gtf_extra_attributes, 
+                gtf_group_features: gtf_group_features,
+                pca_header_multiqc: pca_header_multiqc, 
+                clustering_header_multiqc: clustering_header_multiqc,
+                aligner: aligner,
+                pseudo_aligner: pseudo_aligner,
+                deseq2_vst: deseq2_vst, 
+                extra_deseq2_args: extra_deseq2_args,
+                extra_deseq2_args2: extra_deseq2_args2,
+                skip_deseq2_qc: skip_deseq2_qc,
                 fastqc_zip: fastqc_zip_1 + fastqc_zip_2,
                 trim_zip: trim_zip_1 + trim_zip_2, 
                 trim_log: trim_log_1 + trim_log_2, 
-                sortmerna_log: sortmerna_log,
+                sortmerna_multiqc: sortmerna_multiqc,
                 star_multiqc: star_multiqc, 
-                salmon_multiqc: quant_results,
                 genome_bam_stats: genome_bam_stats,
                 genome_bam_flagstat: genome_bam_flagstat,
                 genome_bam_idxstats: genome_bam_idxstats,
                 markduplicates_multiqc: markduplicates_multiqc,
+                salmon_multiqc: salmon_multiqc,
+                rsem_multiqc: rsem_multiqc,
                 pseudo_multiqc: pseudo_multiqc,
                 featurecounts_multiqc: featurecounts_multiqc,
                 featurecounts_rrna_multiqc: featurecounts_rrna_multiqc,
@@ -387,32 +427,114 @@ workflow run_wf {
                 read_distribution_output: read_distribution_output,
                 read_duplication_output_duplication_rate_mapping: read_duplication_output_duplication_rate_mapping,
                 tin_output_summary: tin_output_summary, 
-                quant_results: quant_results, 
-                pseudo_salmon_quant_results: pseudo_salmon_quant_results,
-                pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
-                gtf: gtf, 
-                gtf_extra_attributes: gtf_extra_attributes, 
-                gtf_group_features: gtf_group_features,
-                pca_header_multiqc: pca_header_multiqc, 
-                clustering_header_multiqc: clustering_header_multiqc,
-                aligner: aligner,
-                pseudo_aligner: pseudo_aligner,
-                deseq2_vst: deseq2_vst, 
-                extra_deseq2_args: extra_deseq2_args,
-                extra_deseq2_args2: extra_deseq2_args2,
-                skip_deseq2_qc: skip_deseq2_qc,
-                num_trimmed_reads: num_trimmed_reads,
-                passed_trimmed_reads: passed_trimmed_reads,
-                passed_mapping: passed_mapping,
-                percent_mapped: percent_mapped,
-                inferred_strand: inferred_strand, 
-                passed_strand_check: passed_strand_check, 
-                multiqc_custom_config: multiqc_custom_config,
-                skip_align: skip_align,
-                skip_pseudo_align: skip_pseudo_align
+                multiqc_custom_config: multiqc_custom_config
             ] ]
         } 
-        
+
+        // | map { list -> 
+        //     def ids = list.collect { id, state -> state.id }
+        //     def strandedness = list.collect { id, state -> state.strandedness }
+        //     def num_trimmed_reads = list.collect { id, state -> state.num_trimmed_reads }
+        //     def passed_trimmed_reads = list.collect { id, state -> state.passed_trimmed_reads }
+        //     def passed_mapping = list.collect { id, state -> state.passed_mapping }
+        //     def percent_mapped = list.collect { id, state -> state.percent_mapped }
+        //     def inferred_strand = list.collect { id, state -> state.inferred_strand }
+        //     def passed_strand_check = list.collect { id, state -> state.passed_strand_check }
+        //     def gtf = list.collect { id, state -> state.gtf }.unique()[0]
+        //     def gtf_extra_attributes = list.collect { id, state -> state.gtf_extra_attributes }.unique()[0]
+        //     def gtf_group_features = list.collect { id, state -> state.gtf_group_features }.unique()[0]
+        //     def pca_header_multiqc = list.collect { id, state -> state.pca_header_multiqc }.unique()[0]
+        //     def clustering_header_multiqc = list.collect { id, state -> state.clustering_header_multiqc }.unique()[0]
+        //     def aligner = list.collect { id, state -> state.aligner }.unique()[0]
+        //     def pseudo_aligner = list.collect { id, state -> state.pseudo_aligner }.unique()[0]
+        //     def deseq2_vst = list.collect { id, state -> state.deseq2_vst }.unique()[0]
+        //     def extra_deseq2_args = list.collect { id, state -> state.extra_deseq2_args }.unique()[0]
+        //     def extra_deseq2_args2 = list.collect { id, state -> state.extra_deseq2_args2 }.unique()[0]
+        //     def skip_deseq2_qc = list.collect { id, state -> state.skip_deseq2_qc }.unique()[0] 
+        //     def skip_qc = list.collect { id, state -> state.skip_qc }.unique()[0] 
+        //     def skip_align = list.collect { id, state -> state.skip_align }.unique()[0] 
+        //     def skip_pseudo_align = list.collect { id, state -> state.skip_pseudo_align }.unique()[0] 
+        //     def quant_results = list.collect { id, state -> 
+        //         (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
+        //             state.quant_results_file : 
+        //             null }
+        //     def rsem_counts_gene = list.collect { id, state -> 
+        //         (state.rsem_counts_gene instanceof java.nio.file.Path && state.rsem_counts_gene.exists()) ? 
+        //             state.rsem_counts_gene : 
+        //             null }
+        //     def rsem_counts_transcripts = list.collect { id, state -> 
+        //         (state.rsem_counts_transcripts instanceof java.nio.file.Path && state.rsem_counts_transcripts.exists()) ? 
+        //             state.rsem_counts_transcripts : 
+        //             null }
+        //     def pseudo_salmon_quant_results = list.collect { id, state -> 
+        //         (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
+        //             state.pseudo_salmon_quant_results_file : 
+        //             null }
+        //     def pseudo_kallisto_quant_results = list.collect { id, state -> 
+        //         (state.pseudo_kallisto_quant_results_file instanceof java.nio.file.Path && state.pseudo_kallisto_quant_results_file.exists()) ? 
+        //             state.pseudo_kallisto_quant_results_file : 
+        //             null }
+        //     def fastqc_zip_1_dirs = list.collect{it[1].fastqc_zip_1.getParent()}
+        //     def fastqc_zip_2_dirs = list.collect{it[1].fastqc_zip_2.getParent()}
+        //     def trim_zip_1_dirs = list.collect{it[1].trim_zip_1.getParent()}
+        //     def trim_zip_2_dirs = list.collect{it[1].trim_zip_2.getParent()}
+        //     def trim_log_1_dirs = list.collect{it[1].trim_log_1.getParent()}
+        //     def trim_log_2_dirs = list.collect{it[1].trim_log_2.getParent()}
+        //     def sortmerna_multiqc_dirs = list.collect{it[1].sortmerna_multiqc.getParent()}
+        //     def star_multiqc_dirs = list.collect{it[1].star_multiqc.getParent()}
+        //     def genome_bam_stats_dirs = list.collect{it[1].genome_bam_stats.getParent()}
+        //     def genome_bam_flagstat_dirs = list.collect{it[1].genome_bam_flagstat.getParent()}
+        //     def genome_bam_idxstats_dirs = list.collect{it[1].genome_bam_idxstats}
+        //     def markduplicates_multiqc_dirs = list.collect{it[1].markduplicates_multiqc.getParent()}
+        //     def salmon_multiqc_dirs = list.collect{it[1].salmon_multiqc}
+        //     def rsem_multiqc_dirs = list.collect{it[1].rsem_multiqc.getParent()}
+        //     def pseudo_multiqc_dirs = list.collect{it[1].pseudo_multiqc.getParent()}
+        //     def featurecounts_multiqc_dirs = list.collect{it[1].featurecounts_multiqc.getParent()}
+        //     def featurecounts_rrna_multiqc_dirs = list.collect{it[1].featurecounts_rrna_multiqc.getParent()}
+        //     def preseq_output_dirs = list.collect{it[1].preseq_output.getParent()}
+        //     def qualimap_output_dirs = list.collect{it[1].qualimap_output_dir}
+        //     def dupradar_output_dup_intercept_mqc_dirs = list.collect{it[1].dupradar_output_dup_intercept_mqc.getParent()}
+        //     def dupradar_output_duprate_exp_denscurve_mqc_dirs = list.collect{it[1].dupradar_output_duprate_exp_denscurve_mqc.getParent()}
+        //     def bamstat_output_dirs = list.collect{it[1].bamstat_output.getParent()}
+        //     def strandedness_output_dirs = list.collect{it[1].strandedness_output.getParent()}
+        //     def inner_dist_output_freq_dirs = list.collect{it[1].inner_dist_output_freq.getParent()}
+        //     def junction_annotation_output_log_dirs = list.collect{it[1].junction_annotation_output_log.getParent()}
+        //     def junction_saturation_output_plot_r_dirs = list.collect{it[1].junction_saturation_output_plot_r.getParent()}
+        //     def read_distribution_output_dirs = list.collect{it[1].read_distribution_output.getParent()}
+        //     def read_duplication_output_duplication_rate_mapping_dirs = list.collect{it[1].read_duplication_output_duplication_rate_mapping.getParent()}
+        //     def tin_output_summary_dirs = list.collect{it[1].tin_output_summary.getParent()}
+        //     def multiqc_custom_config_dirs = list.collect{it[1].multiqc_custom_config.getParent()}
+        //     ["merged", [
+        //         ids: ids, 
+        //         strandedness: strandedness, 
+        //         num_trimmed_reads: num_trimmed_reads,
+        //         passed_trimmed_reads: passed_trimmed_reads,
+        //         passed_mapping: passed_mapping,
+        //         percent_mapped: percent_mapped,
+        //         inferred_strand: inferred_strand, 
+        //         passed_strand_check: passed_strand_check, 
+        //         skip_align: skip_align,
+        //         skip_pseudo_align: skip_pseudo_align,
+        //         quant_results: quant_results, 
+        //         rsem_counts_gene: rsem_counts_gene,
+        //         rsem_counts_transcripts: rsem_counts_transcripts,
+        //         pseudo_salmon_quant_results: pseudo_salmon_quant_results,
+        //         pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
+        //         gtf: gtf, 
+        //         gtf_extra_attributes: gtf_extra_attributes, 
+        //         gtf_group_features: gtf_group_features,
+        //         pca_header_multiqc: pca_header_multiqc, 
+        //         clustering_header_multiqc: clustering_header_multiqc,
+        //         aligner: aligner,
+        //         pseudo_aligner: pseudo_aligner,
+        //         deseq2_vst: deseq2_vst, 
+        //         extra_deseq2_args: extra_deseq2_args,
+        //         extra_deseq2_args2: extra_deseq2_args2,
+        //         skip_deseq2_qc: skip_deseq2_qc,
+        //         multiqc_input: fastqc_zip_1_dirs + fastqc_zip_2_dirs + trim_zip_1_dirs + trim_zip_2_dirs + trim_log_1_dirs + trim_log_2_dirs + sortmerna_multiqc_dirs + star_multiqc_dirs + genome_bam_stats_dirs + genome_bam_flagstat_dirs + genome_bam_idxstats_dirs + markduplicates_multiqc_dirs + salmon_multiqc_dirs + rsem_multiqc_dirs + pseudo_multiqc_dirs + featurecounts_multiqc_dirs + featurecounts_rrna_multiqc_dirs + preseq_output_dirs + qualimap_output_dirs + dupradar_output_dup_intercept_mqc_dirs + dupradar_output_duprate_exp_denscurve_mqc_dirs + bamstat_output_dirs + strandedness_output_dirs + inner_dist_output_freq_dirs + junction_annotation_output_log_dirs + junction_saturation_output_plot_r_dirs + read_distribution_output_dirs + read_duplication_output_duplication_rate_mapping_dirs + tin_output_summary_dirs + multiqc_custom_config_dirs
+        //     ] ]
+        // } 
+
         // Merge quantification results of alignment
         | merge_quant_results.run (
             runIf: { id, state -> !state.skip_align && state.aligner == 'star_salmon' },
@@ -434,19 +556,36 @@ workflow run_wf {
                 "lengths_transcript": "lengths_transcript",
                 "quant_merged_summarizedexperiment": "quant_merged_summarizedexperiment"
             ], 
-            key: "merge_qunat_results"
+            key: "merge_quant_results"
+        )
+
+        | rsem_merge_counts.run (
+            runIf: { id, state -> state.aligner == 'star_rsem' }, 
+            fromState: [
+                "counts_gene": "rsem_counts_gene",
+                "counts_transcripts": "rsem_counts_transcripts"
+            ],
+            toState: [
+                "tpm_gene": "merged_gene_tpm",
+                "counts_gene": "merged_gene_counts",
+                "tpm_transcript": "merged_transcript_tpm", 
+                "counts_transcript": "merged_transcript_counts"
+            ]
         )
 
         | deseq2_qc.run (
             runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_align },
-            fromState: [
-                "counts": "counts_gene_length_scaled",
-                "pca_header_multiqc": "pca_header_multiqc", 
-                "clustering_header_multiqc": "clustering_header_multiqc",
-                "deseq2_vst": "deseq2_vst", 
-                "extra_deseq2_args": "extra_deseq2_args",
-                "extra_deseq2_args2": "extra_deseq2_args2" 
-            ], 
+            fromState: { id, state ->
+                def counts = (state.aligner == "star_rsem") ? state.counts_gene : state.counts_gene_length_scaled
+                [
+                    counts: counts,
+                    pca_header_multiqc: state.pca_header_multiqc, 
+                    clustering_header_multiqc: state.clustering_header_multiqc,
+                    deseq2_vst: state.deseq2_vst, 
+                    extra_deseq2_args: state.extra_deseq2_args,
+                    extra_deseq2_args2: state.extra_deseq2_args2 
+                ]
+            }, 
             toState: [
                 "deseq2_output": "deseq2_output", 
                 "deseq2_pca_multiqc": "pca_multiqc", 
@@ -547,14 +686,15 @@ workflow run_wf {
                 "fastqc_raw_multiqc": "fastqc_zip",
                 "fastqc_trim_multiqc": "trim_zip",
                 "trim_log_multiqc": "trim_log",
-                "sortmerna_multiqc": "sortmerna_log", 
+                "sortmerna_multiqc": "sortmerna_multiqc", 
                 "star_multiqc": "star_multiqc", 
                 "salmon_multiqc": "salmon_multiqc", 
+                "rsem_multiqc": "rsem_multiqc", 
+                "pseudo_multiqc": "pseudo_multiqc",
                 "samtools_stats": "genome_bam_stats", 
                 "samtools_flagstat": "genome_bam_flagstat", 
                 "samtools_idxstats": "genome_bam_idxstats", 
-                "markduplicates_multiqc": "markduplicates_multiqc", 
-                "pseudo_multiqc": "pseudo_multiqc",
+                "markduplicates_multiqc": "markduplicates_multiqc",
                 "featurecounts_multiqc": "featurecounts_multiqc",
                 "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc", 
                 "aligner_pca_multiqc": "deseq2_pca_multiqc", 
@@ -583,10 +723,11 @@ workflow run_wf {
                 "title": "multiqc_title", 
                 "input": "multiqc_input", 
             ], 
+            args: [exclude_modules: "general_stats"],
             toState: [
                 "multiqc_report": "output_report", 
                 "multiqc_data": "output_data",
-                "multiqc_plots": "output_plots", 
+                "multiqc_plots": "output_plots"
             ]
         )
 
@@ -688,8 +829,7 @@ workflow run_wf {
                 "deseq2_output_pseudo": "deseq2_output_pseudo", 
                 "multiqc_report": "multiqc_report", 
                 "multiqc_data": "multiqc_data", 
-                "multiqc_plots": "multiqc_plots",
-                "multiqc_versions": "multiqc_versions"
+                "multiqc_plots": "multiqc_plots"
             ]
         )
 
@@ -748,4 +888,6 @@ def getInferexperimentStrandedness(inferexperiment_file, cutoff=30) {
     }
     return [ strandedness, sense, antisense, undetermined ]
 }
+
+
 

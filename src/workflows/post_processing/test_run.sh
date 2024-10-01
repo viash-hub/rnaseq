@@ -1,6 +1,6 @@
 #!/bin/bash
 
-viash ns build --setup cb --parallel
+# viash ns build --setup cb --parallel
 
 nextflow run target/nextflow/workflows/post_processing/main.nf \
   --publish_dir "testData/paired_end_test" \

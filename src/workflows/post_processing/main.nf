@@ -16,20 +16,20 @@ workflow run_wf {
                 "extra_picard_args": "extra_picard_args"
             ], 
             toState: [
-                "genome_bam": "output_bam",
+                "processed_genome_bam": "output_bam",
                 "markduplicates_metrics": "metrics"
             ]
         )
         | samtools_sort.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
-            fromState: [ "input": "genome_bam" ],
-            toState: [ "genome_bam": "output" ],
+            fromState: [ "input": "processed_genome_bam" ],
+            toState: [ "processed_genome_bam": "output" ],
             key: "genome_sorted_MarkDuplicates" 
         )
         | samtools_index.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi },
             fromState: [
-                "input": "genome_bam", 
+                "input": "processed_genome_bam", 
                 "csi": "bam_csi_index"
             ],
             toState: [ "genome_bam_index": "output" ],
@@ -38,7 +38,7 @@ workflow run_wf {
         | samtools_stats.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
-                "input": "genome_bam", 
+                "input": "processed_genome_bam", 
                 "bai": "genome_bam_index" 
             ],
             toState: [ "genome_bam_stats": "output" ],
@@ -47,7 +47,7 @@ workflow run_wf {
         | samtools_flagstat.run (
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
-                "bam": "genome_bam", 
+                "bam": "processed_genome_bam", 
                 "bai": "genome_bam_index"
             ],
             toState: [ "genome_bam_flagstat": "output" ],
@@ -56,7 +56,7 @@ workflow run_wf {
         | samtools_idxstats.run(
             runIf: { id, state -> !state.skip_markduplicates && !state.with_umi }, 
             fromState: [
-            "bam": "genome_bam", 
+            "bam": "processed_genome_bam", 
             "bai": "genome_bam_index"
             ],
             toState: [ "genome_bam_idxstats": "output" ],
@@ -67,7 +67,7 @@ workflow run_wf {
             runIf: { id, state -> !state.skip_stringtie }, 
             fromState: [
                 "strandedness": "strandedness", 
-                "bam": "genome_bam",
+                "bam": "processed_genome_bam",
                 "annotation_gtf": "gtf",
                 "extra_stringtie_args": "extra_stringtie_args"
             ], 
@@ -85,7 +85,7 @@ workflow run_wf {
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
                 "strandedness": "strandedness", 
-                "bam": "genome_bam",
+                "bam": "processed_genome_bam",
                 "extra_bedtools_args": "extra_bedtools_args"
             ],
             toState: [
@@ -140,7 +140,7 @@ workflow run_wf {
         }
 
         | setState (
-            "processed_genome_bam": "genome_bam", 
+            "processed_genome_bam": "processed_genome_bam", 
             "genome_bam_index": "genome_bam_index",
             "genome_bam_stats": "genome_bam_stats",
             "genome_bam_flagstat": "genome_bam_flagstat", 

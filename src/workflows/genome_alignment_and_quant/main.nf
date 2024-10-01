@@ -280,6 +280,11 @@ workflow run_wf {
         ]
     )
 
+    | map { id, state -> 
+      def mod_state = (state.aligner == 'star_salmon') ? state + [salmon_multiqc: state.quant_out_dir] : state
+      [ id, mod_state ]
+    }
+  
     | rsem_calculate_expression.run (
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: [
@@ -300,7 +305,7 @@ workflow run_wf {
           "bam_transcript_rsem": "bam_transcript"
         ]
     )
-
+   
     // RSEM_Star BAM
     | samtools_sort.run (
         runIf: { id, state -> state.aligner == 'star_rsem' },
@@ -357,6 +362,7 @@ workflow run_wf {
       [ "star_alignment": "star_alignment", 
         "star_multiqc": "star_multiqc", 
         "rsem_multiqc": "rsem_multiqc",
+        "salmon_multiqc": "salmon_multiqc",
         "genome_bam_sorted": "genome_bam_sorted", 
         "genome_bam_index": "genome_bam_index",  
         "genome_bam_stats": "genome_bam_stats", 
@@ -368,7 +374,11 @@ workflow run_wf {
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
         "quant_out_dir": "quant_out_dir",
-        "quant_results_file": "quant_results_file" ]
+        "quant_results_file": "quant_results_file",
+        "rsem_counts_gene": "rsem_counts_gene",
+        "rsem_counts_transcripts": "rsem_counts_transcripts",
+        "bam_genome_rsem": "bam_genome_rsem",
+        "bam_transcript_rsem": "bam_transcript_rsem" ]
     )
     
   emit:

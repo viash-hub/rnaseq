@@ -233,11 +233,7 @@ argument_groups:
       - name: "--skip_pseudo_alignment"
         type: boolean_true
         description: Skip all of the pseudo-alignment-based processes within the pipeline.  
-      - name: extra_rsem_prepare_reference_args
-        type: string
-        description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
-        default: '--star'
-      - name: extra_rsem_calculate_expression_args
+      - name: --extra_rsem_calculate_expression_args
         type: string
         description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
         default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'
@@ -349,42 +345,45 @@ argument_groups:
     
   - name: Output
     arguments:
+      # Reference files
       - name: "--output_fasta"
         type: file
         direction: output
-        default: genome/reference_genome.fasta
+        default: reference/genome.fasta
       - name: "--output_gtf"
         type: file
         direction: output
-        default: genome/gene_annotation.gtf
+        default: reference/gene_annotation.gtf
       - name: "--output_transcript_fasta"
         type: file
         direction: output
-        default: genome/transcriptome.fasta
+        default: reference/transcriptome.fasta
       - name: "--output_gene_bed"
         type: file
         direction: output
-        default: genome/gene_annotation.bed
+        default: reference/gene_annotation.bed
       - name: "--output_star_index"
         type: file
         direction: output
         description: Path to STAR index.
-        default: genome/index/STAR
+        default: reference/index/STAR
       - name: "--output_salmon_index"
         type: file
         direction: output
         description: Path to Salmon index.
-        default: genome/index/Salmon
+        default: reference/index/Salmon
       - name: "--output_bbsplit_index"
         type: file
         direction: output
         description: Path to BBSplit index.
-        default: genome/index/BBSplit
+        default: reference/index/BBSplit
       - name: "--output_kallisto_index"
         type: file
         direction: output
         description: Path to Kallisto index.
-        default: genome/index/Kallisto
+        default: reference/index/Kallisto
+      
+      # fastq
       - name: "--output_fastq_1"
         type: file
         direction: output
@@ -399,6 +398,8 @@ argument_groups:
         must_exist: false
         description: Path to output directory
         default: fastq/$id.read_2.fastq
+      
+      # FastQC
       - name: "--fastqc_html_1"
         type: file
         direction: output
@@ -427,18 +428,6 @@ argument_groups:
         required: false
         must_exist: false
         default: fastqc_raw/$id.read_2.fastqc.zip
-      - name: "--trim_log_1"
-        type: file
-        direction: output
-        required: false
-        must_exist: false
-        default: trimgalore/$id.read_1.trimming_report.txt
-      - name: "--trim_log_2"
-        type: file
-        direction: output
-        required: false
-        must_exist: false
-        default: trimgalore/$id.read_2.trimming_report.txt
       - name: "--trim_html_1"
         type: file
         direction: output
@@ -463,6 +452,34 @@ argument_groups:
         required: false
         must_exist: false
         default: fastqc_trim/$id.read_2.trimmed_fastqc.zip
+
+      # TrimGalore
+      - name: "--trim_log_1"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: trimgalore/$id.read_1.trimming_report.txt
+      - name: "--trim_log_2"
+        type: file
+        direction: output
+        required: false
+        must_exist: false
+        default: trimgalore/$id.read_2.trimming_report.txt
+      
+      # fastp
+      - name: --fastp_trim_json
+        type: file
+        description: The fastp json format report file name
+        default: fastp/$id_out.json
+        direction: output
+      - name: --fastp_trim_html
+        type: file
+        description: The fastp html format report file name
+        default: fastp/$id_out.html
+        direction: output
+      
+      # SortMeRNA
       - name: "--sortmerna_log"
         type: file
         direction: output
@@ -470,18 +487,30 @@ argument_groups:
         required: false
         must_exist: false
         description: Sortmerna log file.
+      
+      # STAR
       - name: "--star_alignment"
         type: file
         direction: output
-        default: STAR_alignment/$id
+        default: STAR/$id
       - name: "--genome_bam_sorted"
         type: file
         direction: output
-        default: STAR_alignment/genome_processed/$id.genome.bam
+        default: STAR/genome_processed/$id.genome.bam
       - name: "--genome_bam_index"
         type: file
         direction: output
-        default: STAR_alignment/genome_processed/$id.genome.bam.bai
+        default: STAR/genome_processed/$id.genome.bam.bai
+      - name: "--transcriptome_bam"
+        type: file
+        direction: output
+        default: STAR/transcriptome_processed/$id.transcriptome.bam
+      - name: "--transcriptome_bam_index"
+        type: file
+        direction: output
+        default: STAR/transcriptome_processed/$id.transcriptome.bam.bai
+
+      # samtools
       - name: "--genome_bam_stats"
         type: file
         direction: output
@@ -494,14 +523,6 @@ argument_groups:
         type: file
         direction: output
         default: samtools_stats/$id.genome.idxstats
-      - name: "--transcriptome_bam"
-        type: file
-        direction: output
-        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam
-      - name: "--transcriptome_bam_index"
-        type: file
-        direction: output
-        default: STAR_alignment/transcriptome_processed/$id.transcriptome.bam.bai
       - name: "--transcriptome_bam_stats"
         type: file
         direction: output
@@ -514,42 +535,85 @@ argument_groups:
         type: file
         direction: output
         default: samtools_stats/$id.transcriptome.idxstats
+      
+      # Transcript quantification
       - name: "--salmon_quant_results"
         type: file
         direction: output
-        default: salmon/$id
+        default: STAR_Salmon/$id
+      - name: "--salmon_quant_results_file"
+        type: file
+        direction: output
+        default: STAR_Salmon/$id/quant.sf
+      - name: "--pseudo_quant_results"
+        type: file
+        direction: output
+        default: Pseudo_align_quant/$id
+
+      # RSEM
+      - name: "--rsem_counts_gene"
+        type: file
+        description: Expression counts on gene level
+        default: RSEM/$id.genes.results
+        direction: output
+      - name: "--rsem_counts_transcripts"
+        type: file
+        description: Expression counts on transcript level
+        default: RSEM/$id.isoforms.results
+        direction: output
+      - name: "--bam_star_rsem"
+        type: file
+        description: BAM file generated by STAR (from RSEM)
+        default: RSEM/$id.STAR.genome.bam
+        direction: output
+      - name: "--bam_genome_rsem"
+        type: file
+        description: Genome BAM file (from RSEM)
+        default: RSEM/$id.genome.bam
+        direction: output
+      - name: "--bam_transcript_rsem"
+        type: file
+        description: Transcript BAM file (from RSEM)
+        default: RSEM/$id.transcript.bam
+        direction: output
+
+      # Quantification (alignment)
       - name: "--tpm_gene"
         type: file
         direction: output
-        default: salmon/gene_tpm.tsv
+        default: transcript_quantification/gene_tpm.tsv
       - name: "--counts_gene"
         type: file
         direction: output
-        default: salmon/gene_counts.tsv
+        default: transcript_quantification/gene_counts.tsv
       - name: "--counts_gene_length_scaled"
         type: file
         direction: output
-        default: salmon/gene_counts_length_scaled.tsv
+        default: transcript_quantification/gene_counts_length_scaled.tsv
       - name: "--counts_gene_scaled"
         type: file
         direction: output
-        default: salmon/gene_counts_scaled.tsv
+        default: transcript_quantification/gene_counts_scaled.tsv
       - name: "--tpm_transcript"
         type: file
         direction: output
-        default: salmon/transcript_tpm.tsv
+        default: transcript_quantification/transcript_tpm.tsv
       - name: "--counts_transcript"
         type: file
         direction: output
-        default: salmon/transcript_counts.tsv
-      - name: "--salmon_merged_summarizedexperiment"
+        default: transcript_quantification/transcript_counts.tsv
+      - name: "--quant_merged_summarizedexperiment"
         type: file
         direction: output
-        default: salmon/summarizedexperiment
+        default: transcript_quantification/summarizedexperiment
+
+      # MarkDuplicates
       - name: "--markduplicates_metrics"
         type: file
         direction: output
-        default: picard/$id.sorted.MarkDuplicates.metrics.txt
+        default: picard/$id.MarkDuplicates.metrics.txt
+
+      # StringTie
       - name: "--stringtie_transcript_gtf"
         type: file
         direction: output
@@ -566,6 +630,8 @@ argument_groups:
         type: file
         direction: output
         default: stringtie/$id.ballgown
+
+      # featureCounts
       - name: "--featurecounts"
         type: file
         direction: output
@@ -584,6 +650,8 @@ argument_groups:
         direction: output
         must_exist: false
         default: featurecounts/$id.featureCounts_rrna_mqc.tsv
+
+      # bedGraph
       - name: "--bedgraph_forward"
         type: file
         direction: output
@@ -592,6 +660,8 @@ argument_groups:
         type: file
         direction: output
         default: bedgraph/$id.reverse.bedgraph
+
+      # bigWig
       - name: "--bigwig_forward"
         type: file
         direction: output
@@ -600,10 +670,14 @@ argument_groups:
         type: file
         direction: output
         default: bigwig/$id.reverse.bigwig
+
+      # preseq lc_extrap
       - name: "--preseq_output"
         type: file
         direction: output
         default: preseq/$id.lc_extrap.txt
+
+      # RSeQC
       - name: "--bamstat_output"
         type: file
         direction: output
@@ -742,6 +816,8 @@ argument_groups:
         required: false
         default: RSeQC/tin/xls/$id.tin.xls
         description: file with TIN metrics (xls)
+
+      # DupRadar
       - name: "--dupradar_output_dupmatrix"
         type: file
         direction: output
@@ -783,6 +859,8 @@ argument_groups:
         direction: output
         required: false
         default: dupradar/intercept_slope/$id.intercept_slope.txt
+      
+      # Qualimap
       - name: "--qualimap_output_pdf"
         type: file
         direction: output
@@ -794,10 +872,14 @@ argument_groups:
         direction: output
         required: false
         default: qualimap/$id
+
+      # DESeq2
       - name: "--deseq2_output"
         type: file
         direction: output
         default: deseq2_qc
+
+      # MultiQC
       - name: "--multiqc_report"
         type: file
         direction: output
@@ -813,11 +895,33 @@ argument_groups:
       - name: "--multiqc_versions"
         type: file
         direction: output
-      - name: "--versions"
+      
+      # Quantification (pseudo alignment)
+      - name: "--pseudo_counts_gene"
         type: file
-        must_exist: false
         direction: output
-
+        default: pseudo_alignment_quantification/gene_counts.tsv
+      - name: "--pseudo_counts_gene_length_scaled"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_counts_length_scaled.tsv
+      - name: "--pseudo_counts_gene_scaled"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_counts_scaled.tsv
+      - name: "--pseudo_tpm_transcript"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/transcript_tpm.tsv
+      - name: "--pseudo_counts_transcript"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/transcript_counts.tsv
+      - name: "--pseudo_quant_merged_summarizedexperiment"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/quant_merged_summarizedexperiment
+        
 resources:
   - type: nextflow_script
     path: main.nf

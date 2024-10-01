@@ -22,27 +22,27 @@ workflow run_wf {
     
     | map { list -> 
         [ "ref",  
-          [ fasta: list[1][-1].fasta,
-          gtf: list[1][-1].gtf, 
-          gff: list[1][-1].gff, 
-          additional_fasta: list[1][-1].additional_fasta,
-          transcript_fasta: list[1][-1].transcript_fasta, 
-          gene_bed: list[1][-1].gene_bed,
-          bbsplit_fasta_list: list[1][-1].bbsplit_fasta_list,
-          aligner: list[1][-1].aligner,
-          pseudo_aligner: list[1][-1].pseudo_aligner,
-          star_index: list[1][-1].star_index,
-          rsem_index: list[1][-1].rsem_index,
-          salmon_index: list[1][-1].salmon_index,
-          kallisto_index: list[1][-1].kallisto_index,
-          // splicesites: list[1][-1].splicesites,
-          // hisat2_index: list[1][-1].hisat2_index,
-          bbsplit_index: list[1][-1].bbsplit_index,
-          skip_bbsplit: list[1][-1].skip_bbsplit,
-          gencode: list[1][-1].gencode,
-          biotype: list[1][-1].biotype, 
-          filter_gtf: list[1][-1].filter_gtf,
-          pseudo_aligner_kmer_size: list[1][-1].pseudo_aligner_kmer_size ]
+          [ fasta: list.collect { id, state -> state.fasta }.unique()[0],
+          gtf: list.collect { id, state -> state.gtf }.unique()[0], 
+          gff: list.collect { id, state -> state.gff }.unique()[0], 
+          additional_fasta: list.collect { id, state -> state.additional_fasta }.unique()[0],
+          transcript_fasta:list.collect { id, state -> state.transcript_fasta }.unique()[0], 
+          gene_bed: list.collect { id, state -> state.gene_bed }.unique()[0],
+          bbsplit_fasta_list: list.collect { id, state -> state.bbsplit_fasta_list }.unique()[0],
+          aligner: list.collect { id, state -> state.aligner }.unique()[0],
+          pseudo_aligner: list.collect { id, state -> state.pseudo_aligner }.unique()[0],
+          star_index: list.collect { id, state -> state.star_index }.unique()[0],
+          rsem_index: list.collect { id, state -> state.rsem_index }.unique()[0],
+          salmon_index: list.collect { id, state -> state.salmon_index }.unique()[0],
+          kallisto_index: list.collect { id, state -> state.kallisto_index }.unique()[0],
+          // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
+          // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
+          bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
+          skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
+          gencode: list.collect { id, state -> state.gencode }.unique()[0],
+          biotype: list.collect { id, state -> state.biotype }.unique()[0], 
+          filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
+          pseudo_aligner_kmer_size: list.collect { id, state -> state.pseudo_aligner_kmer_size }.unique()[0] ]
         ]
     } 
 
@@ -213,11 +213,14 @@ workflow run_wf {
           "gtf_group_features": "gtf_group_features",
           "gtf_extra_attributes": "gtf_extra_attributes",
           "salmon_quant_libtype": "salmon_quant_libtype",
-          "salmon_index": "salmon_index" 
+          "salmon_index": "salmon_index",
+          "extra_rsem_calculate_expression_args": "extra_rsem_calculate_expression_args" 
         ],
         toState: [
           "star_alignment": "star_alignment", 
           "star_multiqc": "star_multiqc", 
+          "rsem_multiqc": "rsem_multiqc",
+          "salmon_multiqc": "salmon_multiqc",
           "genome_bam_sorted": "genome_bam_sorted",
           "genome_bam_index": "genome_bam_index", 
           "genome_bam_stats": "genome_bam_stats", 
@@ -229,7 +232,11 @@ workflow run_wf {
           "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
           "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
           "quant_out_dir": "quant_out_dir",
-          "quant_results_file": "quant_results_file"
+          "quant_results_file": "quant_results_file",
+          "rsem_counts_gene": "rsem_counts_gene",
+          "rsem_counts_transcripts": "rsem_counts_transcripts",
+          "bam_genome_rsem": "bam_genome_rsem",
+          "bam_transcript_rsem": "bam_transcript_rsem"
         ]
     )
 
@@ -239,7 +246,7 @@ workflow run_wf {
       def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
-
+    
     // Pseudo-alignment and quantification
     | pseudo_alignment_and_quant.run (
         runIf: { id, state -> !state.skip_pseudo_alignment && state.passed_trimmed_reads },
@@ -331,16 +338,23 @@ workflow run_wf {
           "skip_align": "skip_alignment",
           "skip_pseudo_align": "skip_pseudo_alignment",
           "gtf": "gtf", 
+          "num_trimmed_reads": "num_trimmed_reads",
+          "passed_trimmed_reads": "passed_trimmed_reads",
+          "passed_mapping": "passed_mapping",
+          "percent_mapped": "percent_mapped",
           "genome_bam": "genome_bam_sorted", 
           "genome_bam_index": "genome_bam_index",
-          "quant_out_dir": "quant_out_dir",
+          "salmon_multiqc": "salmon_multiqc",
           "quant_results_file": "quant_results_file",
+          "rsem_multiqc": "rsem_multiqc",
+          "rsem_counts_gene": "rsem_counts_gene",
+          "rsem_counts_transcripts": "rsem_counts_transcripts",
+          "pseudo_multiqc": "pseudo_multiqc",
           "pseudo_quant_out_dir": "pseudo_quant_out_dir",
           "pseudo_salmon_quant_results_file": "pseudo_salmon_quant_results_file", 
           "pseudo_kallisto_quant_results_file": "pseudo_kallisto_quant_results_file", 
           "aligner": "aligner",
           "pseudo_aligner": "pseudo_aligner",
-          "pseudo_multiqc": "pseudo_multiqc",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
           "extra_featurecounts_args": "extra_featurecounts_args", 
@@ -368,11 +382,7 @@ workflow run_wf {
           "genome_bam_flagstat": "genome_bam_flagstat", 
           "genome_bam_idxstats": "genome_bam_idxstats", 
           "markduplicates_multiqc": "markduplicates_metrics", 
-          "rseqc_modules": "rseqc_modules",
-          "num_trimmed_reads": "num_trimmed_reads",
-          "passed_trimmed_reads": "passed_trimmed_reads",
-          "passed_mapping": "passed_mapping",
-          "percent_mapped": "percent_mapped"
+          "rseqc_modules": "rseqc_modules"
         ], 
         toState: [
           "preseq_output": "preseq_output",
@@ -418,7 +428,7 @@ workflow run_wf {
           "counts_gene_scaled": "counts_gene_scaled", 
           "tpm_transcript": "tpm_transcript", 
           "counts_transcript": "counts_transcript", 
-          "salmon_merged_summarizedexperiment": "salmon_merged_summarizedexperiment",
+          "qunat_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
           "deseq2_output": "deseq2_output", 
           "multiqc_report": "multiqc_report", 
           "multiqc_data": "multiqc_data", 
@@ -457,15 +467,17 @@ workflow run_wf {
         "star_alignment": "star_alignment", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
-        "genome_bam_stats": "samtools_stats", 
-        "genome_bam_flagstat": "samtools_flagstat", 
-        "genome_bam_idxstats": "samtools_idxstats", 
+        "genome_bam_stats": "genome_bam_stats", 
+        "genome_bam_flagstat": "genome_bam_flagstat", 
+        "genome_bam_idxstats": "genome_bam_idxstats", 
         "transcriptome_bam": "transcriptome_bam", 
         "transcriptome_bam_index": "transcriptome_bam_index", 
         "transcriptome_bam_stats": "transcriptome_bam_stats", 
         "transcriptome_bam_flagstat": "transcriptome_bam_flagstat", 
         "transcriptome_bam_idxstats": "transcriptome_bam_idxstats",
-        "salmon_quant_results": "salmon_quant_results",
+        "salmon_quant_results": "quant_out_dir",
+        "pseudo_quant_results": "pseudo_quant_out_dir",
+        "markduplicates_metrics": "markduplicates_metrics",
         "stringtie_transcript_gtf": "stringtie_transcript_gtf",
         "stringtie_coverage_gtf": "stringtie_coverage_gtf",
         "stringtie_abundance": "stringtie_abundance",
@@ -531,8 +543,7 @@ workflow run_wf {
         "deseq2_output_pseudo": "deseq2_output_pseudo",  
         "multiqc_report": "multiqc_report", 
         "multiqc_data": "multiqc_data", 
-        "multiqc_plots": "multiqc_plots",
-        "multiqc_versions": "multiqc_versions"
+        "multiqc_plots": "multiqc_plots"
       ]
     )
 
@@ -611,7 +622,7 @@ def getFastpReadsAfterFiltering(json_file) {
 }
 
 //
-// Function that parses and returns the alignment rate from the STAR log output
+// Function that parses and returns the alignment rate from the STAR log outputs
 //
 def getStarPercentMapped(align_log) {
   def percent_aligned = 0
