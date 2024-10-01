@@ -349,39 +349,39 @@ argument_groups:
       - name: "--output_fasta"
         type: file
         direction: output
-        default: genome/reference_genome.fasta
+        default: reference/genome.fasta
       - name: "--output_gtf"
         type: file
         direction: output
-        default: genome/gene_annotation.gtf
+        default: reference/gene_annotation.gtf
       - name: "--output_transcript_fasta"
         type: file
         direction: output
-        default: genome/transcriptome.fasta
+        default: reference/transcriptome.fasta
       - name: "--output_gene_bed"
         type: file
         direction: output
-        default: genome/gene_annotation.bed
+        default: reference/gene_annotation.bed
       - name: "--output_star_index"
         type: file
         direction: output
         description: Path to STAR index.
-        default: genome/index/STAR
+        default: reference/index/STAR
       - name: "--output_salmon_index"
         type: file
         direction: output
         description: Path to Salmon index.
-        default: genome/index/Salmon
+        default: reference/index/Salmon
       - name: "--output_bbsplit_index"
         type: file
         direction: output
         description: Path to BBSplit index.
-        default: genome/index/BBSplit
+        default: reference/index/BBSplit
       - name: "--output_kallisto_index"
         type: file
         direction: output
         description: Path to Kallisto index.
-        default: genome/index/Kallisto
+        default: reference/index/Kallisto
       
       # fastq
       - name: "--output_fastq_1"
