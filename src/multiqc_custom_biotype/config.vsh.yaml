@@ -33,6 +33,9 @@ resources:
     path: script.sh
   # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
   - path: mqc_features_stat.py
+  # Include the header for the biotypes in the component
+  - path: /src/assets/multiqc/biotypes_header.txt
+    dest: assets/multiqc/biotypes_header.txt
 
 engines:
   - type: docker

@@ -129,7 +129,7 @@ argument_groups:
       - name: "--ribo_database_manifest"
         type: file
         description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
-        default: assets/rrna-db-defaults.txt
+        default: src/assets/rrna-db-defaults.txt
 
   - name: UMI options
     arguments:
@@ -310,10 +310,10 @@ argument_groups:
         default: '-verbose -seed 1 -seg_len 100000000'
       - name: "--pca_header_multiqc"
         type: file
-        default: assets/multiqc/deseq2_pca_header.txt
+        default: src/assets/multiqc/deseq2_pca_header.txt
       - name: "--clustering_header_multiqc"
         type: file
-        default: assets/multiqc/deseq2_clustering_header.txt
+        default: src/assets/multiqc/deseq2_clustering_header.txt
       - name: "--deseq2_vst"
         type: boolean
         default: true
@@ -336,12 +336,12 @@ argument_groups:
     arguments:
       - name: "--multiqc_custom_config"
         type: file
-        default: assets/multiqc_config.yml
+        default: src/assets/multiqc_config.yml
       - name: "--multiqc_title"
         type: string
       - name: "--multiqc_methods_description"
         type: file
-        default: assets/methods_description_template.yml
+        default: src/assets/methods_description_template.yml
     
   - name: Output
     arguments:
