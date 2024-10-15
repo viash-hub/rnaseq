@@ -23,7 +23,8 @@ workflow run_wf {
                 "annotation": "gtf", 
                 "input": "genome_bam", 
                 "attribute_type": "attribute_type",
-                "feature_type": "featurecounts_feature_type"
+                "feature_type": "featurecounts_feature_type",
+                "count_read_pairs": "paired"
             ],
             toState: [
                 "featurecounts": "counts",
@@ -249,6 +250,10 @@ workflow run_wf {
                 (state.rsem_counts_transcripts instanceof java.nio.file.Path && state.rsem_counts_transcripts.exists()) ? 
                     state.rsem_counts_transcripts : 
                     null }
+            def pseudo_quant_out_dir = list.collect { id, state -> 
+                (state.pseudo_quant_out_dir instanceof java.nio.file.Path && state.pseudo_quant_out_dir.exists()) ? 
+                    state.pseudo_quant_out_dir : 
+                    null }
             def pseudo_salmon_quant_results = list.collect { id, state -> 
                 (state.pseudo_salmon_quant_results_file instanceof java.nio.file.Path && state.pseudo_salmon_quant_results_file.exists()) ? 
                     state.pseudo_salmon_quant_results_file : 
@@ -388,6 +393,7 @@ workflow run_wf {
                 quant_results: quant_results, 
                 rsem_counts_gene: rsem_counts_gene,
                 rsem_counts_transcripts: rsem_counts_transcripts,
+                pseudo_quant_out_dir: pseudo_quant_out_dir,
                 pseudo_salmon_quant_results: pseudo_salmon_quant_results,
                 pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
                 gtf: gtf, 
@@ -632,7 +638,7 @@ workflow run_wf {
             toState: [
                 "deseq2_output_pseudo": "deseq2_output", 
                 "deseq2_pca_multiqc_pseudo": "pca_multiqc", 
-                "deseq2_dists_multiqc_pseudo_": "dists_multiqc" 
+                "deseq2_dists_multiqc_pseudo": "dists_multiqc" 
             ], 
             key: "deseq2_qc_pseuso_align_quant"
         )
