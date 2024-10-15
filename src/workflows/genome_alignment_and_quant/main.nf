@@ -293,7 +293,7 @@ workflow run_wf {
           "paired": "paired",
           "input": "input",
           "index": "rsem_index",
-          "extra_args": "extra_args"
+          "extra_args": "extra_rsem_calculate_expression_args"
         ],
         toState: [
           "rsem_counts_gene": "counts_gene",
@@ -359,8 +359,7 @@ workflow run_wf {
     }
 
     | setState (
-      [ "star_alignment": "star_alignment", 
-        "star_multiqc": "star_multiqc", 
+      [ "star_multiqc": "star_multiqc", 
         "rsem_multiqc": "rsem_multiqc",
         "salmon_multiqc": "salmon_multiqc",
         "genome_bam_sorted": "genome_bam_sorted", 
