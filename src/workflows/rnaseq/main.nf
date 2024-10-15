@@ -217,7 +217,6 @@ workflow run_wf {
           "extra_rsem_calculate_expression_args": "extra_rsem_calculate_expression_args" 
         ],
         toState: [
-          "star_alignment": "star_alignment", 
           "star_multiqc": "star_multiqc", 
           "rsem_multiqc": "rsem_multiqc",
           "salmon_multiqc": "salmon_multiqc",
@@ -464,7 +463,7 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
-        "star_alignment": "star_alignment", 
+        "star_log": "star_multiqc", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
         "genome_bam_stats": "genome_bam_stats", 

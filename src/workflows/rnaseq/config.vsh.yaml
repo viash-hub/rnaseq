@@ -509,6 +509,10 @@ argument_groups:
         type: file
         direction: output
         default: STAR/transcriptome_processed/$id.transcriptome.bam.bai
+      - name: "--star_log"
+        type: file
+        direction: output        
+        default: STAR/log/$id.log
 
       # samtools
       - name: "--genome_bam_stats"
