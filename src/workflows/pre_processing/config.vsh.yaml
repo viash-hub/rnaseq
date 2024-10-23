@@ -29,9 +29,6 @@ argument_groups:
       - name: "--bbsplit_index"
         type: file 
         description: BBsplit index 
-      - name: "--bbsplit_fasta_list"
-        type: file
-        description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
       - name: "--ribo_database_manifest"
         type: file
         description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
@@ -110,12 +107,6 @@ argument_groups:
         description: Specify the trimming tool to use.
         choices: [ "trimgalore", "fastp"]
         default: "trimgalore"
-      - name: "--extra_trimgalore_args"
-        type: string
-        description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-      # - name: "--extra_fastp_args"
-      #   type: string
-      #   description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
       - name: "--min_trimmed_reads"
         type: integer
         description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
@@ -129,31 +120,15 @@ argument_groups:
         description: Save the trimmed FastQ files in the results directory.
         default: false
   
-  - name: "Alignment options"
-    arguments:
-      - name: "--extra_salmon_quant_args"
-        type: string
-        default: ''
-        description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
-  
   - name: "Read filtering options"
     arguments: 
       - name: "--skip_bbsplit"
         type: boolean_true
         description: Skip BBSplit for removal of non-reference genome reads.
-        # default: true
       - name: "--remove_ribo_rna"
         type: boolean_true
         description: Enable the removal of reads derived from ribosomal RNA using SortMeRNA.
-        # default: false
   
-  - name: "Other options"
-    arguments: 
-      - name: "--extra_fq_subsample_args"
-        type: string
-        default: '--record-count 1000000 --seed 1'
-        description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
-
   - name: "Output"
     arguments:
       - name: "--qc_output1"
@@ -162,78 +137,78 @@ argument_groups:
         required: false
         must_exist: false
         description: Path to output directory
-        default: $id.read_1.fastq
+        default: ${id}_r1.fastq.gz
       - name: "--qc_output2"
         type: file
         direction: output
         required: false
         must_exist: false
         description: Path to output directory
-        default: $id.read_2.fastq
+        default: ${id}_r2.fastq.gz
       - name: "--fastqc_html_1"
         type: file
         direction: output
         description: FastQC HTML report for read 1.
         required: false
         must_exist: false
-        default: $id.read_1.fastqc.html
+        default: ${id}_r1.fastqc.html
       - name: "--fastqc_html_2"
         type: file
         direction: output
         description: FastQC HTML report for read 2.
         required: false
         must_exist: false
-        default: $id.read_2.fastqc.html
+        default: ${id}_r2.fastqc.html
       - name: "--fastqc_zip_1"
         type: file
         direction: output
         description: FastQC report archive for read 1.
         required: false
         must_exist: false
-        default: $id.read_1.fastqc.zip
+        default: ${id}_r1.fastqc.zip
       - name: "--fastqc_zip_2"
         type: file
         direction: output
         description: FastQC report archive for read 2.
         required: false
         must_exist: false
-        default: $id.read_2.fastqc.zip
+        default: ${id}_r2.fastqc.zip
       - name: "--trim_log_1"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_1.trimming_report.txt
+        default: ${id}_r1.trimming_report.txt
       - name: "--trim_log_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_2.trimming_report.txt
+        default: ${id}_r2.trimming_report.txt
       - name: "--trim_html_1"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_1.trimmed_fastqc.html
+        default: ${id}_r1.trimmed_fastqc.html
       - name: "--trim_html_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_2.trimmed_fastqc.html
+        default: ${id}_r2.trimmed_fastqc.html
       - name: "--trim_zip_1"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_1.trimmed_fastqc.zip
+        default: ${id}_r1.trimmed_fastqc.zip
       - name: "--trim_zip_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: $id.read_2.trimmed_fastqc.zip
+        default: ${id}_r2.trimmed_fastqc.zip
       - name: "--sortmerna_log"
         type: file
         direction: output
@@ -267,20 +242,19 @@ resources:
 
 dependencies:
   - name: fastqc
-    # repository: biobox
-  - name: umitools/umitools_extract
+    repository: biobox
   - name: umi_tools/umi_tools_extract
     repository: biobox
   - name: trimgalore
-    # repository: biobox
+    repository: biobox
   - name: bbmap_bbsplit
-    # repository: biobox
+    repository: biobox
   - name: sortmerna
-    # repository: biobox
+    repository: biobox
   - name: fastp
     repository: biobox
   - name: fq_subsample
-    # repository: biobox
+    repository: biobox
   - name: salmon/salmon_quant
     repository: biobox
    

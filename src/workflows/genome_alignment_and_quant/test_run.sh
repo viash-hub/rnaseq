@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# v;iash ns build --setup cb --parallel
+viash ns build --setup cb --parallel
 
 # Split error message from standard output
 # viash ns list > /dev/null 
 
 echo "> Preparing reference data files"
 gunzip --keep testData/minimal_test/reference/genes.gtf.gz
+mkdir -p testData/minimal_test/reference/rsem_index
+tar -C testData/minimal_test/reference/rsem_index --strip-components 1 -xavf testData/minimal_test/reference/rsem.tar.gz --no-same-owner
 
 cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
@@ -33,9 +35,8 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --fasta testData/minimal_test/reference/genome.fasta \
   --gtf testData/minimal_test/reference/genes.gtf \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
-  --rsem_index test_results/output_test1/RSEM_index \
+  --rsem_index testData/minimal_test/reference/rsem_index \
   --aligner star_rsem \
-  --extra_rsem_calculate_expression_args "--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1" \
   -profile docker \
   -resume
 

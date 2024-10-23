@@ -48,10 +48,10 @@ argument_groups:
     description: Override library type inferred based on strandedness defined in meta object
     default: ''
   - name: "--kallisto_quant_fragment_length"
-    type: integer
+    type: double
     description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
   - name: "--kallisto_quant_fragment_length_sd"
-    type: integer
+    type: double
     description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
   
 - name: "Output"
@@ -81,6 +81,7 @@ dependencies:
   - name: salmon/salmon_quant
     repository: biobox
   - name: kallisto/kallisto_quant
+    repository: biobox
 
 runners: 
 - type: executable

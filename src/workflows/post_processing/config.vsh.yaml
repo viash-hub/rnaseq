@@ -50,10 +50,6 @@ argument_groups:
       - name: "--stringtie_ignore_gtf"
         type: boolean
         description: Perform reference-guided de novo assembly of transcripts using StringTie, i.e. don't restrict to those in GTF file.
-      - name: "--extra_bedtools_args"
-        type: string
-        default: ''
-        description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
       - name: "--bam_csi_index"
         type: boolean
         default: false
@@ -151,9 +147,8 @@ dependencies:
   - name: samtools/samtools_idxstats
     repository: biobox
   - name: stringtie
-  # - name: bedtools/bedtools_genomecov
-  #   repository: biobox
-  - name: bedtools_genomecov
+  - name: bedtools/bedtools_genomecov
+    repository: biobox
   - name: ucsc/bedclip
   - name: ucsc/bedgraphtobigwig
 

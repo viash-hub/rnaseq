@@ -158,20 +158,22 @@ workflow run_wf {
             key: "untar_bbsplit_index",
             args: [output: "BBSplit_index"] 
         )
-        
+
+        | map {id, state -> 
+            def ref = [state.fasta] + state.bbsplit_fasta_list
+            [id, state + [bbsplit_ref: ref] ]
+        }
+
         // create bbsplit index, if not already availble
         | bbmap_bbsplit.run (
             runIf: {id, state -> !state.skip_bbsplit && !state.bbsplit_index}, 
-            fromState: [ 
-                "primary_ref": "fasta", 
-                "bbsplit_fasta_list": "bbsplit_fasta_list"
-            ], 
-            toState: [ "bbsplit_index": "bbsplit_index" ], 
+            fromState: ["ref": "bbsplit_ref"],
+            toState: [ "bbsplit_index": "index" ], 
             args: [
-                only_build_index: true, 
-                bbsplit_index: "BBSplit_index"
+                only_build_index: true,
+                index: "BBSplit_index"
             ], 
-            key: "generate_bbsplit_index" 
+            key: "generate_bbsplit_index"
         )
 
         // Uncompress STAR index or generate from scratch if required
@@ -251,12 +253,12 @@ workflow run_wf {
         | kallisto_index.run(
             runIf: {id, state -> state.pseudo_aligner == "kallisto" && !state.kallisto_index}, 
             fromState: [
-                "transcriptome_fasta": "transcript_fasta",
-                "pseudo_aligner_kmer_size": "pseudo_aligner_kmer_size"
+                "input": "transcript_fasta",
+                "kmer_size": "pseudo_aligner_kmer_size"
             ],
-            toState: [ "kallisto_index": "kallisto_index" ],
+            toState: [ "kallisto_index": "index" ],
             key: "generate_kallisto_index",
-            args: [kallisto_index: "Kallisto_index"]
+            args: [index: "Kallisto_index"]
         )
 
         | map { id, state -> 

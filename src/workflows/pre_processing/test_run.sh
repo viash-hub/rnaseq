@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --parallel --setup cb 
+viash ns build --parallel --setup cb #-q pre_processing
 
 echo "> Preparing reference data files"
 gunzip --keep testData/minimal_test/reference/genes.gtf.gz
@@ -24,10 +24,11 @@ nextflow run target/nextflow/workflows/pre_processing/main.nf \
   --salmon_index testData/minimal_test/reference/salmon_index \
   --skip_trimming false \
   --trimmer trimgalore \
-  --remove_ribo_rna false \
+  --remove_ribo_rna true \
   --ribo_database_manifest testData/minimal_test/reference/rrna-db-defaults.txt \
-  --skip_bbsplit false \
+  --skip_bbsplit true \
   --bbsplit_index test_results/prepare_genome_test1/BBSplit_index \
+  --with_umi false \
   -profile docker \
   -resume
 

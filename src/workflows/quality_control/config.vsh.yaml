@@ -105,9 +105,9 @@ argument_groups:
       - name: "--biotype"
         type: string
         description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
-      - name: "--extra_featurecounts_args"
-        type: string
-        description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
+      # - name: "--extra_featurecounts_args"
+      #   type: string
+      #   description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
       
       # RSeQC
       - name: "--rseqc_modules"
@@ -200,12 +200,6 @@ argument_groups:
         description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
 
       # Qualimap        
-      - name: "--output_format"
-        type: string
-        required: false
-        default: html
-        choices: [ html, pdf ]
-        description: Format of the qualimap output report (PDF or HTML, default is HTML)
       - name: "--pr_bases"
         type: integer
         required: false
@@ -296,8 +290,6 @@ argument_groups:
       - name: "--star_multiqc"
         type: file
         must_exist: false
-      # - name: "--hisat2_multiqc"
-      #   type: file
       - name: "--rsem_multiqc"
         type: file
       - name: "--genome_bam_stats"
@@ -639,9 +631,8 @@ dependencies:
   - name: rseqc/rseqc_readduplication
   - name: rseqc/rseqc_tin
   - name: dupradar
-  - name: qualimap
-  # - name: qualimap/qualimap_rnaseq
-  #   repository: biobox
+  - name: qualimap/qualimap_rnaseq
+    repository: biobox
   - name: preseq_lcextrap
   - name: featurecounts
     repository: biobox

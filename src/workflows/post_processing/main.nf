@@ -84,14 +84,31 @@ workflow run_wf {
         | bedtools_genomecov.run (
             runIf: { id, state -> !state.skip_bigwig },
             fromState: [
-                "strandedness": "strandedness", 
-                "bam": "processed_genome_bam",
-                "extra_bedtools_args": "extra_bedtools_args"
+                "input_bam": "processed_genome_bam",
             ],
-            toState: [
-                "bedgraph_forward": "bedgraph_forward",
-                "bedgraph_reverse": "bedgraph_reverse"
-            ]
+            args: [
+                split: true, 
+                du: true, 
+                bed_graph: true, 
+                strand: "+"
+            ],
+            toState: [ "bedgraph_forward": "output" ], 
+            key: "bedtools_genomecov_forward"
+        )
+
+        | bedtools_genomecov.run (
+            runIf: { id, state -> !state.skip_bigwig },
+            fromState: [
+                "input_bam": "processed_genome_bam",
+            ],
+            args: [
+                split: true, 
+                du: true, 
+                bed_graph: true, 
+                strand: "-"
+            ],
+            toState: [ "bedgraph_reverse": "output" ],
+            key: "bedtools_genomecov_reverse"
         )
 
         | bedclip.run (

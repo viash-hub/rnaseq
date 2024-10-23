@@ -194,20 +194,21 @@ workflow run_wf {
             ]
         )
 
-        | qualimap.run(
+        | qualimap_rnaseq.run(
             fromState: [
-                "input": "genome_bam",
+                "bam": "genome_bam",
                 "gtf": "gtf",
-                "pr_bases": "pr_bases",
-                "tr_bias": "tr_bias",
+                "num_pr_bases": "pr_bases",
+                "num_tr_bias": "tr_bias",
                 "algorithm": "algorithm",
                 "sequencing_protocol": "sequencing_protocol",
                 "sorted": "sorted",
                 "java_memory_size": "java_memory_size", 
             ],
             toState: [
-                "qualimap_output_pdf": "output_pdf",
-                "qualimap_output_dir": "output_dir"
+                "qualimap_report": "report", 
+                "qualimap_qc_report": "qc_report",
+                "qualimap_counts": "counts"
             ]
         ) 
 

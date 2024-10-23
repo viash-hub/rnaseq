@@ -88,15 +88,16 @@ workflow run_wf {
     // 
     
     // Deduplicate genome BAM file
-    | umitools_dedup.run ( 
+    | umi_tools_dedup.run ( 
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
-        fromState: [
-          "paired": "paired", 
-          "bam": "genome_bam_sorted", 
-          "bai": "genome_bam_index",
-          "get_output_stats": "umi_dedup_stats"
-        ],
-        toState: [ "genome_bam_sorted": "output_bam" ],
+        fromState: { id, state -> 
+          def output_stats = state.umi_dedup_stats ? state.id : 
+          [ paired: state.paired, 
+          input: state.genome_bam, 
+          bai: state.genome_bam_index,
+          output_stats: output_stats] 
+        },
+        toState: [ "genome_bam_sorted": "output" ],
         key: "genome_deduped"
     )
     | samtools_index.run (
@@ -184,15 +185,16 @@ workflow run_wf {
         key: "transcriptome_idxstats"
     )    
      
-    | umitools_dedup.run ( 
+    | umi_tools_dedup.run ( 
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
-        fromState: [
-          "paired": "paired", 
-          "bam": "transcriptome_bam", 
-          "bai": "transcriptome_bam_index",
-          "get_output_stats": "umi_dedup_stats", 
-        ],
-        toState: [ "transcriptome_bam_deduped": "output_bam" ],
+        fromState: { id, state -> 
+          def output_stats = state.umi_dedup_stats ? state.id : 
+          [ paired: state.paired, 
+          input: state.transcriptome_bam, 
+          bai: state.transcriptome_bam_index,
+          output_stats: output_stats] 
+        },
+        toState: [ "transcriptome_bam_deduped": "output" ],
         key: "transcriptome_deduped"
     )
     | samtools_sort.run (
@@ -239,9 +241,9 @@ workflow run_wf {
     ) 
 
     // Fix paired-end reads in name sorted BAM file
-    | umitools_prepareforquant.run (
+    | umi_tools_prepareforrsem.run (
         runIf: { id, state -> state.with_umi && state.paired && state.aligner == 'star_salmon' },
-        fromState: [ "bam": "transcriptome_bam" ],
+        fromState: [ "input": "transcriptome_bam" ],
         toState: [ "transcriptome_bam": "output" ]
     )
 
@@ -292,8 +294,21 @@ workflow run_wf {
           "strandedness": "strandedness",
           "paired": "paired",
           "input": "input",
-          "index": "rsem_index",
-          "extra_args": "extra_args"
+          "index": "rsem_index", 
+          "counts_gene": "rsem_counts_gene",
+          "counts_transcripts": "rsem_counts_transcripts",
+          "stat": "rsem_multiqc",
+          "logs": "star_multiqc",
+          "bam_star": "bam_star_rsem",
+          "bam_genome": "bam_genome_rsem",
+          "bam_transcript": "bam_transcript_rsem"          
+        ],
+        args: [
+          star: true,
+          star_output_genome_bam: true,
+          star_gzipped_read_file: true,
+          estimate_rspd: true,
+          seed: 1
         ],
         toState: [
           "rsem_counts_gene": "counts_gene",
