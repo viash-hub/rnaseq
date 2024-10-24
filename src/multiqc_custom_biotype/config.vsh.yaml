@@ -13,9 +13,9 @@ argument_groups:
     type: string
     description: Sample name
     default: $id
-  - name: "--biotypes_header"
-    type: file
-    default: assets/multiqc/biotypes_header.txt
+  # - name: "--biotypes_header"
+  #   type: file
+  #   default: biotypes_header.txt
   
 - name: "Output"
   arguments:
@@ -34,8 +34,7 @@ resources:
   # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
   - path: mqc_features_stat.py
   # Include the header for the biotypes in the component
-  - path: /src/assets/multiqc/biotypes_header.txt
-    dest: assets/multiqc/biotypes_header.txt
+  - path: biotypes_header.txt
 
 engines:
   - type: docker
