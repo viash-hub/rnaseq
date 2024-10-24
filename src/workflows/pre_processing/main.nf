@@ -164,12 +164,10 @@ workflow run_wf {
           out2: state.paired, 
           other: other ] 
       },
-      args: [fastx: true],
+      args: [fastx: true, num_alignments: 1],
       toState: { id, output_state, state -> 
         def newKeys = [ 
           "sortmerna_output": output_state["other"],
-          // "fastq_1": output_state["other"][0], 
-          // "fastq_2": output_state["other"][1], 
           "sortmerna_log": output_state["log"]
         ]
         def new_state = state + newKeys
