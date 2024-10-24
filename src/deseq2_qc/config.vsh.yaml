@@ -13,12 +13,12 @@ argument_groups:
   - name: "--counts"
     type: file
     description: count file matrix where rows are genes and columns are samples
-  - name: "--pca_header_multiqc"
-    type: file
-    default: assets/multiqc/deseq2_pca_header.txt
-  - name: "--clustering_header_multiqc"
-    type: file
-    default: assets/multiqc/deseq2_clustering_header.txt
+  # - name: "--pca_header_multiqc"
+  #   type: file
+  #   default: assets/multiqc/deseq2_pca_header.txt
+  # - name: "--clustering_header_multiqc"
+  #   type: file
+  #   default: assets/multiqc/deseq2_clustering_header.txt
   - name: "--deseq2_vst"
     type: boolean
     default: true
@@ -51,10 +51,8 @@ resources:
   # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/deseq2_qc.r
   - path: deseq2_qc.r
   # Add proper default headers as part of the component
-  - path: /src/assets/multiqc/deseq2_pca_header.txt
-    dest: assets/multiqc/deseq2_pca_header.txt
-  - path: /src/assets/multiqc/deseq2_clustering_header.txt
-    dest: assets/multiqc/deseq2_clustering_header.txt
+  - path: deseq2_pca_header.txt
+  - path: deseq2_clustering_header.txt
 
 test_resources:
   - type: bash_script

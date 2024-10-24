@@ -38,11 +38,11 @@ Rscript "$meta_resources_dir/deseq2_qc.r" \
     $par_extra_args
 
 if [ -f "$par_deseq2_output/R_sessionInfo.log" ]; then
-    sed "s/deseq2_pca/${label_lower}_deseq2_pca/g" < $par_pca_header_multiqc > tmp.txt
+    sed "s/deseq2_pca/${label_lower}_deseq2_pca/g" < "$meta_resources_dir/deseq2_pca_header.txt" > tmp.txt
     sed -i -e "s/DESeq2 PCA/${label_upper} DESeq2 PCA/g" tmp.txt
     cat tmp.txt $par_deseq2_output/*.pca.vals.txt > $par_pca_multiqc
 
-    sed "s/deseq2_clustering/${label_lower}_deseq2_clustering/g" < $par_clustering_header_multiqc > tmp.txt
+    sed "s/deseq2_clustering/${label_lower}_deseq2_clustering/g" < "$meta_resources_dir/deseq2_clustering_header.txt" > tmp.txt
     sed -i -e "s/DESeq2 sample/${label_upper} DESeq2 sample/g" tmp.txt
     cat tmp.txt $par_deseq2_output/*.sample.dists.txt > $par_dists_multiqc
 fi
