@@ -5,11 +5,14 @@ echo "> Running $meta_functionality_name"
 
 "$meta_executable" \
     --counts $meta_resources_dir/counts.tsv \
-    --extra_args "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 2" \
-    --extra_args2 "test" \
+    --id_col 1 \
+    --sample_suffix '' \
+    --outprefix deseq2 \
+    --count_col 2 \
     --deseq2_output "deseq2/" \
     --pca_multiqc pca.vals_mqc.tsv \
-    --dists_multiqc sample.dists_mqc.tsv
+    --sample_dists_multiqc sample.dists_mqc.tsv \
+    --outdir deseq2
 
 exit_code=$?
 [[ $exit_code != 0 ]] && echo "Non zero exit code: $exit_code" && exit 1
