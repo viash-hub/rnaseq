@@ -20,6 +20,7 @@ argument_groups:
     description: Input fastq
   - name: "--ribo_database_manifest"
     type: file
+    multiple: true
     description: Text file containing paths to fasta files (one per line) that will be used to create the database for SortMeRNA.
 
 - name: "Output"

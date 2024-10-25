@@ -2,13 +2,13 @@
 
 echo ">>> Testing $meta_functionality_name"
 
-find $meta_resources_dir/rRNA -type f > rrna-db-defaults.txt
+# find $meta_resources_dir/rRNA -type f > rrna-db-defaults.txt
 
 echo ">>> Testing for paired-end reads"
 "$meta_executable" \
     --paired true \
     --input $meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz \
-    --ribo_database_manifest rrna-db-defaults.txt \
+    --ribo_database_manifest "$meta_resources_dir/rRNA/silva-arc-16s-id95.fasta;$meta_resources_dir/rRNA/silva-euk-18s-id95.fasta" \
     --sortmerna_log SRR6357070_sortmerna.log \
     --fastq_1 SRR6357070_read_1.fastq.gz \
     --fastq_2 SRR6357070_read_2.fastq.gz
@@ -26,7 +26,7 @@ echo ">>> Testing for single-end reads"
 "$meta_executable" \
     --paired false \
     --input $meta_resources_dir/SRR6357070_1.fastq.gz \
-    --ribo_database_manifest rrna-db-defaults.txt \
+    --ribo_database_manifest "$meta_resources_dir/rRNA/silva-arc-16s-id95.fasta;$meta_resources_dir/rRNA/silva-euk-18s-id95.fasta" \
     --sortmerna_log SRR6357070_sortmerna.log \
     --fastq_1 SRR6357070_read_1.fastq.gz 
     
