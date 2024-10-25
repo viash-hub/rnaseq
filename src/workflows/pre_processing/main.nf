@@ -157,10 +157,12 @@ workflow run_wf {
       runIf: { id, state -> state.remove_ribo_rna },
       fromState: { id, state ->
         def input = state.paired ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        def filePaths = state.ribo_database_manifest.readLines()
+        def refs = filePaths.collect { it }
         def other = "${id}_non_rRNA_reads/"
         [ paired_in: state.paired,
           input: input,
-          ribo_database_manifest: state.ribo_database_manifest,
+          ref: refs,
           out2: state.paired, 
           other: other ] 
       },
