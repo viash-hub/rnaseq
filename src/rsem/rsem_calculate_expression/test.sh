@@ -9,7 +9,7 @@ echo ">>> Calculating expression"
   --id WT_REP1 \
   --strandedness reverse \
   --paired true \
-  --input "$meta_resources_dir/SRR6357070_1.fastq.gz,$meta_resources_dir/SRR6357070_2.fastq.gz" \
+  --input "$meta_resources_dir/SRR6357070_1.fastq.gz;$meta_resources_dir/SRR6357070_2.fastq.gz" \
   --index rsem \
   --extra_args "--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1" \
   --counts_gene WT_REP1.genes.results \

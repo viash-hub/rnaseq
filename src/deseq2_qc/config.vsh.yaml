@@ -12,27 +12,35 @@ argument_groups:
   arguments: 
   - name: "--counts"
     type: file
-    description: count file matrix where rows are genes and columns are samples
-  - name: "--pca_header_multiqc"
-    type: file
-    default: assets/multiqc/deseq2_pca_header.txt
-  - name: "--clustering_header_multiqc"
-    type: file
-    default: assets/multiqc/deseq2_clustering_header.txt
-  - name: "--deseq2_vst"
+    description: Count file matrix where rows are genes and columns are samples.
+    required: true
+  - name: "--vst"
     type: boolean
-    default: true
-    description: Use vst transformation instead of rlog with DESeq2
-  - name: "--extra_args"
+    default: false
+    description: Use vst transformation instead of rlog with .DESeq2
+  - name: "--count_col"
+    type: integer
+    default: 3
+    description: First column containing sample count data.
+  - name: "--id_col"
+    type: integer
+    default: 1
+    description: Column containing identifiers to be used.
+  - name: "--sample_suffix"
     type: string
-    default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
-  - name: "--extra_args2"
+    description: Suffix to remove after sample name in columns e.g. '.rmDup.bam' if 'DRUG_R1.rmDup.bam'.
+    default: ""
+  - name: "--outprefix"
     type: string
-    default: star_salmon
+    default: deseq2
+    description: Output prefix
+  - name: "--label"
+    type: string
+    description: Label to used in MultiQC report
     
 - name: "Output"
   arguments: 
-  - name: "--deseq2_output"
+  - name: "--outdir"
     type: file
     direction: output
     default: deseq2
@@ -40,21 +48,18 @@ argument_groups:
     type: file
     direction: output
     default: deseq2.pca.vals_mqc.tsv
-  - name: "--dists_multiqc"
+  - name: "--sample_dists_multiqc"
     type: file
     direction: output
     default: deseq2.sample.dists_mqc.tsv
 
 resources:
-  - type: bash_script
-    path: script.sh
-  # copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/deseq2_qc.r
-  - path: deseq2_qc.r
+  # adapted from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/deseq2_qc.r
+  - type: r_script
+    path: script.r
   # Add proper default headers as part of the component
-  - path: /src/assets/multiqc/deseq2_pca_header.txt
-    dest: assets/multiqc/deseq2_pca_header.txt
-  - path: /src/assets/multiqc/deseq2_clustering_header.txt
-    dest: assets/multiqc/deseq2_clustering_header.txt
+  - path: deseq2_pca_header.txt
+  - path: deseq2_clustering_header.txt
 
 test_resources:
   - type: bash_script
@@ -63,12 +68,10 @@ test_resources:
 
 engines: 
   - type: docker
-    image: ubuntu:22.04
+    image: rocker/r2u:22.04
     setup:
-      - type: apt
-        packages: [ r-base , libcurl4-openssl-dev, libssl-dev, libxml2-dev ]
       - type: r
-        cran: [ optparse, ggplot2, RColorBrewer, pheatmap ]
+        cran: [ optparse, ggplot2, RColorBrewer, pheatmap, stringr ]
         bioc: [ DESeq2 ]
         url: https://cran.r-project.org/src/contrib/Archive/matrixStats/matrixStats_1.1.0.tar.gz
 runners:

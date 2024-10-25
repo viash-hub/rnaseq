@@ -66,24 +66,26 @@ def mqc_feature_stat(bfile, features, outfile, sname=None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="""Calculate features percentage for biotype counts""")
-    parser.add_argument("biocount", type=str, help="File with all biocounts")
-    parser.add_argument(
-        "-f",
-        "--features",
-        dest="features",
-        required=True,
-        nargs="+",
-        help="Features to count",
-    )
-    parser.add_argument("-s", "--sample", dest="sample", type=str, help="Sample Name")
-    parser.add_argument(
-        "-o",
-        "--output",
-        dest="output",
-        default="biocount_percent.tsv",
-        type=str,
-        help="Sample Name",
-    )
-    args = parser.parse_args()
-    mqc_feature_stat(args.biocount, args.features, args.output, args.sample)
+    
+    # Read the biotypes_header.txt file
+    biotypes_header_path = os.path.join(meta["resources_dir"], 'biotypes_header.txt')
+    with open(biotypes_header_path, 'r') as header_file:
+        biotypes_header = header_file.read()
+
+    # Extract specific columns (1 and 7) and skip the first two lines
+    filtered_lines = []
+    with open(par["biocounts"], 'r') as biocounts_file:
+        for i, line in enumerate(biocounts_file):
+            if i >= 2:  # Skipping first two lines
+                columns = line.strip().split('\t')
+                filtered_line = f"{columns[0]}\t{columns[6]}"  # Columns 1 and 7 (0-indexed)
+                filtered_lines.append(filtered_line)
+
+    # Concatenate the header and the processed lines
+    result = biotypes_header + '\n' + '\n'.join(filtered_lines) + '\n'
+
+    # Write the result to par_featurecounts_multiqc
+    with open(par["featurecounts_multiqc"], 'w') as output_file:
+        output_file.write(result)
+
+    mqc_feature_stat(par["featurecounts_multiqc"], par["features"], par["featurecounts_rrna_multiqc"], par["id"])
