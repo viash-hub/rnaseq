@@ -35,4 +35,6 @@ additional_fasta: https://github.com/nf-core/test-datasets/raw/refs/heads/rnaseq
 transcript_fasta: https://github.com/nf-core/test-datasets/raw/refs/heads/rnaseq/reference/transcriptome.fasta
 bbsplit_fasta_list: https://github.com/nf-core/test-datasets/raw/refs/heads/rnaseq/reference/bbsplit_fasta_list.txt
 salmon_index: https://github.com/nf-core/test-datasets/raw/refs/heads/rnaseq/reference/salmon.tar.gz
-
+skip_bbsplit: true
+multiqc_custom_config: https://raw.githubusercontent.com/viash-hub/rnaseq/refs/heads/main/src/assets/multiqc_config.yml
+multiqc_methods_description: https://raw.githubusercontent.com/viash-hub/rnaseq/refs/heads/main/src/assets/methods_description_template.yml
