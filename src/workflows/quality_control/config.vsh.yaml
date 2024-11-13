@@ -114,9 +114,6 @@ argument_groups:
       - name: "--biotype"
         type: string
         description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
-      # - name: "--extra_featurecounts_args"
-      #   type: string
-      #   description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
       
       # RSeQC
       - name: "--rseqc_modules"
