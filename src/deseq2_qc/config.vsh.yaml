@@ -71,9 +71,8 @@ engines:
     image: rocker/r2u:22.04
     setup:
       - type: r
-        cran: [ optparse, ggplot2, RColorBrewer, pheatmap, stringr ]
+        cran: [ optparse, ggplot2, RColorBrewer, pheatmap, stringr, matrixStats ]
         bioc: [ DESeq2 ]
-        url: https://cran.r-project.org/src/contrib/Archive/matrixStats/matrixStats_1.1.0.tar.gz
 runners:
   - type: executable
   - type: nextflow
