@@ -69,7 +69,8 @@ workflow run_wf {
           "biotype": "biotype",
           "filter_gtf": "filter_gtf",
           "aligner": "aligner",
-          "pseudo_aligner": "pseudo_aligner"
+          "pseudo_aligner": "pseudo_aligner",
+          "skip_alignment": "skip_alignment"
         ],
         toState: [
           "fasta": "uncompressed_fasta", 

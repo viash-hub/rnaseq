@@ -187,7 +187,7 @@ workflow run_wf {
         
         // TODO: Add to viah-hub or adapt star_align_reads to enable the generateGenome runMode 
         | star_genome_generate.run (
-            runIf: {id, state -> !state.star_index}, 
+            runIf: {id, state -> !state.star_index && !state.skip_alignment}, 
             fromState: [ 
                 "genome_fasta_files": "fasta", 
                 "sjdb_gtf_file": "gtf"
