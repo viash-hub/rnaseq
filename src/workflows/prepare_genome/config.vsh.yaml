@@ -150,7 +150,7 @@ dependencies:
     repository: craftbox
   - name: star/star_genome_generate
     repository: biobox
-  - name: bbmap_bbsplit
+  - name: bbmap/bbmap_bbsplit
     repository: biobox
   - name: salmon/salmon_index
     repository: biobox
