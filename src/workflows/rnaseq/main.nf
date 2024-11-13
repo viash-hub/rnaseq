@@ -217,7 +217,6 @@ workflow run_wf {
           "extra_rsem_calculate_expression_args": "extra_rsem_calculate_expression_args" 
         ],
         toState: [
-          "star_alignment": "star_alignment", 
           "star_multiqc": "star_multiqc", 
           "rsem_multiqc": "rsem_multiqc",
           "salmon_multiqc": "salmon_multiqc",
@@ -242,7 +241,7 @@ workflow run_wf {
 
     // Filter channels to get samples that passed STAR minimum mapping percentage
     | map { id, state -> 
-      def percent_mapped = getStarPercentMapped(state.star_multiqc) 
+      def percent_mapped = (!state.skip_alignment) ? getStarPercentMapped(state.star_multiqc) : 0.0
       def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
@@ -337,6 +336,11 @@ workflow run_wf {
           "strandedness": "strandedness", 
           "skip_align": "skip_alignment",
           "skip_pseudo_align": "skip_pseudo_alignment",
+          "skip_dupradar": "skip_dupradar",
+          "skip_qualimap": "skip_qualimap",
+          "skip_rseqc": "skip_rseqc",
+          "skip_multiqc": "skip_multiqc",
+          "skip_preseq": "skip_preseq",
           "gtf": "gtf", 
           "num_trimmed_reads": "num_trimmed_reads",
           "passed_trimmed_reads": "passed_trimmed_reads",
@@ -357,16 +361,13 @@ workflow run_wf {
           "pseudo_aligner": "pseudo_aligner",
           "gene_bed": "gene_bed",
           "extra_preseq_args": "extra_preseq_args",
-          "extra_featurecounts_args": "extra_featurecounts_args", 
           "biotype": "biotype", 
-          "biotypes_header": "biotypes_header",
           "skip_biotype_qc": "skip_biotype_qc", 
           "featurecounts_group_type": "featurecounts_group_type", 
           "featurecounts_feature_type": "featurecounts_feature_type", 
           "gencode": "gencode",
           "skip_deseq2_qc": "skip_deseq2_qc",  
-          "extra_deseq2_args": "extra_deseq2_args",
-          "extra_deseq2_args2": "extra_deseq2_args2",
+          "deseq2_vst": "deseq2_vst",
           "multiqc_custom_config": "multiqc_custom_config", 
           "multiqc_title": "multiqc_title", 
           "multiqc_methods_description": "multiqc_methods_description",
@@ -464,7 +465,7 @@ workflow run_wf {
         "trim_html_1": "trim_html_1",
         "trim_html_2": "trim_html_2",
         "sortmerna_log": "sortmerna_log",
-        "star_alignment": "star_alignment", 
+        "star_log": "star_multiqc", 
         "genome_bam_sorted": "genome_bam_sorted",
         "genome_bam_index": "genome_bam_index", 
         "genome_bam_stats": "genome_bam_stats", 

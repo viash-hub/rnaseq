@@ -14,6 +14,7 @@ else
 fi
 
 IFS=";" read -ra input <<< $par_input
+IFS=";" read -ra input <<< $par_input
 
 INDEX=$(find -L $par_index -name "*.grp" | sed 's/\.grp$//')
 echo "$INDEX"

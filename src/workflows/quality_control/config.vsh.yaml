@@ -77,6 +77,15 @@ argument_groups:
         default: false
       - name: "--skip_pseudo_align"
         type: boolean
+      - name: "--skip_dupradar"
+        type: boolean_true
+      - name: "--skip_qualimap"
+        type: boolean_true
+      - name: "--skip_rseqc"
+        type: boolean_true
+      - name: "--skip_multiqc"
+        type: boolean_true
+
 
       # Component specific options
       # preseq
@@ -235,21 +244,9 @@ argument_groups:
       # DESeq2
       - name: "--skip_deseq2_qc"
         type: boolean
-      - name: "--pca_header_multiqc"
-        type: file
-        default: src/assets/multiqc/deseq2_pca_header.txt
-      - name: "--clustering_header_multiqc"
-        type: file
-        default: src/assets/multiqc/deseq2_clustering_header.txt
       - name: "--deseq2_vst"
         type: boolean
         description: Use vst transformation instead of rlog with DESeq2
-      - name: "--extra_deseq2_args"
-        type: string
-        default: "--id_col 1 --sample_suffix '' --outprefix deseq2 --count_col 3"
-      - name: "--extra_deseq2_args2"
-        type: string
-        default: star_salmon
 
       # MultiQC
       - name: "--multiqc_custom_config"

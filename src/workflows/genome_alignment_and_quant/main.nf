@@ -374,8 +374,7 @@ workflow run_wf {
     }
 
     | setState (
-      [ "star_alignment": "star_alignment", 
-        "star_multiqc": "star_multiqc", 
+      [ "star_multiqc": "star_multiqc", 
         "rsem_multiqc": "rsem_multiqc",
         "salmon_multiqc": "salmon_multiqc",
         "genome_bam_sorted": "genome_bam_sorted", 

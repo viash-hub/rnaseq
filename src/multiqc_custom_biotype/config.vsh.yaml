@@ -13,9 +13,10 @@ argument_groups:
     type: string
     description: Sample name
     default: $id
-  - name: "--biotypes_header"
-    type: file
-    default: assets/multiqc/biotypes_header.txt
+  - name: "--features"
+    type: string
+    description: Features to count
+    default: rRNA
   
 - name: "Output"
   arguments:
@@ -29,21 +30,15 @@ argument_groups:
     default: $id.biotype_counts_rrna_mqc.tsv
 
 resources:
-  - type: bash_script
-    path: script.sh
-  # Copied from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
-  - path: mqc_features_stat.py
+  # Adapted from https://github.com/nf-core/rnaseq/blob/3.12.0/bin/mqc_features_stat.py
+  - type: python_script
+    path: script.py
   # Include the header for the biotypes in the component
-  - path: /src/assets/multiqc/biotypes_header.txt
-    dest: assets/multiqc/biotypes_header.txt
+  - path: biotypes_header.txt
 
 engines:
   - type: docker
-    image: ubuntu:22.04
-    setup:
-      - type: apt
-        packages: [pip]
-      - type: python
+    image: python:latest
 runners: 
   - type: executable
   - type: nextflow
