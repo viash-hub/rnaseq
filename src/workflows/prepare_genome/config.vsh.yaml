@@ -80,6 +80,9 @@ argument_groups:
         description: Specifies the pseudo aligner to use - available options are 'salmon'. Runs in addition to '--aligner'.
         choices: [salmon, kallisto]
         default: "salmon"
+      - name: "--skip_alignment"
+        type: boolean_true
+        description: Skip all of the alignment-based processes within the pipeline.
         
   - name: "Output"
     arguments:
