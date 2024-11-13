@@ -247,7 +247,7 @@ dependencies:
     repository: biobox
   - name: trimgalore
     repository: biobox
-  - name: bbmap_bbsplit
+  - name: bbmap/bbmap_bbsplit
     repository: biobox
   - name: sortmerna
     repository: biobox
