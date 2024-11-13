@@ -196,8 +196,6 @@ workflow run_wf {
             ]
         )
 
-        | qualimap.run(
-            runIf: { id, state -> !state.skip_qc && !state.skip_qualimap && !state.skip_align },
         | qualimap_rnaseq.run(
             fromState: [
                 "bam": "genome_bam",
