@@ -16,7 +16,7 @@ workflow run_wf {
         }
 
         | featurecounts.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf },
+            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.biotype_in_gtf && !state.skip_align },
             fromState: [
                 "paired": "paired",
                 "strand": "strand", 
@@ -37,7 +37,7 @@ workflow run_wf {
         )
 
         | multiqc_custom_biotype.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts },
+            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts && !state.skip_align },
             fromState: [
                 "id": "id",
                 "biocounts": "featurecounts", 
@@ -50,7 +50,7 @@ workflow run_wf {
         )
               
         | preseq_lcextrap.run (
-            runIf: { id, state -> !state.skip_qc && !state.skip_preseq },
+            runIf: { id, state -> !state.skip_qc && !state.skip_preseq && !state.skip_align },
             fromState: [
                 "paired": "paired",
                 "input": "genome_bam",
@@ -60,7 +60,7 @@ workflow run_wf {
         )
    
         | rseqc_bamstat.run (
-            runIf: { id, state -> "bam_stat" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "bam_stat" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "map_qual": "map_qual"
@@ -68,7 +68,7 @@ workflow run_wf {
             toState: [ "bamstat_output": "output" ]
         )
         | rseqc_inferexperiment.run(
-            runIf: { id, state -> "infer_experiment" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "infer_experiment" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -84,7 +84,7 @@ workflow run_wf {
             [ id, state + [ inferred_strand: inferred_strand, passed_strand_check: passed_strand_check ] ]
         }
         | rseqc_innerdistance.run(
-            runIf: { id, state -> state.paired && "inner_distance" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && state.paired && "inner_distance" in state.rseqc_modules && !state.skip_align },
             key: "inner_distance",
             fromState: [
                 "input": "genome_bam",
@@ -104,7 +104,7 @@ workflow run_wf {
             ]
         )
         | rseqc_junctionannotation.run(
-            runIf: { id, state -> "junction_annotation" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_annotation" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -122,7 +122,7 @@ workflow run_wf {
             ]
         )
         | rseqc_junctionsaturation.run(
-            runIf: { id, state -> "junction_saturation" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_saturation" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed",
@@ -139,7 +139,7 @@ workflow run_wf {
             ]
         )
         | rseqc_readdistribution.run(
-            runIf: { id, state -> "read_distribution" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_distribution" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "refgene": "gene_bed", 
@@ -147,7 +147,7 @@ workflow run_wf {
             toState: [ "read_distribution_output": "output" ]
         )                               
         | rseqc_readduplication.run(
-            runIf: { id, state -> "read_duplication" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_duplication" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "read_count_upper_limit": "read_count_upper_limit",
@@ -161,7 +161,7 @@ workflow run_wf {
             ]
         )
         | rseqc_tin.run(
-            runIf: { id, state -> "tin" in state.rseqc_modules },
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "tin" in state.rseqc_modules && !state.skip_align },
             fromState: [
                 "bam_input": "genome_bam",
                 "bai_input": "genome_bam_index",
@@ -177,6 +177,7 @@ workflow run_wf {
         )
 
         | dupradar.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_dupradar && !state.skip_align },
             fromState: [
                 "id": "id",
                 "input": "genome_bam",
@@ -196,6 +197,7 @@ workflow run_wf {
         )
 
         | qualimap.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_qualimap && !state.skip_align },
             fromState: [
                 "input": "genome_bam",
                 "gtf": "gtf",
@@ -216,7 +218,7 @@ workflow run_wf {
         
         | toSortedList
         | map { list -> 
-            def ids = list.collect { id, state -> state.id }
+            def ids = list.collect { id, state -> id }
             def strandedness = list.collect { id, state -> state.strandedness }
             def num_trimmed_reads = list.collect { id, state -> state.num_trimmed_reads }
             def passed_trimmed_reads = list.collect { id, state -> state.passed_trimmed_reads }
@@ -522,7 +524,7 @@ workflow run_wf {
         | deseq2_qc.run (
             runIf: { id, state -> !state.skip_qc && !state.skip_deseq2_qc && !state.skip_pseudo_align },
             fromState: [
-                "counts": "counts",
+                "counts": "pseudo_counts_gene_length_scaled",
                 "vst": "deseq2_vst", 
                 "label": "pseudo_aligner" 
             ],
@@ -534,7 +536,7 @@ workflow run_wf {
             ],
             key: "deseq2_qc_pseuso_align_quant"
         )
-
+        | niceView()
         // Get list of samples that failed trimming, mapping, and strand check for MultiQC report
         | map { id, state -> 
             def fail_trimming_header = ["Sample", "Reads after trimming"]
@@ -557,7 +559,7 @@ workflow run_wf {
                         fail_mapping_multiqc += tsv_data.join('\n')
                     }
                     if (!state.passed_strand_check[i]) {
-                        tsv_data = ([ids[i], state.strandedness[i]] + state.inferred_strand[i]).join('\t')
+                        tsv_data = ([state.ids[i], state.strandedness[i]] + state.inferred_strand[i]).join('\t')
                         fail_strand_multiqc += tsv_data.join('\n')
                     }
                 }
@@ -577,6 +579,7 @@ workflow run_wf {
         }
 
         | prepare_multiqc_input.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_multiqc },
             fromState: [
                 "fail_trimming_multiqc": "fail_trimming_multiqc", 
                 "fail_mapping_multiqc": "fail_mapping_multiqc", 
@@ -617,6 +620,7 @@ workflow run_wf {
         )
 
         | multiqc.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_multiqc },
             fromState: [
                 "title": "multiqc_title", 
                 "input": "multiqc_input", 

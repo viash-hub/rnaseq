@@ -276,13 +276,16 @@ argument_groups:
       - name: "--skip_deseq2_qc"
         type: boolean_true
         description: Skip DESeq2 PCA and heatmap plotting.
-      - name: skip_dupradar
+      - name: --skip_dupradar
         type: boolean_true
         description: Skip dupRadar.
-      - name: skip_rseqc
+      - name: --skip_qualimap
+        type: boolean_true
+        description: Skip Qualimap.
+      - name: --skip_rseqc
         type: boolean_true
         description: Skip RSeQC.
-      - name: skip_multiqc
+      - name: --skip_multiqc
         type: boolean_true
         description: Skip MultiQC.
 

@@ -241,7 +241,7 @@ workflow run_wf {
 
     // Filter channels to get samples that passed STAR minimum mapping percentage
     | map { id, state -> 
-      def percent_mapped = getStarPercentMapped(state.star_multiqc) 
+      def percent_mapped = (!state.skip_alignment) ? getStarPercentMapped(state.star_multiqc) : 0.0
       def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
       [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
     }
@@ -336,6 +336,11 @@ workflow run_wf {
           "strandedness": "strandedness", 
           "skip_align": "skip_alignment",
           "skip_pseudo_align": "skip_pseudo_alignment",
+          "skip_dupradar": "skip_dupradar",
+          "skip_qualimap": "skip_qualimap",
+          "skip_rseqc": "skip_rseqc",
+          "skip_multiqc": "skip_multiqc",
+          "skip_preseq": "skip_preseq",
           "gtf": "gtf", 
           "num_trimmed_reads": "num_trimmed_reads",
           "passed_trimmed_reads": "passed_trimmed_reads",

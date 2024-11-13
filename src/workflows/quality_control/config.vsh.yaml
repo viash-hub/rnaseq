@@ -77,6 +77,15 @@ argument_groups:
         default: false
       - name: "--skip_pseudo_align"
         type: boolean
+      - name: "--skip_dupradar"
+        type: boolean_true
+      - name: "--skip_qualimap"
+        type: boolean_true
+      - name: "--skip_rseqc"
+        type: boolean_true
+      - name: "--skip_multiqc"
+        type: boolean_true
+
 
       # Component specific options
       # preseq
