@@ -39,6 +39,7 @@ workflow run_wf {
           // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
           bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
           skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
+          skip_alignment: list.collect { id, state -> state.skip_alignment }.unique()[0],
           gencode: list.collect { id, state -> state.gencode }.unique()[0],
           biotype: list.collect { id, state -> state.biotype }.unique()[0], 
           filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
@@ -70,7 +71,8 @@ workflow run_wf {
           "filter_gtf": "filter_gtf",
           "aligner": "aligner",
           "pseudo_aligner": "pseudo_aligner",
-          "skip_alignment": "skip_alignment"
+          "skip_alignment": "skip_alignment",
+          "star_sjdb_gtf_feature_exon": "star_sjdb_gtf_feature_exon"
         ],
         toState: [
           "fasta": "uncompressed_fasta", 
@@ -164,11 +166,11 @@ workflow run_wf {
     )
 
     // Infer strandedness from Salmon pseudo-alignment results
-    | map { id, state -> 
-    (state.strandedness == 'auto') ? 
-      [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_quant_output)] ] : 
-      [id, state] 
-    }
+    // | map { id, state -> 
+    // (state.strandedness == 'auto') ? 
+    //   [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_quant_output)] ] : 
+    //   [id, state] 
+    // }
 
     // Filter FastQ files based on minimum trimmed read count after adapter trimming
     | map { id, state -> 
@@ -583,7 +585,7 @@ import groovy.json.JsonSlurper
 // Function that parses Salmon quant 'meta_info.json' output file to get inferred strandedness
 //
 def getSalmonInferredStrandedness(salmon_quant_output) {
-  def json_file = new File(salmon_quant_output).listFiles().find { it.name == "meta_info.json" || it.isDirectory() && it.listFiles().find { it.name == "meta_info.json" } }
+  def json_file = salmon_quant_output.listFiles().find { (it.name == "meta_info.json") || (it.isDirectory() && it.listFiles().find { it.name == "meta_info.json" }) }
   def lib_type = new JsonSlurper().parseText(json_file.text).get('library_types')[0]
   def strandedness = 'reverse'
   if (lib_type) {

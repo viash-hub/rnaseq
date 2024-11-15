@@ -96,6 +96,9 @@ argument_groups:
         type: string
         description: By default, the pipeline assigns reads based on the 'exon' attribute within the GTF file.
         default: exon 
+      - name: --star_sjdb_gtf_feature_exon
+        type: string
+        description: Feature type in GTF file to be used as exons for building transcripts
 
   - name: Read trimming options
     arguments:
