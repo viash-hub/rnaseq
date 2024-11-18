@@ -85,4 +85,6 @@ engines:
           mv kallisto/kallisto /usr/local/bin/
 runners:
   - type: executable
-  - type: nextflow  
+  - type: nextflow
+    directives:
+      label: [ midmem, midcpu ]
