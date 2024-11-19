@@ -392,12 +392,12 @@ workflow run_wf {
                 passed_strand_check: passed_strand_check, 
                 skip_align: skip_align,
                 skip_pseudo_align: skip_pseudo_align,
-                quant_results: quant_results, 
-                rsem_counts_gene: rsem_counts_gene,
-                rsem_counts_transcripts: rsem_counts_transcripts,
-                pseudo_quant_out_dir: pseudo_quant_out_dir,
-                pseudo_salmon_quant_results: pseudo_salmon_quant_results,
-                pseudo_kallisto_quant_results: pseudo_kallisto_quant_results,
+                quant_results: quant_results.findAll { it != null }, 
+                rsem_counts_gene: rsem_counts_gene.findAll { it != null },
+                rsem_counts_transcripts: rsem_counts_transcripts.findAll { it != null },
+                pseudo_quant_out_dir: pseudo_quant_out_dir.findAll { it != null },
+                pseudo_salmon_quant_results: pseudo_salmon_quant_results.findAll { it != null },
+                pseudo_kallisto_quant_results: pseudo_kallisto_quant_results.findAll { it != null },
                 gtf: gtf, 
                 gtf_extra_attributes: gtf_extra_attributes, 
                 gtf_group_features: gtf_group_features,
@@ -536,7 +536,7 @@ workflow run_wf {
             ],
             key: "deseq2_qc_pseuso_align_quant"
         )
-        | niceView()
+        
         // Get list of samples that failed trimming, mapping, and strand check for MultiQC report
         | map { id, state -> 
             def fail_trimming_header = ["Sample", "Reads after trimming"]
