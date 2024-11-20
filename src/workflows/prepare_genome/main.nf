@@ -5,7 +5,7 @@ workflow run_wf {
 
     main: 
         output_ch = input_ch 
-
+        
         // Uncompress fasta
         | gunzip.run (
             fromState: [ "input": "fasta" ], 
@@ -190,7 +190,8 @@ workflow run_wf {
             runIf: {id, state -> !state.star_index && !state.skip_alignment}, 
             fromState: [ 
                 "genome_fasta_files": "fasta", 
-                "sjdb_gtf_file": "gtf"
+                "sjdb_gtf_file": "gtf",
+                "sjdb_gtf_feature_exon": "star_sjdb_gtf_feature_exon"
             ], 
             toState: [ "star_index": "index" ], 
             key: "generate_star_index",

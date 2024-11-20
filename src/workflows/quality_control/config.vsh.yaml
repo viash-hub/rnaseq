@@ -68,15 +68,13 @@ argument_groups:
         description: Expression counts on transcript level
 
       - name: "--skip_qc"
-        type: boolean
-        default: false
+        type: boolean_true
       - name: "--skip_biotype_qc"
-        type: boolean
+        type: boolean_true
       - name: "--skip_align"
-        type: boolean
-        default: false
+        type: boolean_true
       - name: "--skip_pseudo_align"
-        type: boolean
+        type: boolean_true
       - name: "--skip_dupradar"
         type: boolean_true
       - name: "--skip_qualimap"
