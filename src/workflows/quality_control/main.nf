@@ -62,18 +62,18 @@ workflow run_wf {
         | rseqc_bamstat.run (
             runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "bam_stat" in state.rseqc_modules && !state.skip_align },
             fromState: [
-                "input": "genome_bam",
-                "map_qual": "map_qual"
+                "input_file": "genome_bam",
+                "mapq": "map_qual"
             ],
             toState: [ "bamstat_output": "output" ]
         )
         | rseqc_inferexperiment.run(
             runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "infer_experiment" in state.rseqc_modules && !state.skip_align },
             fromState: [
-                "input": "genome_bam",
+                "input_file": "genome_bam",
                 "refgene": "gene_bed",
                 "sample_size": "sample_size",
-                "map_qual": "map_qual" 
+                "mapq": "map_qual" 
             ],
             toState: [ "strandedness_output": "output" ]
         )
@@ -83,17 +83,17 @@ workflow run_wf {
             def passed_strand_check = (state.strandedness != inferred_strand[0]) ? false : true
             [ id, state + [ inferred_strand: inferred_strand, passed_strand_check: passed_strand_check ] ]
         }
-        | rseqc_innerdistance.run(
+        | rseqc_inner_distance.run(
             runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && state.paired && "inner_distance" in state.rseqc_modules && !state.skip_align },
             key: "inner_distance",
             fromState: [
-                "input": "genome_bam",
+                "input_file": "genome_bam",
                 "refgene": "gene_bed",
                 "sample_size": "sample_size",
-                "map_qual": "map_qual",
-                "lower_bound_size": "lower_bound_size",
-                "upper_bound_size": "upper_bound_size",
-                "step_size": "step_size"
+                "mapq": "map_qual",
+                "lower_bound": "lower_bound_size",
+                "upper_bound": "upper_bound_size",
+                "step": "step_size"
             ],
             toState: [ 
                 "inner_dist_output_stats": "output_stats",

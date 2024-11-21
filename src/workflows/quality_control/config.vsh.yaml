@@ -615,8 +615,11 @@ resources:
 
 dependencies:
   - name: rseqc/rseqc_bamstat
+    repository: biobox
   - name: rseqc/rseqc_inferexperiment
-  - name: rseqc/rseqc_innerdistance
+    repository: biobox
+  - name: rseqc/rseqc_inner_distance
+    repository: biobox
   - name: rseqc/rseqc_junctionannotation
   - name: rseqc/rseqc_junctionsaturation
   - name: rseqc/rseqc_readdistribution
