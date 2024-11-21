@@ -39,16 +39,9 @@ argument_groups:
     type: boolean
     default: false
     description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
-  - name: "--seq_platform"
+  - name: --star_sjdb_gtf_feature_exon
     type: string
-    description: Sequencing platform.
-  - name: "--seq_center"
-    type: string
-    description: Sequencing center.
-  - name: "--extra_star_align_args"
-    type: string
-    default: ''
-    description: Extra arguments to pass to STAR alignment command in addition to defaults defined by the pipeline.
+    description: Feature type in GTF file to be used as exons for building transcripts
   - name: "--bam_csi_index"
     type: boolean
     default: false
