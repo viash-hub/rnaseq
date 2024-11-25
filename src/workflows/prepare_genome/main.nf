@@ -42,7 +42,9 @@ workflow run_wf {
                 toState: [ "gtf": "outfile" ],
                 args: [
                     outfile: "gene_annotation.gtf", 
-                    gtf_output: true
+                    gtf_output: true,
+                    keep_attrs: true,
+                    keep_exon_attrs: true
                 ] 
             )
 
@@ -126,7 +128,7 @@ workflow run_wf {
                     "gtf": "gtf"
                 ], 
                 toState: [ "make_transcript_fasta_output": "output" ], 
-                key: "make_transcript_fasta",\
+                key: "make_transcript_fasta",
                 args: [reference_name: "genome"]
             )
             | map { id, state -> 

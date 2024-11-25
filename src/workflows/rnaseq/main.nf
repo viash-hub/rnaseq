@@ -21,31 +21,31 @@ workflow run_wf {
       | toSortedList
       
       | map { list -> 
-          [ "ref",  
-            [ fasta: list.collect { id, state -> state.fasta }.unique()[0],
-            gtf: list.collect { id, state -> state.gtf }.unique()[0], 
-            gff: list.collect { id, state -> state.gff }.unique()[0], 
-            additional_fasta: list.collect { id, state -> state.additional_fasta }.unique()[0],
-            transcript_fasta:list.collect { id, state -> state.transcript_fasta }.unique()[0], 
-            gene_bed: list.collect { id, state -> state.gene_bed }.unique()[0],
-            bbsplit_fasta_list: list.collect { id, state -> state.bbsplit_fasta_list }.unique()[0],
-            aligner: list.collect { id, state -> state.aligner }.unique()[0],
-            pseudo_aligner: list.collect { id, state -> state.pseudo_aligner }.unique()[0],
-            star_index: list.collect { id, state -> state.star_index }.unique()[0],
-            rsem_index: list.collect { id, state -> state.rsem_index }.unique()[0],
-            salmon_index: list.collect { id, state -> state.salmon_index }.unique()[0],
-            kallisto_index: list.collect { id, state -> state.kallisto_index }.unique()[0],
-            // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
-            // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
-            bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
-            skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
-            skip_alignment: list.collect { id, state -> state.skip_alignment }.unique()[0],
-            gencode: list.collect { id, state -> state.gencode }.unique()[0],
-            biotype: list.collect { id, state -> state.biotype }.unique()[0], 
-            star_sjdb_gtf_feature_exon: list.collect { id, state -> state.star_sjdb_gtf_feature_exon }.unique()[0], 
-            filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
-            pseudo_aligner_kmer_size: list.collect { id, state -> state.pseudo_aligner_kmer_size }.unique()[0] ]
-          ]
+        [ "ref",  
+          [ fasta: list.collect { id, state -> state.fasta }.unique()[0],
+          gtf: list.collect { id, state -> state.gtf }.unique()[0], 
+          gff: list.collect { id, state -> state.gff }.unique()[0], 
+          additional_fasta: list.collect { id, state -> state.additional_fasta }.unique()[0],
+          transcript_fasta:list.collect { id, state -> state.transcript_fasta }.unique()[0], 
+          gene_bed: list.collect { id, state -> state.gene_bed }.unique()[0],
+          bbsplit_fasta_list: list.collect { id, state -> state.bbsplit_fasta_list }.unique()[0],
+          aligner: list.collect { id, state -> state.aligner }.unique()[0],
+          pseudo_aligner: list.collect { id, state -> state.pseudo_aligner }.unique()[0],
+          star_index: list.collect { id, state -> state.star_index }.unique()[0],
+          rsem_index: list.collect { id, state -> state.rsem_index }.unique()[0],
+          salmon_index: list.collect { id, state -> state.salmon_index }.unique()[0],
+          kallisto_index: list.collect { id, state -> state.kallisto_index }.unique()[0],
+          // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
+          // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
+          bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
+          skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
+          skip_alignment: list.collect { id, state -> state.skip_alignment }.unique()[0],
+          gencode: list.collect { id, state -> state.gencode }.unique()[0],
+          biotype: list.collect { id, state -> state.biotype }.unique()[0], 
+          star_sjdb_gtf_feature_exon: list.collect { id, state -> state.star_sjdb_gtf_feature_exon }.unique()[0], 
+          filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
+          pseudo_aligner_kmer_size: list.collect { id, state -> state.pseudo_aligner_kmer_size }.unique()[0] ]
+        ]
       } 
 
       // prepare all the necessary files for reference genome
@@ -243,7 +243,7 @@ workflow run_wf {
 
       // Filter channels to get samples that passed STAR minimum mapping percentage
       | map { id, state -> 
-        def percent_mapped = (!state.skip_alignment) ? getStarPercentMapped(state.star_multiqc) : 0.0
+        def percent_mapped = (!state.skip_alignment && state.passed_trimmed_reads) ? getStarPercentMapped(state.star_multiqc) : 0.0
         def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
         [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
       }
