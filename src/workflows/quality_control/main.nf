@@ -240,6 +240,7 @@ workflow run_wf {
             def skip_qc = list.collect { id, state -> state.skip_qc }.unique()[0] 
             def skip_align = list.collect { id, state -> state.skip_align }.unique()[0] 
             def skip_pseudo_align = list.collect { id, state -> state.skip_pseudo_align }.unique()[0] 
+            // TODO: Are these checks necessary?
             def quant_results = list.collect { id, state -> 
                 (state.quant_results_file instanceof java.nio.file.Path && state.quant_results_file.exists()) ? 
                     state.quant_results_file : 
@@ -538,6 +539,7 @@ workflow run_wf {
         )
         | niceView()
         // Get list of samples that failed trimming, mapping, and strand check for MultiQC report
+        // TODO: Refactor this to a process/step
         | map { id, state -> 
             def fail_trimming_header = ["Sample", "Reads after trimming"]
             def fail_trimming_multiqc = ""
@@ -666,6 +668,7 @@ workflow run_wf {
         | map { list -> [list[0], list[1] + list[2]] }
 
         | map { id, state -> 
+          // TODO: Check this, necessary for setState
           def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
           [ id, mod_state ]
         }

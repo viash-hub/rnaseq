@@ -912,7 +912,7 @@ argument_groups:
         type: file
         direction: output
         default: pseudo_alignment_quantification/quant_merged_summarizedexperiment
-        
+
 resources:
   - type: nextflow_script
     path: main.nf
