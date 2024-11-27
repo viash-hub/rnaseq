@@ -112,9 +112,6 @@ argument_groups:
       - name: "--biotype"
         type: string
         description: Biotype value to use while appending entries to GTF file when additional fasta file is provided.
-      - name: "--extra_featurecounts_args"
-        type: string
-        description: Extra arguments to pass to featureCounts command in addition to defaults defined by the pipeline
       
       # RSeQC
       - name: "--rseqc_modules"
@@ -207,12 +204,6 @@ argument_groups:
         description: Set flag to subtract background noise (estimated from intronic reads) to determine tin. Only use this option if there are substantial intronic reads.
 
       # Qualimap        
-      - name: "--output_format"
-        type: string
-        required: false
-        default: html
-        choices: [ html, pdf ]
-        description: Format of the qualimap output report (PDF or HTML, default is HTML)
       - name: "--pr_bases"
         type: integer
         required: false
@@ -291,8 +282,6 @@ argument_groups:
       - name: "--star_multiqc"
         type: file
         must_exist: false
-      # - name: "--hisat2_multiqc"
-      #   type: file
       - name: "--rsem_multiqc"
         type: file
       - name: "--genome_bam_stats"
@@ -503,17 +492,20 @@ argument_groups:
         default: $id.intercept_slope.txt
 
       # Qualimap
-      - name: "--qualimap_output_pdf"
+      - name: "--qualimap_qc_report"
+        direction: output
+        type: file
+        example: $id.rnaseq_qc_results.txt
+        description: Text file containing the RNAseq QC results.
+      - name: "--qualimap_counts"
         type: file
         direction: output
-        required: false
-        must_exist: false
-        default: $id.qualimap_output.pdf
-      - name: "--qualimap_output_dir"
+        description: Output file for computed counts.
+      - name: "--qualimap_report"
         type: file
         direction: output
-        required: false
-        default: $id.qualimap_output
+        example: $id.report.html
+        description: Report output file. Supported formats are PDF or HTML.
 
       # DESeq2
       - name: "--deseq2_output"
@@ -626,17 +618,19 @@ resources:
 
 dependencies:
   - name: rseqc/rseqc_bamstat
+    repository: biobox
   - name: rseqc/rseqc_inferexperiment
-  - name: rseqc/rseqc_innerdistance
+    repository: biobox
+  - name: rseqc/rseqc_inner_distance
+    repository: biobox
   - name: rseqc/rseqc_junctionannotation
   - name: rseqc/rseqc_junctionsaturation
   - name: rseqc/rseqc_readdistribution
   - name: rseqc/rseqc_readduplication
   - name: rseqc/rseqc_tin
   - name: dupradar
-  - name: qualimap
-  # - name: qualimap/qualimap_rnaseq
-  #   repository: biobox
+  - name: qualimap/qualimap_rnaseq
+    repository: biobox
   - name: preseq_lcextrap
   - name: featurecounts
     repository: biobox
@@ -645,7 +639,7 @@ dependencies:
   - name: prepare_multiqc_input
   - name: multiqc
     repository: biobox
-  - name: rsem/rsem_merge_counts
+  - name: rsem_merge_counts
   - name: workflows/merge_quant_results
 
 runners: 

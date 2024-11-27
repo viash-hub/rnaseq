@@ -39,145 +39,145 @@ workflow run_wf {
                 ]
             )
 
-            | multiqc_custom_biotype.run (
-                runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts && !state.skip_align },
-                fromState: [
-                    "id": "id",
-                    "biocounts": "featurecounts", 
-                    "biotypes_header": "biotypes_header"
-                ],
-                toState: [ 
-                    "featurecounts_multiqc": "featurecounts_multiqc", 
-                    "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc"
-                ]
-            )
-                
-            | preseq_lcextrap.run (
-                runIf: { id, state -> !state.skip_qc && !state.skip_preseq && !state.skip_align },
-                fromState: [
-                    "paired": "paired",
-                    "input": "genome_bam",
-                    "extra_preseq_args": "extra_preseq_args"
-                ],
-                toState: [ "preseq_output": "output" ]
-            )
-            
-            | rseqc_bamstat.run (
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "bam_stat" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "map_qual": "map_qual"
-                ],
-                toState: [ "bamstat_output": "output" ]
-            )
-            | rseqc_inferexperiment.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "infer_experiment" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "refgene": "gene_bed",
-                    "sample_size": "sample_size",
-                    "map_qual": "map_qual" 
-                ],
-                toState: [ "strandedness_output": "output" ]
-            )
-            // Get predicted strandedness from the RSeQC infer_experiment.py output
-            | map { id, state -> 
-                def inferred_strand = getInferexperimentStrandedness(state.strandedness_output, 30)
-                def passed_strand_check = (state.strandedness != inferred_strand[0]) ? false : true
-                [ id, state + [ inferred_strand: inferred_strand, passed_strand_check: passed_strand_check ] ]
-            }
-            | rseqc_innerdistance.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && state.paired && "inner_distance" in state.rseqc_modules && !state.skip_align },
-                key: "inner_distance",
-                fromState: [
-                    "input": "genome_bam",
-                    "refgene": "gene_bed",
-                    "sample_size": "sample_size",
-                    "map_qual": "map_qual",
-                    "lower_bound_size": "lower_bound_size",
-                    "upper_bound_size": "upper_bound_size",
-                    "step_size": "step_size"
-                ],
-                toState: [ 
-                    "inner_dist_output_stats": "output_stats",
-                    "inner_dist_output_dist": "output_dist",
-                    "inner_dist_output_freq": "output_freq",
-                    "inner_dist_output_plot": "output_plot",
-                    "inner_dist_output_plot_r": "output_plot_r"
-                ]
-            )
-            | rseqc_junctionannotation.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_annotation" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "refgene": "gene_bed",
-                    "map_qual": "map_qual",
-                    "min_intron": "min_intron"
-                ],
-                toState: [
-                    "junction_annotation_output_log": "output_log",
-                    "junction_annotation_output_plot_r": "output_plot_r",
-                    "junction_annotation_output_junction_bed": "output_junction_bed",
-                    "junction_annotation_output_junction_interact": "output_junction_interact",
-                    "junction_annotation_output_junction_sheet": "output_junction_sheet",
-                    "junction_annotation_output_splice_events_plot": "output_splice_events_plot",
-                    "junction_annotation_output_splice_junctions_plot": "output_splice_junctions_plot" 
-                ]
-            )
-            | rseqc_junctionsaturation.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_saturation" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "refgene": "gene_bed",
-                    "sampling_percentile_lower_bound": "sampling_percentile_lower_bound",
-                    "sampling_percentile_upper_bound": "sampling_percentile_upper_bound",
-                    "sampling_percentile_step": "sampling_percentile_step",
-                    "min_intron": "min_intron",
-                    "min_splice_read": "min_splice_read",
-                    "map_qual": "map_qual"
-                ],
-                toState: [
-                    "junction_saturation_output_plot_r": "output_plot_r",
-                    "junction_saturation_output_plot": "output_plot"
-                ]
-            )
-            | rseqc_readdistribution.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_distribution" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "refgene": "gene_bed", 
-                ],
-                toState: [ "read_distribution_output": "output" ]
-            )                               
-            | rseqc_readduplication.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_duplication" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "read_count_upper_limit": "read_count_upper_limit",
-                    "map_qual": "map_qual"
-                ],
-                toState: [
-                    "read_duplication_output_duplication_rate_plot_r": "output_duplication_rate_plot_r",
-                    "read_duplication_output_duplication_rate_plot": "output_duplication_rate_plot",
-                    "read_duplication_output_duplication_rate_mapping": "output_duplication_rate_mapping",
-                    "read_duplication_output_duplication_rate_sequence": "output_duplication_rate_sequence"
-                ]
-            )
-            | rseqc_tin.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "tin" in state.rseqc_modules && !state.skip_align },
-                fromState: [
-                    "bam_input": "genome_bam",
-                    "bai_input": "genome_bam_index",
-                    "refgene": "gene_bed",
-                    "minimum_coverage": "minimum_coverage",
-                    "sample_size": "tin_sample_size",
-                    "subtract_background": "subtract_background"
-                ],
-                toState: [
-                    "tin_output_summary": "output_tin_summary",
-                    "tin_output_metrics": "output_tin"
-                ]
-            )
+        | multiqc_custom_biotype.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_biotype_qc && state.biotype && state.featurecounts && !state.skip_align },
+            fromState: [
+                "id": "id",
+                "biocounts": "featurecounts", 
+                "biotypes_header": "biotypes_header"
+            ],
+            toState: [ 
+                "featurecounts_multiqc": "featurecounts_multiqc", 
+                "featurecounts_rrna_multiqc": "featurecounts_rrna_multiqc"
+            ]
+        )
+              
+        | preseq_lcextrap.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_preseq && !state.skip_align },
+            fromState: [
+                "paired": "paired",
+                "input": "genome_bam",
+                "extra_preseq_args": "extra_preseq_args"
+            ],
+            toState: [ "preseq_output": "output" ]
+        )
+   
+        | rseqc_bamstat.run (
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "bam_stat" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input_file": "genome_bam",
+                "mapq": "map_qual"
+            ],
+            toState: [ "bamstat_output": "output" ]
+        )
+        | rseqc_inferexperiment.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "infer_experiment" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input_file": "genome_bam",
+                "refgene": "gene_bed",
+                "sample_size": "sample_size",
+                "mapq": "map_qual" 
+            ],
+            toState: [ "strandedness_output": "output" ]
+        )
+        // Get predicted strandedness from the RSeQC infer_experiment.py output
+        | map { id, state -> 
+            def inferred_strand = getInferexperimentStrandedness(state.strandedness_output, 30)
+            def passed_strand_check = (state.strandedness != inferred_strand[0]) ? false : true
+            [ id, state + [ inferred_strand: inferred_strand, passed_strand_check: passed_strand_check ] ]
+        }
+        | rseqc_inner_distance.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && state.paired && "inner_distance" in state.rseqc_modules && !state.skip_align },
+            key: "inner_distance",
+            fromState: [
+                "input_file": "genome_bam",
+                "refgene": "gene_bed",
+                "sample_size": "sample_size",
+                "mapq": "map_qual",
+                "lower_bound": "lower_bound_size",
+                "upper_bound": "upper_bound_size",
+                "step": "step_size"
+            ],
+            toState: [ 
+                "inner_dist_output_stats": "output_stats",
+                "inner_dist_output_dist": "output_dist",
+                "inner_dist_output_freq": "output_freq",
+                "inner_dist_output_plot": "output_plot",
+                "inner_dist_output_plot_r": "output_plot_r"
+            ]
+        )
+        | rseqc_junctionannotation.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_annotation" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input": "genome_bam",
+                "refgene": "gene_bed",
+                "map_qual": "map_qual",
+                "min_intron": "min_intron"
+            ],
+            toState: [
+                "junction_annotation_output_log": "output_log",
+                "junction_annotation_output_plot_r": "output_plot_r",
+                "junction_annotation_output_junction_bed": "output_junction_bed",
+                "junction_annotation_output_junction_interact": "output_junction_interact",
+                "junction_annotation_output_junction_sheet": "output_junction_sheet",
+                "junction_annotation_output_splice_events_plot": "output_splice_events_plot",
+                "junction_annotation_output_splice_junctions_plot": "output_splice_junctions_plot" 
+            ]
+        )
+        | rseqc_junctionsaturation.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "junction_saturation" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input": "genome_bam",
+                "refgene": "gene_bed",
+                "sampling_percentile_lower_bound": "sampling_percentile_lower_bound",
+                "sampling_percentile_upper_bound": "sampling_percentile_upper_bound",
+                "sampling_percentile_step": "sampling_percentile_step",
+                "min_intron": "min_intron",
+                "min_splice_read": "min_splice_read",
+                "map_qual": "map_qual"
+            ],
+            toState: [
+                "junction_saturation_output_plot_r": "output_plot_r",
+                "junction_saturation_output_plot": "output_plot"
+            ]
+        )
+        | rseqc_readdistribution.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_distribution" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input": "genome_bam",
+                "refgene": "gene_bed", 
+            ],
+            toState: [ "read_distribution_output": "output" ]
+        )                               
+        | rseqc_readduplication.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "read_duplication" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "input": "genome_bam",
+                "read_count_upper_limit": "read_count_upper_limit",
+                "map_qual": "map_qual"
+            ],
+            toState: [
+                "read_duplication_output_duplication_rate_plot_r": "output_duplication_rate_plot_r",
+                "read_duplication_output_duplication_rate_plot": "output_duplication_rate_plot",
+                "read_duplication_output_duplication_rate_mapping": "output_duplication_rate_mapping",
+                "read_duplication_output_duplication_rate_sequence": "output_duplication_rate_sequence"
+            ]
+        )
+        | rseqc_tin.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "tin" in state.rseqc_modules && !state.skip_align },
+            fromState: [
+                "bam_input": "genome_bam",
+                "bai_input": "genome_bam_index",
+                "refgene": "gene_bed",
+                "minimum_coverage": "minimum_coverage",
+                "sample_size": "tin_sample_size",
+                "subtract_background": "subtract_background"
+            ],
+            toState: [
+                "tin_output_summary": "output_tin_summary",
+                "tin_output_metrics": "output_tin"
+            ]
+        )
 
             | dupradar.run(
                 runIf: { id, state -> !state.skip_qc && !state.skip_dupradar && !state.skip_align },
@@ -199,23 +199,25 @@ workflow run_wf {
                 ]
             )
 
-            | qualimap.run(
-                runIf: { id, state -> !state.skip_qc && !state.skip_qualimap && !state.skip_align },
-                fromState: [
-                    "input": "genome_bam",
-                    "gtf": "gtf",
-                    "pr_bases": "pr_bases",
-                    "tr_bias": "tr_bias",
-                    "algorithm": "algorithm",
-                    "sequencing_protocol": "sequencing_protocol",
-                    "sorted": "sorted",
-                    "java_memory_size": "java_memory_size", 
-                ],
-                toState: [
-                    "qualimap_output_pdf": "output_pdf",
-                    "qualimap_output_dir": "output_dir"
-                ]
-            ) 
+        // TODO: Add outdir as an output argument to the qualimap module on biobox. 
+        // Qualimap ouputs a few more raw data files to outdir but since the module is using a temporary directory as output dir these files are lost.
+        | qualimap_rnaseq.run(
+            fromState: [
+                "bam": "genome_bam",
+                "gtf": "gtf",
+                "num_pr_bases": "pr_bases",
+                "num_tr_bias": "tr_bias",
+                "algorithm": "algorithm",
+                "sequencing_protocol": "sequencing_protocol",
+                "sorted": "sorted",
+                "java_memory_size": "java_memory_size", 
+            ],
+            toState: [
+                "qualimap_report": "report", 
+                "qualimap_qc_report": "qc_report",
+                "qualimap_counts": "counts"
+            ]
+        ) 
 
         merged_ch = qc_ch
             | toSortedList
@@ -338,10 +340,10 @@ workflow run_wf {
                     (state.preseq_output instanceof java.nio.file.Path && state.preseq_output.exists()) ? 
                         state.preseq_output : 
                         null }
-                def qualimap_output_dir = list.collect { id, state -> 
-                    (state.qualimap_output_dir instanceof java.nio.file.Path && state.qualimap_output_dir.exists()) ? 
-                        state.qualimap_output_dir : 
-                        null }
+                // def qualimap_output_dir = list.collect { id, state -> 
+                //     (state.qualimap_output_dir instanceof java.nio.file.Path && state.qualimap_output_dir.exists()) ? 
+                //         state.qualimap_output_dir : 
+                //         null }
                 def dupradar_output_dup_intercept_mqc = list.collect { id, state -> 
                     (state.dupradar_output_dup_intercept_mqc instanceof java.nio.file.Path && state.dupradar_output_dup_intercept_mqc.exists()) ? 
                         state.dupradar_output_dup_intercept_mqc : 
@@ -426,7 +428,7 @@ workflow run_wf {
                     featurecounts_multiqc: featurecounts_multiqc,
                     featurecounts_rrna_multiqc: featurecounts_rrna_multiqc,
                     preseq_output: preseq_output,
-                    qualimap_output_dir: qualimap_output_dir,
+                    // qualimap_output_dir: qualimap_output_dir,
                     dupradar_output_dup_intercept_mqc: dupradar_output_dup_intercept_mqc,
                     dupradar_output_duprate_exp_denscurve_mqc: dupradar_output_duprate_exp_denscurve_mqc,
                     bamstat_output: bamstat_output,
@@ -605,7 +607,7 @@ workflow run_wf {
                     "pseudo_aligner_pca_multiqc": "deseq2_pca_multiqc_pseudo", 
                     "pseudo_aligner_clustering_multiqc": "deseq2_dists_multiqc_pseudo", 
                     "preseq_multiqc": "preseq_output", 
-                    "qualimap_multiqc": "qualimap_output_dir", 
+                    // "qualimap_multiqc": "qualimap_output_dir", 
                     "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc", 
                     "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
                     "bamstat_multiqc": "bamstat_output", 
@@ -705,8 +707,9 @@ workflow run_wf {
                     "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
                     "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
                     "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
-                    "qualimap_output_dir": "qualimap_output_dir",
-                    "qualimap_output_pdf": "qualimap_output_pdf", 
+                    "qualimap_report": "qualimap_report", 
+                    "qualimap_qc_report": "qualimap_qc_report",
+                    "qualimap_counts": "qualimap_counts",
                     "featurecounts": "featurecounts",
                     "featurecounts_summary": "featurecounts_summary",
                     "featurecounts_multiqc": "featurecounts_multiqc",

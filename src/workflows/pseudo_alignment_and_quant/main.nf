@@ -57,22 +57,32 @@ workflow run_wf {
         [ id, mod_state ]
       }
 
-      | kallisto_quant.run ( 
-          runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
-          fromState: [
-            "input": "input", 
-            "paired": "paired",
-            "gtf": "gtf", 
-            "index": "kallisto_index",
-            "fragment_length": "kallisto_quant_fragment_length", 
-            "fragment_length_sd": "kallisto_quant_fragment_length_sd"
-          ],
-          toState: [
-            "quant_out_dir": "output", 
-            "kallisto_quant_results_file": "quant_results_file", 
-            "pseudo_multiqc": "log"
+    | kallisto_quant.run ( 
+        runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
+        fromState: { id, state -> 
+          def fr_stranded = state.strandedness == 'forward'
+          def rf_stranded = state.strandedness == 'reverse'
+          [
+            input: state.input,
+            index: state.kallisto_index,
+            fragment_length: state.kallisto_quant_fragment_length,
+            sd: state.kallisto_quant_fragment_length_sd,
+            single: !state.paired,
+            fr_stranded: fr_stranded,
+            rf_stranded: rf_stranded,
           ]
-      )
+        },
+        args: [log: "kallisto_quant.log"],
+        toState: { id, output_state, state -> 
+          def neKeys = [
+            "quant_out_dir": output_state["output_dir"],
+            "kallisto_quant_results_file": output_state["output_dir"] + "/abundance.tsv",
+            "pseudo_multiqc": output_state["log"]
+          ]
+          def new_state = state + newKeys
+          return new_state
+        }
+    )
 
       | map { id, state -> 
         def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }

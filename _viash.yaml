@@ -17,7 +17,7 @@ config_mods: |
 repositories:
   - name: biobox
     type: vsh
-    repo: vsh/biobox
+    repo: biobox
     tag: main
   - name: craftbox
     type: vsh

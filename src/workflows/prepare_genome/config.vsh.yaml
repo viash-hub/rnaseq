@@ -35,7 +35,8 @@ argument_groups:
         description: Skip BBSplit for removal of non-reference genome reads.
       - name: "--bbsplit_fasta_list"
         type: file
-        description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+        description: List of reference genomes (separated by ";") to filter reads against with BBSplit. 
+        multiple: true
       - name: "--star_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built STAR index.
@@ -45,18 +46,12 @@ argument_groups:
       - name: "--rsem_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built RSEM index.
-      - name: extra_rsem_prepare_reference_args
-        type: string
-        description: Extra arguments to pass to rsem-prepare-reference command in addition to defaults defined by the pipeline.
       - name: "--salmon_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built Salmon index.
       - name: "--kallisto_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built Kallisto index.
-      # - name: "--hisat2_index"
-      #   type: file
-      #   description: Path to directory or tar.gz archive for pre-built HISAT2 index.
       - name: "--bbsplit_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built BBSplit index.
@@ -125,10 +120,6 @@ argument_groups:
         direction: output
         description: Path to Kallisto index.
         default: Kallisto_index
-      # - name: "--hisat2_index_uncompressed"
-      #   type: file
-      #   direction: output
-      #   description: Path to directory or tar.gz archive for pre-built HISAT2 index.
       - name: "--bbsplit_index_uncompressed"
         type: file
         direction: output
@@ -165,11 +156,12 @@ dependencies:
     repository: craftbox
   - name: star/star_genome_generate
     repository: biobox
-  - name: bbmap_bbsplit
+  - name: bbmap/bbmap_bbsplit
+    repository: biobox
   - name: salmon/salmon_index
     repository: biobox
   - name: kallisto/kallisto_index
-    # repository: biobox
+    repository: biobox
 
 runners: 
 - type: executable

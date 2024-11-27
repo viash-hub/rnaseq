@@ -70,13 +70,6 @@ argument_groups:
       - name: "--kallisto_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built Kallisto index.
-      # - name: "--hisat2_index"
-      #   type: file
-      #   description: Path to directory or tar.gz archive for pre-built HISAT2 index.
-      # - name: "--hisat2_build_memory"
-      #   type: string
-      #   description: Minimum memory required to use splice sites and exons in the HiSAT2 index build process.
-      #   default: 200.GB
       - name: "--gencode"
         type: boolean_true
         description: Specify if the GTF annotation is in GENCODE format.
@@ -107,12 +100,6 @@ argument_groups:
         description: Specify the trimming tool to use.
         choices: ["trimgalore", "fastp"]
         default: "trimgalore"
-      - name: "--extra_trimgalore_args"
-        type: string
-        description: Extra arguments to pass to Trim Galore! command in addition to defaults defined by the pipeline.
-      - name: "--extra_fastp_args"
-        type: string
-        description: Extra arguments to pass to fastp command in addition to defaults defined by the pipeline.
       - name: "--min_trimmed_reads"
         type: integer
         description: Minimum number of trimmed reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.
@@ -122,7 +109,8 @@ argument_groups:
     arguments:
       - name: "--bbsplit_fasta_list"
         type: file
-        description: Path to comma-separated file containing a list of reference genomes to filter reads against with BBSplit. To use BBSplit, "--skip_bbsplit" must be explicitly set to "false". The file should contain 2 (comma separated) columns - short name and full path to reference genome(s)
+        description: List of reference genomes (separated by ";") to filter reads against with BBSplit. 
+        multiple: true
       - name: "--bbsplit_index"
         type: file
         description: Path to directory or tar.gz archive for pre-built BBSplit index.
@@ -185,10 +173,10 @@ argument_groups:
         description: Kmer length passed to indexing step of pseudoaligners.
         default: 31
       - name: "--kallisto_quant_fragment_length"
-        type: integer
+        type: double
         description: For single-end mode only, the estimated average fragment length to use for quantification with Kallisto.
       - name: "--kallisto_quant_fragment_length_sd"
-        type: integer
+        type: double
         description: For single-end mode only, the estimated standard deviation of the fragment length for quantification with Kallisto. 
       - name: "--bam_csi_index"
         type: boolean_true
@@ -196,10 +184,6 @@ argument_groups:
       - name: "--salmon_quant_libtype"
         type: string
         description: Override Salmon library type inferred based on strandedness defined in meta object.
-      - name: "--extra_salmon_quant_args"
-        type: string
-        default: '-v'
-        description: Extra arguments to pass to salmon quant command in addition to defaults defined by the pipeline.
       - name: "--min_mapped_reads"
         type: integer
         description: Minimum percentage of uniquely mapped reads below which samples are removed from further processing.
@@ -223,10 +207,6 @@ argument_groups:
       - name: "--skip_pseudo_alignment"
         type: boolean_true
         description: Skip all of the pseudo-alignment-based processes within the pipeline.  
-      - name: --extra_rsem_calculate_expression_args
-        type: string
-        description: Extra arguments to pass to rsem-calculate-expression command in addition to defaults defined by the pipeline.
-        default: '--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1'
 
   - name: Process skipping options
     arguments:
@@ -281,18 +261,10 @@ argument_groups:
 
   - name: Other process arguments
     arguments: 
-      - name: "--extra_fq_subsample_args"
-        type: string
-        default: ' --record-count 1000000 --seed 1'
-        description: Extra arguments to pass to fq subsample command in addition to defaults defined by the pipeline.
       - name: "--extra_picard_args"
         type: string   
         default: ' --ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp'
         description: Extra arguments to pass to picard MarkDuplicates command in addition to defaults defined by the pipeline.
-      - name: "--extra_bedtools_args"
-        type: string
-        default: ' -split -du'
-        description: Extra arguments to pass to bedtools genomecov command in addition to defaults defined by the pipeline.
       - name: "--extra_preseq_args"
         type: string
         description: Extra arguments to pass to preseq lc_extrap command in addition to defaults defined by the pipeline
@@ -367,14 +339,14 @@ argument_groups:
         required: false
         must_exist: false
         description: Path to output directory
-        default: fastq/$id.read_1.fastq.gz
+        default: fastq/${id}_r1.fastq.gz
       - name: "--output_fastq_2"
         type: file
         direction: output
         required: false
         must_exist: false
         description: Path to output directory
-        default: fastq/$id.read_2.fastq.gz
+        default: fastq/${id}_r2.fastq.gz
       
       # FastQC
       - name: "--fastqc_html_1"
@@ -383,52 +355,52 @@ argument_groups:
         description: FastQC HTML report for read 1.
         required: false
         must_exist: false
-        default: fastqc_raw/$id.read_1.fastqc.html
+        default: fastqc_raw/${id}_r1.fastqc.html
       - name: "--fastqc_html_2"
         type: file
         direction: output
         description: FastQC HTML report for read 2.
         required: false
         must_exist: false
-        default: fastqc_raw/$id.read_2.fastqc.html
+        default: fastqc_raw/${id}_r2.fastqc.html
       - name: "--fastqc_zip_1"
         type: file
         direction: output
         description: FastQC report archive for read 1.
         required: false
         must_exist: false
-        default: fastqc_raw/$id.read_1.fastqc.zip
+        default: fastqc_raw/${id}_r1.fastqc.zip
       - name: "--fastqc_zip_2"
         type: file
         direction: output
         description: FastQC report archive for read 2.
         required: false
         must_exist: false
-        default: fastqc_raw/$id.read_2.fastqc.zip
+        default: fastqc_raw/${id}_r2.fastqc.zip
       - name: "--trim_html_1"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: fastqc_trim/$id.read_1.trimmed_fastqc.html
+        default: fastqc_trim/${id}_r1.trimmed_fastqc.html
       - name: "--trim_html_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: fastqc_trim/$id.read_2.trimmed_fastqc.html
+        default: fastqc_trim/${id}_r2.trimmed_fastqc.html
       - name: "--trim_zip_1"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: fastqc_trim/$id.read_1.trimmed_fastqc.zip
+        default: fastqc_trim/${id}_r1.trimmed_fastqc.zip
       - name: "--trim_zip_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: fastqc_trim/$id.read_2.trimmed_fastqc.zip
+        default: fastqc_trim/${id}_r2.trimmed_fastqc.zip
 
       # TrimGalore
       - name: "--trim_log_1"
@@ -436,13 +408,13 @@ argument_groups:
         direction: output
         required: false
         must_exist: false
-        default: trimgalore/$id.read_1.trimming_report.txt
+        default: trimgalore/${id}_r1.trimming_report.txt
       - name: "--trim_log_2"
         type: file
         direction: output
         required: false
         must_exist: false
-        default: trimgalore/$id.read_2.trimming_report.txt
+        default: trimgalore/${id}_r2.trimming_report.txt
       
       # fastp
       - name: --fastp_trim_json
@@ -842,17 +814,21 @@ argument_groups:
         default: dupradar/intercept_slope/$id.intercept_slope.txt
       
       # Qualimap
-      - name: "--qualimap_output_pdf"
+      - name: "--qualimap_qc_report"
+        direction: output
+        type: file
+        default: Qualimap/$id.rnaseq_qc_results.txt
+        description: Text file containing the RNAseq QC results.
+      - name: "--qualimap_counts"
         type: file
         direction: output
-        required: false
-        must_exist: false
-        default: qualimap/$id.qualimap_output.pdf
-      - name: "--qualimap_output_dir"
+        default: Qualimap/$id.counts.txt
+        description: Output file for computed counts.
+      - name: "--qualimap_report"
         type: file
         direction: output
-        required: false
-        default: qualimap/$id
+        default: Qualimap/$id.report.html
+        description: Report output file. Supported formats are PDF or HTML.
 
       # DESeq2
       - name: "--deseq2_output"

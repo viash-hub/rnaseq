@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --setup cb --parallel -q prepare_genome
+viash ns build --setup cb --parallel 
 
 # echo "Test 1: Annotation file format - GTF"
 # nextflow run target/nextflow/workflows/prepare_genome/main.nf \
@@ -12,7 +12,7 @@
 #     --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
 #     --genotype false \
 #     --biotype gene_biotype \
-#     --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+#     --bbsplit_fasta_list "testData/minimal_test/reference/bbsplit_fasta/sarscov2.fa;testData/minimal_test/reference/bbsplit_fasta/human.fa" \
 #     --salmon_index testData/minimal_test/reference/salmon.tar.gz \
 #     --rsem_index testData/minimal_test/reference/rsem.tar.gz \
 #     -profile docker \
@@ -28,7 +28,7 @@
 #     --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
 #     --genotype false \
 #     --biotype gene_biotype \
-#     --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+#     --bbsplit_fasta_list "testData/minimal_test/reference/bbsplit_fasta/sarscov2.fa;testData/minimal_test/reference/bbsplit_fasta/human.fa" \
 #     --salmon_index testData/minimal_test/reference/salmon.tar.gz \
 #     --rsem_index testData/minimal_test/reference/rsem.tar.gz \
 #     -profile docker \
@@ -43,7 +43,7 @@ nextflow run target/nextflow/workflows/prepare_genome/main.nf \
     --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
     --genotype false \
     --biotype gene_biotype \
-    --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+    --bbsplit_fasta_list "testData/minimal_test/reference/bbsplit_fasta/sarscov2.fa;testData/minimal_test/reference/bbsplit_fasta/human.fa" \
     --pseudo_aligner kallisto \
     --aligner star_rsem \
     -profile docker \

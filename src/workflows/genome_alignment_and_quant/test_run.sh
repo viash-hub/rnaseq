@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# v;iash ns build --setup cb --parallel
+viash ns build --setup cb --parallel
 
 # Split error message from standard output
 # viash ns list > /dev/null 
@@ -37,7 +37,6 @@ nextflow run target/nextflow/workflows/genome_alignment_and_quant/main.nf \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
   --rsem_index testData/minimal_test/reference/rsem_index \
   --aligner star_rsem \
-  --extra_rsem_calculate_expression_args "--star --star-output-genome-bam --star-gzipped-read-file --estimate-rspd --seed 1" \
   -profile docker \
   -resume
 
