@@ -6,11 +6,11 @@ workflow run_wf {
   main:
     output_ch = input_ch
     
-    | map { id, state ->
-      def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
-      def paired = input.size() == 2
-      [ id, state + [paired: paired, input: input] ]
-    }
+      | map { id, state ->
+        def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
+        def paired = input.size() == 2
+        [ id, state + [paired: paired, input: input] ]
+      }
 
     | fastqc.run (
       runIf: { id, state -> !state.skip_qc && !state.skip_fastqc },
@@ -240,17 +240,17 @@ workflow run_wf {
       toState: [ "salmon_quant_output": "output" ]
     )
 
-    | map { id, state -> 
-      def mod_state = (!state.paired) ? 
-        [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2), failed_trim_unpaired2: state.remove(state.failed_trim_unpaired2)] : 
-        []
-      [ id, state + mod_state ]
-    }
+      | map { id, state -> 
+        def mod_state = (!state.paired) ? 
+          [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2), failed_trim_unpaired2: state.remove(state.failed_trim_unpaired2)] : 
+          []
+        [ id, state + mod_state ]
+      }
 
-    | map { id, state -> 
-      def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
-      [ id, mod_state ]
-    }
+      | map { id, state -> 
+        def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+        [ id, mod_state ]
+      }
 
     | setState ( 
         "fastqc_html_1": "fastqc_html_1",

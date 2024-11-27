@@ -35,6 +35,13 @@ argument_groups:
   - name: "--star_index"
     type: file
     description: STAR index directory.
+  - name: "--star_ignore_sjdbgtf"
+    type: boolean
+    default: false
+    description: When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file 
+  - name: --star_sjdb_gtf_feature_exon
+    type: string
+    description: Feature type in GTF file to be used as exons for building transcripts
   - name: "--bam_csi_index"
     type: boolean
     default: false

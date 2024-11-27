@@ -277,11 +277,11 @@ argument_groups:
         type: string
         multiple: true
         multiple_sep: ";"
-        description: Specify the RSeQC modules to run_wf
+        description: Specify the RSeQC modules to run_wf (comma-separated list)
         default: bam_stat;inner_distance;infer_experiment;junction_annotation;junction_saturation;read_distribution;read_duplication
         choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
 
-  - name: Multiqc paramenters
+  - name: MultiQC paramenters
     arguments:
       - name: "--multiqc_custom_config"
         type: file
@@ -831,6 +831,10 @@ argument_groups:
         type: file
         direction: output
         default: deseq2_qc
+      - name: "--deseq2_output_pseudo"
+        type: file
+        direction: output
+        default: deseq2_qc_pseudo
 
       # MultiQC
       - name: "--multiqc_report"
@@ -862,6 +866,10 @@ argument_groups:
         type: file
         direction: output
         default: pseudo_alignment_quantification/gene_counts_scaled.tsv
+      - name: "--pseudo_tpm_gene"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_tpm.tsv
       - name: "--pseudo_tpm_transcript"
         type: file
         direction: output
