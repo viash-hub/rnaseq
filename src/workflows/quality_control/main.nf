@@ -199,6 +199,8 @@ workflow run_wf {
                 ]
             )
 
+        // TODO: Add outdir as an output argument to the qualimap module on biobox. 
+        // Qualimap ouputs a few more raw data files to outdir but since the module is using a temporary directory as output dir these files are lost.
         | qualimap_rnaseq.run(
             fromState: [
                 "bam": "genome_bam",
@@ -338,10 +340,10 @@ workflow run_wf {
                     (state.preseq_output instanceof java.nio.file.Path && state.preseq_output.exists()) ? 
                         state.preseq_output : 
                         null }
-                def qualimap_output_dir = list.collect { id, state -> 
-                    (state.qualimap_output_dir instanceof java.nio.file.Path && state.qualimap_output_dir.exists()) ? 
-                        state.qualimap_output_dir : 
-                        null }
+                // def qualimap_output_dir = list.collect { id, state -> 
+                //     (state.qualimap_output_dir instanceof java.nio.file.Path && state.qualimap_output_dir.exists()) ? 
+                //         state.qualimap_output_dir : 
+                //         null }
                 def dupradar_output_dup_intercept_mqc = list.collect { id, state -> 
                     (state.dupradar_output_dup_intercept_mqc instanceof java.nio.file.Path && state.dupradar_output_dup_intercept_mqc.exists()) ? 
                         state.dupradar_output_dup_intercept_mqc : 
@@ -426,7 +428,7 @@ workflow run_wf {
                     featurecounts_multiqc: featurecounts_multiqc,
                     featurecounts_rrna_multiqc: featurecounts_rrna_multiqc,
                     preseq_output: preseq_output,
-                    qualimap_output_dir: qualimap_output_dir,
+                    // qualimap_output_dir: qualimap_output_dir,
                     dupradar_output_dup_intercept_mqc: dupradar_output_dup_intercept_mqc,
                     dupradar_output_duprate_exp_denscurve_mqc: dupradar_output_duprate_exp_denscurve_mqc,
                     bamstat_output: bamstat_output,
@@ -605,7 +607,7 @@ workflow run_wf {
                     "pseudo_aligner_pca_multiqc": "deseq2_pca_multiqc_pseudo", 
                     "pseudo_aligner_clustering_multiqc": "deseq2_dists_multiqc_pseudo", 
                     "preseq_multiqc": "preseq_output", 
-                    "qualimap_multiqc": "qualimap_output_dir", 
+                    // "qualimap_multiqc": "qualimap_output_dir", 
                     "dupradar_output_dup_intercept_mqc": "dupradar_output_dup_intercept_mqc", 
                     "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
                     "bamstat_multiqc": "bamstat_output", 
@@ -705,8 +707,9 @@ workflow run_wf {
                     "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
                     "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
                     "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
-                    "qualimap_output_dir": "qualimap_output_dir",
-                    "qualimap_output_pdf": "qualimap_output_pdf", 
+                    "qualimap_report": "qualimap_report", 
+                    "qualimap_qc_report": "qualimap_qc_report",
+                    "qualimap_counts": "qualimap_counts",
                     "featurecounts": "featurecounts",
                     "featurecounts_summary": "featurecounts_summary",
                     "featurecounts_multiqc": "featurecounts_multiqc",

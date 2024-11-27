@@ -814,17 +814,21 @@ argument_groups:
         default: dupradar/intercept_slope/$id.intercept_slope.txt
       
       # Qualimap
-      - name: "--qualimap_output_pdf"
+      - name: "--qualimap_qc_report"
+        direction: output
+        type: file
+        default: Qualimap/$id.rnaseq_qc_results.txt
+        description: Text file containing the RNAseq QC results.
+      - name: "--qualimap_counts"
         type: file
         direction: output
-        required: false
-        must_exist: false
-        default: qualimap/$id.qualimap_output.pdf
-      - name: "--qualimap_output_dir"
+        default: Qualimap/$id.counts.txt
+        description: Output file for computed counts.
+      - name: "--qualimap_report"
         type: file
         direction: output
-        required: false
-        default: qualimap/$id
+        default: Qualimap/$id.report.html
+        description: Report output file. Supported formats are PDF or HTML.
 
       # DESeq2
       - name: "--deseq2_output"
