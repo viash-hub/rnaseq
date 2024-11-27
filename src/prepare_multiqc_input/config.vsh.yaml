@@ -125,7 +125,8 @@ argument_groups:
         multiple_sep: ","
       - name: "--multiqc_config"
         type: file
-        
+        description: |
+          Custom multiqc configuration file
 
   - name: "Ouput"
     arguments:
@@ -133,14 +134,16 @@ argument_groups:
         type: file
         direction: output
         default: multiqc_input
-    
+
 resources:
   - type: bash_script
     path: script.sh
+  - path: /src/assets/multiqc_config.yml
 
 engines:
   - type: docker
     image: ubuntu:22.04
+
 runners:
   - type: executable
   - type: nextflow
