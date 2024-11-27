@@ -120,9 +120,9 @@ argument_groups:
       - name: "--rseqc_modules"
         type: string
         multiple: true
-        multiple_sep: ","
+        multiple_sep: ";"
         description: Specify the RSeQC modules to run_wf
-        default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
+        default: bam_stat;inner_distance;infer_experiment;junction_annotation;junction_saturation;read_distribution;read_duplication
         choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
       - name: "--sample_size"
         type: integer

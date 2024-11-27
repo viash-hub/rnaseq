@@ -7,6 +7,9 @@ workflow run_wf {
 
         qc_ch = input_ch
 
+            // temporary fix to force assignment when alignment in skipped
+            | map {it} 
+
             // Feature biotype QC using featureCounts
             | map { id, state -> 
                 def biotype_in_gtf = biotypeInGtf(state.gtf, state.biotype)
@@ -58,7 +61,7 @@ workflow run_wf {
                 ],
                 toState: [ "preseq_output": "output" ]
             )
-    
+            
             | rseqc_bamstat.run (
                 runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && "bam_stat" in state.rseqc_modules && !state.skip_align },
                 fromState: [
@@ -215,7 +218,6 @@ workflow run_wf {
             ) 
 
         merged_ch = qc_ch
-        
             | toSortedList
             | map { list -> 
                 def ids = list.collect { id, state -> id }
@@ -489,7 +491,7 @@ workflow run_wf {
                 },
                 args: [count_col: 3, id_col: 1, outprefix: "deseq2"], 
                 toState: [
-                    "deseq2_output": "deseq2_output", 
+                    "deseq2_output": "outdir", 
                     "deseq2_pca_multiqc": "pca_multiqc", 
                     "deseq2_dists_multiqc": "dists_multiqc" 
                 ], 
@@ -530,9 +532,9 @@ workflow run_wf {
                 ],
                 args: [count_col: 3, id_col: 1, outprefix: "deseq2"], 
                 toState: [
-                    "deseq2_output": "deseq2_output", 
-                    "deseq2_pca_multiqc": "pca_multiqc", 
-                    "deseq2_dists_multiqc": "dists_multiqc" 
+                    "deseq2_output_pseudo": "outdir", 
+                    "deseq2_pca_multiqc_pseudo": "pca_multiqc", 
+                    "deseq2_dists_multiqc_pseudo": "dists_multiqc" 
                 ],
                 key: "deseq2_qc_pseuso_align_quant"
             )

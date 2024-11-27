@@ -20,7 +20,7 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
   --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
-  --skip_pseudo_alignment \
+  --skip_alignment \
   -profile docker \
   --resume
 

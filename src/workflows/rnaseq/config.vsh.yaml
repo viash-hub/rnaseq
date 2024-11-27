@@ -304,12 +304,12 @@ argument_groups:
       - name: "--rseqc_modules"
         type: string
         multiple: true
-        multiple_sep: ","
-        description: Specify the RSeQC modules to run_wf
-        default: bam_stat,inner_distance,infer_experiment,junction_annotation,junction_saturation,read_distribution,read_duplication
+        multiple_sep: ";"
+        description: Specify the RSeQC modules to run_wf (comma-separated list)
+        default: bam_stat;inner_distance;infer_experiment;junction_annotation;junction_saturation;read_distribution;read_duplication
         choices: [ "bam_stat", "inner_distance", "infer_experiment", "junction_annotation", "junction_saturation", "read_distribution", "read_duplication", "tin" ]
 
-  - name: Multiqc paramenters
+  - name: MultiQC paramenters
     arguments:
       - name: "--multiqc_custom_config"
         type: file
@@ -367,14 +367,14 @@ argument_groups:
         required: false
         must_exist: false
         description: Path to output directory
-        default: fastq/$id.read_1.fastq
+        default: fastq/$id.read_1.fastq.gz
       - name: "--output_fastq_2"
         type: file
         direction: output
         required: false
         must_exist: false
         description: Path to output directory
-        default: fastq/$id.read_2.fastq
+        default: fastq/$id.read_2.fastq.gz
       
       # FastQC
       - name: "--fastqc_html_1"
@@ -859,6 +859,10 @@ argument_groups:
         type: file
         direction: output
         default: deseq2_qc
+      - name: "--deseq2_output_pseudo"
+        type: file
+        direction: output
+        default: deseq2_qc_pseudo
 
       # MultiQC
       - name: "--multiqc_report"
@@ -890,6 +894,10 @@ argument_groups:
         type: file
         direction: output
         default: pseudo_alignment_quantification/gene_counts_scaled.tsv
+      - name: "--pseudo_tpm_gene"
+        type: file
+        direction: output
+        default: pseudo_alignment_quantification/gene_tpm.tsv
       - name: "--pseudo_tpm_transcript"
         type: file
         direction: output
