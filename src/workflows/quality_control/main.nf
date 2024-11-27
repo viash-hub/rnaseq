@@ -202,6 +202,7 @@ workflow run_wf {
         // TODO: Add outdir as an output argument to the qualimap module on biobox. 
         // Qualimap ouputs a few more raw data files to outdir but since the module is using a temporary directory as output dir these files are lost.
         | qualimap_rnaseq.run(
+            runIf: { id, state -> !state.skip_qc && !state.skip_qualimap && !state.skip_align },
             fromState: [
                 "bam": "genome_bam",
                 "gtf": "gtf",
