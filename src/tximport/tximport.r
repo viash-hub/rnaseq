@@ -137,5 +137,6 @@ if ("tx2gene" %in% names(transcript_info) && !is.null(transcript_info$tx2gene)) 
 done <- lapply(params, write_se_table)
 
 # Output session information and citations
-citation("tximeta")
+# Removed for now because the 'tximeta' package is not found sometimes
+# citation("tximeta") 
 sessionInfo()
