@@ -36,6 +36,10 @@ resources:
   # Include the header for the biotypes in the component
   - path: biotypes_header.txt
 
+test_resources:
+  - type: bash_script
+    path: test.sh
+
 engines:
   - type: docker
     image: python:latest

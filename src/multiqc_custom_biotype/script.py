@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 filtered_lines.append(filtered_line)
 
     # Concatenate the header and the processed lines
-    result = biotypes_header + '\n' + '\n'.join(filtered_lines) + '\n'
+    result = biotypes_header + '\n'.join(filtered_lines) + '\n'
 
     # Write the result to par_featurecounts_multiqc
     with open(par["featurecounts_multiqc"], 'w') as output_file:
