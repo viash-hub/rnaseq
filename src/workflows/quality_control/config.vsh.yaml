@@ -639,7 +639,7 @@ dependencies:
   - name: prepare_multiqc_input
   - name: multiqc
     repository: biobox
-  - name: rsem/rsem_merge_counts
+  - name: rsem_merge_counts
   - name: workflows/merge_quant_results
 
 runners: 
