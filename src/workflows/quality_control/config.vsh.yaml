@@ -257,8 +257,12 @@ argument_groups:
       # MultiQC
       - name: "--multiqc_custom_config"
         type: file
+        description: |
+          Custom multiqc configuration file
       - name: "--multiqc_title"
         type: string
+        description: |
+          Custom multiqc title
       - name: "--multiqc_methods_description"
         type: file
       - name: "--passed_trimmed_reads"

@@ -70,4 +70,20 @@ IFS="," read -ra readduplication_multiqc <<< $par_readduplication_multiqc && for
 
 IFS="," read -ra tin_multiqc <<< $par_tin_multiqc && for file in "${tin_multiqc[@]}"; do [ -e "$file" ] && cp -r "$file" "$par_output/"; done
 
-[ -e "$par_multiqc_config" ] && cp -r $par_multiqc_config "$par_output/"
+echo "Checking for custom multiqc_config"
+# If the variable is empty, we use the default one (registered as a resource)
+if [ -z $par_multiqc_config ]; then
+  echo "No multiqc_config provided, using the default"
+  cp $meta_resources_dir/multiqc_config.yml "$par_output"
+else
+  echo "Optional file provided"
+  if [ -f $par_multiqc_config ]; then
+    cp $par_multiqc_config "$par_output"/multiqc_config.yml
+  else
+    # Unreachable: the Viash-generated module checks this
+    echo "Optional file does not exist"
+    exit 1
+  fi
+fi
+
+echo "Done"

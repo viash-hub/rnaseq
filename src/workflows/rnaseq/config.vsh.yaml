@@ -323,13 +323,15 @@ argument_groups:
     arguments:
       - name: "--multiqc_custom_config"
         type: file
-        default: src/assets/multiqc_config.yml
+        description: |
+          Custom multiqc configuration file
       - name: "--multiqc_title"
         type: string
+        description: |
+          Custom multiqc title
       - name: "--multiqc_methods_description"
         type: file
-        default: src/assets/methods_description_template.yml
-    
+
   - name: Output
     arguments:
       # Reference files
