@@ -37,8 +37,7 @@ workflow run_wf {
           out_sam_attributes: "NH;HI;AS;NM;MD", 
           quant_transcriptome_sam_output: "BanSingleEnd" 
         ],
-        directives:
-          - label: [ highmem, midcpu ]
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
 
       // GENOME BAM
@@ -46,9 +45,8 @@ workflow run_wf {
         runIf: { id, state -> state.aligner == 'star_salmon' },
         fromState: ["input": "genome_bam"],
         toState: ["genome_bam_sorted": "output"],
-        key: "genome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_index.run(
         runIf: { id, state -> state.aligner == 'star_salmon' },
@@ -57,9 +55,8 @@ workflow run_wf {
           "csi": "bam_csi_index"
         ],
         toState: [ "genome_bam_index": "output" ],
-        key: "genome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_stats.run(
         runIf: { id, state -> state.aligner == 'star_salmon' },
@@ -69,9 +66,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_stats": "output" ],
-        key: "genome_stats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_stats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_flagstat.run(
         runIf: { id, state -> state.aligner == 'star_salmon' },
@@ -81,9 +77,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_flagstat": "output" ],
-        key: "genome_flagstat"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_flagstat",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_idxstats.run(
         runIf: { id, state -> state.aligner == 'star_salmon' },
@@ -93,9 +88,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_idxstats": "output" ],
-        key: "genome_idxstats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_idxstats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
 
       //
@@ -113,9 +107,8 @@ workflow run_wf {
           output_stats: output_stats] 
         },
         toState: [ "genome_bam_sorted": "output" ],
-        key: "genome_deduped"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_deduped",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_index.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -124,9 +117,8 @@ workflow run_wf {
           "csi": "bam_csi_index"
         ],
         toState: [ "genome_bam_index": "output" ],
-        key: "genome_deduped"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_deduped",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_stats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -136,9 +128,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_stats": "output" ],
-        key: "genome_deduped_stats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_deduped_stats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_flagstat.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -148,9 +139,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_flagstat": "output" ],
-        key: "genome_deduped_flagstat"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_deduped_flagstat",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_idxstats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -160,9 +150,8 @@ workflow run_wf {
           "fasta": "fasta", 
         ],
         toState: [ "genome_bam_idxstats": "output" ],
-        key: "genome_deduped_idxstats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_deduped_idxstats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
 
       // Deduplicate transcriptome BAM file
@@ -171,9 +160,8 @@ workflow run_wf {
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
         fromState: [ "input": "transcriptome_bam" ],
         toState: [ "transcriptome_bam": "output" ],
-        key: "transcriptome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_index.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -182,9 +170,8 @@ workflow run_wf {
           "csi": "bam_csi_index"
         ],
         toState: [ "transcriptome_bam_index": "output" ],
-        key: "transcriptome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_stats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -193,9 +180,8 @@ workflow run_wf {
           "bai": "transcriptome_bam_index", 
         ],
         toState: [ "transcriptome_bam_stats": "output" ],
-        key: "transcriptome_stats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_stats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_flagstat.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -204,9 +190,8 @@ workflow run_wf {
           "bai": "transcriptome_bam_index"
         ],
         toState: [ "transcriptome_bam_flagstat": "output" ],
-        key: "transcriptome_flagstat"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_flagstat",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_idxstats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -215,9 +200,8 @@ workflow run_wf {
           "bai": "transcriptome_bam_index" 
         ],
         toState: [ "transcriptome_bam_idxstats": "output" ],
-        key: "transcriptome_idxstats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_idxstats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )    
       
       | umi_tools_dedup.run( 
@@ -230,17 +214,15 @@ workflow run_wf {
           output_stats: output_stats] 
         },
         toState: [ "transcriptome_bam_deduped": "output" ],
-        key: "transcriptome_deduped"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_sort.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
         fromState: [ "input": "transcriptome_bam_deduped" ],
         toState: [ "transcriptome_bam": "output" ],
-        key: "transcriptome_deduped_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_index.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' },
@@ -249,9 +231,8 @@ workflow run_wf {
           "csi": "bam_csi_index"
         ],
         toState: [ "transcriptome_bam_index": "output" ],
-        key: "transcriptome_deduped_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_stats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
@@ -260,9 +241,8 @@ workflow run_wf {
           "bai": "transcriptome_bam_index"
         ],
         toState: [ "transcriptome_bam_stats": "output" ],
-        key: "transcriptome_deduped_stats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped_stats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_flagstat.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
@@ -271,9 +251,8 @@ workflow run_wf {
           "bai": "transcriptome_bam_index"
         ],
         toState: [ "transcriptome_bam_flagstat": "output" ],
-        key: "transcriptome_deduped_flagstat"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped_flagstat",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_idxstats.run(
         runIf: { id, state -> state.with_umi && state.aligner == 'star_salmon' }, 
@@ -282,18 +261,16 @@ workflow run_wf {
           "bai": "transcriptome_bam_index" 
         ],
         toState: [ "transcriptome_bam_idxstats": "output" ],
-        key: "transcriptome_deduped_idxstats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "transcriptome_deduped_idxstats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       ) 
 
       // Fix paired-end reads in name sorted BAM file
       | umi_tools_prepareforrsem.run(
         runIf: { id, state -> state.with_umi && state.paired && state.aligner == 'star_salmon' },
         fromState: [ "input": "transcriptome_bam" ],
-        toState: [ "transcriptome_bam": "output" ]
-        directives:
-          - label: [ midmem, midcpu ]
+        toState: [ "transcriptome_bam": "output" ],
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
 
       // Infer lib-type for salmon quant
@@ -328,9 +305,8 @@ workflow run_wf {
         toState: [ 
           "quant_out_dir": "output",
           "quant_results_file": "quant_results" 
-        ]
-        directives:
-          - label: [ midmem, midcpu ]
+        ],
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
 
       | map { id, state -> 
@@ -369,9 +345,8 @@ workflow run_wf {
           "bam_star_rsem": "bam_star",
           "bam_genome_rsem": "bam_genome",
           "bam_transcript_rsem": "bam_transcript"
-        ]
-        directives:
-          - label: [ midmem, midcpu ]
+        ],
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
     
       // RSEM_Star BAM
@@ -379,9 +354,8 @@ workflow run_wf {
         runIf: { id, state -> state.aligner == 'star_rsem' },
         fromState: ["input": "bam_star_rsem"],
         toState: ["genome_bam_sorted": "output"],
-        key: "genome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_index.run(
         runIf: { id, state -> state.aligner == 'star_rsem' },
@@ -390,9 +364,8 @@ workflow run_wf {
           "csi": "bam_csi_index"
         ],
         toState: [ "genome_bam_index": "output" ],
-        key: "genome_sorted"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_sorted",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_stats.run(
         runIf: { id, state -> state.aligner == 'star_rsem' },
@@ -402,9 +375,8 @@ workflow run_wf {
           "fasta": "fasta"
         ],
         toState: [ "genome_bam_stats": "output" ],
-        key: "genome_stats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_stats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_flagstat.run(
         runIf: { id, state -> state.aligner == 'star_rsem' },
@@ -414,9 +386,8 @@ workflow run_wf {
           "fasta": "fasta" 
         ],
         toState: [ "genome_bam_flagstat": "output" ],
-        key: "genome_flagstat"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_flagstat",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | samtools_idxstats.run(
         runIf: { id, state -> state.aligner == 'star_rsem' },
@@ -426,9 +397,8 @@ workflow run_wf {
           "fasta": "fasta" 
         ],
         toState: [ "genome_bam_idxstats": "output" ],
-        key: "genome_idxstats"
-        directives:
-          - label: [ midmem, midcpu ]
+        key: "genome_idxstats",
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | map { id, state -> 
         def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
@@ -454,7 +424,8 @@ workflow run_wf {
           "rsem_counts_gene": "rsem_counts_gene",
           "rsem_counts_transcripts": "rsem_counts_transcripts",
           "bam_genome_rsem": "bam_genome_rsem",
-          "bam_transcript_rsem": "bam_transcript_rsem" ]
+          "bam_transcript_rsem": "bam_transcript_rsem"
+        ]
       )
 
   emit:
