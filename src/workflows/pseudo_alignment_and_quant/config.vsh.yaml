@@ -86,4 +86,3 @@ dependencies:
 runners: 
 - type: executable
 - type: nextflow
-   label: [ midmem, midcpu ]
