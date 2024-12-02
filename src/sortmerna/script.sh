@@ -39,3 +39,4 @@ else
 fi
 
 mv rRNA_reads.log $par_sortmerna_log
+

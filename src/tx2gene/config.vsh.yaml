@@ -12,7 +12,7 @@ argument_groups:
   - name: "--quant_results"
     type: file
     multiple: true
-    multiple_sep: ","
+    multiple_sep: ";"
   - name: "--gtf"
     type: file
   - name: "--gtf_extra_attributes"
@@ -32,17 +32,17 @@ argument_groups:
     type: file
     direction: output
     default: tx2gene.tsv
-  - name: "--updated_versions"
-    type: file
-    default: versions.yml
-    direction: output
 
 resources:
   - type: bash_script
     path: script.sh
   # copied from https://github.com/nf-core/rnaseq/blob/3.14.0/bin/tx2gene.py
   - path: tx2gene.py
-  
+
+test_resources:
+  - type: bash_script
+    path: test.sh
+    
 engines:
 - type: docker
   image: ubuntu:22.04

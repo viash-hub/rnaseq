@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --setup cb --parallel
+viash ns build --setup cb --parallel
 
 nextflow run target/nextflow/workflows/post_processing/main.nf \
   --publish_dir "testData/paired_end_test" \
@@ -14,8 +14,6 @@ nextflow run target/nextflow/workflows/post_processing/main.nf \
   --chrom_sizes "testData/test_output/reference_genome.fasta.sizes" \
   --star_multiqc "testData/paired_end_test/SRR6357070.star_align.log" \
   --extra_picard_args "--ASSUME_SORTED true --REMOVE_DUPLICATES false --VALIDATION_STRINGENCY LENIENT --TMP_DIR tmp" \
-  --extra_bedtools_args "-split -du" \
-  --extra_featurecounts_args "-B -C" \
   --gencode false \
   --biotype gene_biotype \
   -profile docker \

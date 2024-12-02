@@ -21,29 +21,31 @@ workflow run_wf {
       | toSortedList
       
       | map { list -> 
-          [ "ref",  
-            [ fasta: list.collect { id, state -> state.fasta }.unique()[0],
-            gtf: list.collect { id, state -> state.gtf }.unique()[0], 
-            gff: list.collect { id, state -> state.gff }.unique()[0], 
-            additional_fasta: list.collect { id, state -> state.additional_fasta }.unique()[0],
-            transcript_fasta:list.collect { id, state -> state.transcript_fasta }.unique()[0], 
-            gene_bed: list.collect { id, state -> state.gene_bed }.unique()[0],
-            bbsplit_fasta_list: list.collect { id, state -> state.bbsplit_fasta_list }.unique()[0],
-            aligner: list.collect { id, state -> state.aligner }.unique()[0],
-            pseudo_aligner: list.collect { id, state -> state.pseudo_aligner }.unique()[0],
-            star_index: list.collect { id, state -> state.star_index }.unique()[0],
-            rsem_index: list.collect { id, state -> state.rsem_index }.unique()[0],
-            salmon_index: list.collect { id, state -> state.salmon_index }.unique()[0],
-            kallisto_index: list.collect { id, state -> state.kallisto_index }.unique()[0],
-            // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
-            // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
-            bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
-            skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
-            gencode: list.collect { id, state -> state.gencode }.unique()[0],
-            biotype: list.collect { id, state -> state.biotype }.unique()[0], 
-            filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
-            pseudo_aligner_kmer_size: list.collect { id, state -> state.pseudo_aligner_kmer_size }.unique()[0] ]
-          ]
+        [ "ref",  
+          [ fasta: list.collect { id, state -> state.fasta }.unique()[0],
+          gtf: list.collect { id, state -> state.gtf }.unique()[0], 
+          gff: list.collect { id, state -> state.gff }.unique()[0], 
+          additional_fasta: list.collect { id, state -> state.additional_fasta }.unique()[0],
+          transcript_fasta:list.collect { id, state -> state.transcript_fasta }.unique()[0], 
+          gene_bed: list.collect { id, state -> state.gene_bed }.unique()[0],
+          bbsplit_fasta_list: list.collect { id, state -> state.bbsplit_fasta_list }.unique()[0],
+          aligner: list.collect { id, state -> state.aligner }.unique()[0],
+          pseudo_aligner: list.collect { id, state -> state.pseudo_aligner }.unique()[0],
+          star_index: list.collect { id, state -> state.star_index }.unique()[0],
+          rsem_index: list.collect { id, state -> state.rsem_index }.unique()[0],
+          salmon_index: list.collect { id, state -> state.salmon_index }.unique()[0],
+          kallisto_index: list.collect { id, state -> state.kallisto_index }.unique()[0],
+          // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
+          // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
+          bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
+          skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
+          skip_alignment: list.collect { id, state -> state.skip_alignment }.unique()[0],
+          gencode: list.collect { id, state -> state.gencode }.unique()[0],
+          biotype: list.collect { id, state -> state.biotype }.unique()[0], 
+          star_sjdb_gtf_feature_exon: list.collect { id, state -> state.star_sjdb_gtf_feature_exon }.unique()[0], 
+          filter_gtf: list.collect { id, state -> state.filter_gtf }.unique()[0],
+          pseudo_aligner_kmer_size: list.collect { id, state -> state.pseudo_aligner_kmer_size }.unique()[0] ]
+        ]
       } 
 
       // prepare all the necessary files for reference genome
@@ -70,7 +72,8 @@ workflow run_wf {
             "filter_gtf": "filter_gtf",
             "aligner": "aligner",
             "pseudo_aligner": "pseudo_aligner",
-            "skip_alignment": "skip_alignment"
+            "skip_alignment": "skip_alignment",
+            "star_sjdb_gtf_feature_exon": "star_sjdb_gtf_feature_exon"
           ],
           toState: [
             "fasta": "uncompressed_fasta", 
@@ -209,10 +212,8 @@ workflow run_wf {
             "aligner": "aligner",
             "rsem_index": "rsem_index",
             "star_index": "star_index", 
-            "extra_star_align_args": "extra_star_align_args", 
+            "star_sjdb_gtf_feature_exon": "star_sjdb_gtf_feature_exon",
             "star_ignore_sjdbgtf": "star_ignore_sjdbgtf",
-            "seq_platform": "seq_platform", 
-            "seq_center": "seq_center",
             "with_umi": "with_umi", 
             "umi_dedup_stats": "umi_dedup_stats",
             "gtf_group_features": "gtf_group_features",
@@ -247,7 +248,7 @@ workflow run_wf {
       // Filter channels to get samples that passed STAR minimum mapping percentage
       // TODO: Move to reporting or later step
       | map { id, state -> 
-        def percent_mapped = (!state.skip_alignment) ? getStarPercentMapped(state.star_multiqc) : 0.0
+        def percent_mapped = (!state.skip_alignment && state.passed_trimmed_reads) ? getStarPercentMapped(state.star_multiqc) : 0.0
         def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false
         [ id, state + [percent_mapped: percent_mapped, passed_mapping: passed_mapping] ]
       }
@@ -423,8 +424,9 @@ workflow run_wf {
             "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
             "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
             "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
-            "qualimap_output_dir": "qualimap_output_dir",
-            "qualimap_output_pdf": "qualimap_output_pdf",
+            "qualimap_report": "qualimap_report", 
+            "qualimap_qc_report": "qualimap_qc_report",
+            "qualimap_counts": "qualimap_counts",
             "featurecounts": "featurecounts",
             "featurecounts_summary": "featurecounts_summary",
             "featurecounts_multiqc": "featurecounts_multiqc", 
@@ -437,6 +439,16 @@ workflow run_wf {
             "counts_transcript": "counts_transcript", 
             "qunat_merged_summarizedexperiment": "quant_merged_summarizedexperiment",
             "deseq2_output": "deseq2_output", 
+            "pseudo_tpm_gene": "pseudo_tpm_gene",
+            "pseudo_counts_gene": "pseudo_counts_gene",
+            "pseudo_counts_gene_length_scaled": "pseudo_counts_gene_length_scaled",
+            "pseudo_counts_gene_scaled": "pseudo_counts_gene_scaled", 
+            "pseudo_tpm_transcript": "pseudo_tpm_transcript", 
+            "pseudo_counts_transcript": "pseudo_counts_transcript", 
+            "pseudo_lengths_gene": "pseudo_lengths_gene",
+            "pseudo_lengths_transcript": "pseudo_lengths_transcript",
+            "pseudo_quant_merged_summarizedexperiment": "pseudo_quant_merged_summarizedexperiment",
+            "deseq2_output_pseudo": "deseq2_output_pseudo",  
             "multiqc_report": "multiqc_report", 
             "multiqc_data": "multiqc_data", 
             "multiqc_plots": "multiqc_plots"
@@ -528,8 +540,9 @@ workflow run_wf {
           "dupradar_output_duprate_exp_denscurve_mqc": "dupradar_output_duprate_exp_denscurve_mqc",
           "dupradar_output_expression_histogram": "dupradar_output_expression_histogram",
           "dupradar_output_intercept_slope": "dupradar_output_intercept_slope",
-          "qualimap_output_dir": "qualimap_output_dir",
-          "qualimap_output_pdf": "qualimap_output_pdf", 
+          "qualimap_report": "qualimap_report", 
+          "qualimap_qc_report": "qualimap_qc_report",
+          "qualimap_counts": "qualimap_counts",
           "tpm_gene": "tpm_gene",
           "counts_gene": "counts_gene",
           "counts_gene_length_scaled": "counts_gene_length_scaled",
@@ -581,12 +594,21 @@ def isBelowMaxContigSize(fai_file) {
   return true
 }
 
+// Find a file in a directory
+import java.nio.file.*
+def findFile(Path dir, String fileName) {
+  Files.walk(dir)
+    .filter { Files.isRegularFile(it) && it.fileName.toString() == fileName }
+    .findFirst()
+    .orElse(null)
+}
+
 import groovy.json.JsonSlurper
 //
 // Function that parses Salmon quant 'meta_info.json' output file to get inferred strandedness
 //
 def getSalmonInferredStrandedness(salmon_quant_output) {
-  def json_file = new File(salmon_quant_output).listFiles().find { it.name == "meta_info.json" || it.isDirectory() && it.listFiles().find { it.name == "meta_info.json" } }
+  def json_file = findFile(salmon_quant_output, 'meta_info.json')
   def lib_type = new JsonSlurper().parseText(json_file.text).get('library_types')[0]
   def strandedness = 'reverse'
   if (lib_type) {

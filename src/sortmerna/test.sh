@@ -38,3 +38,4 @@ echo ">> Checking if the correct files are present"
 
 echo ">>> Test finished successfully"
 exit 0
+

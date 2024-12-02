@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# viash ns build --setup cb --parallel
+viash ns build --setup cb --parallel
 
 cat > testData/minimal_test/input_fastq/sample_sheet.csv << HERE
 id,fastq_1,fastq_2,strandedness
@@ -19,7 +19,7 @@ nextflow run target/nextflow/workflows/rnaseq/main.nf \
   --gtf testData/minimal_test/reference/genes.gtf.gz \
   --additional_fasta testData/minimal_test/reference/gfp.fa.gz \
   --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
-  --bbsplit_fasta_list testData/minimal_test/reference/bbsplit_fasta_list.txt \
+  --bbsplit_fasta_list "testData/minimal_test/reference/bbsplit_fasta/sarscov2.fa;testData/minimal_test/reference/bbsplit_fasta/human.fa" \
   --skip_pseudo_alignment \
   -profile docker \
   --resume
