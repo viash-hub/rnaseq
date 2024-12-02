@@ -95,6 +95,7 @@ workflow run_wf {
       | rseqc_inner_distance.run(
         runIf: { id, state -> !state.skip_qc && !state.skip_rseqc && state.paired && "inner_distance" in state.rseqc_modules && !state.skip_align },
         key: "inner_distance",
+        args: ["output_prefix": "output"],
         fromState: [
           "input_file": "genome_bam",
           "refgene": "gene_bed",
@@ -103,9 +104,8 @@ workflow run_wf {
           "lower_bound": "lower_bound_size",
           "upper_bound": "upper_bound_size",
           "step": "step_size",
-          "output_prefix": "output_"
         ],
-        toState: [ 
+        toState: [
           "inner_dist_output_stats": "output_stats",
           "inner_dist_output_dist": "output_dist",
           "inner_dist_output_freq": "output_freq",
