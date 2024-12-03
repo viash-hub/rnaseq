@@ -39,7 +39,8 @@ workflow run_wf {
           // splicesites: list.collect { id, state -> state.splicesites }.unique()[0],
           // hisat2_index: list.collect { id, state -> state.hisat2_index }.unique()[0],
           bbsplit_index: list.collect { id, state -> state.bbsplit_index }.unique()[0],
-          skip_bbsplit: list.collect { id, state -> state.skip_bbsplit }.unique()[0],
+          // See: 
+          skip_bbsplit: true, // list.collect { id, state -> state.skip_bbsplit }.unique()[0],
           skip_alignment: list.collect { id, state -> state.skip_alignment }.unique()[0],
           gencode: list.collect { id, state -> state.gencode }.unique()[0],
           biotype: list.collect { id, state -> state.biotype }.unique()[0], 

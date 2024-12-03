@@ -218,9 +218,10 @@ argument_groups:
         type: boolean
         description: Skip the adapter trimming step.
         default: false
-      - name: "--skip_bbsplit"
-        type: boolean_true
-        description: Skip BBSplit for removal of non-reference genome reads.
+      # See: 
+      # - name: "--skip_bbsplit"
+      #   type: boolean_true
+      #   description: Skip BBSplit for removal of non-reference genome reads.
       - name: "--skip_umi_extract"
         type: boolean
         description: Skip umi_tools extract step.
