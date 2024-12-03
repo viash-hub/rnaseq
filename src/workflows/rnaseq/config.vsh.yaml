@@ -895,6 +895,11 @@ resources:
     path: main.nf
     entrypoint: run_wf
 
+test_resources:
+  - type: nextflow_script
+    path: test.nf
+    entrypoint: test_wf
+
 dependencies: 
   - name: workflows/prepare_genome
   - name: cat_fastq
