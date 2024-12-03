@@ -164,7 +164,7 @@ workflow run_wf {
         ],
         directives: [ label: [ "lowmem", "midcpu" ] ]
       )
-      
+
       // untar bbsplit index, if available
       | untar.run (
         runIf: {id, state -> state.bbsplit_index}, 
@@ -176,15 +176,11 @@ workflow run_wf {
 
       | map { id, state ->
         // Check if bbsplit_fasta_list is defined
-        if (state.bbsplit_fasta_list) {
-          def ref = [state.fasta] + state.bbsplit_fasta_list
-        } else {
-          def ref = [state.fasta]
-        }
+        def ref = (state.bbsplit_fasta_list) ?
+          [state.fasta] + state.bbsplit_fasta_list :
+          [state.fasta]
         [id, state + [bbsplit_ref: ref] ]
       }
-
-      | niceView()
 
       // create bbsplit index, if not already available
       | bbmap_bbsplit.run (

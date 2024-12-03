@@ -244,9 +244,9 @@ argument_groups:
       - name: "--skip_preseq"
         type: boolean_true
         description: Skip Preseq.
-      - name: "--skip_deseq2_qc"
-        type: boolean_true
-        description: Skip DESeq2 PCA and heatmap plotting.
+      # - name: "--skip_deseq2_qc"
+      #   type: boolean_true
+      #   description: Skip DESeq2 PCA and heatmap plotting.
       - name: --skip_dupradar
         type: boolean_true
         description: Skip dupRadar.

@@ -1,3 +1,4 @@
+// TODO: Split in /sample and integrated QC
 workflow run_wf {
 
   take: 
@@ -7,7 +8,7 @@ workflow run_wf {
 
     qc_ch = input_ch
 
-      // temporary fix to force assignment when alignment in skipped
+      // temporary fix to force assignment when alignment is skipped
       // TODO: Check this
       | map {it} 
 
@@ -824,6 +825,4 @@ def getInferexperimentStrandedness(inferexperiment_file, cutoff=30) {
   }
   return [ strandedness, sense, antisense, undetermined ]
 }
-
-
 
