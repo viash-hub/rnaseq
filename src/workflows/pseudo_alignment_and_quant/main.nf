@@ -1,4 +1,3 @@
-// TODO: See if the logic of this can be aligned with the STAR aligner logic
 workflow run_wf {
   take:
     input_ch

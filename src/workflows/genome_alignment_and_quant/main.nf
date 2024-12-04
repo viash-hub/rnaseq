@@ -1,5 +1,3 @@
-// TODO: Improve logic of this wf, e.g. by splitting up in 2 subwfs
-// TODO: See if this can be aligned with the pseudo-alignment branch of the logic
 workflow run_wf {
   take:
     input_ch

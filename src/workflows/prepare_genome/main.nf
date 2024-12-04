@@ -204,7 +204,6 @@ workflow run_wf {
         directives: [ label: [ "lowmem", "midcpu" ] ]
       )
 
-      // TODO: Add to viah-hub or adapt star_align_reads to enable the generateGenome runMode 
       | star_genome_generate.run (
         runIf: {id, state -> !state.star_index && !state.skip_alignment}, 
         fromState: [ 

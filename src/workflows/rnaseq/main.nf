@@ -92,7 +92,6 @@ workflow run_wf {
       )
 
       // Check if contigs in genome fasta file > 512 Mbp
-      // TODO: check where this is required and move if necessary
       | map { id, state -> 
         (isBelowMaxContigSize(state.fai)) ? [id, state] : [id, state + [bam_csi_index: true]]
       }
@@ -172,15 +171,13 @@ workflow run_wf {
       )
 
       // Infer strandedness from Salmon pseudo-alignment results
-      // TODO: Turn this into a workflow step and include as a dependency
       | map { id, state -> 
-      (state.strandedness == 'auto') ? 
-        [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_quant_output)] ] : 
-        [id, state] 
+        (state.strandedness == 'auto') ? 
+          [ id, state + [strandedness: getSalmonInferredStrandedness(state.salmon_quant_output)] ] : 
+          [id, state] 
       }
 
       // Filter FastQ files based on minimum trimmed read count after adapter trimming
-      // TODO: Turn this into a workflow step and include as a dependency
       | map { id, state -> 
         def input = state.fastq_2 ? [ state.fastq_1, state.fastq_2 ] : [ state.fastq_1 ]
         def num_reads = (state.skip_trimming) ? 
@@ -249,7 +246,6 @@ workflow run_wf {
       )
 
       // Filter channels to get samples that passed STAR minimum mapping percentage
-      // TODO: Move to reporting or later step
       | map { id, state -> 
         def percent_mapped = (!state.skip_alignment && state.passed_trimmed_reads) ? getStarPercentMapped(state.star_multiqc) : 0.0
         def passed_mapping = (percent_mapped >= state.min_mapped_reads) ? true : false

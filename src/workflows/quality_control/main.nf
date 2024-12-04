@@ -1,4 +1,3 @@
-// TODO: Split in /sample and integrated QC
 workflow run_wf {
 
   take: 
@@ -9,7 +8,6 @@ workflow run_wf {
     qc_ch = input_ch
 
       // temporary fix to force assignment when alignment is skipped
-      // TODO: Check this
       | map {it} 
 
       // Feature biotype QC using featureCounts
@@ -699,7 +697,6 @@ workflow run_wf {
       | map { list -> [list[0], list[1] + list[2]] }
 
       | map { id, state -> 
-        // TODO: Check this, necessary for setState
         def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
         [ id, mod_state ]
       }
