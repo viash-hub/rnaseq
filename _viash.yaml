@@ -1,4 +1,5 @@
 name: rnaseq
+version: v0.2.0
 
 viash_version: 0.9.0
 
