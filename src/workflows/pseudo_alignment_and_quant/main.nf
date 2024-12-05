@@ -34,22 +34,23 @@ workflow run_wf {
       
       // Count reads from BAM alignments using Salmon
       | salmon_quant.run ( 
-          runIf: { id, state -> state.pseudo_aligner == 'salmon' },
-          fromState: { id, state ->
-            def unmated_reads = !state.paired ? state.fastq_1 : null
-            def mates1 = state.paired ? state.fastq_1 : null
-            def mates2 = state.paired ? state.fastq_2 : null
-            [ unmated_reads: unmated_reads,
-              mates1: mates1, 
-              mates2: mates2, 
-              gene_map: state.gtf, 
-              index: state.salmon_index,
-              lib_type: state.lib_type ]
-          },
-          toState: [ 
-            "quant_out_dir": "output",
-            "salmon_quant_results_file": "quant_results" 
-          ]
+        runIf: { id, state -> state.pseudo_aligner == 'salmon' },
+        fromState: { id, state ->
+          def unmated_reads = !state.paired ? state.fastq_1 : null
+          def mates1 = state.paired ? state.fastq_1 : null
+          def mates2 = state.paired ? state.fastq_2 : null
+          [ unmated_reads: unmated_reads,
+            mates1: mates1, 
+            mates2: mates2, 
+            gene_map: state.gtf, 
+            index: state.salmon_index,
+            lib_type: state.lib_type ]
+        },
+        toState: [ 
+          "quant_out_dir": "output",
+          "salmon_quant_results_file": "quant_results" 
+        ],
+        directives: [ label: [ "midmem", "highcpu" ] ]
       )
 
       | map { id, state -> 
@@ -57,7 +58,7 @@ workflow run_wf {
         [ id, mod_state ]
       }
 
-    | kallisto_quant.run ( 
+      | kallisto_quant.run ( 
         runIf: { id, state -> state.pseudo_aligner == 'kallisto'},
         fromState: { id, state -> 
           def fr_stranded = state.strandedness == 'forward'
@@ -81,8 +82,9 @@ workflow run_wf {
           ]
           def new_state = state + newKeys
           return new_state
-        }
-    )
+        },
+        directives: [ label: [ "midmem", "highcpu" ] ]
+      )
 
       | map { id, state -> 
         def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
@@ -93,7 +95,8 @@ workflow run_wf {
         [ "pseudo_multiqc": "quant_results", 
           "quant_out_dir": "quant_out_dir",
           "salmon_quant_results_file": "salmon_quant_results_file",
-          "kallisto_quant_results_file": "kallisto_quant_results_file" ]
+          "kallisto_quant_results_file": "kallisto_quant_results_file"
+        ]
       )
 
   emit:

@@ -12,7 +12,9 @@ info:
 
 config_mods: |
   .requirements.commands := ['ps']
+  .resources += {path: '/src/workflows/utils/labels.config', dest: 'nextflow_labels.config'}
   .runners[.type == 'nextflow'].directives.tag := '$id'
+  .runners[.type == 'nextflow'].config.script := 'includeConfig("nextflow_labels.config")'
 
 repositories:
   - name: biobox

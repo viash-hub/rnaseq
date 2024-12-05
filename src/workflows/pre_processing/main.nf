@@ -25,7 +25,8 @@ workflow run_wf {
             def new_state = state + newKeys
             return new_state
           },
-        args: [html: "*.html", zip: "*.zip"]
+        args: [html: "*.html", zip: "*.zip"],
+        directives: [ label: [ "midmem", "highcpu" ] ]
       )
 
       // Extract UMIs from fastq files and discard read 1 or read 2 if required
@@ -48,7 +49,8 @@ workflow run_wf {
         toState: [ 
           "fastq_1": "output", 
           "fastq_2": "read2_out"
-        ]
+        ],
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
       
       // Discard read if required
@@ -87,7 +89,8 @@ workflow run_wf {
           "trim_zip_2": "trimmed_fastqc_zip_2",
           "trim_html_1": "trimmed_fastqc_html_1",
           "trim_html_2": "trimmed_fastqc_html_2"
-        ]
+        ],
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
 
       // Trim reads using fastp
@@ -112,7 +115,8 @@ workflow run_wf {
           "trim_json": "json",
           "trim_html": "html",
           "trim_merged_out": "merged_out"
-        ]
+        ],
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
 
       // Perform FASTQC on reads trimmed using fastp
@@ -133,7 +137,8 @@ workflow run_wf {
             return new_state
           },
         args: [html: "*.html", zip: "*.zip"],
-        key: "fastqc_trimming"
+        key: "fastqc_trimming",
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
 
       // Filter out contaminant RNA
@@ -149,7 +154,8 @@ workflow run_wf {
         toState: [
           "fastq_1": "fastq_1", 
           "fastq_2": "fastq_2"
-        ]
+        ],
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
 
       // Sort reads by rRNA and non-rRNA
@@ -174,7 +180,8 @@ workflow run_wf {
           ]
           def new_state = state + newKeys
           return new_state
-        }
+        },
+        directives: [ label: [ "highmem", "midcpu" ] ]
       )
       | map { id, state -> 
         if (state.remove_ribo_rna) {
@@ -200,7 +207,8 @@ workflow run_wf {
         toState: [
           "subsampled_fastq_1": "output_1",
           "subsampled_fastq_2": "output_2"
-        ]
+        ],
+        directives: [ label: [ "midmem", "midcpu" ] ]
       )
 
       // Infer lib-type for salmon quant
@@ -237,39 +245,40 @@ workflow run_wf {
             lib_type: state.lib_type ]
         },
         args: [ "skip_quant": true ],
-        toState: [ "salmon_quant_output": "output" ]
+        toState: [ "salmon_quant_output": "output" ],
+        directives: [ label: [ "highmem", "highcpu" ] ]
       )
 
-        | map { id, state -> 
-          def mod_state = (!state.paired) ? 
-            [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2), failed_trim_unpaired2: state.remove(state.failed_trim_unpaired2)] : 
-            []
-          [ id, state + mod_state ]
-        }
+      | map { id, state -> 
+        def mod_state = (!state.paired) ? 
+          [trim_log_2: state.remove(state.trim_log_2), trim_zip_2: state.remove(state.trim_zip_2), trim_html_2: state.remove(state.trim_html_2), failed_trim_unpaired2: state.remove(state.failed_trim_unpaired2)] : 
+          []
+        [ id, state + mod_state ]
+      }
 
-        | map { id, state -> 
-          def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
-          [ id, mod_state ]
-        }
+      | map { id, state -> 
+        def mod_state = state.findAll { key, value -> value instanceof java.nio.file.Path && value.exists() }
+        [ id, mod_state ]
+      }
 
       | setState ( 
-          "fastqc_html_1": "fastqc_html_1",
-          "fastqc_html_2": "fastqc_html_2",
-          "fastqc_zip_1": "fastqc_zip_1",
-          "fastqc_zip_2": "fastqc_zip_2", 
-          "qc_output1": "fastq_1",
-          "qc_output2": "fastq_2", 
-          "trim_log_1": "trim_log_1", 
-          "trim_log_2": "trim_log_2", 
-          "trim_zip_1": "trim_zip_1",
-          "trim_zip_2": "trim_zip_2",
-          "trim_html_1": "trim_html_1",
-          "trim_html_2": "trim_html_2",
-          "sortmerna_log": "sortmerna_log",
-          "trim_json": "trim_json",
-          "trim_html": "trim_html",
-          "trim_merged_out": "trim_merged_out",
-          "salmon_quant_output": "salmon_quant_output"
+        "fastqc_html_1": "fastqc_html_1",
+        "fastqc_html_2": "fastqc_html_2",
+        "fastqc_zip_1": "fastqc_zip_1",
+        "fastqc_zip_2": "fastqc_zip_2", 
+        "qc_output1": "fastq_1",
+        "qc_output2": "fastq_2", 
+        "trim_log_1": "trim_log_1", 
+        "trim_log_2": "trim_log_2", 
+        "trim_zip_1": "trim_zip_1",
+        "trim_zip_2": "trim_zip_2",
+        "trim_html_1": "trim_html_1",
+        "trim_html_2": "trim_html_2",
+        "sortmerna_log": "sortmerna_log",
+        "trim_json": "trim_json",
+        "trim_html": "trim_html",
+        "trim_merged_out": "trim_merged_out",
+        "salmon_quant_output": "salmon_quant_output"
       )
 
   emit:

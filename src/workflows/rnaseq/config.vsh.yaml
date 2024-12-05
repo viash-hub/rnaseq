@@ -218,9 +218,10 @@ argument_groups:
         type: boolean
         description: Skip the adapter trimming step.
         default: false
-      - name: "--skip_bbsplit"
-        type: boolean_true
-        description: Skip BBSplit for removal of non-reference genome reads.
+      # See: 
+      # - name: "--skip_bbsplit"
+      #   type: boolean_true
+      #   description: Skip BBSplit for removal of non-reference genome reads.
       - name: "--skip_umi_extract"
         type: boolean
         description: Skip umi_tools extract step.
@@ -243,9 +244,9 @@ argument_groups:
       - name: "--skip_preseq"
         type: boolean_true
         description: Skip Preseq.
-      - name: "--skip_deseq2_qc"
-        type: boolean_true
-        description: Skip DESeq2 PCA and heatmap plotting.
+      # - name: "--skip_deseq2_qc"
+      #   type: boolean_true
+      #   description: Skip DESeq2 PCA and heatmap plotting.
       - name: --skip_dupradar
         type: boolean_true
         description: Skip dupRadar.
@@ -285,13 +286,15 @@ argument_groups:
     arguments:
       - name: "--multiqc_custom_config"
         type: file
-        default: src/assets/multiqc_config.yml
+        description: |
+          Custom multiqc configuration file
       - name: "--multiqc_title"
         type: string
+        description: |
+          Custom multiqc title
       - name: "--multiqc_methods_description"
         type: file
-        default: src/assets/methods_description_template.yml
-    
+
   - name: Output
     arguments:
       # Reference files
@@ -886,11 +889,16 @@ argument_groups:
         type: file
         direction: output
         default: pseudo_alignment_quantification/quant_merged_summarizedexperiment
-        
+
 resources:
   - type: nextflow_script
     path: main.nf
     entrypoint: run_wf
+
+test_resources:
+  - type: nextflow_script
+    path: test.nf
+    entrypoint: test_wf
 
 dependencies: 
   - name: workflows/prepare_genome

@@ -62,4 +62,4 @@ engines:
   image: quay.io/biocontainers/sortmerna:4.3.6--h9ee0642_0
 runners: 
 - type: executable
-- type: nextflow 
+- type: nextflow
