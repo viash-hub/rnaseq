@@ -1,0 +1,32 @@
+name: "copy_if_exists"
+argument_groups: 
+  - name: "Input"
+    arguments:
+      - name: "--required_file"
+        type: file
+        must_exist: false
+        required: true
+        example: /tmp/rnaseq_workflow_config/required_file.txt
+      - name: --optional_file
+        type: file
+        must_exist: false
+        example: /tmp/rnaseq_workflow_config/optional_file.txt
+
+  - name: "Ouput"
+    arguments:
+      - name: "--output"
+        type: file
+        direction: output
+        default: copy_if_exists_output
+resources:
+  - type: bash_script
+    path: script.sh
+  - path: /src/assets/required_file.txt
+  - path: /src/assets/optional_file.txt
+
+engines:
+  - type: docker
+    image: ubuntu:22.04
+runners:
+  - type: executable
+  - type: nextflow
