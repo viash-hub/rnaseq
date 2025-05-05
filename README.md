@@ -42,74 +42,53 @@ advantages:
 
 ### Workflow Structure
 
-The [main
+The end-to-end [rnaseq
 workflow](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/rnaseq)
 has 6 sub-workflows that can also be run independently.
 
 1.  [Prepare
     genome](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/prepare_genome):
-    This is a workflow for preparing all the reference data required for
-    downstream analysis, i.e., uncompress provided reference data or
-    generate the required index files (for STAR, Salmon, Kallisto, RSEM,
-    BBSplit).
+    Preparation of all the reference data required for downstream
+    analysis, i.e., uncompress provided reference data or generate the
+    required index files (for STAR, Salmon, Kallisto, RSEM, BBSplit).
 
 2.  [Pre-processing](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/pre_processing):
-    This is a workflow for performing quality control on the input reads
-    It performs FastQC, extracts UMIs, trims adapters, and removes
-    ribosomal RNA reads. Adapters can be trimmed using either Trim
-    galore! or fastp (work in progress).
+    Quality control on the input reads, performing FastQC, extracts
+    UMIs, trims adapters, and removal of ribosomal RNA reads. Adapters
+    can be trimmed using either Trim galore! or fastp (work in
+    progress).
 
 3.  [Genome alignment and
     quantification](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/genome_alignment_and_quant):
-    This is a workflow for performing genome alignment using STAR and
-    transcript quantification using Salmon or RSEM (using RSEM’s
-    built-in support for STAR) (work in progress). Alignment sorting and
-    indexing, as well as computation of statistics from the BAM files is
-    performed using Samtools. UMI-based deduplication is also performed.
+    Genome alignment using STAR and transcript quantification using
+    Salmon or RSEM (using RSEM’s built-in support for STAR) (work in
+    progress). Alignment sorting and indexing, as well as computation of
+    statistics from the BAM files is performed using Samtools. UMI-based
+    deduplication is also performed.
 
 4.  [Post-processing](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/post_processing):
-    This is a workflow for duplicate read marking (picard
-    MarkDuplicates), transcript assembly and quantification (StringTie),
-    and creation of bigWig coverage files.
+    Marking of duplicate reads (picard MarkDuplicates), transcript
+    assembly and quantification (StringTie), and creation of bigWig
+    coverage files.
 
 5.  [Pseudo alignment and
     quantification](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/pseudo_alignment_and_quant):
-    This is a workflow for performing pseudo alignment and transcript
-    quantification using Salmon or Kallisto.
+    Pseudo alignment and transcript quantification using Salmon or
+    Kallisto.
 
 6.  [Final
     QC](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/quality_control):
-    This is a workflow for performing extensive quality control (RSeQC,
-    dupRadar, Qualimap, Preseq, DESeq2, featureCounts). It presents QC
-    for raw reads, alignments, gene biotype, sample similarity, and
-    strand specificity (MultiQC).
-
-### Executing individual workflow steps
-
-At the moment, this pipeline makes use of the following components from
-[biobox](hhttps://www.viash-hub.com/packages/biobox/latest):
-
-- [`gffread`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/gffread)
-- [`star/star_genome_generate`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/star/star_genome_generate)
-- [`star/star_align_reads`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/star/star_align_reads)
-- [`salmon/salmon_index`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/salmon/salmon_index)
-- [`salmon/salmon_quant`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/salmon/salmon_quant)
-- [`featurecounts`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/featurecounts)
-- [`samtools/samtools_sort`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/samtools/samtools_sort)
-- [`samtools/samtools_index`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/samtools/samtools_index)
-- [`samtools/samtools_stats`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/samtools/samtools_stats)
-- [`samtools/samtools_flagstat`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/samtools/samtools_flagstat)
-- [`samtools/samtools_idxstats`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/samtools/samtools_idxstats)
-- [`multiqc`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/multiqc)
-  (work in progress - updating `assets/multiqc_config.yaml`)
-- [`fastp`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/fastp)
-  (work in progress)
-- [`rsem/rsem_prepare_reference`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/rsem/rsem_prepare_reference)
-  (work in progress)
-- [`rsem/rsem_calculate_expression`](https://www.viash-hub.com/packages/biobox/v0.3.0/components/rsem/rsem_calculate_expression)
-  (work in progress)
+    A quality control workflow performing RSeQC, dupRadar, Qualimap,
+    Preseq, DESeq2 and featureCounts. It presents QC for raw reads,
+    alignments, gene biotype, sample similarity, and strand specificity
+    (MultiQC).
 
 ## Example usage
+
+The rnaseq package is available via [Viash
+Hub](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components), where
+you can receive instructions on how to run the end-to-end workflow as
+well as individual subworkflows or components.
 
 ### Download test data
 
@@ -127,46 +106,41 @@ Additionally, a script has been provided to fetch some additional
 resources for unit testing the components. Thes will be stored under
 `testData/unit_test_resources`: `bin/get_unit test_data.sh`
 
-To get started, we need to:
-
-1.  Install
-    [`nextflow`](https://www.nextflow.io/docs/latest/getstarted.html)
-    system-wide
-2.  Fetch the test data:
+The test data can be downloaded by running the following commands:
 
 ``` bash
 bin/minimal_test.sh
 bin/get_minimal_test_data.sh
 ```
 
-## Run the Workflow
+### Run the workflow
 
-The main rnaseq workflow is available via [Viash
-Hub](https://viash.io/viash-hub/rnaseq.vsh/), where you can receive
-instructions on how to run the main workflow as well as individual
-subworkflows or components.
-
-To run the main workflow, browse to the
+To run the end-to-end workflow, browse to the
 [rnaseq](https://www.viash-hub.com/packages/rnaseq/v0.2.0/components/workflows/rnaseq)
 workflow on Viash Hub. Here you can find an overview on the formats of
 the input and output files, as well as a detailed list of required and
 optional parameters to run the workflow.
 
-### Run using Nextflow
+The workflow can be run via the CLI with Nextflow or on Seqera Cloud.
 
-After clicking launch, we can now follow the instructions on screen.
+#### Run using Nextflow
+
+After having
+[`nextflow`](https://www.nextflow.io/docs/latest/getstarted.html)
+installed, we can now follow the instructions on screen by clicking
+`launch`.
 
 ![](assets/launch_workflow.png)
 
-1.  In the first step, we choose our execution environment. In this
-    example, we choose Nextflow.
+1.  The first step is to select the execution environment, which is
+    Nextflow in this example.
 
 ![](assets/nextflow_execution.png)
 
 2.  We can now fill in the parameters for the workflow. In this example,
-    we choose the test data we downloaded earlier. We select the
-    `advanced form` option, to be able to process multiple samples in
-    parallel.
+    use the locations of the test data that were downloaded earlier. We
+    select the `advanced form` option, to be able to process multiple
+    samples in parallel.
 
 ![](assets/advanced_form.png)
 
@@ -176,7 +150,7 @@ apply to all samples.
 ![](assets/global_params.png)
 
 Then, we fill in our parameter sets - this is one parameter set for each
-samples. Note that each sample can consist of multiple fastq files!
+samples. Note that each sample can consist of multiple fastq files.
 
 ![](assets/parameter_set_1.png) ![](assets/parameter_set_2.png)
 
@@ -208,7 +182,7 @@ nextflow run https://packages.viash-hub.com/vsh/rnaseq.git \
   -resume
 ```
 
-### Run using Seqera Cloud
+#### Run using Seqera Cloud
 
 It’s also possible to run the workflow directly on [Seqera
 Cloud](https://cloud.seqera.io/). The required [Nextflow schema
@@ -225,42 +199,13 @@ Viash Hub to launch the
 
 ![](assets/seqera_cloud_execution.png)
 
-3.  We can now fill in the parameters, as described in step 2 under
-    `Run using Nextflow`. Note that the test data need to reside on a
-    cloud bucket for Seqera Cloud execution.
+3.  We can now fill in the parameters, as described under
+    [`Run using Nextflow`](#run-using-nextflow). Note that a direct link
+    to the test data needs to be provided for Seqera Cloud execution,
+    e.g. to test data in a GitHub repository or data on a cloud storage
+    service.
 4.  By launching the workflow via Viash Hub, it will be executed on
     Seqera Cloud in your workspace environment of choice.
-
-### Run using the CLI
-
-To run the workflow as an executable using the CLI,
-[Viash](https://viash.io/installation/) needs to be installed.
-
-1.  On Viash Hub, we can select `executable` as Execution Environment on
-    Viash Hub.
-
-![](assets/cli_execution.png)
-
-2.  We fill in the parameters, as described in step 2 under
-    `Run using Nextflow`.
-3.  When launching the workflow, we receive instruction on how to run
-    the workflow natively on your local machine via the CLI:
-
-``` bash
-viash run rnaseq@v0.2.0/workflows/rnaseq -- \
-  --fasta testData/minimal_test/reference/genome.fasta \
-  --gtf testData/minimal_test/reference/genes.gtf.gz \
-  --transcript_fasta testData/minimal_test/reference/transcriptome.fasta \
-  --id WT_REP1 \
-  --fastq_1 "SRR6357070_1.fastq.gz;SRR6357071_1.fastq.gz" \
-  --fastq_2 "SRR6357070_2.fastq.gz;SRR6357071_2.fastq.gz" \
-  --strandedness reverse\
-  ---engine native
-```
-
-Alternatively, we can run the workflow via the CLI using Nextflow, as
-described under `Run using Nextflow`. This is especially useful if you
-want to run multiple samples in parallel.
 
 ## (Optional) Resource Usage Tuning
 
@@ -291,8 +236,8 @@ labels to your needs, for example:
   withLabel: veryhighmem { memory = { get_memory( 48.GB * task.attempt ) } }
 ```
 
-When starting nextflow using the CLI, you can use -c to provide the file
-to nextflow and overwrite the defaults.
+When starting nextflow using the CLI, you can use the `-c` flag to
+provide the file to NextFlow and overwrite the defaults.
 
 ### Contributions
 
