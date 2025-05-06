@@ -39,10 +39,8 @@ resources:
   
 engines:
 - type: docker
-  image: ubuntu:22.04
+  image: rocker/r2u:22.04
   setup:
-    - type: apt
-      packages: [ r-base, libcurl4-openssl-dev ]
     - type: r
       bioc: [ SummarizedExperiment, tximeta ]
 runners: 
