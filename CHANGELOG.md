@@ -2,6 +2,8 @@
 
 ## Bug fixes
 
+* Fix `summarizedexperiment` build PR (#42).
+ 
 * Fix an issue with the `deseq2_qc` component not being able to create the DESeq2 object (PR #41).
 
 ## Known issues
