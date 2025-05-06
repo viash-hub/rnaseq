@@ -27,7 +27,6 @@ library(ggplot2)
 library(RColorBrewer)
 library(pheatmap)
 library(stringr)
-# setClassUnion("ExpData", c("matrix", "SummarizedExperiment"))
 
 if (file.exists(par$outdir) == FALSE) {
   dir.create(par$outdir, recursive = TRUE)
