@@ -19,10 +19,10 @@ config_mods: |
 
 repositories:
   - name: biobox
-    type: vsh
-    repo: biobox
+    type: git
+    uri: https://packages.viash-hub.com/vsh/biobox.git
     tag: main
   - name: craftbox
-    type: vsh
-    repo: craftbox
+    type: git
+    uri: https://packages.viash-hub.com/vsh/craftbox.git
     tag: v0.1.0
