@@ -68,8 +68,16 @@ test_resources:
 
 engines: 
   - type: docker
-    image: rocker/r2u:22.04
+    image: debian:latest
     setup:
+      - type: apt
+        packages:
+          - libcurl4-openssl-dev
+          - r-base
+          - r-base-core
+          - libxml2-dev
+          - procps
+          - libssl-dev
       - type: r
         cran: [ optparse, ggplot2, RColorBrewer, pheatmap, stringr, matrixStats ]
         bioc: [ DESeq2 ]
