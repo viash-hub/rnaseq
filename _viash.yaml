@@ -7,8 +7,8 @@ target: target
 
 info:
   test_resources:
-    - path: gs://viash-hub-resources/rnaseq/v1
-      dest: testData
+    - path: gs://viash-hub-resources/rnaseq/v1/
+      dest: testData/
 
 config_mods: |
   .requirements.commands := ['ps']
