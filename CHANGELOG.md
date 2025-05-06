@@ -1,9 +1,9 @@
-# RNAseq version x.y.z
+# rnaseq v0.2.1
 
-## Changes
+## Bug fixes
 
-- Add resources labels
-- Increase the number of components that are fetched from BioBox
+* Fix `summarizedexperiment` build PR (#42).
+ 
 
 ## Known issues
 
