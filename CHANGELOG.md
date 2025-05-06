@@ -1,9 +1,8 @@
-# RNAseq version x.y.z
+# rnaseq v0.2.1
 
-## Changes
+## Bug fixes
 
-- Add resources labels
-- Increase the number of components that are fetched from BioBox
+* Fix an issue with the `deseq2_qc` component not being able to create the DESeq2 object (PR #41).
 
 ## Known issues
 
