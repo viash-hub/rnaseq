@@ -8,4 +8,4 @@ on:
 
 jobs:
   test:
-    uses: viash-io/viash-actions/.github/workflows/test.yaml@fix-gs-sync
+    uses: viash-io/viash-actions/.github/workflows/test.yaml@v6
