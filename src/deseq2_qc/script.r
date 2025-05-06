@@ -101,7 +101,7 @@ saveRDS(dds, file = sub("\\.dds\\.RData$", ".rds", DDSFile))
 ##' @author Gavin Kelly
 
 plotPCA_vst <- function(object,  ntop = 500, assay = length(assays(object))) {
-  rv <- rowVars(assay(object, assay), useNames=FALSE)
+  rv <- rowVars(assay(object, assay), useNames = TRUE)
   select <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   pca <- prcomp(t(assay(object, assay)[select, ]), center = TRUE, scale = FALSE)
   percentVar <- pca$sdev^2 / sum(pca$sdev^2)
