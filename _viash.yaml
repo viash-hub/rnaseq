@@ -2,14 +2,6 @@ name: rnaseq
 
 viash_version: 0.9.2
 
-source: src
-target: target
-
-info:
-  test_resources:
-    - path: gs://viash-hub-resources/rnaseq/v1
-      dest: testData
-
 config_mods: |
   .requirements.commands := ['ps']
   .resources += {path: '/src/workflows/utils/labels.config', dest: 'nextflow_labels.config'}
@@ -25,3 +17,8 @@ repositories:
     type: vsh
     repo: craftbox
     tag: v0.1.0
+
+info:
+  test_resources:
+    - path: gs://viash-hub-resources/rnaseq/v1
+      dest: testData
