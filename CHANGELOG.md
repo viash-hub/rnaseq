@@ -2,7 +2,7 @@
 
 ## Minor changes
 
-* Pin biobox version to v0.3.1
+* Pin biobox version to v0.3.1 (PR #44).
 
 ## Bug fixes
 
