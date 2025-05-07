@@ -1,5 +1,5 @@
 name: rnaseq
-
+version: v0.3.0
 viash_version: 0.9.4
 
 config_mods: |
