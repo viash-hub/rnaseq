@@ -1,4 +1,4 @@
-# rnaseq v0.2.1
+# rnaseq v0.3.0
 
 ## Minor changes
 
