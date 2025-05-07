@@ -12,7 +12,7 @@ repositories:
   - name: biobox
     type: vsh
     repo: biobox
-    tag: main
+    tag: v0.3.1
   - name: craftbox
     type: vsh
     repo: craftbox

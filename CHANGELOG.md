@@ -1,5 +1,9 @@
 # rnaseq v0.2.1
 
+## Minor changes
+
+* Pin biobox version to v0.3.1 (PR #44).
+
 ## Bug fixes
 
 * Fix `summarizedexperiment` build PR (#42).
