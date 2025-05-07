@@ -4,6 +4,8 @@
 
 * Pin biobox version to v0.3.1 (PR #44).
 
+* Bump viash version to 0.9.4 (PR #45).
+
 ## Bug fixes
 
 * Fix `summarizedexperiment` build PR (#42).
