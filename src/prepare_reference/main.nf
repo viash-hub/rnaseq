@@ -31,11 +31,19 @@ workflow run_wf {
         toState: [ output_star_index: "index" ],
       )
 
+      | salmon_index.run(
+        fromState: [
+          transcripts: "input_genome_fasta"
+        ],
+        toState: [ output_salmon_index: "index" ]
+      )
+
       | setState(
         [
           output_genome_fasta: "input_genome_fasta",
           output_transcriptome_gtf: "input_transcriptome_gtf",
-          output_star_index: "output_star_index"
+          output_star_index: "output_star_index",
+          output_salmon_index: "output_salmon_index"
         ]
       )
 

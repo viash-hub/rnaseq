@@ -28,11 +28,17 @@ argument_groups:
         type: file
         direction: output
         default: "star_index"
+      - name: --output_salmon_index
+        type: file
+        direction: output
+        default: "salmon_index"
 
 dependencies:
   - name: bgzip
     repository: toolbox
   - name: star/star_genome_generate
+    repository: biobox
+  - name: salmon/salmon_index
     repository: biobox
 
 resources:
