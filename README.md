@@ -18,22 +18,22 @@ flowchart TB
   inputs:::io
 
   input_r1 & input_r2 & sample_metadata --> prepare_reads --> processed_r1 & processed_r2 & processed_metadata
-  prepare_reads:::comp
+  prepare_reads[/prepare_reads/]:::comp
 
   reference_fasta & reference_gtf --> prepare_reference --> processed_fasta & processed_gtf & star_index
-  prepare_reference:::comp
+  prepare_reference[/prepare_reference/]:::comp
 
   processed_r1 & processed_r2 & star_index & processed_fasta & processed_gtf --> align_and_quant --> aligned_reads_bam & quant_matrix
-  align_and_quant:::comp
+  align_and_quant[/align_and_quant/]:::comp
 
   aligned_reads_bam --> postprocess_bam --> output_aligned_reads_bam
-  postprocess_bam:::comp
+  postprocess_bam[/postprocess_bam/]:::comp
 
   quant_matrix & processed_metadata --> postprocess_mtx --> output_quant_matrix
-  postprocess_mtx:::comp
+  postprocess_mtx[/postprocess_mtx/]:::comp
 
   processed_metadata & output_quant_matrix & output_combined_qc_data --> conversion --> output_anndata & output_sce
-  conversion:::comp
+  conversion[/conversion/]:::comp
 
   subgraph outputs[Outputs]
     output_aligned_reads_bam[Aligned reads]
@@ -46,7 +46,7 @@ flowchart TB
   outputs:::io
 
   subgraph legend[Legend]
-    comp[Component]:::comp
+    comp[/Component/][//]:::comp
   end
   legend:::info
 
@@ -69,32 +69,32 @@ flowchart TB
   inputs:::io
 
   input_r1 & input_r2 & sample_metadata --> prepare_reads --> processed_r1 & processed_r2 & processed_metadata
-  prepare_reads:::comp
+  prepare_reads[/prepare_reads/]:::comp
 
   prepare_reads -.-> prepare_reads_qc_data
 
   reference_fasta & reference_gtf --> prepare_reference --> processed_fasta & processed_gtf & star_index
-  prepare_reference:::comp
+  prepare_reference[/prepare_reference/]:::comp
 
   prepare_reference -.-> prepare_reference_qc_data
 
   processed_r1 & processed_r2 & star_index & processed_fasta & processed_gtf --> align_and_quant --> aligned_reads_bam & quant_matrix
-  align_and_quant:::comp
+  align_and_quant[/align_and_quant/]:::comp
   align_and_quant -.-> align_and_quant_qc_data
 
   aligned_reads_bam --> postprocess_bam --> output_aligned_reads_bam
-  postprocess_bam:::comp
+  postprocess_bam[/postprocess_bam/]:::comp
   postprocess_bam -.-> postprocess_bam_qc_data
 
   quant_matrix & processed_metadata --> postprocess_mtx --> output_quant_matrix
-  postprocess_mtx:::comp
+  postprocess_mtx[/postprocess_mtx/]:::comp
   postprocess_mtx -.-> postprocess_mtx_qc_data
 
   prepare_reads_qc_data & prepare_reference_qc_data & align_and_quant_qc_data & postprocess_bam_qc_data & postprocess_mtx_qc_data -.-> reporting -.-> output_combined_qc_data & output_combined_qc_report
-  reporting:::comp
+  reporting[/reporting/]:::comp
 
   processed_metadata & output_quant_matrix & output_combined_qc_data --> conversion --> output_anndata & output_sce
-  conversion:::comp
+  conversion[/conversion/]:::comp
 
   subgraph outputs[Outputs]
     output_aligned_reads_bam[Aligned reads]
@@ -107,7 +107,7 @@ flowchart TB
   outputs:::io
 
   subgraph legend[Legend]
-    comp[Component]:::comp
+    comp[/Component/][//]:::comp
   end
   legend:::info
 
