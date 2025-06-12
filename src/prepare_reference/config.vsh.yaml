@@ -26,10 +26,9 @@ argument_groups:
         type: file
         direction: output
 
-dependencies: []
-  # # example
-  # - name: ungzip
-  #   repository: biobox
+dependencies:
+  - name: bgzip
+    repository: toolbox
 
 resources:
   - type: nextflow_script
