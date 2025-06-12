@@ -1,4 +1,4 @@
-name: prepare_genome
+name: prepare_reference
 description: |
   Prepare genome and transcriptome FASTA files for STAR alignment by adding
   necessary headers and creating a STAR index.
@@ -38,7 +38,7 @@ dependencies:
 resources:
   - type: nextflow_script
     path: main.nf
-    entrypoint: run
+    entrypoint: run_wf
 
 runners:
   - type: nextflow

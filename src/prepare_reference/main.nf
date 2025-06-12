@@ -1,11 +1,11 @@
-workflow run {
+workflow run_wf {
   take: input_ch
   main:
     output_ch = input_ch
 
       | bgzip.run(
         runIf: { id, state ->
-            state.input_genome_fasta.endsWith(".gz")
+            state.input_genome_fasta.toString().endsWith(".gz")
         },
         key: "bgzip_genome_fasta",
         fromState: [ input: "input_genome_fasta" ],
@@ -15,7 +15,7 @@ workflow run {
 
       | bgzip.run(
         runIf: { id, state ->
-            state.input_transcriptome_gtf.endsWith(".gz")
+            state.input_transcriptome_gtf.toString().endsWith(".gz")
         },
         key: "bgzip_transcriptome_gtf",
         fromState: [ input: "input_transcriptome_gtf" ],

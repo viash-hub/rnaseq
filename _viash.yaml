@@ -14,7 +14,7 @@ repositories:
   - name: toolbox
     type: vsh
     repo: toolbox
-    tag: v0.1.0
+    tag: v0.1.1
 
 info:
   test_resources:
