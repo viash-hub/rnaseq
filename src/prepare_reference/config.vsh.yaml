@@ -18,17 +18,22 @@ argument_groups:
         type: file
         direction: output
         example: "genome.fasta"
+        default: "genome.fasta"
       - name: --output_transcriptome_gtf
         type: file
         direction: output
         example: "transcriptome.gtf"
+        default: "transcriptome.gtf"
       - name: --output_star_index
         type: file
         direction: output
+        default: "star_index"
 
 dependencies:
   - name: bgzip
     repository: toolbox
+  - name: star/star_genome_generate
+    repository: biobox
 
 resources:
   - type: nextflow_script

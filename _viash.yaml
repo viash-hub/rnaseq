@@ -11,6 +11,10 @@ repositories:
     type: vsh
     repo: craftbox
     tag: v0.1.0
+  - name: toolbox
+    type: vsh
+    repo: toolbox
+    tag: v0.1.0
 
 info:
   test_resources:
