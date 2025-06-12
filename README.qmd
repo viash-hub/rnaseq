@@ -9,7 +9,7 @@ format: gfm
 library(tidyverse)
 ```
 
-Main workflow
+## RNA-seq
 
 ```{mermaid}
 flowchart TB
@@ -67,10 +67,7 @@ flowchart TB
   legend:::info
 
 
-  classDef comp fill:#decbe4
-  classDef io fill:#f0f0f0,stroke:#525252
-  classDef subwf fill:#d9d9d9,stroke:#525252
-  classDef info fill:#f0f0f0,stroke:#525252,stroke-dasharray: 4 4
+  classDef info stroke-dasharray: 4 4
 ```
 
 ## Prepare reads
@@ -98,8 +95,5 @@ flowchart TB
     prepare_reads_qc_data
   end
 
-  classDef comp fill:#decbe4
-  classDef io fill:#f0f0f0,stroke:#525252
-  classDef subwf fill:#d9d9d9,stroke:#525252
-  classDef info fill:#f0f0f0,stroke:#525252,stroke-dasharray: 4 4
+  classDef info stroke-dasharray: 4 4
 ```
