@@ -2,12 +2,6 @@ name: rnaseq
 
 viash_version: 0.9.4
 
-config_mods: |
-  .requirements.commands := ['ps']
-  .resources += {path: '/src/workflows/utils/labels.config', dest: 'nextflow_labels.config'}
-  .runners[.type == 'nextflow'].directives.tag := '$id'
-  .runners[.type == 'nextflow'].config.script := 'includeConfig("nextflow_labels.config")'
-
 repositories:
   - name: biobox
     type: vsh
