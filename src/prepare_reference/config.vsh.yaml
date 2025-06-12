@@ -1,7 +1,7 @@
 name: prepare_reference
 description: |
-  Prepare genome and transcriptome FASTA files for STAR alignment by adding
-  necessary headers and creating a STAR index.
+  Prepare genome and transcriptome FASTA files for STAR and SALMON alignment by adding
+  necessary headers and creating a STAR and SALMON index.
 
 argument_groups:
   - name: Inputs
