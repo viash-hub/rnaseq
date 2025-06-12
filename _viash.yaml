@@ -15,4 +15,4 @@ repositories:
 info:
   test_resources:
     - path: gs://viash-hub-resources/rnaseq/v1
-      dest: testData
+      dest: resources_test
