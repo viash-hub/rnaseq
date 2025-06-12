@@ -1,0 +1,31 @@
+name: prepare_genome
+description: |
+  Prepare genome and transcriptome FASTA files for STAR alignment by adding
+  necessary headers and creating a STAR index.
+
+argument_groups:
+  - name: Inputs
+    arguments:
+      - name: --input_genome_fasta
+        type: file
+      - name: --input_transcriptome_fasta
+        type: file
+  - name: Outputs
+    arguments:
+      - name: --output_genome_fasta
+        type: file
+        direction: output
+      - name: --output_transcriptome_fasta
+        type: file
+        direction: output
+      - name: --output_star_index
+        type: file
+        direction: output
+
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run
+
+runners:
+  - type: nextflow
