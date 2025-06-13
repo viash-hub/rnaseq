@@ -142,3 +142,37 @@ flowchart TB
 
   classDef info stroke-dasharray: 4 4
 ```
+
+## Alignment and quantification
+
+``` mermaid
+flowchart TB
+
+  subgraph inputs[Inputs]
+    input_r1[Input R1 FASTQ]
+    input_r2[Input R2 FASTQ]
+    input_transcript_fasta[Transcript FASTA]
+    input_gtf[GTF]
+    input_star_genome_dir[STAR index]
+  end
+
+  input_r1 & input_r2 & input_star_genome_dir  & input_gtf -->
+    star_align_reads[/STAR align/] -->
+    output_star_bam_genome & reads_aligned_to_transcriptome & output_star_junctions & output_star_log
+
+  reads_aligned_to_transcriptome[Reads aligned to transcriptome] & input_gtf & input_transcript_fasta -->
+    salmon_quant_alignment[/"salmon quant (alignment)"/]  -->
+    output_salmon
+
+  reads_aligned_to_transcriptome --> output_star_bam_transcriptome
+
+  subgraph outputs[Outputs]
+    output_star_bam_genome[STAR genome BAM]
+    output_star_junctions[STAR splice junctions]
+    output_star_log[STAR log]
+    output_star_bam_transcriptome[STAR transcipt BAM]
+    output_salmon[Salmon quantification directory]
+  end
+
+  classDef info stroke-dasharray: 4 4
+```
