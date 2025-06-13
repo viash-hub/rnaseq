@@ -162,11 +162,11 @@ flowchart TB
     input_star_genome_dir[STAR index]
   end
 
-  input_r1 & input_r2 & input_gtf & input_star_genome_dir -->
+  input_r1 & input_r2 & input_star_genome_dir  & input_gtf -->
     star_align_reads -->
     output_star_bam_genome & reads_aligned_to_transcriptome & output_star_junctions & output_star_log
 
-  reads_aligned_to_transcriptome & input_transcript_fasta & input_gtf -->
+  reads_aligned_to_transcriptome & input_gtf & input_transcript_fasta -->
     salmon_quant_alignment  -->
     output_salmon
 
@@ -174,9 +174,9 @@ flowchart TB
 
   subgraph outputs[Outputs]
     output_star_bam_genome[STAR genome BAM]
-    output_star_bam_transcriptome[STAR transcipt BAM]
     output_star_junctions[STAR splice junctions]
     output_star_log[STAR log]
+    output_star_bam_transcriptome[STAR transcipt BAM]
     output_salmon[Salmon quantification]
   end
 
