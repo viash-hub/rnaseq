@@ -12,18 +12,25 @@ argument_groups:
       - name: --input_r2
         type: file
         required: true
+      - name: --input_gtf
+        type: file
+        required: true
       - name: --input_star_genome_dir
         type: file
         required: true
-      # - name: --input_salmon_index
-      #   type: file
-      #   required: true
+      - name: --input_salmon_index
+        type: file
+        required: true
   - name: Outputs
     arguments:
-      - name: --output_star_bam
+      - name: --output_star_bam_genome
         type: file
         direction: output
-        default: star/aligned.bam
+        default: star/aligned_genome.bam
+      - name: --output_star_bam_transcriptome
+        type: file
+        direction: output
+        default: star/aligned_transcriptome.bam
       - name: --output_star_junctions
         type: file
         direction: output
@@ -32,11 +39,15 @@ argument_groups:
         type: file
         direction: output
         default: star/log.out
-      # - name: --output_salmon
-      #   type: file
+      - name: --output_salmon
+        type: file
+        direction: output
+        default: salmon
 
 dependencies:
   - name: star/star_align_reads
+    repository: biobox
+  - name: salmon/salmon_quant
     repository: biobox
 
 resources:
