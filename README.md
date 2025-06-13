@@ -46,7 +46,7 @@ flowchart TB
   outputs:::io
 
   subgraph legend[Legend]
-    comp[/Component/][//]:::comp
+    comp[/Component/]:::comp
   end
   legend:::info
 
@@ -107,7 +107,7 @@ flowchart TB
   outputs:::io
 
   subgraph legend[Legend]
-    comp[/Component/][//]:::comp
+    comp[/Component/]:::comp
   end
   legend:::info
 
