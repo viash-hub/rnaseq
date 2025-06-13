@@ -1,0 +1,69 @@
+name: prepare_reference
+description: |
+  Prepare genome and transcriptome FASTA files for STAR and SALMON alignment by adding
+  necessary headers and creating a STAR and SALMON index.
+
+argument_groups:
+  - name: Inputs
+    arguments:
+      - name: --input_genome_fasta
+        type: file
+        example: "genome.fasta.gz"
+      - name: --input_transcriptome_gtf
+        type: file
+        example: "genes.gtf.gz"
+      - name: --additional_fasta
+        type: file
+        example: "additional.fasta.gz"
+        description: "Optional FASTA file to concatenate to genome FASTA file, e.g. containing spike-in sequences."
+ 
+  - name: Options
+    arguments:
+      - name: --biotype
+        type: string
+        description: "Biotype value to use when appending entries to GTF file when additional FASTA file is provided."
+ 
+  - name: Outputs
+    arguments:
+      - name: --output_genome_fasta
+        type: file
+        direction: output
+        example: "genome.fasta"
+        default: "genome.fasta"
+      - name: --output_transcriptome_gtf
+        type: file
+        direction: output
+        example: "transcriptome.gtf"
+        default: "transcriptome.gtf"
+      - name: --output_star_index
+        type: file
+        direction: output
+        default: "star_index"
+      - name: --output_salmon_index
+        type: file
+        direction: output
+        default: "salmon_index"
+
+dependencies:
+  - name: bgzip
+    repository: toolbox
+  - name: star/star_genome_generate
+    repository: biobox
+  - name: salmon/salmon_index
+    repository: biobox
+  - name: cat_additional_fasta
+
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+  - path: /src/utils/is_gzipped.nf
+
+test_resources:
+  - type: nextflow_script
+    path: test.nf
+    entrypoint: test_wf
+  - path: /resources_test/minimal_test/reference
+
+runners:
+  - type: nextflow
