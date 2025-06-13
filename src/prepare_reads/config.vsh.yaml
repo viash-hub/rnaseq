@@ -1,0 +1,53 @@
+name: prepare_reads
+
+argument_groups:
+  - name: Inputs
+    arguments:
+      - name: --input_r1 
+        type: file
+        example: "reads_R1.fastq.gz"
+        multiple: true
+      - name: --input_r2
+        type: file
+        example: "reads_R2.fastq.gz"
+        multiple: true
+        required: false
+      - name: --input_strandedness
+        type: string
+        example: "auto"
+        required: false
+  - name: Outputs
+    arguments:
+      - name: --output_r1
+        type: file
+        direction: output
+        example: "fastq.gz"
+        required: true
+      - name: --output_r2
+        type: file
+        direction: output
+        example: "fastq.gz"
+        required: false
+      - name: --output_strandedness
+        type: string
+        direction: output
+        required: true
+
+dependencies:
+  - name: concat_text
+    repository: craftbox
+    alias: concat_r1
+  - name: concat_text
+    repository: craftbox
+    alias: concat_r2
+  - name: fastqc
+    repository: biobox
+    alias: fastqc_raw
+
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+
+runners:
+  - type: nextflow
