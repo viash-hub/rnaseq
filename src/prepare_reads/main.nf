@@ -24,7 +24,17 @@ workflow run_wf {
 
       // TODO: add fq linter
 
-      // TODO: run fastqc on raw reads
+      // run fastqc on raw reads
+      | fastqc_raw.run(
+        fromState: { id, state ->
+          [
+            input: [state.processed_r1, state.processed_r2]
+          ]
+        },
+        toState: {
+          fastqc_raw_zip: "zip"
+        }
+      )
 
       // TODO: add fq trimmer (trimgalore or fastp)
 

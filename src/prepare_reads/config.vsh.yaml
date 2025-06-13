@@ -40,6 +40,9 @@ dependencies:
   - name: concat_text
     repository: craftbox
     alias: concat_r2
+  - name: fastqc
+    repository: biobox
+    alias: fastqc_raw
 
 resources:
   - type: nextflow_script
