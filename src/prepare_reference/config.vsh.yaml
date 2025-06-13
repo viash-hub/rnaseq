@@ -47,5 +47,11 @@ resources:
     entrypoint: run_wf
   - path: /src/utils/is_gzipped.nf
 
+test_resources:
+  - type: nextflow_script
+    path: test.nf
+    entrypoint: test_wf
+  - path: /resources_test/minimal_test/reference
+
 runners:
   - type: nextflow
