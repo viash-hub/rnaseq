@@ -1,3 +1,5 @@
+include { isGzipped } from meta.resources_dir + "/is_gzipped.nf"
+
 workflow run_wf {
   take: input_ch
   main:
@@ -5,7 +7,7 @@ workflow run_wf {
 
       | bgzip.run(
         runIf: { id, state ->
-            state.input_genome_fasta.toString().endsWith(".gz")
+            isGzipped(state.input_genome_fasta)
         },
         key: "bgzip_genome_fasta",
         fromState: [ input: "input_genome_fasta" ],
@@ -15,7 +17,7 @@ workflow run_wf {
 
       | bgzip.run(
         runIf: { id, state ->
-            state.input_transcriptome_gtf.toString().endsWith(".gz")
+            isGzipped(state.input_transcriptome_gtf)
         },
         key: "bgzip_transcriptome_gtf",
         fromState: [ input: "input_transcriptome_gtf" ],

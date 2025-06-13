@@ -45,6 +45,7 @@ resources:
   - type: nextflow_script
     path: main.nf
     entrypoint: run_wf
+  - path: /src/utils/is_gzipped.nf
 
 runners:
   - type: nextflow
