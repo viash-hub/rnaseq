@@ -12,6 +12,17 @@ argument_groups:
       - name: --input_transcriptome_gtf
         type: file
         example: "genes.gtf.gz"
+      - name: --additional_fasta
+        type: file
+        example: "additional.fasta.gz"
+        description: "Optional FASTA file to concatenate to genome FASTA file, e.g. containing spike-in sequences."
+ 
+  - name: Options
+    arguments:
+      - name: --biotype
+        type: string
+        description: "Biotype value to use when appending entries to GTF file when additional FASTA file is provided."
+ 
   - name: Outputs
     arguments:
       - name: --output_genome_fasta
@@ -40,6 +51,7 @@ dependencies:
     repository: biobox
   - name: salmon/salmon_index
     repository: biobox
+  - name: cat_additional_fasta
 
 resources:
   - type: nextflow_script
