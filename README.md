@@ -142,3 +142,30 @@ flowchart TB
 
   classDef info stroke-dasharray: 4 4
 ```
+
+## Prepare reference
+
+``` mermaid
+flowchart TB
+
+  subgraph inputs[Inputs]
+    input_genome_fasta[Input genome Fasta]
+    input_transcriptome_gtf[Input transcriptome GTF]
+  end
+
+  input_genome_fasta --> output_genome_fasta
+  input_genome_fasta --> bgzip_genome_fasta
+  input_transcriptome_gtf --> bgzip_transcriptome_gtf
+  input_transcriptome_gtf --> output_transcriptome_gtf
+  bgzip_genome_fasta --> salmon_index --> output_salmon_index
+  bgzip_genome_fasta & bgzip_transcriptome_gtf --> star_genome_generate --> output_star_index
+
+  subgraph outputs[Outputs]
+    output_star_index
+    output_salmon_index
+    output_genome_fasta
+    output_transcriptome_gtf
+  end
+
+  classDef info stroke-dasharray: 4 4
+```
