@@ -1,0 +1,75 @@
+name: post_processing
+namespace: workflows
+scope: public
+argument_groups:
+  - name: "Input"
+    arguments:
+      - name: "--id"
+        required: true
+        type: string
+        description: ID of the sample.
+        example: foo
+      - name: "--fasta"
+        type: file
+        description: Path to FASTA genome file.
+        required: true
+      - name: "--fai"
+        type: file
+        description: Path to genome FASTA index
+        required: true
+      - name: "--gtf"
+        type: file
+        description: GTF file
+      - name: "--genome_bam"
+        type: file
+        description: Genome BAM file
+      - name: "--bam_csi_index"
+        type: boolean
+        default: false
+        description: |
+          Create a CSI index for BAM files instead of the traditional BAI index.
+          This will be required for genomes with larger chromosome sizes.
+  - name: "Output"
+    arguments:
+      - name: "--processed_genome_bam"
+        type: file
+        direction: output
+        default: $id.genome.bam
+      - name: "--genome_bam_index"
+        type: file
+        direction: output
+        default: $id.genome.bam.bai
+      - name: "--genome_bam_stats"
+        type: file
+        direction: output
+        default: $id.genome.stats
+      - name: "--genome_bam_flagstat"
+        type: file
+        direction: output
+        default: $id.genome.flagstat
+      - name: "--genome_bam_idxstats"
+        type: file
+        direction: output
+        default: $id.genome.idxstats
+      - name: "--markduplicates_metrics"
+        type: file
+        direction: output
+        default: $id.MarkDuplicates.metrics.txt
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+dependencies:
+  - name: picard_markduplicates
+  - name: samtools/samtools_sort
+    repository: biobox
+  - name: samtools/samtools_index
+    repository: biobox
+  - name: samtools/samtools_stats
+    repository: biobox
+  - name: samtools/samtools_flagstat
+    repository: biobox
+
+runners: 
+- type: executable
+- type: nextflow
