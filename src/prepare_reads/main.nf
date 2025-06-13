@@ -4,7 +4,7 @@ workflow run_wf {
   main:
     output_ch = input_ch
 
-      | concat_text.run(
+      | concat_r1.run(
         fromState: [
           input: "input_r1"
         ],
@@ -13,12 +13,41 @@ workflow run_wf {
         ]
       )
 
-      | concat_text.run(
+      | concat_r2.run(
         fromState: [
           input: "input_r2"
         ],
         toState: [
           processed_r2: "output"
+        ]
+      )
+
+      // TODO: add fq linter
+
+      // TODO: run fastqc on raw reads
+
+      // TODO: add fq trimmer (trimgalore or fastp)
+
+      // TODO: run fastqc on trimmed reads
+      // TODO: lint again?
+
+      // TODO: remove genome contaminant reads (bbmap_bbsplit)
+      // TODO: lint again?
+
+      // TODO: remove ribosomal RNA reads (sortmerna)
+      // TODO: lint again?
+      
+      // TODO: infer strandedness (if not provided)
+      | map { id, state ->
+        def newState = state + ["strandedness": "forward"]
+        [id, newState]
+      }
+
+      | setState(
+        [
+          output_r1: "processed_r1",
+          output_r2: "processed_r2",
+          output_strandedness: "strandedness"
         ]
       )
   
