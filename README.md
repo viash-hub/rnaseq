@@ -157,11 +157,11 @@ flowchart TB
   end
 
   input_r1 & input_r2 & input_star_genome_dir  & input_gtf -->
-    star_align_reads -->
+    star_align_reads[/STAR align/] -->
     output_star_bam_genome & reads_aligned_to_transcriptome & output_star_junctions & output_star_log
 
   reads_aligned_to_transcriptome & input_gtf & input_transcript_fasta -->
-    salmon_quant_alignment  -->
+    salmon_quant_alignment[/"salmon quant (alignment)"/]  -->
     output_salmon
 
   reads_aligned_to_transcriptome --> output_star_bam_transcriptome
