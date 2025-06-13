@@ -12,13 +12,13 @@ argument_groups:
       - name: --input_r2
         type: file
         required: true
+      - name: --input_transcript_fasta
+        type: file
+        required: true
       - name: --input_gtf
         type: file
         required: true
       - name: --input_star_genome_dir
-        type: file
-        required: true
-      - name: --input_salmon_index
         type: file
         required: true
   - name: Outputs

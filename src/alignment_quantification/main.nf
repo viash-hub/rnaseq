@@ -30,16 +30,17 @@ workflow run_wf {
         ]
       )
 
-    //   | salmon_quant.run(
-    //     fromState: [
-    //       alignments: "aligned_reads",
-    //       index: "input_salmon_index"
-    //     ],
-    //     args: [lib_type: "A"],
-    //     toState: [
-    //       output_salmon: "output"
-    //     ]
-    //   )
+      | salmon_quant.run(
+        fromState: [
+          alignments: "output_star_bam_transcriptome",
+          targets: "input_transcript_fasta",
+          gene_map: "input_gtf"
+        ],
+        args: [lib_type: "A"],
+        toState: [
+          output_salmon: "output"
+        ]
+      )
 
       | setState(
         [
@@ -47,7 +48,7 @@ workflow run_wf {
           output_star_bam_transcriptome: "output_star_bam_transcriptome",
           output_star_junctions: "output_star_junctions",
           output_star_log: "output_star_log",
-        //   output_salmon: "output_salmon"
+          output_salmon: "output_salmon"
         ]
       )
 
