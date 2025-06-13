@@ -127,23 +127,29 @@ flowchart TB
 flowchart TB
 
   subgraph inputs[Inputs]
-    input_r1[Input R1 FastQ]
-    input_r2[Input R2 FastQ]
-    sample_metadata[Sample metadata]
+    input_r1[R1 reads]
+    input_r2[R2 reads]
+    input_strandedness[Strandedness]
   end
 
-  input_r1 --> cat_fastq_r1 --> trim_r1 --> infer_strandedness_r1 --> processed_r1
-  input_r2 --> cat_fastq_r2 --> trim_r2 --> infer_strandedness_r2 --> processed_r2
+  input_r1 --> concat_text_r1[/concat_text/]:::comp
+  input_r2 --> concat_text_r2[/concat_text/]:::comp
+  concat_text_r1 & concat_text_r2 --> lint_fastq1[/lint_fastq/]:::comp --> trim_reads[/trim_reads/]:::comp --> lint_fastq2[/lint_fastq/]:::comp --> remove_genome_contaminants[/remove_genome_contaminants/]:::comp --> lint_fastq3[/lint_fastq/]:::comp --> remove_rRNA[/remove_rRNA/]:::comp --> lint_fastq4[/lint_fastq/]:::comp --> infer_strandedness[/infer_strandedness/]:::comp --> processed_r1 & processed_r2 & output_strandedness
 
-  processed_r1 & processed_r2 --> fastqc --> prepare_reads_qc_data
+  input_strandedness --> infer_strandedness
+  
 
-  sample_metadata --> processed_metadata
+  concat_text_r1 & concat_text_r2 --> fastqc_raw[/fastqc_raw/]:::comp --> fastqc_raw_multiqc
+  trim_reads --> fastqc_trimmed[/fastqc_trimmed/]:::comp --> fastqc_trimmed_multiqc
+  infer_strandedness --> strandedness_multiqc
+  fastqc_raw_multiqc & fastqc_trimmed_multiqc & strandedness_multiqc --> prepare_reads_multiqc
+
 
   subgraph outputs[Outputs]
-    processed_r1
-    processed_r2
-    processed_metadata
-    prepare_reads_qc_data
+    processed_r1[R1 reads]
+    processed_r2[R2 reads]
+    output_strandedness[Strandedness]
+    prepare_reads_multiqc[MultiQC files]
   end
 
   classDef info stroke-dasharray: 4 4
