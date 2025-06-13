@@ -160,7 +160,7 @@ flowchart TB
     star_align_reads[/STAR align/] -->
     output_star_bam_genome & reads_aligned_to_transcriptome & output_star_junctions & output_star_log
 
-  reads_aligned_to_transcriptome & input_gtf & input_transcript_fasta -->
+  reads_aligned_to_transcriptome[Reads aligned to transcriptome] & input_gtf & input_transcript_fasta -->
     salmon_quant_alignment[/"salmon quant (alignment)"/]  -->
     output_salmon
 
@@ -171,7 +171,7 @@ flowchart TB
     output_star_junctions[STAR splice junctions]
     output_star_log[STAR log]
     output_star_bam_transcriptome[STAR transcipt BAM]
-    output_salmon[Salmon quantification]
+    output_salmon[Salmon quantification directory]
   end
 
   classDef info stroke-dasharray: 4 4
