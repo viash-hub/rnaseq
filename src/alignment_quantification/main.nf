@@ -3,6 +3,7 @@ workflow run_wf {
   main:
     output_channel = input_channel
 
+      // Align reads to genome and transcriptome using STAR
       | star_align_reads.run(
         fromState: [
           genome_dir: "input_star_genome_dir",
@@ -17,7 +18,7 @@ workflow run_wf {
           // read_files_command: "zcat", // See https://github.com/viash-hub/biobox/issues/178
           run_rng_seed: 0,
           out_filter_multimap_nmax: 20,
-          // --alignSJDBoverhangMin 1
+          // --alignSJDBoverhangMin 1 // Argument not exposed by component
           out_sam_attributes: ["NH", "HI", "AS", "NM", "MD"],
           out_sam_strand_field: "intronMotif",
           quant_transcriptome_sam_output: "BanSingleEnd"
@@ -30,6 +31,7 @@ workflow run_wf {
         ]
       )
 
+      // Quantify expression using salmon in alignment-based modes
       | salmon_quant.run(
         fromState: [
           alignments: "output_star_bam_transcriptome",
@@ -42,6 +44,7 @@ workflow run_wf {
         ]
       )
 
+      // Set output files
       | setState(
         [
           output_star_bam_genome: "output_star_bam_genome",
