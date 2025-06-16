@@ -31,6 +31,26 @@ workflow run_wf {
         ]
       )
 
+    // Sort and index STAR genome alignment
+    samtools_ch = star_ch
+      | samtools_sort.run(
+        fromState: [
+          input: "star_bam_genome",
+          reference: "input_genome_fasta"
+        ],
+        toState: [
+          sorted_bam: "output"
+        ]
+      )
+      | samtools_index.run(
+        fromState: [
+          input: "sorted_bam"
+        ],
+        toState: [
+          sorted_bam_index: "output"
+        ]
+      )
+
     // Quantify expression using salmon in alignment-based mode
     salmon_ch = star_ch
       | salmon_quant.run(
@@ -46,10 +66,11 @@ workflow run_wf {
       )
 
     // Set output files
-    output_channel = star_ch.join(salmon_ch)
-    | map { id, star_state, salmon_state ->
+    output_channel = star_ch.join(salmon_ch).join(samtools_ch)
+    | map { id, star_state, salmon_state, samtools_state ->
       def output_state = [
-        output_star_bam_genome: star_state.star_bam_genome,
+        output_star_bam_genome: samtools_state.sorted_bam,
+        output_star_bam_genome_index: samtools_state.sorted_bam_index,
         output_star_bam_transcriptome: star_state.star_bam_transcriptome,
         output_star_junctions: star_state.star_junctions,
         output_star_log: star_state.star_log,

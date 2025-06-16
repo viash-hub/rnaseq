@@ -14,6 +14,10 @@ argument_groups:
         type: file
         description: FASTQ file containing read 2
         required: true
+      - name: --input_genome_fasta
+        type: file
+        description: FASTA file containing genome sequences
+        required: true
       - name: --input_transcript_fasta
         type: file
         description: FASTA file containing transcript sequences
@@ -31,8 +35,13 @@ argument_groups:
       - name: --output_star_bam_genome
         type: file
         direction: output
-        description: BAM file containing reads aligned to the genome using STAR
-        default: star/aligned_genome.bam
+        description: Sorted BAM file containing reads aligned to the genome using STAR
+        default: star/aligned_genome_sorted.bam
+      - name: --output_star_bam_genome_index
+        type: file
+        direction: output
+        description: Index for the sorted BAM file containing reads aligned to the genome using STAR
+        default: star/aligned_genome_sorted.bam.bai
       - name: --output_star_bam_transcriptome
         type: file
         direction: output
@@ -56,6 +65,8 @@ argument_groups:
 
 dependencies:
   - name: salmon/salmon_quant
+    repository: biobox
+  - name: samtools/samtools_index
     repository: biobox
   - name: samtools/samtools_sort
     repository: biobox
