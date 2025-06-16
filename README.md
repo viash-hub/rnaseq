@@ -149,12 +149,12 @@ flowchart TB
 flowchart TB
 
   subgraph inputs[Inputs]
+    input_genome_fasta[Genome FASTA]
     input_r1[Input R1 FASTQ]
     input_r2[Input R2 FASTQ]
-    input_genome_fasta[Genome FASTA]
-    input_transcript_fasta[Transcript FASTA]
-    input_gtf[GTF]
     input_star_genome_dir[STAR index]
+    input_gtf[GTF]
+    input_transcript_fasta[Transcript FASTA]
   end
 
   input_r1 & input_r2 & input_star_genome_dir  & input_gtf -->
@@ -181,7 +181,7 @@ flowchart TB
     output_star_bam_genome_index[STAR genome BAM index]
     output_star_junctions[STAR splice junctions]
     output_star_log[STAR log]
-    output_star_bam_transcriptome[STAR transcipt BAM]
+    output_star_bam_transcriptome[STAR transcript BAM]
     output_salmon[Salmon quantification directory]
   end
 
