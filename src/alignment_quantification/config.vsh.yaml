@@ -1,0 +1,82 @@
+name: alignment_quantification
+description: |
+  Align reads to the genome using STAR and quantify gene expression using
+  Salmon in alignment mode
+
+argument_groups:
+  - name: Inputs
+    arguments:
+      - name: --input_r1
+        type: file
+        description: FASTQ file containing read 1
+        required: true
+      - name: --input_r2
+        type: file
+        description: FASTQ file containing read 2
+        required: true
+      - name: --input_genome_fasta
+        type: file
+        description: FASTA file containing genome sequences
+        required: true
+      - name: --input_transcript_fasta
+        type: file
+        description: FASTA file containing transcript sequences
+        required: true
+      - name: --input_gtf
+        type: file
+        description: GTF file containing sequence annotations
+        required: true
+      - name: --input_star_genome_dir
+        type: file
+        description: STAR genome index directory
+        required: true
+  - name: Outputs
+    arguments:
+      - name: --output_star_bam_genome
+        type: file
+        direction: output
+        description: Sorted BAM file containing reads aligned to the genome using STAR
+        default: star/aligned_genome_sorted.bam
+      - name: --output_star_bam_genome_index
+        type: file
+        direction: output
+        description: Index for the sorted BAM file containing reads aligned to the genome using STAR
+        default: star/aligned_genome_sorted.bam.bai
+      - name: --output_star_bam_transcriptome
+        type: file
+        direction: output
+        description: BAM file containing reads aligned to the transcriptome using STAR
+        default: star/aligned_transcriptome.bam
+      - name: --output_star_junctions
+        type: file
+        direction: output
+        description: Tabular file containing splice junctions identified by STAR
+        default: star/splice_junctions.tab
+      - name: --output_star_log
+        type: file
+        direction: output
+        description: STAR execution log file
+        default: star/log.out
+      - name: --output_salmon
+        type: file
+        direction: output
+        description: salmon alignment mode quantification output directory
+        default: salmon
+
+dependencies:
+  - name: salmon/salmon_quant
+    repository: biobox
+  - name: samtools/samtools_index
+    repository: biobox
+  - name: samtools/samtools_sort
+    repository: biobox
+  - name: star/star_align_reads
+    repository: biobox
+
+resources:
+  - type: nextflow_script
+    path: main.nf
+    entrypoint: run_wf
+
+runners:
+  - type: nextflow
