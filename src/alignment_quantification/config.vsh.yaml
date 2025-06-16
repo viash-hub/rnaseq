@@ -1,7 +1,7 @@
 name: alignment_quantification
 description: |
   Align reads to the genome using STAR and quantify gene expression using
-  Salmon
+  Salmon in alignment mode
 
 argument_groups:
   - name: Inputs
@@ -55,9 +55,11 @@ argument_groups:
         default: salmon
 
 dependencies:
-  - name: star/star_align_reads
-    repository: biobox
   - name: salmon/salmon_quant
+    repository: biobox
+  - name: samtools/samtools_sort
+    repository: biobox
+  - name: star/star_align_reads
     repository: biobox
 
 resources:
